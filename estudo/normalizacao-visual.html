@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Normalização explicada pra criança</title>
+<style>
+:root{
+  --bg:#fffaf0; --card:#ffffff; --ink:#1f2430; --muted:#5b6475; --line:#e6dfcf;
+  --key:#ffd84d; --key-ink:#3a2e00;
+  --ok:#2ea043; --ok-bg:#e4f6e8; --bad:#e5484d; --bad-bg:#fde8e8;
+  --acc:#6d4aff; --acc-bg:#eee9ff; --cell:#f6f3ea;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#14161d; --card:#1d2029; --ink:#f1f2f6; --muted:#a6adbd; --line:#2d3140;
+    --key:#ffd84d; --key-ink:#2a2100;
+    --ok-bg:#12331c; --bad-bg:#3a1618; --acc:#a794ff; --acc-bg:#262143; --cell:#262a36;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:860px;margin:0 auto;padding:16px 16px 64px}
+h1{font-size:clamp(28px,6vw,42px);line-height:1.1;margin:24px 0 8px}
+h2{font-size:clamp(22px,4.5vw,30px);margin:0 0 6px}
+h3{font-size:19px;margin:18px 0 6px}
+p{margin:8px 0}
+.lead{color:var(--muted);font-size:18px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:20px;margin:22px 0}
+.tag{display:inline-block;padding:3px 12px;border-radius:999px;font-weight:700;font-size:14px;background:var(--acc-bg);color:var(--acc);letter-spacing:.02em}
+.magic{background:var(--key);color:var(--key-ink);border-radius:20px;padding:18px 20px;margin:20px 0;font-weight:700;font-size:clamp(20px,4.5vw,26px);line-height:1.3}
+.magic small{display:block;font-weight:500;font-size:15px;margin-top:6px;opacity:.85}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+.step{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:14px}
+.step b{display:block;font-size:22px}
+.step span{color:var(--muted);font-size:15px}
+.say{border-left:6px solid var(--acc);background:var(--acc-bg);padding:12px 14px;border-radius:0 14px 14px 0;margin:14px 0}
+.bad{border-left-color:var(--bad);background:var(--bad-bg)}
+.good{border-left-color:var(--ok);background:var(--ok-bg)}
+.tables{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:12px 0}
+.tbox h4{margin:0 0 6px;font-size:15px}
+.tbox .cap{font-size:14px;color:var(--muted);margin:6px 0 0}
+table{border-collapse:separate;border-spacing:3px;width:100%;font-size:15px}
+th,td{padding:6px 8px;border-radius:8px;background:var(--cell);text-align:left;white-space:nowrap}
+th{font-size:13px;font-weight:700}
+th.k{background:var(--key);color:var(--key-ink)}
+th.ok{background:var(--ok);color:#fff}
+th.ng{background:var(--bad);color:#fff}
+td.hl{background:var(--bad-bg);outline:2px dashed var(--bad)}
+td.hk{background:var(--ok-bg)}
+.scroll{overflow-x:auto}
+svg{width:100%;height:auto;display:block;margin:10px 0}
+svg text{font:600 15px system-ui,sans-serif;fill:var(--ink)}
+svg .small{font-size:13px;font-weight:500;fill:var(--muted)}
+svg .keybox{fill:var(--key)} svg .keybox + text, svg .kt{fill:var(--key-ink)}
+svg .box{fill:var(--cell);stroke:var(--line);stroke-width:2}
+table.cmp{border-spacing:0;font-size:15px}
+.cmp th,.cmp td{border-radius:0;white-space:normal;vertical-align:top;border-bottom:1px solid var(--line);background:transparent}
+.cmp th{background:var(--acc-bg);color:var(--acc)}
+details{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px 14px;margin:10px 0}
+summary{cursor:pointer;font-weight:700}
+details[open]{border-color:var(--acc)}
+code{background:var(--cell);padding:1px 6px;border-radius:6px;font-size:.92em}
+.pill{display:inline-block;border-radius:999px;padding:1px 10px;font-weight:700;font-size:14px}
+.pill.ok{background:var(--ok-bg);color:var(--ok)} .pill.ng{background:var(--bad-bg);color:var(--bad)}
+.kid{font-size:19px;font-weight:700}
+</style>
+</head>
+<body>
+<main>
+
+<span class="tag">GUIA VISUAL · BANCO DE DADOS</span>
+<h1>1FN, 2FN, 3FN e 4FN<br>sem sofrimento</h1>
+<p class="lead">Respira. É mais simples do que parece. Cada forma normal é uma <b>pergunta de sim ou não</b> sobre as colunas da tabela.</p>
+
+<div class="magic">
+“A chave, toda a chave e nada além da chave.”
+<small>É a frase clássica pra lembrar: 1FN = <b>a chave</b> · 2FN = <b>toda a chave</b> · 3FN = <b>nada além da chave</b>.</small>
+</div>
+
+<div class="steps">
+  <div class="step"><b>1FN</b><span>Cada casinha tem <b>um</b> valor só.</span></div>
+  <div class="step"><b>2FN</b><span>Cada coluna precisa de <b>todas</b> as peças da chave.</span></div>
+  <div class="step"><b>3FN</b><span>Coluna comum <b>não manda</b> em outra coluna comum.</span></div>
+  <div class="step"><b>4FN</b><span>Não misture <b>duas listas</b> que não têm a ver.</span></div>
+</div>
+
+<!-- ========== CHAVE ========== -->
+<section class="card">
+  <span class="tag">ANTES DE TUDO</span>
+  <h2>O que é a “chave”?</h2>
+  <p>Toda linha da tabela precisa de um “RG” que a identifique sem confundir com outra. Esse RG é a <b>chave primária</b>.</p>
+  <p>Às vezes o RG tem <b>uma peça só</b> (<code>id_aluno</code>). Às vezes tem <b>duas ou mais peças juntas</b>, a chave composta (<code>id_pedido</code> + <code>id_produto</code>).</p>
+  <p class="kid">As colunas que não fazem parte da chave eu vou chamar de “colunas comuns”.</p>
+  <div class="say good"><b>Guarde isto:</b> se a chave é de <b>uma peça só</b>, a 2FN já está garantida automaticamente. A 2FN só dá problema quando a chave tem <b>duas ou mais peças</b>.</div>
+</section>
+
+<!-- ========== 1FN ========== -->
+<section class="card">
+  <span class="tag">1FN</span>
+  <h2>1FN: uma casinha, um valor</h2>
+  <p>Nada de lista dentro de uma célula, e a tabela precisa ter chave.</p>
+  <div class="tables">
+    <div class="tbox"><h4><span class="pill ng">✗ quebra a 1FN</span></h4>
+      <table><tr><th class="k">id_aluno</th><th>nome</th><th>telefones</th></tr>
+      <tr><td>1</td><td>Ana</td><td class="hl">9999-1111, 8888-2222</td></tr></table>
+      <p class="cap">Dois telefones apertados numa casinha só.</p></div>
+    <div class="tbox"><h4><span class="pill ok">✓ arrumado</span></h4>
+      <table><tr><th class="k">id_aluno</th><th class="k">telefone</th></tr>
+      <tr><td>1</td><td class="hk">9999-1111</td></tr><tr><td>1</td><td class="hk">8888-2222</td></tr></table>
+      <p class="cap">Uma linha pra cada telefone.</p></div>
+  </div>
+</section>
+
+<!-- ========== 2FN ========== -->
+<section class="card">
+  <span class="tag">2FN</span>
+  <h2>2FN: “toda a chave”</h2>
+  <p class="kid">Imagina uma pizzaria. Cada item de um pedido é identificado por <u>duas peças</u>: qual pedido + qual produto.</p>
+
+  <div class="scroll"><table style="max-width:520px"><tr><th class="k">id_pedido</th><th class="k">id_produto</th><th>quantidade</th><th class="ng">nome_produto</th></tr>
+  <tr><td>1</td><td>10</td><td>2</td><td class="hl">Calabresa</td></tr>
+  <tr><td>1</td><td>11</td><td>1</td><td>Marguerita</td></tr>
+  <tr><td>2</td><td>10</td><td>3</td><td class="hl">Calabresa</td></tr></table></div>
+  <p>A chave são as <b>duas peças amarelas</b> juntas. Agora pergunte pra cada coluna comum: <i>“você precisa das DUAS peças pra existir?”</i></p>
+
+  <svg viewBox="0 0 640 250" role="img" aria-label="quantidade depende das duas peças da chave; nome_produto depende só do id_produto">
+    <defs>
+      <marker id="g" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2ea043"/></marker>
+      <marker id="r" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e5484d"/></marker>
+    </defs>
+    <text x="20" y="22" class="small">🔑 chave composta (2 peças)</text>
+    <rect class="keybox" x="20" y="34" width="150" height="50" rx="12"/><text class="kt" x="95" y="65" text-anchor="middle">id_pedido</text>
+    <rect class="keybox" x="20" y="170" width="150" height="50" rx="12"/><text class="kt" x="95" y="201" text-anchor="middle">id_produto</text>
+    <rect class="box" x="450" y="70" width="170" height="50" rx="12"/><text x="535" y="101" text-anchor="middle">quantidade</text>
+    <rect class="box" x="450" y="170" width="170" height="50" rx="12" style="stroke:#e5484d"/><text x="535" y="201" text-anchor="middle">nome_produto</text>
+    <line x1="172" y1="62" x2="446" y2="90" stroke="#2ea043" stroke-width="3" marker-end="url(#g)"/>
+    <line x1="172" y1="190" x2="446" y2="104" stroke="#2ea043" stroke-width="3" marker-end="url(#g)"/>
+    <line x1="172" y1="196" x2="446" y2="196" stroke="#e5484d" stroke-width="3" marker-end="url(#r)"/>
+    <text x="260" y="58" class="small" style="fill:#2ea043">precisa dos dois ✓</text>
+    <text x="250" y="224" class="small" style="fill:#e5484d">só precisa do id_produto ✗</text>
+  </svg>
+
+  <div class="say bad"><b>quantidade</b>: “quanto desse produto nesse pedido” → precisa do pedido <u>e</u> do produto ✓<br>
+  <b>nome_produto</b>: o nome da Calabresa é “Calabresa” em qualquer pedido → depende <u>só do produto</u>. Está morando na casa errada ✗ (e repete “Calabresa” em várias linhas).</div>
+
+  <h3>Como arrumar: manda a coluna pra casa certa</h3>
+  <div class="tables">
+    <div class="tbox"><h4>pedido_item</h4>
+      <table><tr><th class="k">id_pedido</th><th class="k">id_produto</th><th>quantidade</th></tr>
+      <tr><td>1</td><td>10</td><td>2</td></tr><tr><td>1</td><td>11</td><td>1</td></tr><tr><td>2</td><td>10</td><td>3</td></tr></table></div>
+    <div class="tbox"><h4>produto</h4>
+      <table><tr><th class="k">id_produto</th><th>nome_produto</th></tr>
+      <tr><td>10</td><td class="hk">Calabresa</td></tr><tr><td>11</td><td class="hk">Marguerita</td></tr></table>
+      <p class="cap">Agora o nome aparece <b>uma vez só</b>.</p></div>
+  </div>
+  <div class="say"><b>Definição de prova:</b> a 2FN exige 1FN e que nenhum atributo não-chave dependa de apenas <b>parte</b> da chave composta (sem <b>dependência parcial</b>).</div>
+</section>
+
+<!-- ========== 3FN ========== -->
+<section class="card">
+  <span class="tag">3FN</span>
+  <h2>3FN: “nada além da chave”</h2>
+  <p class="kid">Agora numa escola. Cada aluno tem um RG simples (<code>id_aluno</code>), uma turma, e a turma tem um professor.</p>
+
+  <div class="scroll"><table style="max-width:520px"><tr><th class="k">id_aluno</th><th>nome</th><th>id_turma</th><th class="ng">professor_da_turma</th></tr>
+  <tr><td>1</td><td>Ana</td><td>7A</td><td class="hl">Carlos</td></tr>
+  <tr><td>2</td><td>Bia</td><td>7A</td><td class="hl">Carlos</td></tr>
+  <tr><td>3</td><td>Caio</td><td>7B</td><td>Dora</td></tr></table></div>
+  <p>Aqui a chave é de <b>uma peça só</b>, então a 2FN passou batida. Mas olha quem manda em quem:</p>
+
+  <svg viewBox="0 0 640 200" role="img" aria-label="id_aluno determina id_turma que determina professor: dependência transitiva">
+    <defs>
+      <marker id="g2" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2ea043"/></marker>
+      <marker id="r2" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e5484d"/></marker>
+    </defs>
+    <rect class="keybox" x="10" y="60" width="150" height="50" rx="12"/><text class="kt" x="85" y="91" text-anchor="middle">🔑 id_aluno</text>
+    <rect class="box" x="245" y="60" width="150" height="50" rx="12"/><text x="320" y="91" text-anchor="middle">id_turma</text>
+    <rect class="box" x="480" y="60" width="150" height="50" rx="12" style="stroke:#e5484d"/><text x="555" y="85" text-anchor="middle" style="font-size:13px">professor_</text><text x="555" y="102" text-anchor="middle" style="font-size:13px">da_turma</text>
+    <line x1="162" y1="85" x2="241" y2="85" stroke="#2ea043" stroke-width="3" marker-end="url(#g2)"/>
+    <line x1="397" y1="85" x2="476" y2="85" stroke="#e5484d" stroke-width="3" marker-end="url(#r2)"/>
+    <path d="M85 112 C 85 185, 555 185, 555 114" fill="none" stroke="#e5484d" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#r2)"/>
+    <text x="320" y="170" text-anchor="middle" class="small" style="fill:#e5484d">o aluno só “chega” no professor passando pela turma (caminho indireto)</text>
+    <text x="202" y="50" text-anchor="middle" class="small" style="fill:#2ea043">ok</text>
+    <text x="437" y="50" text-anchor="middle" class="small" style="fill:#e5484d">a turma manda no professor</text>
+  </svg>
+
+  <div class="say bad"><b>professor_da_turma</b> não depende do <i>aluno</i>, depende da <i>turma</i>. Uma coluna comum (<code>id_turma</code>) está mandando em outra coluna comum. Isso é um <b>chefe escondido</b>. Se o professor da 7A mudar, você precisa editar várias linhas.</div>
+
+  <h3>Como arrumar: dá uma casa própria pro chefe</h3>
+  <div class="tables">
+    <div class="tbox"><h4>aluno</h4>
+      <table><tr><th class="k">id_aluno</th><th>nome</th><th>id_turma</th></tr>
+      <tr><td>1</td><td>Ana</td><td>7A</td></tr><tr><td>2</td><td>Bia</td><td>7A</td></tr><tr><td>3</td><td>Caio</td><td>7B</td></tr></table></div>
+    <div class="tbox"><h4>turma</h4>
+      <table><tr><th class="k">id_turma</th><th>professor</th></tr>
+      <tr><td>7A</td><td class="hk">Carlos</td></tr><tr><td>7B</td><td class="hk">Dora</td></tr></table>
+      <p class="cap">Trocou o professor? Muda <b>uma</b> linha.</p></div>
+  </div>
+  <div class="say"><b>Definição de prova:</b> a 3FN exige 2FN e ausência de <b>dependência transitiva</b>: nenhum atributo não-chave pode determinar outro atributo não-chave.</div>
+</section>
+
+<!-- ========== 2FN x 3FN ========== -->
+<section class="card">
+  <span class="tag">A DIFERENÇA QUE VOCÊ ESQUECEU</span>
+  <h2>2FN × 3FN em 10 segundos</h2>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th></th><th>2FN</th><th>3FN</th></tr>
+    <tr><td><b>Pergunta mágica</b></td><td>“Essa coluna precisa de <b>TODAS</b> as peças da chave?”</td><td>“Essa coluna depende de <b>outra coluna comum</b>?”</td></tr>
+    <tr><td><b>O erro</b></td><td>Depende de <b>parte</b> da chave<br>(<i>dependência parcial</i>)</td><td>Depende de uma coluna <b>não-chave</b><br>(<i>dependência transitiva</i>)</td></tr>
+    <tr><td><b>Desenho</b></td><td>A chave <b>quebrada em pedaços</b>; a coluna agarra só um pedaço</td><td>Uma <b>corrente</b>: chave → A → B</td></tr>
+    <tr><td><b>Quando importa?</b></td><td>Só com <b>chave composta</b></td><td>Sempre</td></tr>
+    <tr><td><b>Frase curta</b></td><td>“toda a chave”</td><td>“nada além da chave”</td></tr>
+  </table></div>
+  <div class="say good"><b>Truque:</b> comece pela chave. Se ela tiver <b>2+ peças</b>, teste a 2FN (a coluna usa só uma peça?). Depois, <b>olhe as colunas comuns entre si</b>: alguma manda em outra? Então é 3FN.</div>
+</section>
+
+<!-- ========== 4FN ========== -->
+<section class="card">
+  <span class="tag">4FN</span>
+  <h2>4FN: a que ninguém liga</h2>
+  <p class="kid">A Maria sabe cozinhar Pizza e Sushi. A Maria também fala Português e Inglês.</p>
+  <p>Cozinhar e falar idiomas <b>não têm nada a ver um com o outro</b> (são duas listas independentes). Se você enfiar as duas na mesma tabela, ela é obrigada a listar <b>todas as combinações</b>:</p>
+  <div class="tables">
+    <div class="tbox"><h4><span class="pill ng">✗ misturou duas listas</span></h4>
+      <table><tr><th class="k">pessoa</th><th class="k">prato</th><th class="k">idioma</th></tr>
+      <tr><td>Maria</td><td>Pizza</td><td>Português</td></tr>
+      <tr><td>Maria</td><td>Pizza</td><td>Inglês</td></tr>
+      <tr><td>Maria</td><td>Sushi</td><td>Português</td></tr>
+      <tr><td>Maria</td><td>Sushi</td><td>Inglês</td></tr></table>
+      <p class="cap">2 pratos × 2 idiomas = 4 linhas. Ela aprendeu Espanhol? Precisa adicionar <b>2 linhas</b>.</p></div>
+    <div class="tbox"><h4><span class="pill ok">✓ 4FN: cada lista na sua tabela</span></h4>
+      <table><tr><th class="k">pessoa</th><th class="k">prato</th></tr><tr><td>Maria</td><td>Pizza</td></tr><tr><td>Maria</td><td>Sushi</td></tr></table>
+      <table style="margin-top:8px"><tr><th class="k">pessoa</th><th class="k">idioma</th></tr><tr><td>Maria</td><td>Português</td></tr><tr><td>Maria</td><td>Inglês</td></tr></table>
+      <p class="cap">Espanhol? <b>1 linha</b> só.</p></div>
+  </div>
+  <div class="say"><b>Definição:</b> a 4FN exige a forma normal de Boyce-Codd e proíbe <b>dependências multivaloradas</b> não triviais: uma mesma chave não pode ter dois conjuntos independentes de valores na mesma tabela.</div>
+  <p><b>Por que ninguém liga?</b> Quem modela direito já separa essas listas sem pensar. Na prova, a 4FN aparece pouco; se cair, o sinal é <b>“duas coisas múltiplas e independentes presas à mesma chave”</b>. O edital do TJPB cita só 1FN, 2FN e 3FN, então a 4FN é bônus.</p>
+</section>
+
+<!-- ========== PROVA ========== -->
+<section class="card">
+  <span class="tag">NA HORA DA PROVA</span>
+  <h2>Como responder “atende ou não?”</h2>
+  <ol>
+    <li><b>Ache a chave</b> de cada tabela (simples ou composta?).</li>
+    <li><b>Liste as colunas comuns.</b></li>
+    <li><b>2FN:</b> só olhe tabelas de chave composta. Cada coluna comum usa a chave inteira?</li>
+    <li><b>3FN:</b> alguma coluna comum determina outra coluna comum?</li>
+    <li>Escreva: <b>atende/não atende + definição + exemplo concreto do esquema</b>.</li>
+  </ol>
+  <div class="say good"><b>Modelo de frase 2FN:</b> “A 2FN exige a 1FN e ausência de dependência parcial. Na tabela <code>jogador</code>, a chave é (<code>clube_acronimo</code>, <code>camisa</code>) e o atributo <code>nome</code> depende do par inteiro; logo, atende. As demais tabelas têm chave simples, então não há dependência parcial.”</div>
+  <div class="say good"><b>Modelo de frase 3FN:</b> “A 3FN exige a 2FN e ausência de dependência transitiva. Em <code>gol</code>, todos os atributos dependem diretamente de <code>id_gol</code> e nenhum não-chave determina outro; logo, atende.”</div>
+</section>
+
+<!-- ========== QUIZ ========== -->
+<section class="card">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Qual forma normal quebra?</h2>
+  <p>Pense primeiro, depois clique.</p>
+
+  <details><summary>1) <code>matricula(id_aluno, id_curso, nota, nome_curso)</code> · chave: (id_aluno, id_curso)</summary>
+    <p><span class="pill ng">Quebra a 2FN</span> <code>nome_curso</code> depende só de <code>id_curso</code> (parte da chave). Solução: tabela <code>curso(id_curso, nome_curso)</code>.</p></details>
+
+  <details><summary>2) <code>funcionario(id, nome, cod_depto, nome_depto)</code> · chave: id</summary>
+    <p><span class="pill ng">Quebra a 3FN</span> A chave é simples (2FN ok), mas <code>cod_depto</code> determina <code>nome_depto</code>: id → cod_depto → nome_depto. Solução: tabela <code>depto(cod_depto, nome_depto)</code>.</p></details>
+
+  <details><summary>3) <code>produto(id_produto, nome, preco)</code> · chave: id_produto</summary>
+    <p><span class="pill ok">Atende 1FN, 2FN e 3FN</span> Chave simples, atributos atômicos, e nome e preço dependem direto da chave.</p></details>
+
+  <details><summary>4) <code>professor(nome, disciplina, idioma)</code> com todas as combinações de disciplinas × idiomas por professor</summary>
+    <p><span class="pill ng">Quebra a 4FN</span> Disciplinas e idiomas são listas independentes presas ao mesmo professor. Solução: <code>prof_disciplina(nome, disciplina)</code> e <code>prof_idioma(nome, idioma)</code>.</p></details>
+
+  <p class="lead" style="margin-top:18px">Se você errou algum, não é falta de capacidade: é só voltar na <b>pergunta mágica</b> da tabela 2FN × 3FN acima.</p>
+</section>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,852 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Raciocínio Lógico — aulas visuais</title><link rel="stylesheet" href="aula.css">
+<style>
+.tt td,.tt th{text-align:center;min-width:34px}
+.tt td.v{color:var(--ok);font-weight:800}
+.tt td.f{color:var(--bad);font-weight:800}
+.mini{font-size:15px}
+.calc{font-family:ui-monospace,Consolas,monospace;font-size:17px;background:var(--cell);border-radius:12px;padding:10px 14px;margin:8px 0;line-height:1.7}
+</style></head>
+<body data-subject="logica" data-title="Raciocínio Lógico">
+
+<!-- ===================================================== CAPÍTULO 1 ===================================================== -->
+<section class="chapter" data-title="Proposições, Conectivos e Tabela-Verdade">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 1</span>
+  <h1>Proposições, Conectivos e Tabela-Verdade</h1>
+  <span class="emoji">💡</span>
+  <div class="steps">
+    <div class="step"><b>1. Proposição</b><span>Reconhecer qual frase vale V ou F.</span></div>
+    <div class="step"><b>2. Conectivos</b><span>“e”, “ou”, “ou…ou”, “se…então”, “se e somente se”.</span></div>
+    <div class="step"><b>3. Tabela-verdade</b><span>Montar e achar a linha que decide a questão.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">💡</span><div><b>Analogia do dia:</b> uma proposição é como uma <b>lâmpada</b>: ou está <b>acesa (V)</b> ou <b>apagada (F)</b>. Nunca as duas ao mesmo tempo, nunca “meio acesa”.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONCEITO</span>
+  <h2>O que é proposição?</h2>
+  <div class="magic">Pergunta mágica: “Dá para responder <u>é verdade</u> ou <u>é mentira</u>?”<small>Se sim → proposição. Se a frase pergunta, manda, exclama ou depende de “quem/qual x” → não é.</small></div>
+  <table class="mini">
+    <tr><th>Frase</th><th>É proposição?</th><th>Por quê</th></tr>
+    <tr><td>A Paraíba é um estado do Brasil.</td><td class="hk">✓ sim (V)</td><td>Declara algo julgável.</td></tr>
+    <tr><td>2 + 2 = 5.</td><td class="hk">✓ sim (F)</td><td>Falsa, mas <b>é</b> proposição!</td></tr>
+    <tr><td>Que horas são?</td><td class="hl">✗ não</td><td>Pergunta.</td></tr>
+    <tr><td>Feche a porta.</td><td class="hl">✗ não</td><td>Ordem.</td></tr>
+    <tr><td>x + 3 = 10 · “Ele é juiz.”</td><td class="hl">✗ não</td><td>Sentença aberta: depende de x / de quem é “ele”.</td></tr>
+  </table>
+  <div class="say law">Proposição é a sentença declarativa à qual se atribui <b>um, e somente um</b>, valor lógico: V ou F.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONCEITO</span>
+  <h2>Os conectivos: a “cola” entre frases</h2>
+  <p>Com p = “chove” e q = “levo guarda-chuva”:</p>
+  <table class="cmp mini">
+    <tr><th>Símbolo</th><th>Nome</th><th>Como aparece na prova</th></tr>
+    <tr><td><b>~p</b></td><td>negação</td><td>“não chove”, “não é verdade que chove”</td></tr>
+    <tr><td><b>p ∧ q</b></td><td>conjunção</td><td>“chove <b>e</b> levo”; também “<b>mas</b>”, “porém”</td></tr>
+    <tr><td><b>p ∨ q</b></td><td>disjunção</td><td>“chove <b>ou</b> levo”</td></tr>
+    <tr><td><b>p ⊻ q</b></td><td>disjunção exclusiva</td><td>“<b>ou</b> chove <b>ou</b> levo”; “…, mas não ambos”</td></tr>
+    <tr><td><b>p → q</b></td><td>condicional</td><td>“<b>se</b> chove, <b>então</b> levo”; “quando chove, levo”</td></tr>
+    <tr><td><b>p ↔ q</b></td><td>bicondicional</td><td>“chove <b>se e somente se</b> levo”</td></tr>
+  </table>
+  <div class="say good"><b>Dica:</b> “mas” vale como “e”. “Pedro é rico, mas é infeliz” = rico ∧ infeliz.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">TABELA-VERDADE</span>
+  <h2>Quantas linhas tem a tabela?</h2>
+  <p>Cada proposição é uma “moeda” que cai V ou F. Com 2 moedas, a árvore mostra todas as combinações:</p>
+  <svg viewBox="0 0 640 250" role="img" aria-label="árvore de possibilidades com p e q gera 4 linhas">
+    <defs><marker id="a1" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="box" x="10" y="105" width="80" height="40" rx="10"/><text x="50" y="131" text-anchor="middle">início</text>
+    <line x1="90" y1="118" x2="176" y2="72" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#a1)"/>
+    <line x1="90" y1="132" x2="176" y2="178" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#a1)"/>
+    <rect class="okbox" x="180" y="50" width="80" height="40" rx="10"/><text x="220" y="76" text-anchor="middle">p = V</text>
+    <rect class="badbox" x="180" y="160" width="80" height="40" rx="10"/><text x="220" y="186" text-anchor="middle">p = F</text>
+    <line x1="260" y1="64" x2="346" y2="34" stroke="#6d4aff" stroke-width="2" marker-end="url(#a1)"/>
+    <line x1="260" y1="76" x2="346" y2="96" stroke="#6d4aff" stroke-width="2" marker-end="url(#a1)"/>
+    <line x1="260" y1="174" x2="346" y2="154" stroke="#6d4aff" stroke-width="2" marker-end="url(#a1)"/>
+    <line x1="260" y1="186" x2="346" y2="216" stroke="#6d4aff" stroke-width="2" marker-end="url(#a1)"/>
+    <rect class="okbox" x="350" y="14" width="80" height="36" rx="10"/><text x="390" y="38" text-anchor="middle">q = V</text>
+    <rect class="badbox" x="350" y="78" width="80" height="36" rx="10"/><text x="390" y="102" text-anchor="middle">q = F</text>
+    <rect class="okbox" x="350" y="136" width="80" height="36" rx="10"/><text x="390" y="160" text-anchor="middle">q = V</text>
+    <rect class="badbox" x="350" y="198" width="80" height="36" rx="10"/><text x="390" y="222" text-anchor="middle">q = F</text>
+    <text x="450" y="38">linha 1: V V</text><text x="450" y="102">linha 2: V F</text>
+    <text x="450" y="160">linha 3: F V</text><text x="450" y="222">linha 4: F F</text>
+  </svg>
+  <div class="flow"><span>n proposições</span><i>→</i><span>2ⁿ linhas</span><i>→</i><span>2 → 4 · 3 → 8 · 4 → 16</span></div>
+  <div class="say law">Número de linhas = 2ⁿ, onde n é o número de proposições <b>simples distintas</b>.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONECTIVO “E”</span>
+  <h2>Conjunção (∧): precisa de tudo</h2>
+  <div class="analogy"><span class="emoji">🔐</span><div>Um cofre com <b>duas chaves</b>: só abre se você girar a primeira <b>e</b> a segunda. Falhou uma, o cofre fica fechado.</div></div>
+  <div class="two">
+    <table class="tt"><tr><th>p</th><th>q</th><th class="k">p ∧ q</th></tr>
+      <tr><td class="v">V</td><td class="v">V</td><td class="hk v">V</td></tr>
+      <tr><td class="v">V</td><td class="f">F</td><td class="f">F</td></tr>
+      <tr><td class="f">F</td><td class="v">V</td><td class="f">F</td></tr>
+      <tr><td class="f">F</td><td class="f">F</td><td class="f">F</td></tr></table>
+    <div><p><b>Resolvido:</b> p = “2 + 2 = 4” (V); q = “Recife é a capital da Paraíba” (F).</p>
+      <div class="flow"><span>V ∧ F</span><i>→</i><span>uma chave falhou</span><i>→</i><span style="color:var(--bad)">F</span></div></div>
+  </div>
+  <div class="say law">p ∧ q é verdadeira <b>somente</b> quando p e q são ambas verdadeiras.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONECTIVOS “OU”</span>
+  <h2>“ou” (∨) × “ou… ou…” (⊻)</h2>
+  <div class="two">
+    <div class="analogy"><span class="emoji">💳</span><div><b>∨ inclusivo:</b> “Pago com Pix <b>ou</b> cartão.” Basta um funcionar. Os dois funcionando? Ótimo também.</div></div>
+    <div class="analogy"><span class="emoji">🪙</span><div><b>⊻ exclusivo:</b> “<b>Ou</b> dá cara <b>ou</b> dá coroa.” Exatamente um. Os dois juntos é impossível.</div></div>
+  </div>
+  <table class="tt" style="max-width:520px">
+    <tr><th>p</th><th>q</th><th class="k">p ∨ q</th><th class="k">p ⊻ q</th></tr>
+    <tr><td class="v">V</td><td class="v">V</td><td class="v">V</td><td class="hl f">F</td></tr>
+    <tr><td class="v">V</td><td class="f">F</td><td class="v">V</td><td class="v">V</td></tr>
+    <tr><td class="f">F</td><td class="v">V</td><td class="v">V</td><td class="v">V</td></tr>
+    <tr><td class="f">F</td><td class="f">F</td><td class="hl f">F</td><td class="f">F</td></tr>
+  </table>
+  <div class="say law">p ∨ q só é <b>falsa</b> quando ambas são falsas. p ⊻ q é verdadeira quando p e q têm valores <b>diferentes</b>.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONECTIVO “SE… ENTÃO”</span>
+  <h2>Condicional (→): a promessa quebrada</h2>
+  <p class="kid">O pai promete: “<b>Se</b> você passar no concurso, <b>então</b> te dou um carro.” Quando o pai <u>mentiu</u>?</p>
+  <table class="tt mini">
+    <tr><th>passou (p)</th><th>ganhou carro (q)</th><th class="k">p → q</th><th style="text-align:left">O que aconteceu</th></tr>
+    <tr><td class="v">V</td><td class="v">V</td><td class="v">V</td><td style="text-align:left">Passou e ganhou: promessa cumprida.</td></tr>
+    <tr><td class="v">V</td><td class="f">F</td><td class="hl f">F</td><td class="hl" style="text-align:left">Passou e <b>não</b> ganhou: promessa <b>quebrada</b>!</td></tr>
+    <tr><td class="f">F</td><td class="v">V</td><td class="v">V</td><td style="text-align:left">Não passou, mas ganhou: o pai foi generoso, não mentiu.</td></tr>
+    <tr><td class="f">F</td><td class="f">F</td><td class="v">V</td><td style="text-align:left">Não passou, não ganhou: nada a reclamar.</td></tr>
+  </table>
+  <p>A promessa só fala do que acontece <b>se</b> você passar. Se não passou, o pai não pode ser acusado de mentir.</p>
+  <div class="say law">p → q é falsa <b>somente</b> quando o antecedente (p) é V e o consequente (q) é F: o famoso <b>“Vera Fischer é Falsa”</b> (V → F = F).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONDICIONAL</span>
+  <h2>Suficiente × necessária</h2>
+  <p>“Se é paraibano, então é brasileiro.” Desenhe: o conjunto do <b>p</b> fica <b>dentro</b> do conjunto do <b>q</b>.</p>
+  <svg viewBox="0 0 640 230" role="img" aria-label="paraibanos dentro de brasileiros">
+    <ellipse cx="200" cy="115" rx="180" ry="105" style="fill:#2f6fdf;fill-opacity:.12;stroke:#2f6fdf;stroke-width:3"/>
+    <ellipse cx="160" cy="125" rx="80" ry="50" style="fill:#e8871a;fill-opacity:.2;stroke:#e8871a;stroke-width:3"/>
+    <text x="160" y="130" text-anchor="middle">paraibanos (p)</text>
+    <text x="270" y="45" text-anchor="middle">brasileiros (q)</text>
+    <text x="410" y="80">✓ Ser paraibano <tspan style="font-weight:800">basta</tspan></text>
+    <text x="410" y="102" class="small">→ p é condição SUFICIENTE</text>
+    <text x="410" y="150">✓ Ser brasileiro é <tspan style="font-weight:800">obrigatório</tspan></text>
+    <text x="410" y="172" class="small">→ q é condição NECESSÁRIA</text>
+  </svg>
+  <div class="say good">Quem está dentro do círculo pequeno está, com certeza, no grande. Mas ser brasileiro <b>não basta</b> para ser paraibano (pode ser pernambucano).</div>
+  <div class="say law">Em p → q: “p é condição suficiente para q” e “q é condição necessária para p”.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONECTIVO “SE E SOMENTE SE”</span>
+  <h2>Bicondicional (↔): promessa de mão dupla</h2>
+  <div class="analogy"><span class="emoji">🏖️</span><div>“Vou à praia <b>se e somente se</b> fizer sol.” Sol → praia, <b>e</b> praia → sol. Os dois andam <b>juntos</b>: ou acontecem ambos, ou nenhum.</div></div>
+  <div class="two">
+    <table class="tt"><tr><th>p</th><th>q</th><th class="k">p ↔ q</th></tr>
+      <tr><td class="v">V</td><td class="v">V</td><td class="hk v">V</td></tr>
+      <tr><td class="v">V</td><td class="f">F</td><td class="f">F</td></tr>
+      <tr><td class="f">F</td><td class="v">V</td><td class="f">F</td></tr>
+      <tr><td class="f">F</td><td class="f">F</td><td class="hk v">V</td></tr></table>
+    <div><p><b>Resolvido:</b> p = “3 é par” (F); q = “5 é par” (F).</p>
+      <div class="flow"><span>F ↔ F</span><i>→</i><span>valores iguais</span><i>→</i><span style="color:var(--ok)">V</span></div>
+      <p class="mini">Repare: ↔ é o “contrário” do ⊻ (um é V onde o outro é F).</p></div>
+  </div>
+  <div class="say law">p ↔ q é verdadeira quando p e q têm o <b>mesmo</b> valor lógico. Equivale a (p → q) ∧ (q → p).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESOLVENDO</span>
+  <h2>Tabela completa de (p ∧ q) → r</h2>
+  <p>3 proposições → 2³ = <b>8 linhas</b>. Preencha: p com 4V/4F, q de 2 em 2, r alternando. Depois calcule <b>por partes</b>.</p>
+  <table class="tt mini" style="max-width:560px">
+    <tr><th>p</th><th>q</th><th>r</th><th>① p ∧ q</th><th class="k">② (p ∧ q) → r</th></tr>
+    <tr><td>V</td><td>V</td><td>V</td><td class="v">V</td><td class="v">V</td></tr>
+    <tr><td>V</td><td>V</td><td>F</td><td class="v">V</td><td class="hl f">F ← V → F</td></tr>
+    <tr><td>V</td><td>F</td><td>V</td><td class="f">F</td><td class="v">V</td></tr>
+    <tr><td>V</td><td>F</td><td>F</td><td class="f">F</td><td class="v">V</td></tr>
+    <tr><td>F</td><td>V</td><td>V</td><td class="f">F</td><td class="v">V</td></tr>
+    <tr><td>F</td><td>V</td><td>F</td><td class="f">F</td><td class="v">V</td></tr>
+    <tr><td>F</td><td>F</td><td>V</td><td class="f">F</td><td class="v">V</td></tr>
+    <tr><td>F</td><td>F</td><td>F</td><td class="f">F</td><td class="v">V</td></tr>
+  </table>
+  <div class="say good"><b>Atalho de prova:</b> uma condicional só é F em “V → F”. Então procure só a linha em que (p ∧ q) = V <b>e</b> r = F. Achou 1 linha F; o resto é V.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESOLVENDO</span>
+  <h2>Valores dados: calcule de dentro para fora</h2>
+  <p>Sabendo que <b>p = V, q = F, r = V</b>, qual o valor de <b>(p ∧ q) → (~r ∨ q)</b>?</p>
+  <div class="flow"><span>p ∧ q = V ∧ F = <b style="color:var(--bad)">F</b></span><i>→</i><span>~r = <b style="color:var(--bad)">F</b></span><i>→</i><span>~r ∨ q = F ∨ F = <b style="color:var(--bad)">F</b></span><i>→</i><span>F → F = <b style="color:var(--ok)">V</b></span></div>
+  <p class="mini">Ordem: parênteses → negação (~) → ∧ e ∨ → → → ↔.</p>
+  <div class="say trap">
+    <p>“<b>Se 2 + 2 = 5, então a Lua é feita de queijo.</b>” A banca diz que é falsa porque a frase é absurda. Errado!</p>
+    <div class="ex ng">É falsa, pois as duas partes são falsas.</div>
+    <div class="ex ok">É <b>verdadeira</b>: antecedente F → a condicional é V, seja qual for o consequente.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">CLASSIFICAÇÃO</span>
+  <h2>Tautologia, contradição e contingência</h2>
+  <div class="tables">
+    <div class="tbox"><h4>Tautologia: sempre V</h4>
+      <table class="tt"><tr><th>p</th><th>~p</th><th class="ok">p ∨ ~p</th></tr>
+      <tr><td>V</td><td>F</td><td class="hk v">V</td></tr><tr><td>F</td><td>V</td><td class="hk v">V</td></tr></table>
+      <p class="cap">“Chove ou não chove”: nunca erra.</p></div>
+    <div class="tbox"><h4>Contradição: sempre F</h4>
+      <table class="tt"><tr><th>p</th><th>~p</th><th class="ng">p ∧ ~p</th></tr>
+      <tr><td>V</td><td>F</td><td class="hl f">F</td></tr><tr><td>F</td><td>V</td><td class="hl f">F</td></tr></table>
+      <p class="cap">“Chove e não chove”: impossível.</p></div>
+  </div>
+  <p><b>Contingência:</b> às vezes V, às vezes F. Ex.: p → q (tem 3 V e 1 F).</p>
+  <div class="say law">Tautologia: a última coluna só tem V. Contradição: só tem F. Contingência: tem V e F.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Cola de bolso do capítulo</h2>
+  <div class="magic">“E” só é V se tudo V · “OU” só é F se tudo F · “SE…ENTÃO” só é F em V→F · “↔” é V se iguais · “ou…ou” é V se diferentes.</div>
+  <ul class="checklist">
+    <li>Proposição = declaração que vale V ou F (pergunta, ordem, exclamação e sentença aberta não são).</li>
+    <li>Linhas da tabela = 2ⁿ.</li>
+    <li>p → q: p é suficiente, q é necessária.</li>
+    <li>Antecedente falso → condicional verdadeira, sempre.</li>
+    <li>Tautologia = só V; contradição = só F.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Mostre que aprendeu</h2>
+  <details><summary>1) “Que dia lindo!” e “x − 2 = 5” são proposições?</summary><p><span class="pill ng">Não</span> A primeira é exclamação; a segunda é sentença aberta (o valor depende de x).</p></details>
+  <details><summary>2) Uma proposição composta por 4 proposições simples tem quantas linhas na tabela?</summary><p><span class="pill ok">16</span> 2⁴ = 16.</p></details>
+  <details><summary>3) Se p é V e q é F, qual o valor de p → q? E de q → p?</summary><p><span class="pill ng">p → q = F</span> (V → F, promessa quebrada). <span class="pill ok">q → p = V</span> (antecedente falso).</p></details>
+  <details><summary>4) (CEBRASPE-estilo) “A proposição p ∨ ~p é uma contingência.” Certo ou errado?</summary><p><span class="pill ng">Errado</span> p ∨ ~p é V em todas as linhas: é <b>tautologia</b>.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 2 ===================================================== -->
+<section class="chapter" data-title="Equivalências e Negações">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 2</span>
+  <h1>Equivalências e Negações</h1>
+  <span class="emoji">🔁</span>
+  <div class="steps">
+    <div class="step"><b>1. Equivalências</b><span>Dizer a mesma coisa com outras palavras.</span></div>
+    <div class="step"><b>2. Negações</b><span>De Morgan, negação da condicional e do ↔.</span></div>
+    <div class="step"><b>3. Quantificadores</b><span>Todo, algum, nenhum: quem nega quem.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">👕</span><div><b>Analogia do dia:</b> equivalência é a <b>mesma pessoa com outra roupa</b>: a aparência muda, mas é a mesma (mesma tabela-verdade). Negação é o <b>oposto exato</b>: onde uma é V, a outra é F.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONCEITO</span>
+  <h2>Equivalente = mesma tabela-verdade</h2>
+  <p>Teste: “Se chove, a rua molha” (p → q) e “Se a rua não molhou, não choveu” (~q → ~p).</p>
+  <table class="tt" style="max-width:600px">
+    <tr><th>p</th><th>q</th><th>~p</th><th>~q</th><th class="k">p → q</th><th class="k">~q → ~p</th></tr>
+    <tr><td>V</td><td>V</td><td>F</td><td>F</td><td class="hk v">V</td><td class="hk v">V</td></tr>
+    <tr><td>V</td><td>F</td><td>F</td><td>V</td><td class="hk f">F</td><td class="hk f">F</td></tr>
+    <tr><td>F</td><td>V</td><td>V</td><td>F</td><td class="hk v">V</td><td class="hk v">V</td></tr>
+    <tr><td>F</td><td>F</td><td>V</td><td>V</td><td class="hk v">V</td><td class="hk v">V</td></tr>
+  </table>
+  <p>As duas colunas amarelas são <b>idênticas linha a linha</b>. Logo, são equivalentes.</p>
+  <div class="say law">Duas proposições são equivalentes (≡) quando têm a mesma tabela-verdade em todas as linhas.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONDICIONAL</span>
+  <h2>Contrapositiva ✓ · Recíproca ✗ · Inversa ✗</h2>
+  <svg viewBox="0 0 640 250" role="img" aria-label="p implica q e suas variações">
+    <defs><marker id="a2g" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2ea043"/></marker>
+    <marker id="a2r" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e5484d"/></marker></defs>
+    <rect class="keybox" x="200" y="10" width="240" height="56" rx="12"/><text class="kt" x="320" y="34" text-anchor="middle">ORIGINAL: p → q</text><text class="kt" x="320" y="54" text-anchor="middle" style="font-size:13px">Se chove, a rua molha.</text>
+    <rect class="okbox" x="10" y="160" width="200" height="74" rx="12"/><text x="110" y="184" text-anchor="middle">~q → ~p  ✓</text><text x="110" y="204" text-anchor="middle" class="small">Se a rua não molhou,</text><text x="110" y="222" text-anchor="middle" class="small">não choveu.</text>
+    <rect class="badbox" x="220" y="160" width="200" height="74" rx="12"/><text x="320" y="184" text-anchor="middle">q → p  ✗</text><text x="320" y="204" text-anchor="middle" class="small">Se a rua molhou, choveu.</text><text x="320" y="222" text-anchor="middle" class="small">(podem ter lavado!)</text>
+    <rect class="badbox" x="430" y="160" width="200" height="74" rx="12"/><text x="530" y="184" text-anchor="middle">~p → ~q  ✗</text><text x="530" y="204" text-anchor="middle" class="small">Se não chove,</text><text x="530" y="222" text-anchor="middle" class="small">a rua não molha.</text>
+    <line x1="260" y1="68" x2="120" y2="154" stroke="#2ea043" stroke-width="3" marker-end="url(#a2g)"/>
+    <line x1="320" y1="68" x2="320" y2="154" stroke="#e5484d" stroke-width="3" stroke-dasharray="6 5" marker-end="url(#a2r)"/>
+    <line x1="380" y1="68" x2="520" y2="154" stroke="#e5484d" stroke-width="3" stroke-dasharray="6 5" marker-end="url(#a2r)"/>
+    <text x="110" y="110" class="small" style="fill:#2ea043">contrapositiva</text>
+    <text x="330" y="118" class="small" style="fill:#e5484d">recíproca</text>
+    <text x="470" y="110" class="small" style="fill:#e5484d">inversa</text>
+  </svg>
+  <div class="magic">Contrapositiva: <u>inverte a ordem</u> e <u>nega as duas</u>.<small>“Se A, então B” ≡ “Se não B, então não A”.</small></div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONDICIONAL</span>
+  <h2>p → q ≡ ~p ∨ q (o macete “NEyMAR”)</h2>
+  <div class="magic">NE-y-MAR: <u>NE</u>ga a primeira, troca por “<u>ou</u>”, <u>MA</u>ntém a segunda.</div>
+  <table class="tt" style="max-width:520px">
+    <tr><th>p</th><th>q</th><th>~p</th><th class="k">p → q</th><th class="k">~p ∨ q</th></tr>
+    <tr><td>V</td><td>V</td><td>F</td><td class="hk v">V</td><td class="hk v">V</td></tr>
+    <tr><td>V</td><td>F</td><td>F</td><td class="hk f">F</td><td class="hk f">F</td></tr>
+    <tr><td>F</td><td>V</td><td>V</td><td class="hk v">V</td><td class="hk v">V</td></tr>
+    <tr><td>F</td><td>F</td><td>V</td><td class="hk v">V</td><td class="hk v">V</td></tr>
+  </table>
+  <div class="flow"><span>Se estudo, passo.</span><i>≡</i><span><b>Não</b> estudo <b>ou</b> passo.</span></div>
+  <p class="mini">Por quê? “~p ∨ q” só é F quando ~p = F (p = V) e q = F. Exatamente a linha da promessa quebrada.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">DE MORGAN</span>
+  <h2>Negar o “e”: basta UM falhar</h2>
+  <div class="analogy"><span class="emoji">☕</span><div>Prometi: “Trago café <b>e</b> bolo.” Para eu ter <b>descumprido</b>, basta faltar o café <b>ou</b> faltar o bolo.</div></div>
+  <table class="tt" style="max-width:620px">
+    <tr><th>p</th><th>q</th><th>p ∧ q</th><th class="k">~(p ∧ q)</th><th>~p</th><th>~q</th><th class="k">~p ∨ ~q</th></tr>
+    <tr><td>V</td><td>V</td><td>V</td><td class="hk f">F</td><td>F</td><td>F</td><td class="hk f">F</td></tr>
+    <tr><td>V</td><td>F</td><td>F</td><td class="hk v">V</td><td>F</td><td>V</td><td class="hk v">V</td></tr>
+    <tr><td>F</td><td>V</td><td>F</td><td class="hk v">V</td><td>V</td><td>F</td><td class="hk v">V</td></tr>
+    <tr><td>F</td><td>F</td><td>F</td><td class="hk v">V</td><td>V</td><td>V</td><td class="hk v">V</td></tr>
+  </table>
+  <div class="flow"><span>Negar “café e bolo”</span><i>→</i><span>“<b>não</b> trago café <b>ou não</b> trago bolo”</span></div>
+  <div class="say law">~(p ∧ q) ≡ ~p ∨ ~q: nega as duas partes e troca “e” por “ou”.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">DE MORGAN</span>
+  <h2>Negar o “ou”: os DOIS têm de falhar</h2>
+  <div class="analogy"><span class="emoji">🚌</span><div>“Vou de ônibus <b>ou</b> de metrô.” Para isso ser mentira, não posso ter ido de nenhum: <b>não</b> fui de ônibus <b>e não</b> fui de metrô.</div></div>
+  <table class="tt" style="max-width:620px">
+    <tr><th>p</th><th>q</th><th>p ∨ q</th><th class="k">~(p ∨ q)</th><th>~p</th><th>~q</th><th class="k">~p ∧ ~q</th></tr>
+    <tr><td>V</td><td>V</td><td>V</td><td class="hk f">F</td><td>F</td><td>F</td><td class="hk f">F</td></tr>
+    <tr><td>V</td><td>F</td><td>V</td><td class="hk f">F</td><td>F</td><td>V</td><td class="hk f">F</td></tr>
+    <tr><td>F</td><td>V</td><td>V</td><td class="hk f">F</td><td>V</td><td>F</td><td class="hk f">F</td></tr>
+    <tr><td>F</td><td>F</td><td>F</td><td class="hk v">V</td><td>V</td><td>V</td><td class="hk v">V</td></tr>
+  </table>
+  <p class="mini">Na prova aparece como “<b>nem</b> fui de ônibus <b>nem</b> de metrô”.</p>
+  <div class="say law">~(p ∨ q) ≡ ~p ∧ ~q: nega as duas partes e troca “ou” por “e”.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">NEGAÇÃO DA CONDICIONAL</span>
+  <h2>Negar “se… então”: o macete “MA-NÉ”</h2>
+  <div class="magic">MA-NÉ: <u>MA</u>ntém a primeira, troca por “<u>e</u>”, <u>NE</u>ga a segunda.<small>~(p → q) ≡ p ∧ ~q</small></div>
+  <p><b>Por quê?</b> A negação tem de ser V exatamente onde p → q é F. E p → q só é F na promessa quebrada: <b>p aconteceu e q não</b>.</p>
+  <table class="tt" style="max-width:520px">
+    <tr><th>p</th><th>q</th><th class="k">p → q</th><th class="k">p ∧ ~q</th></tr>
+    <tr><td>V</td><td>V</td><td>V</td><td>F</td></tr>
+    <tr><td>V</td><td>F</td><td class="hl f">F</td><td class="hk v">V</td></tr>
+    <tr><td>F</td><td>V</td><td>V</td><td>F</td></tr>
+    <tr><td>F</td><td>F</td><td>V</td><td>F</td></tr>
+  </table>
+  <div class="flow"><span>“Se chove, o jogo é cancelado.”</span><i>→ negação →</i><span>“Chove <b>e</b> o jogo <b>não</b> é cancelado.”</span></div>
+</div>
+
+<div class="slide">
+  <span class="tag">BICONDICIONAL</span>
+  <h2>Negar o “se e somente se”</h2>
+  <p>p ↔ q é V quando os valores são <b>iguais</b>. A negação tem de ser V quando são <b>diferentes</b>: isso é o “ou… ou…”.</p>
+  <table class="tt" style="max-width:520px">
+    <tr><th>p</th><th>q</th><th class="k">p ↔ q</th><th class="k">p ⊻ q</th></tr>
+    <tr><td>V</td><td>V</td><td class="v">V</td><td class="f">F</td></tr>
+    <tr><td>V</td><td>F</td><td class="f">F</td><td class="v">V</td></tr>
+    <tr><td>F</td><td>V</td><td class="f">F</td><td class="v">V</td></tr>
+    <tr><td>F</td><td>F</td><td class="v">V</td><td class="f">F</td></tr>
+  </table>
+  <div class="flow"><span>“Vou à praia se e somente se fizer sol.”</span><i>→ negação →</i><span>“<b>Ou</b> vou à praia <b>ou</b> faz sol.”</span></div>
+  <div class="say law">~(p ↔ q) ≡ p ⊻ q (também ≡ p ↔ ~q). E p ↔ q ≡ (p → q) ∧ (q → p).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">QUANTIFICADORES</span>
+  <h2>Todo, algum, nenhum: quem nega quem</h2>
+  <p class="mini">Frases com “todo/algum/existe” são da <b>lógica de primeira ordem</b> (quantificadores ∀ “para todo” e ∃ “existe”).</p>
+  <svg viewBox="0 0 640 240" role="img" aria-label="quadro das negações dos quantificadores">
+    <rect class="accbox" x="20" y="14" width="220" height="50" rx="12"/><text x="130" y="45" text-anchor="middle">Todo A é B</text>
+    <rect class="accbox" x="400" y="14" width="220" height="50" rx="12"/><text x="510" y="45" text-anchor="middle">Nenhum A é B</text>
+    <rect class="box" x="20" y="176" width="220" height="50" rx="12"/><text x="130" y="207" text-anchor="middle">Algum A é B</text>
+    <rect class="box" x="400" y="176" width="220" height="50" rx="12"/><text x="510" y="207" text-anchor="middle">Algum A não é B</text>
+    <line x1="230" y1="64" x2="410" y2="176" stroke="#2ea043" stroke-width="4"/>
+    <line x1="410" y1="64" x2="230" y2="176" stroke="#2ea043" stroke-width="4"/>
+    <rect x="262" y="105" width="116" height="30" rx="8" style="fill:var(--ok-bg)"/><text x="320" y="126" text-anchor="middle" style="fill:#2ea043">NEGAÇÕES</text>
+    <line x1="244" y1="39" x2="396" y2="39" stroke="#e5484d" stroke-width="3" stroke-dasharray="6 5"/>
+    <text x="320" y="30" text-anchor="middle" class="small" style="fill:#e5484d">✗ não é negação</text>
+  </svg>
+  <div class="say good">Siga as <b>diagonais verdes</b>: Todo ↔ Algum… não · Nenhum ↔ Algum…é.</div>
+  <div class="say law">~(Todo A é B) ≡ Algum A não é B · ~(Algum A é B) ≡ Nenhum A é B.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">GUARDE ESTA</span>
+  <h2>A tabela das negações</h2>
+  <table class="cmp mini">
+    <tr><th>Frase</th><th>Negação</th><th>Macete</th></tr>
+    <tr><td>p ∧ q</td><td class="hk">~p ∨ ~q</td><td>nega tudo, “e” vira “ou”</td></tr>
+    <tr><td>p ∨ q</td><td class="hk">~p ∧ ~q</td><td>nega tudo, “ou” vira “e”</td></tr>
+    <tr><td>p → q</td><td class="hk">p ∧ ~q</td><td>MA-NÉ</td></tr>
+    <tr><td>p ↔ q</td><td class="hk">p ⊻ q (ou… ou…)</td><td>iguais → diferentes</td></tr>
+    <tr><td>p ⊻ q</td><td class="hk">p ↔ q</td><td>diferentes → iguais</td></tr>
+    <tr><td>Todo A é B</td><td class="hk">Algum A não é B</td><td>“nem todo A é B”</td></tr>
+    <tr><td>Algum A é B</td><td class="hk">Nenhum A é B</td><td></td></tr>
+    <tr><td>Nenhum A é B</td><td class="hk">Algum A é B</td><td></td></tr>
+    <tr><td>Algum A não é B</td><td class="hk">Todo A é B</td><td></td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">RESOLVENDO</span>
+  <h2>Negando uma frase de prova, passo a passo</h2>
+  <p>Negue: “<b>Se</b> o processo foi distribuído, <b>então</b> o juiz despachou <b>e</b> a parte foi intimada.”</p>
+  <div class="flow"><span>p → (q ∧ r)</span><i>→ MA-NÉ →</i><span>p ∧ ~(q ∧ r)</span><i>→ De Morgan →</i><span>p ∧ (~q ∨ ~r)</span></div>
+  <div class="say good"><b>Resposta:</b> “O processo foi distribuído <b>e</b> (o juiz <b>não</b> despachou <b>ou</b> a parte <b>não</b> foi intimada).”</div>
+  <p>Outro: negue “Todo servidor é pontual”.</p>
+  <div class="ex ok">Algum servidor não é pontual. (= Existe servidor que não é pontual = Nem todo servidor é pontual)</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>As negações erradas favoritas da banca</h2>
+  <div class="say trap">
+    <p>Negação de “<b>Todo aluno estudou</b>”:</p>
+    <div class="ex ng">Nenhum aluno estudou.</div>
+    <div class="ex ng">Todo aluno não estudou.</div>
+    <div class="ex ok">Algum aluno não estudou.</div>
+    <p>Negação de “<b>Se chove, então não saio</b>”:</p>
+    <div class="ex ng">Se não chove, então saio. (negação não é condicional!)</div>
+    <div class="ex ok">Chove e saio.</div>
+  </div>
+  <p class="mini">Para derrubar “todo”, basta <b>um</b> contraexemplo; não é preciso que todos falhem.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Cola de bolso do capítulo</h2>
+  <div class="magic">Equivale: contrapositiva (~q→~p) e NEyMAR (~p∨q). Nega: MA-NÉ (p∧~q), De Morgan e “Todo ↔ Algum não”.</div>
+  <ul class="checklist">
+    <li>Equivalente = mesma tabela-verdade.</li>
+    <li>Recíproca (q→p) e inversa (~p→~q) <b>não</b> equivalem a p→q.</li>
+    <li>~(p∧q) ≡ ~p∨~q · ~(p∨q) ≡ ~p∧~q.</li>
+    <li>~(p↔q) ≡ “ou p ou q”.</li>
+    <li>A negação de “todo” nunca é “nenhum”.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Mostre que aprendeu</h2>
+  <details><summary>1) Equivale a “Se estudo, então passo”: (a) Se passo, estudo (b) Se não passo, não estudei.</summary><p><span class="pill ok">(b)</span> É a contrapositiva. A (a) é a recíproca, que não equivale.</p></details>
+  <details><summary>2) A negação de “Ana é juíza e Bia é analista” é…</summary><p><span class="pill ok">Ana não é juíza ou Bia não é analista.</span> De Morgan: nega as duas e troca “e” por “ou”.</p></details>
+  <details><summary>3) A negação de “Se o réu confessou, então foi condenado” é…</summary><p><span class="pill ok">O réu confessou e não foi condenado.</span> MA-NÉ.</p></details>
+  <details><summary>4) (CEBRASPE-estilo) “A negação de ‘Algum processo está atrasado’ é ‘Algum processo não está atrasado’.” C ou E?</summary><p><span class="pill ng">Errado</span> A negação correta é “Nenhum processo está atrasado”.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 3 ===================================================== -->
+<section class="chapter" data-title="Argumentos e Silogismos">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 3</span>
+  <h1>Argumentos e Silogismos</h1>
+  <span class="emoji">🕵️</span>
+  <div class="steps">
+    <div class="step"><b>1. Validade</b><span>Válido não é o mesmo que verdadeiro.</span></div>
+    <div class="step"><b>2. Formas válidas</b><span>Modus ponens, tollens e silogismos.</span></div>
+    <div class="step"><b>3. Método de prova</b><span>Premissas verdadeiras → descubra tudo.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🕵️</span><div><b>Analogia do dia:</b> você é um <b>detetive</b>. As premissas são as pistas que você <b>aceita como verdade</b>. A conclusão só vale se for <b>obrigatória</b> a partir das pistas, não apenas “provável”.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONCEITO</span>
+  <h2>O que é um argumento</h2>
+  <svg viewBox="0 0 640 200" role="img" aria-label="premissas levam à conclusão">
+    <defs><marker id="a3" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="box" x="10" y="14" width="300" height="46" rx="12"/><text x="160" y="43" text-anchor="middle">P1: Todo servidor tem matrícula.</text>
+    <rect class="box" x="10" y="74" width="300" height="46" rx="12"/><text x="160" y="103" text-anchor="middle">P2: João é servidor.</text>
+    <text x="160" y="150" text-anchor="middle" class="small">premissas (pistas)</text>
+    <line x1="314" y1="68" x2="390" y2="68" stroke="#6d4aff" stroke-width="4" marker-end="url(#a3)"/>
+    <text x="352" y="58" text-anchor="middle" class="small">logo</text>
+    <rect class="okbox" x="396" y="40" width="234" height="56" rx="12"/><text x="513" y="73" text-anchor="middle">C: João tem matrícula.</text>
+    <text x="513" y="120" text-anchor="middle" class="small">conclusão</text>
+  </svg>
+  <div class="two">
+    <div class="say good"><b>Dedução:</b> se as premissas forem V, a conclusão é <b>obrigatoriamente</b> V. É o que a prova chama de argumento válido.</div>
+    <div class="say"><b>Indução / analogia:</b> a conclusão é só <b>provável</b> (“o sol nasceu todo dia, logo nascerá amanhã”).</div>
+  </div>
+  <div class="say law">Argumento é um conjunto de premissas que sustenta uma conclusão.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONCEITO-CHAVE</span>
+  <h2>Válido ≠ verdadeiro</h2>
+  <p>Validade é sobre a <b>forma</b> (o “encaixe” das peças), não sobre o mundo real.</p>
+  <div class="two">
+    <div class="card"><span class="pill ok">VÁLIDO</span> mas com conclusão falsa
+      <p class="mini">P1: Todo peixe voa.<br>P2: Nemo é peixe.<br>C: Nemo voa.</p>
+      <p class="mini">Se as premissas fossem V, a conclusão seria obrigatória. A forma é perfeita; a P1 é que é falsa.</p></div>
+    <div class="card"><span class="pill ng">INVÁLIDO</span> mas com conclusão verdadeira
+      <p class="mini">P1: Todo paraibano é brasileiro.<br>P2: Lula é brasileiro.<br>C: Lula é pernambucano.</p>
+      <p class="mini">A conclusão é verdadeira no mundo real, mas <b>não decorre</b> das premissas.</p></div>
+  </div>
+  <div class="say law">Argumento válido: é impossível ter todas as premissas verdadeiras e a conclusão falsa.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">FORMA VÁLIDA</span>
+  <h2>Modus ponens: “afirmando a condição”</h2>
+  <div class="analogy"><span class="emoji">🚦</span><div>“Se o sinal está verde, eu passo.” O sinal <b>está</b> verde. Então eu passo. Simples assim.</div></div>
+  <div class="flow"><span>P1: p → q</span><i>+</i><span>P2: p</span><i>⇒</i><span style="border-color:var(--ok)">C: q</span></div>
+  <p><b>Resolvido:</b> “Se é servidor, tem matrícula. João é servidor.” → <b>João tem matrícula.</b></p>
+  <p class="mini"><b>Por quê?</b> P2 diz p = V. Para P1 (p → q) ser V com p = V, q não pode ser F (seria a promessa quebrada). Logo q = V.</p>
+  <div class="say law">Modus ponens: de p → q e p, conclui-se q.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">FORMA VÁLIDA</span>
+  <h2>Modus tollens: “negando o resultado”</h2>
+  <div class="analogy"><span class="emoji">🌧️</span><div>“Se choveu, a rua está molhada.” A rua está <b>seca</b>. Então <b>não</b> choveu.</div></div>
+  <div class="flow"><span>P1: p → q</span><i>+</i><span>P2: ~q</span><i>⇒</i><span style="border-color:var(--ok)">C: ~p</span></div>
+  <p class="mini"><b>Por quê?</b> q = F. Se p fosse V, teríamos V → F (falso), e P1 deixaria de ser V. Então p tem de ser F.</p>
+  <table class="tt mini" style="max-width:480px">
+    <tr><th>p</th><th>q</th><th>P1: p → q</th><th>P2: ~q</th><th>premissas ok?</th></tr>
+    <tr><td>V</td><td>F</td><td class="f">F</td><td>V</td><td class="hl">✗</td></tr>
+    <tr><td class="hk">F</td><td>F</td><td class="v">V</td><td>V</td><td class="hk">✓ só sobra p = F</td></tr>
+  </table>
+  <div class="say law">Modus tollens: de p → q e ~q, conclui-se ~p.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">FORMAS VÁLIDAS</span>
+  <h2>Silogismo hipotético e disjuntivo</h2>
+  <h3>Hipotético: efeito dominó</h3>
+  <svg viewBox="0 0 640 110" role="img" aria-label="cadeia de condicionais">
+    <defs><marker id="a3b" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="box" x="10" y="20" width="150" height="50" rx="12"/><text x="85" y="50" text-anchor="middle">estudo (p)</text>
+    <rect class="box" x="245" y="20" width="150" height="50" rx="12"/><text x="320" y="50" text-anchor="middle">passo (q)</text>
+    <rect class="okbox" x="480" y="20" width="150" height="50" rx="12"/><text x="555" y="50" text-anchor="middle">sou nomeado (r)</text>
+    <line x1="162" y1="45" x2="240" y2="45" stroke="#6d4aff" stroke-width="3" marker-end="url(#a3b)"/>
+    <line x1="397" y1="45" x2="475" y2="45" stroke="#6d4aff" stroke-width="3" marker-end="url(#a3b)"/>
+    <path d="M85,72 Q320,120 555,72" fill="none" stroke="#2ea043" stroke-width="3" stroke-dasharray="6 4" marker-end="url(#a3b)"/>
+    <text x="320" y="104" text-anchor="middle" class="small" style="fill:#2ea043">logo: p → r</text>
+  </svg>
+  <h3>Disjuntivo: eliminação</h3>
+  <div class="flow"><span>P1: É o João <b>ou</b> a Maria.</span><i>+</i><span>P2: <b>Não</b> é o João.</span><i>⇒</i><span style="border-color:var(--ok)">É a Maria.</span></div>
+  <div class="say law">p → q, q → r ⊢ p → r · p ∨ q, ~p ⊢ q.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">FALÁCIAS</span>
+  <h2>Os dois erros clássicos (argumentos inválidos)</h2>
+  <svg viewBox="0 0 640 170" role="img" aria-label="rua molhada pode ter outras causas">
+    <defs><marker id="a3c" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e8871a"/></marker></defs>
+    <rect class="box" x="10" y="10" width="170" height="40" rx="10"/><text x="95" y="36" text-anchor="middle">🌧️ choveu</text>
+    <rect class="box" x="10" y="64" width="170" height="40" rx="10"/><text x="95" y="90" text-anchor="middle">🧽 lavaram a rua</text>
+    <rect class="box" x="10" y="118" width="170" height="40" rx="10"/><text x="95" y="144" text-anchor="middle">🚒 cano estourou</text>
+    <rect class="accbox" x="420" y="60" width="210" height="50" rx="12"/><text x="525" y="91" text-anchor="middle">rua molhada</text>
+    <line x1="182" y1="30" x2="414" y2="78" stroke="#e8871a" stroke-width="3" marker-end="url(#a3c)"/>
+    <line x1="182" y1="84" x2="414" y2="85" stroke="#e8871a" stroke-width="3" marker-end="url(#a3c)"/>
+    <line x1="182" y1="138" x2="414" y2="94" stroke="#e8871a" stroke-width="3" marker-end="url(#a3c)"/>
+  </svg>
+  <div class="two">
+    <div class="say bad"><b>Afirmar o consequente</b><br>p → q; q; logo p. ✗<br><span class="mini">“A rua está molhada, logo choveu.” Pode ter sido lavada!</span></div>
+    <div class="say bad"><b>Negar o antecedente</b><br>p → q; ~p; logo ~q. ✗<br><span class="mini">“Não choveu, logo a rua está seca.” E o cano?</span></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">COMPARANDO</span>
+  <h2>Válidas × inválidas lado a lado</h2>
+  <table class="cmp">
+    <tr><th>Premissa 1</th><th>Premissa 2</th><th>Conclusão</th><th>Nome</th><th></th></tr>
+    <tr><td>p → q</td><td>p</td><td>q</td><td>modus ponens</td><td class="hk">✓ válido</td></tr>
+    <tr><td>p → q</td><td>~q</td><td>~p</td><td>modus tollens</td><td class="hk">✓ válido</td></tr>
+    <tr><td>p → q</td><td>q</td><td>p</td><td>afirmação do consequente</td><td class="hl">✗ inválido</td></tr>
+    <tr><td>p → q</td><td>~p</td><td>~q</td><td>negação do antecedente</td><td class="hl">✗ inválido</td></tr>
+    <tr><td>p ∨ q</td><td>~p</td><td>q</td><td>silogismo disjuntivo</td><td class="hk">✓ válido</td></tr>
+  </table>
+  <div class="magic">Na condicional, só valem dois caminhos: <u>afirmar a 1ª</u> (→ afirma a 2ª) ou <u>negar a 2ª</u> (→ nega a 1ª).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">MÉTODO 1</span>
+  <h2>Questão de “verdades”: comece pela frase simples</h2>
+  <p>Premissas verdadeiras: <b>P1</b> Se Ana vai, Bia vai. <b>P2</b> Bia não vai ou Carlos vai. <b>P3</b> Carlos não vai.</p>
+  <div class="flow"><span>① P3 é simples: <b>Carlos não vai</b></span><i>→</i><span>② P2: “Carlos vai” é F, então “Bia não vai” tem de ser V</span></div>
+  <div class="flow"><i>→</i><span>③ P1: “Bia vai” é F; para não ter V → F, “Ana vai” é F</span><i>→</i><span style="border-color:var(--ok)">④ Ninguém vai</span></div>
+  <table class="tt mini" style="max-width:520px">
+    <tr><th>Ana vai</th><th>Bia vai</th><th>Carlos vai</th><th>P1</th><th>P2</th><th>P3</th></tr>
+    <tr><td class="f">F</td><td class="f">F</td><td class="f">F</td><td class="hk v">V</td><td class="hk v">V</td><td class="hk v">V</td></tr>
+  </table>
+  <div class="say good"><b>Regra de ouro:</b> comece pela proposição simples ou pelo “e” (que obriga as duas partes a serem V).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">MÉTODO 2</span>
+  <h2>Testar validade: tente “quebrar” o argumento</h2>
+  <p>“Se estudo, passo. Passei. Logo, estudei.” Procure uma linha com <b>premissas V</b> e <b>conclusão F</b>.</p>
+  <table class="tt" style="max-width:600px">
+    <tr><th>p (estudo)</th><th>q (passo)</th><th>P1: p → q</th><th>P2: q</th><th>C: p</th></tr>
+    <tr><td>V</td><td>V</td><td>V</td><td>V</td><td>V</td></tr>
+    <tr><td>V</td><td>F</td><td>F</td><td>F</td><td>V</td></tr>
+    <tr><td class="hl">F</td><td class="hl">V</td><td class="hl v">V</td><td class="hl v">V</td><td class="hl f">F</td></tr>
+    <tr><td>F</td><td>F</td><td>V</td><td>F</td><td>F</td></tr>
+  </table>
+  <div class="say bad">Linha 3: premissas V e conclusão F → o argumento é <b>INVÁLIDO</b> (afirmação do consequente).</div>
+  <div class="say law">Se existir ao menos uma linha com todas as premissas V e conclusão F, o argumento é inválido.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">SILOGISMO CATEGÓRICO</span>
+  <h2>Com “todo” e “algum”: desenhe!</h2>
+  <svg viewBox="0 0 640 230" role="img" aria-label="silogismo válido e inválido com diagramas">
+    <ellipse cx="160" cy="118" rx="150" ry="100" style="fill:#2f6fdf;fill-opacity:.1;stroke:#2f6fdf;stroke-width:3"/>
+    <ellipse cx="150" cy="135" rx="100" ry="65" style="fill:#6d4aff;fill-opacity:.12;stroke:#6d4aff;stroke-width:3"/>
+    <ellipse cx="140" cy="150" rx="50" ry="32" style="fill:#e8871a;fill-opacity:.25;stroke:#e8871a;stroke-width:3"/>
+    <text x="140" y="155" text-anchor="middle">juízes</text><text x="150" y="88" text-anchor="middle">bacharéis</text><text x="160" y="36" text-anchor="middle" class="small">estudaram Constitucional</text>
+    <text x="160" y="226" text-anchor="middle" style="fill:#2ea043">✓ válido</text>
+    <ellipse cx="480" cy="118" rx="150" ry="100" style="fill:#6d4aff;fill-opacity:.12;stroke:#6d4aff;stroke-width:3"/>
+    <ellipse cx="450" cy="135" rx="70" ry="45" style="fill:#e8871a;fill-opacity:.25;stroke:#e8871a;stroke-width:3"/>
+    <text x="450" y="140" text-anchor="middle">juízes</text><text x="480" y="44" text-anchor="middle">bacharéis</text>
+    <circle cx="580" cy="110" r="7" fill="#e5484d"/><text x="580" y="96" text-anchor="middle" style="fill:#e5484d">Pedro?</text>
+    <text x="480" y="226" text-anchor="middle" style="fill:#e5484d">✗ inválido</text>
+  </svg>
+  <div class="two">
+    <p class="mini"><b>Esquerda:</b> Todo juiz é bacharel; todo bacharel estudou Constitucional. Logo, todo juiz estudou. A bolinha menor fica obrigatoriamente dentro da maior.</p>
+    <p class="mini"><b>Direita:</b> Todo juiz é bacharel; Pedro é bacharel. Logo, Pedro é juiz? Pedro pode estar no anel de fora: <b>não decorre</b>.</p>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>“A conclusão é verdadeira, então o argumento é válido”?</h2>
+  <div class="say trap">
+    <p>Premissas: “Se sou juiz, sou concursado. Sou concursado.” Conclusão: “Sou juiz.”</p>
+    <div class="ex ng">Válido, porque é possível que eu seja juiz.</div>
+    <div class="ex ok">Inválido: “possível” não basta. Posso ser concursado sem ser juiz (afirmação do consequente).</div>
+    <p>E o contrário:</p>
+    <div class="ex ng">Inválido, porque a premissa “todo peixe voa” é falsa.</div>
+    <div class="ex ok">Pode ser válido: validade não depende de as premissas serem verdadeiras no mundo real.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Cola de bolso do capítulo</h2>
+  <div class="magic">Afirma a 1ª → afirma a 2ª. Nega a 2ª → nega a 1ª. O resto é armadilha.<small>Ponens ✓ · Tollens ✓ · Afirmar consequente ✗ · Negar antecedente ✗</small></div>
+  <ul class="checklist">
+    <li>Válido = impossível premissas V e conclusão F.</li>
+    <li>Validade é forma; verdade é conteúdo.</li>
+    <li>“Verdades”: comece pela proposição simples ou pelo “e”.</li>
+    <li>Para provar invalidade, basta um cenário com premissas V e conclusão F.</li>
+    <li>Silogismo com todo/algum: desenhe os conjuntos.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Mostre que aprendeu</h2>
+  <details><summary>1) “Se o prazo venceu, o recurso é intempestivo. O recurso não é intempestivo.” Conclusão?</summary><p><span class="pill ok">O prazo não venceu.</span> Modus tollens.</p></details>
+  <details><summary>2) “Se Lia é analista, ela trabalha no TJ. Lia não é analista. Logo, não trabalha no TJ.” Válido?</summary><p><span class="pill ng">Inválido</span> Negação do antecedente: ela pode trabalhar no TJ em outro cargo.</p></details>
+  <details><summary>3) Premissas V: “Rui é técnico e Edu é analista” e “Se Edu é analista, Gil é juiz.” O que se conclui sobre Gil?</summary><p><span class="pill ok">Gil é juiz.</span> O “e” é V, então “Edu é analista” é V; pela condicional (modus ponens), Gil é juiz.</p></details>
+  <details><summary>4) “Um argumento com premissas falsas é sempre inválido.” C ou E?</summary><p><span class="pill ng">Errado</span> Validade depende só da forma. Ex.: “Todo peixe voa; Nemo é peixe; logo Nemo voa” é válido.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 4 ===================================================== -->
+<section class="chapter" data-title="Diagramas Lógicos e Conjuntos">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 4</span>
+  <h1>Diagramas Lógicos e Conjuntos</h1>
+  <span class="emoji">⭕</span>
+  <div class="steps">
+    <div class="step"><b>1. Todo / Algum / Nenhum</b><span>Cada frase vira um desenho.</span></div>
+    <div class="step"><b>2. Testar conclusões</b><span>Só vale o que é verdade em <b>todos</b> os desenhos.</span></div>
+    <div class="step"><b>3. Contas com Venn</b><span>Preencher de dentro para fora.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🧸</span><div><b>Analogia do dia:</b> cada conjunto é uma <b>caixa de brinquedos</b>. “Todo A é B” = a caixa A está guardada <b>dentro</b> da caixa B. Desenhar as caixas resolve a questão sem decorar nada.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">TODO</span>
+  <h2>“Todo A é B”: A dentro de B</h2>
+  <div class="two">
+    <svg viewBox="0 0 300 220" role="img" aria-label="A dentro de B">
+      <ellipse cx="150" cy="110" rx="140" ry="100" style="fill:#2f6fdf;fill-opacity:.12;stroke:#2f6fdf;stroke-width:3"/>
+      <ellipse cx="130" cy="125" rx="65" ry="45" style="fill:#e8871a;fill-opacity:.25;stroke:#e8871a;stroke-width:3"/>
+      <text x="130" y="130" text-anchor="middle">A: juízes</text><text x="200" y="45" text-anchor="middle">B: bacharéis</text>
+    </svg>
+    <div><p class="kid">“Todo juiz é bacharel.”</p>
+      <div class="ex ok">Algum bacharel é juiz.</div>
+      <div class="ex ok">Quem não é bacharel não é juiz.</div>
+      <div class="ex ng">Todo bacharel é juiz.</div>
+      <div class="ex ng">Quem não é juiz não é bacharel.</div></div>
+  </div>
+  <div class="say law">Todo A é B: todo elemento de A pertence a B (A ⊂ B). Não diz nada sobre a parte de B fora de A.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">NENHUM</span>
+  <h2>“Nenhum A é B”: caixas separadas</h2>
+  <div class="two">
+    <svg viewBox="0 0 300 200" role="img" aria-label="A e B disjuntos">
+      <circle cx="80" cy="100" r="70" style="fill:#e8871a;fill-opacity:.25;stroke:#e8871a;stroke-width:3"/>
+      <circle cx="225" cy="100" r="70" style="fill:#2f6fdf;fill-opacity:.12;stroke:#2f6fdf;stroke-width:3"/>
+      <text x="80" y="105" text-anchor="middle">A: gatos</text><text x="225" y="105" text-anchor="middle">B: peixes</text>
+    </svg>
+    <div><p class="kid">“Nenhum gato é peixe.”</p>
+      <div class="ex ok">Nenhum peixe é gato (vale ao contrário!).</div>
+      <div class="ex ok">Algum gato não é peixe.</div>
+      <div class="ex ng">Algum gato é peixe.</div></div>
+  </div>
+  <div class="say law">Nenhum A é B: A e B não têm elemento comum (A ∩ B = ∅). A frase pode ser invertida: “nenhum B é A”.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ALGUM</span>
+  <h2>“Algum A é B” e “Algum A não é B”</h2>
+  <div class="two">
+    <div><svg viewBox="0 0 300 180" role="img" aria-label="interseção marcada">
+      <circle cx="115" cy="90" r="75" style="fill:#e8871a;fill-opacity:.2;stroke:#e8871a;stroke-width:3"/>
+      <circle cx="190" cy="90" r="75" style="fill:#2f6fdf;fill-opacity:.12;stroke:#2f6fdf;stroke-width:3"/>
+      <text x="75" y="95" text-anchor="middle">A</text><text x="230" y="95" text-anchor="middle">B</text>
+      <text x="152" y="98" text-anchor="middle" style="font-size:26px;fill:#2ea043">✖</text>
+    </svg><p class="mini"><b>Algum A é B:</b> há pelo menos um ✖ no meio.</p></div>
+    <div><svg viewBox="0 0 300 180" role="img" aria-label="elemento de A fora de B">
+      <circle cx="115" cy="90" r="75" style="fill:#e8871a;fill-opacity:.2;stroke:#e8871a;stroke-width:3"/>
+      <circle cx="190" cy="90" r="75" style="fill:#2f6fdf;fill-opacity:.12;stroke:#2f6fdf;stroke-width:3"/>
+      <text x="152" y="40" text-anchor="middle">A</text><text x="230" y="95" text-anchor="middle">B</text>
+      <text x="80" y="98" text-anchor="middle" style="font-size:26px;fill:#e5484d">✖</text>
+    </svg><p class="mini"><b>Algum A não é B:</b> há um ✖ em A, fora de B.</p></div>
+  </div>
+  <div class="say good">“Algum” = <b>pelo menos um</b>. Não proíbe que sejam todos! “Algum juiz é justo” continua V se todos forem justos.</div>
+  <div class="say law">Algum A é B ≡ Algum B é A (a interseção é a mesma). Já “Algum A não é B” <b>não</b> se inverte.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESOLVENDO</span>
+  <h2>Testando uma conclusão: desenhe TODOS os casos</h2>
+  <p>“Todo juiz é advogado. Algum advogado é professor.” Logo, <b>algum juiz é professor</b>?</p>
+  <svg viewBox="0 0 640 210" role="img" aria-label="dois desenhos possíveis">
+    <ellipse cx="160" cy="105" rx="150" ry="90" style="fill:#2f6fdf;fill-opacity:.1;stroke:#2f6fdf;stroke-width:3"/>
+    <ellipse cx="100" cy="110" rx="55" ry="40" style="fill:#e8871a;fill-opacity:.25;stroke:#e8871a;stroke-width:3"/>
+    <ellipse cx="270" cy="100" rx="70" ry="45" style="fill:#2ea043;fill-opacity:.15;stroke:#2ea043;stroke-width:3"/>
+    <text x="100" y="115" text-anchor="middle">juiz</text><text x="290" y="105" text-anchor="middle">prof.</text><text x="160" y="35" text-anchor="middle" class="small">advogado</text>
+    <text x="160" y="205" text-anchor="middle" style="fill:#e5484d">Desenho 1: nenhum juiz é professor</text>
+    <ellipse cx="480" cy="105" rx="150" ry="90" style="fill:#2f6fdf;fill-opacity:.1;stroke:#2f6fdf;stroke-width:3"/>
+    <ellipse cx="450" cy="110" rx="60" ry="40" style="fill:#e8871a;fill-opacity:.25;stroke:#e8871a;stroke-width:3"/>
+    <ellipse cx="530" cy="105" rx="70" ry="45" style="fill:#2ea043;fill-opacity:.15;stroke:#2ea043;stroke-width:3"/>
+    <text x="430" y="115" text-anchor="middle">juiz</text><text x="565" y="110" text-anchor="middle">prof.</text><text x="480" y="35" text-anchor="middle" class="small">advogado</text>
+    <text x="480" y="205" text-anchor="middle" style="fill:#2ea043">Desenho 2: algum juiz é professor</text>
+  </svg>
+  <div class="say bad">As premissas permitem o Desenho 1, no qual a conclusão é falsa. Então a conclusão <b>não decorre</b> (argumento inválido).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONJUNTOS</span>
+  <h2>União, interseção e diferença</h2>
+  <svg viewBox="0 0 640 170" role="img" aria-label="união, interseção e diferença">
+    <defs><clipPath id="cA1"><circle cx="300" cy="75" r="55"/></clipPath></defs>
+    <circle cx="80" cy="75" r="55" style="fill:#6d4aff;fill-opacity:.45"/><circle cx="135" cy="75" r="55" style="fill:#6d4aff;fill-opacity:.45"/>
+    <circle cx="80" cy="75" r="55" style="fill:none;stroke:#6d4aff;stroke-width:2"/><circle cx="135" cy="75" r="55" style="fill:none;stroke:#6d4aff;stroke-width:2"/>
+    <text x="108" y="160" text-anchor="middle">A ∪ B (“ou”)</text>
+    <circle cx="300" cy="75" r="55" style="fill:none;stroke:#6d4aff;stroke-width:2"/><circle cx="355" cy="75" r="55" style="fill:none;stroke:#6d4aff;stroke-width:2"/>
+    <circle cx="355" cy="75" r="55" clip-path="url(#cA1)" style="fill:#6d4aff;fill-opacity:.55"/>
+    <text x="328" y="160" text-anchor="middle">A ∩ B (“e”)</text>
+    <circle cx="520" cy="75" r="55" style="fill:#6d4aff;fill-opacity:.55;stroke:#6d4aff;stroke-width:2"/>
+    <circle cx="575" cy="75" r="55" style="fill:var(--bg);stroke:#6d4aff;stroke-width:2"/>
+    <text x="548" y="160" text-anchor="middle">A − B (“só A”)</text>
+  </svg>
+  <table class="cmp mini">
+    <tr><th>Símbolo</th><th>Lê-se</th><th>Exemplo: A = {1,2,3}, B = {3,4}</th></tr>
+    <tr><td>A ∪ B</td><td>está em A <b>ou</b> em B</td><td>{1, 2, 3, 4}</td></tr>
+    <tr><td>A ∩ B</td><td>está em A <b>e</b> em B</td><td>{3}</td></tr>
+    <tr><td>A − B</td><td>está em A, mas não em B</td><td>{1, 2}</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">FÓRMULA</span>
+  <h2>Por que n(A∪B) = n(A) + n(B) − n(A∩B)?</h2>
+  <div class="analogy"><span class="emoji">🎂</span><div>Contando quem gosta de bolo (25) e quem gosta de sorvete (18), quem gosta <b>dos dois</b> foi contado <b>duas vezes</b>. Por isso subtraímos a interseção uma vez.</div></div>
+  <p><b>Problema:</b> 40 pessoas; 25 falam inglês, 18 espanhol, 5 não falam nenhum. Quantas falam os dois?</p>
+  <div class="flow"><span>falam algum: 40 − 5 = 35</span><i>→</i><span>25 + 18 = 43</span><i>→</i><span>43 − 35 = <b>8</b> (contados 2×)</span></div>
+  <svg viewBox="0 0 640 190" role="img" aria-label="diagrama de Venn com 17, 8, 10 e 5">
+    <rect class="box" x="60" y="5" width="520" height="180" rx="14"/>
+    <circle cx="250" cy="95" r="80" style="fill:#e8871a;fill-opacity:.2;stroke:#e8871a;stroke-width:3"/>
+    <circle cx="370" cy="95" r="80" style="fill:#2f6fdf;fill-opacity:.15;stroke:#2f6fdf;stroke-width:3"/>
+    <text x="215" y="102" text-anchor="middle" style="font-size:22px">17</text><text x="310" y="102" text-anchor="middle" style="font-size:22px;fill:#2ea043">8</text><text x="405" y="102" text-anchor="middle" style="font-size:22px">10</text>
+    <text x="200" y="40" class="small">inglês 25</text><text x="380" y="40" class="small">espanhol 18</text>
+    <text x="530" y="170" text-anchor="middle" style="font-size:20px">5</text><text x="530" y="150" text-anchor="middle" class="small">nenhum</text>
+  </svg>
+  <p class="mini">Confere: 17 + 8 + 10 + 5 = 40 ✓</p>
+</div>
+
+<div class="slide">
+  <span class="tag">MÉTODO</span>
+  <h2>Preencha sempre de DENTRO para FORA</h2>
+  <div class="steps">
+    <div class="step"><b>① Meio</b><span>Comece pela interseção (quem está em todos).</span></div>
+    <div class="step"><b>② Pares</b><span>Interseções de dois, <b>menos</b> o meio.</span></div>
+    <div class="step"><b>③ “Só”</b><span>Total do conjunto menos tudo o que já está dentro dele.</span></div>
+    <div class="step"><b>④ Fora</b><span>Universo menos a soma de todas as regiões.</span></div>
+  </div>
+  <div class="say trap">
+    <p>“25 falam inglês” <b>não</b> significa “25 falam <u>só</u> inglês”.</p>
+    <div class="ex ng">Só inglês = 25.</div>
+    <div class="ex ok">Só inglês = 25 − 8 = 17.</div>
+  </div>
+  <div class="say law">n(A ∪ B) = n(A) + n(B) − n(A ∩ B).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESOLVENDO</span>
+  <h2>Três conjuntos, passo a passo</h2>
+  <p class="mini">100 alunos: A 50, B 40, C 30; A∩B 15, A∩C 10, B∩C 8; os três 5. Quantos em <b>nenhum</b>?</p>
+  <div class="two">
+    <svg viewBox="0 0 330 280" role="img" aria-label="Venn de três conjuntos preenchido">
+      <circle cx="120" cy="100" r="85" style="fill:#e8871a;fill-opacity:.18;stroke:#e8871a;stroke-width:3"/>
+      <circle cx="210" cy="100" r="85" style="fill:#2f6fdf;fill-opacity:.14;stroke:#2f6fdf;stroke-width:3"/>
+      <circle cx="165" cy="180" r="85" style="fill:#2ea043;fill-opacity:.14;stroke:#2ea043;stroke-width:3"/>
+      <text x="40" y="30">A</text><text x="285" y="30">B</text><text x="250" y="270">C</text>
+      <text x="85" y="95" text-anchor="middle">30</text><text x="245" y="95" text-anchor="middle">22</text><text x="165" y="235" text-anchor="middle">17</text>
+      <text x="165" y="80" text-anchor="middle">10</text><text x="115" y="170" text-anchor="middle">5</text><text x="215" y="170" text-anchor="middle">3</text>
+      <text x="165" y="140" text-anchor="middle" style="font-size:20px;fill:#6d4aff">5</text>
+    </svg>
+    <div class="calc">① meio = 5<br>② A∩B só: 15−5 = 10<br>&nbsp;&nbsp;&nbsp;A∩C só: 10−5 = 5<br>&nbsp;&nbsp;&nbsp;B∩C só: 8−5 = 3<br>③ só A: 50−10−5−5 = 30<br>&nbsp;&nbsp;&nbsp;só B: 40−10−3−5 = 22<br>&nbsp;&nbsp;&nbsp;só C: 30−5−3−5 = 17<br>④ soma = 92 → nenhum = <b>8</b></div>
+  </div>
+  <p class="mini">Fórmula confere: 50+40+30−15−10−8+5 = 92.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Cola de bolso do capítulo</h2>
+  <div class="magic">Desenhe o caso que <u>derruba</u> a conclusão. Se conseguir, ela não decorre.<small>Nas contas: meio → pares → “só” → fora.</small></div>
+  <ul class="checklist">
+    <li>Todo A é B: A dentro de B (não se inverte).</li>
+    <li>Nenhum A é B: separados (pode inverter).</li>
+    <li>Algum = pelo menos um (pode ser todos).</li>
+    <li>n(A∪B) = n(A) + n(B) − n(A∩B).</li>
+    <li>“Falam inglês” inclui quem fala os dois.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Mostre que aprendeu</h2>
+  <details><summary>1) “Todo analista é graduado.” Então é correto: “Todo graduado é analista”?</summary><p><span class="pill ng">Não</span> A está dentro de B; pode haver graduado fora de A.</p></details>
+  <details><summary>2) “Nenhum técnico é juiz” e “Algum servidor é técnico”. Conclui-se que…</summary><p><span class="pill ok">Algum servidor não é juiz.</span> O servidor que é técnico, com certeza, não é juiz.</p></details>
+  <details><summary>3) Em 60 pessoas, 35 leem jornal, 30 leem revista e 10 leem os dois. Quantas não leem nada?</summary><p><span class="pill ok">5</span> Leem algo: 35 + 30 − 10 = 55. Nenhum: 60 − 55 = 5.</p></details>
+  <details><summary>4) No problema anterior, quantas leem <u>só</u> jornal?</summary><p><span class="pill ok">25</span> 35 − 10 = 25.</p></details>
+</div>
+
+</section>
+
+<!--NEXT-->
+
+<script src="aula.js"></script></body></html>
