@@ -1004,6 +1004,24 @@ cv.addEventListener('click',e=>{
 // ---------- controles móveis ----------
 if('ontouchstart' in window||navigator.maxTouchPoints>0)document.body.classList.add('is-touch');
 addEventListener('touchstart',()=>document.body.classList.add('is-touch'),{once:true,passive:true});
+(function(){
+  const tg=document.getElementById('mtoggle'),mc=document.getElementById('mctrl');
+  const pref=localStorage.getItem('tjpbquest_ctrl');
+  if(pref==='on')document.body.classList.add('force-ctrl');
+  else if(pref==='off')document.body.classList.add('hide-ctrl');
+  if(!tg||!mc)return;
+  const label=()=>{tg.textContent=getComputedStyle(mc).display==='none'?'🎮 Mostrar controles':'🎮 Esconder'};
+  tg.addEventListener('click',e=>{
+    e.stopPropagation();
+    const visible=getComputedStyle(mc).display!=='none';
+    document.body.classList.toggle('hide-ctrl',visible);
+    document.body.classList.toggle('force-ctrl',!visible);
+    localStorage.setItem('tjpbquest_ctrl',visible?'off':'on');
+    label();
+  });
+  addEventListener('resize',label);
+  label();
+})();
 const DIR_KEY={up:'ArrowUp',down:'ArrowDown',left:'ArrowLeft',right:'ArrowRight'};
 document.querySelectorAll('#mctrl [data-dir]').forEach(btn=>{
   const d=btn.dataset.dir;
