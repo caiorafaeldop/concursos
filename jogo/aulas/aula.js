@@ -45,16 +45,20 @@
   top.appendChild(el('span', 'au-sub', '📚 ' + subjTitle));
   top.appendChild(el('span', 'au-ch', 'Cap. ' + (ci + 1) + ' · ' + (chap.getAttribute('data-title') || '')));
   var count = el('span', 'au-count'); top.appendChild(count);
-  var close = el('button', 'au-btn', '✖ Fechar'); close.title = 'Esc';
-  close.onclick = function () { if (embed) post({ type: 'aula-close' }); else location.hash = ''; if (!embed) location.reload(); };
+  var close = el('button', 'au-btn au-close', '✖ Fechar'); close.title = 'Esc'; close.type = 'button';
+  close.onclick = function (e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    if (embed) post({ type: 'aula-close' });
+    else { location.hash = ''; location.reload(); }
+  };
   top.appendChild(close);
   var prog = el('div', 'au-progress', '<i></i>');
   var stage = el('div', 'au-stage');
   chap.parentNode.removeChild(chap); stage.appendChild(chap);
   var bottom = el('div', 'au-bottom');
-  var prev = el('button', 'au-btn', '← Voltar');
+  var prev = el('button', 'au-btn au-prev', '← Voltar'); prev.type = 'button';
   var dots = el('div', 'au-dots');
-  var next = el('button', 'au-btn primary', 'Próximo →');
+  var next = el('button', 'au-btn primary au-next', 'Próximo →'); next.type = 'button';
   bottom.appendChild(prev); bottom.appendChild(dots); bottom.appendChild(next);
   body.appendChild(top); body.appendChild(prog); body.appendChild(stage); body.appendChild(bottom);
   slides.forEach(function (s, i) { var d = el('b'); d.title = 'Slide ' + (i + 1); d.onclick = function () { go(i); }; dots.appendChild(d); });
@@ -75,20 +79,33 @@
     Array.prototype.forEach.call(dots.children, function (d, j) { d.className = j === cur ? 'on' : (seen[j] ? 'seen' : ''); });
     prev.disabled = cur === 0; prev.style.visibility = cur === 0 ? 'hidden' : 'visible';
     var last = cur === slides.length - 1;
-    next.className = last ? 'au-btn go' : 'au-btn primary';
-    next.textContent = last ? (embed ? '✏️ Terminei! Ir para o treino' : (ci + 1 < chapters.length ? 'Próximo capítulo →' : 'Voltar ao índice')) : 'Próximo →';
+    next.className = last ? 'au-btn go au-next' : 'au-btn primary au-next';
+    next.textContent = last ? (embed ? '✏️ Ir p/ treino' : (ci + 1 < chapters.length ? 'Próximo cap. →' : 'Voltar ao índice')) : 'Próximo →';
   }
-  prev.onclick = function () { go(cur - 1); };
-  next.onclick = function () { if (cur === slides.length - 1) finish(); else go(cur + 1); };
+  prev.onclick = function (e) { if (e) e.stopPropagation(); go(cur - 1); };
+  next.onclick = function (e) { if (e) e.stopPropagation(); if (cur === slides.length - 1) finish(); else go(cur + 1); };
   document.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowRight' || e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey)) { e.preventDefault(); next.onclick(); }
     else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(cur - 1); }
     else if (e.key === 'Escape') { close.onclick(); }
     else if (e.key === 'Home') go(0);
   });
-  var sx = null;
-  stage.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; }, { passive: true });
-  stage.addEventListener('touchend', function (e) { if (sx == null) return; var dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 60) { dx < 0 ? next.onclick() : go(cur - 1); } sx = null; });
+  var sx = null, sy = null;
+  stage.addEventListener('touchstart', function (e) {
+    if (e.touches && e.touches.length === 1) {
+      sx = e.touches[0].clientX;
+      sy = e.touches[0].clientY;
+    }
+  }, { passive: true });
+  stage.addEventListener('touchend', function (e) {
+    if (sx == null || sy == null || !e.changedTouches || !e.changedTouches.length) return;
+    var dx = e.changedTouches[0].clientX - sx;
+    var dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+      dx < 0 ? next.onclick() : go(cur - 1);
+    }
+    sx = null; sy = null;
+  });
   go(0);
   window.focus();
 })();

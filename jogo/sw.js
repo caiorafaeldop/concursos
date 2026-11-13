@@ -1,4 +1,4 @@
-const CACHE = 'tjpb-quest-v5';
+const CACHE = 'tjpb-quest-v6';
 const ASSETS = [
   './',
   './index.html',

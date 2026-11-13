@@ -76,7 +76,7 @@ function transition(kind,mid,done){
 }
 const $style=document.createElement('style');
 $style.textContent=`
-#modal{position:absolute;inset:0;display:none;background:#000b;z-index:30;align-items:center;justify-content:center;pointer-events:auto}
+#modal{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;display:none;background:rgba(12,16,32,.85);z-index:999990;align-items:center;justify-content:center;pointer-events:auto;box-sizing:border-box;padding:12px}
 .mbox{background:#f8f8f0;border:5px solid #384060;border-radius:12px;padding:14px 18px;max-width:86%;max-height:88%;overflow:auto;color:#202030;font-size:16px;min-width:420px}
 .mbox h2{margin:0 0 8px;font-size:22px}
 .mbox .hint{font-size:13px;opacity:.7;margin-top:8px}
@@ -109,10 +109,11 @@ $style.textContent=`
 .bigmsg small{font-size:20px;color:#fff;text-shadow:2px 2px #000}
 `;
 document.head.appendChild($style);
-const modal=document.createElement('div');modal.id='modal';screenEl.appendChild(modal);
+const modal=document.createElement('div');modal.id='modal';document.body.appendChild(modal);
+modal.addEventListener('click',e=>{if(e.target===modal)closeModal()});
 const aulaFrame=document.createElement('iframe');aulaFrame.id='aula';aulaFrame.title='Aula';
-aulaFrame.style.cssText='position:absolute;inset:0;width:100%;height:100%;border:0;display:none;z-index:40;background:#fffaf0';
-screenEl.appendChild(aulaFrame);
+aulaFrame.style.cssText='position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;border:0;display:none;z-index:999999;background:#fffaf0';
+document.body.appendChild(aulaFrame);
 let aulaCtx=null;
 function openAula(tid,ci){
   aulaCtx={tid,ci};mode='aula';keys={};sfx('confirm');
@@ -120,6 +121,7 @@ function openAula(tid,ci){
   aulaFrame.onload=()=>{try{aulaFrame.contentWindow.focus()}catch(e){}};
 }
 function closeAula(){aulaFrame.style.display='none';aulaFrame.src='about:blank';mode=worldMode();window.focus();updateHud()}
+window.openAula=openAula;window.closeAula=closeAula;
 window.addEventListener('message',e=>{
   const d=e.data;if(!d||d.source!=='aula'||!aulaCtx)return;
   const c=aulaCtx;
