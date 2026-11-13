@@ -989,11 +989,37 @@ cv.addEventListener('click',e=>{
   const pr=PROPS.find(p=>p.type==='libsign'&&p.x===tx&&p.y===ty);
   if(pr){e.stopPropagation();showLibSign(pr.b)}
 });
+// ---------- controles móveis ----------
+if('ontouchstart' in window||navigator.maxTouchPoints>0)document.body.classList.add('is-touch');
+addEventListener('touchstart',()=>document.body.classList.add('is-touch'),{once:true,passive:true});
+const DIR_KEY={up:'ArrowUp',down:'ArrowDown',left:'ArrowLeft',right:'ArrowRight'};
+document.querySelectorAll('#mctrl [data-dir]').forEach(btn=>{
+  const d=btn.dataset.dir;
+  const press=e=>{
+    e.preventDefault();e.stopPropagation();
+    btn.classList.add('on');
+    if(mode==='world'||mode==='room')keys[d]=true;
+    else dispatchEvent(new KeyboardEvent('keydown',{key:DIR_KEY[d]}));
+  };
+  const rel=e=>{e.preventDefault();btn.classList.remove('on');keys[d]=false};
+  btn.addEventListener('pointerdown',press);
+  btn.addEventListener('pointerup',rel);
+  btn.addEventListener('pointercancel',rel);
+  btn.addEventListener('pointerleave',rel);
+});
+document.querySelectorAll('#mctrl [data-key]').forEach(btn=>{
+  btn.addEventListener('pointerdown',e=>{
+    e.preventDefault();e.stopPropagation();
+    dispatchEvent(new KeyboardEvent('keydown',{key:btn.dataset.key}));
+  });
+  btn.addEventListener('click',e=>e.stopPropagation());
+});
 
 // ---------- update ----------
 function camX(){return Math.round(Math.max(0,Math.min(MW*T-VW,P.px+8-VW/2)))}
 function camY(){return Math.round(Math.max(0,Math.min(MH*T-VH,P.py+8-VH/2)))}
 function update(dt){
+  if(document.body.dataset.mode!==mode)document.body.dataset.mode=mode;
   tNow+=dt;tickDialog();
   fx('update',dt);
   if(mode==='title')return;
