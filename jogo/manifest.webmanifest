@@ -1,0 +1,16 @@
+{
+  "name": "TJPB Quest — Estudo Interativo",
+  "short_name": "TJPB Quest",
+  "description": "RPG de estudos para o concurso TJPB 2026 (Analista Judiciário — TI)",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#1b1b2b",
+  "theme_color": "#1f2c6b",
+  "orientation": "any",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

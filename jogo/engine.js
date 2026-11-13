@@ -1023,20 +1023,44 @@ addEventListener('touchstart',()=>document.body.classList.add('is-touch'),{once:
   label();
 })();
 const DIR_KEY={up:'ArrowUp',down:'ArrowDown',left:'ArrowLeft',right:'ArrowRight'};
-document.querySelectorAll('#mctrl [data-dir]').forEach(btn=>{
-  const d=btn.dataset.dir;
-  const press=e=>{
-    e.preventDefault();e.stopPropagation();
-    btn.classList.add('on');
+// D-pad estilo "marchinha": segura e arrasta o dedo entre as setas sem soltar
+(function(){
+  const pad=document.querySelector('#mctrl .dpad');if(!pad)return;
+  const btns={};pad.querySelectorAll('[data-dir]').forEach(b=>btns[b.dataset.dir]=b);
+  let pid=null,cur=null,rep=0;
+  function setDir(d){
+    if(d===cur)return;
+    if(cur){keys[cur]=false;btns[cur].classList.remove('on')}
+    cur=d;clearInterval(rep);
+    if(!d)return;
+    btns[d].classList.add('on');
+    if(navigator.vibrate)try{navigator.vibrate(8)}catch(e){}
     if(mode==='world'||mode==='room')keys[d]=true;
-    else dispatchEvent(new KeyboardEvent('keydown',{key:DIR_KEY[d]}));
-  };
-  const rel=e=>{e.preventDefault();btn.classList.remove('on');keys[d]=false};
-  btn.addEventListener('pointerdown',press);
-  btn.addEventListener('pointerup',rel);
-  btn.addEventListener('pointercancel',rel);
-  btn.addEventListener('pointerleave',rel);
-});
+    else{
+      dispatchEvent(new KeyboardEvent('keydown',{key:DIR_KEY[d]}));
+      rep=setInterval(()=>{if(cur===d&&mode!=='world'&&mode!=='room')dispatchEvent(new KeyboardEvent('keydown',{key:DIR_KEY[d]}))},260);
+    }
+  }
+  function dirAt(e){
+    const r=pad.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2);
+    if(Math.hypot(dx,dy)<r.width*0.12)return cur; // zona morta no centro: mantém a direção atual
+    return Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up');
+  }
+  pad.addEventListener('pointerdown',e=>{
+    e.preventDefault();e.stopPropagation();
+    pid=e.pointerId;try{pad.setPointerCapture(pid)}catch(_){}
+    setDir(dirAt(e)||null);
+  });
+  pad.addEventListener('pointermove',e=>{if(e.pointerId!==pid)return;e.preventDefault();setDir(dirAt(e))});
+  const end=e=>{if(e.pointerId!==pid)return;pid=null;setDir(null)};
+  pad.addEventListener('pointerup',end);
+  pad.addEventListener('pointercancel',end);
+  pad.addEventListener('lostpointercapture',end);
+  pad.addEventListener('click',e=>e.stopPropagation());
+  pad.addEventListener('contextmenu',e=>e.preventDefault());
+  // mantém andando quando o modo volta para world/room com o dedo ainda no D-pad
+  setInterval(()=>{if(cur&&(mode==='world'||mode==='room'))keys[cur]=true},120);
+})();
 document.querySelectorAll('#mctrl [data-key]').forEach(btn=>{
   btn.addEventListener('pointerdown',e=>{
     e.preventDefault();e.stopPropagation();
