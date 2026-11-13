@@ -87,6 +87,14 @@
   zin.onclick = function (e) { if (e) e.stopPropagation(); setZoom(zoomLevel + 0.25); };
   zbadge.onclick = function (e) { if (e) e.stopPropagation(); setZoom(1.0); };
 
+  var fontesBtn = el('button', 'au-btn au-fontes', '🏛️ Fontes'); fontesBtn.title = 'Acervo Oficial na íntegra (F)'; fontesBtn.type = 'button';
+  fontesBtn.onclick = function (e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    if (embed) post({ type: 'aula-fontes' });
+    else location.href = '../fontes.html';
+  };
+  top.appendChild(fontesBtn);
+
   var close = el('button', 'au-btn au-close', '✖ Fechar'); close.title = 'Esc'; close.type = 'button';
   close.onclick = function (e) {
     if (e) { e.preventDefault(); e.stopPropagation(); }

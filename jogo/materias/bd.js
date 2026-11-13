@@ -19,7 +19,8 @@ window.MATERIAS['bd'] = {
       'WHERE filtra linhas antes de agrupar; HAVING filtra grupos depois. COUNT(*) conta NULL; COUNT(col) não.',
       'TRUNCATE é DDL, GRANT é DCL, COMMIT é TCL. E NOT IN com NULL na lista não devolve nada!',
       'Função na coluna, LIKE com % no início e coluna fora do prefixo do índice composto matam o índice.',
-      'Embedding põe significados parecidos perto. HNSW é busca aproximada (ANN): rápida, mas sem garantia exata.'
+      'Embedding põe significados parecidos perto. HNSW é busca aproximada (ANN): rápida, mas sem garantia exata.',
+      'BI/DW: OLTP normaliza p/ transação; OLAP desnormaliza em Star Schema (fato + dimensões) p/ análise. ETL transforma antes; ELT carrega no Lakehouse e transforma depois!'
     ] }
   ],
   boss: {
@@ -145,6 +146,36 @@ window.MATERIAS['bd'] = {
           { q: 'Sobre bancos vetoriais, assinale a correta.',
             options: ['A busca é feita por igualdade exata de texto', 'kNN exato e ANN sempre retornam o mesmo resultado', 'Embeddings só podem ter duas dimensões', 'pgvector não permite uso de SQL', 'A busca retorna os vetores mais próximos do vetor de consulta segundo uma métrica de similaridade'],
             answer: 4, explain: 'Busca vetorial é por similaridade (top-k). ANN pode diferir do exato; embeddings têm centenas de dimensões; pgvector é extensão do PostgreSQL usada via SQL.' }
+        ] },
+      { title: 'Business Intelligence, Data Warehouse, OLAP e Modelagem Dimensional',
+        pages: [
+          'OLTP vs OLAP (Data Warehouse de Inmon vs Data Marts de Kimball):\n• OLTP (transacional): muitas escritas curtas, dados atuais, alta normalização (3FN) para evitar anomalias.\n• OLAP / DW (analítico): consultas pesadas de leitura/agregação, dados históricos (não volátil, variante no tempo, integrado, orientado a assuntos — definição clássica de Inmon), desnormalizado.\n• Data Mart: subconjunto departamental do DW (ex.: Varas Cíveis ou RH).',
+          'Modelagem Dimensional (Star Schema vs Snowflake):\n• Tabela Fato: centro da estrela, guarda métricas numéricas aditivas/semi-aditivas e FKs para dimensões (ex.: qtd_processos, valor_custas).\n• Dimensões: contexto descritivo (Tempo, Comarca, Magistrado, Classe).\n• Star Schema (Esquema Estrela): dimensões desnormalizadas em 1 tabela cada → menos JOINs e queries mais rápidas!\n• Snowflake (Floco de Neve): normaliza as dimensões em sub-tabelas → economiza espaço, exige mais JOINs.',
+          'Operações OLAP e ETL vs ELT:\n• Drill-down (detalhar: ano→mês→dia) / Roll-up (agregar: dia→mês) · Slice (fatiar 1 dimensão) / Dice (recortar cubo em várias dimensões) · Pivot (rotacionar eixos).\n• ETL (Extract → Transform → Load): transforma em servidor intermediário antes de gravar no DW estruturado.\n• ELT (Extract → Load → Transform): carrega dados brutos primeiro (Data Lake / Lakehouse) e transforma sob demanda com o poder do próprio cluster.'
+        ],
+        tip: 'Star Schema = dimensões desnormalizadas (menos JOINs!). Drill-down = descer ao detalhe; Roll-up = subir/agregar.',
+        quiz: [
+          { q: 'Em modelagem dimensional de Data Warehouse, comparando o Esquema Estrela (Star Schema) ao Floco de Neve (Snowflake), o Star Schema diferencia-se por:',
+            options: ['Manter as tabelas de dimensão desnormalizadas, reduzindo a quantidade de JOINs em consultas analíticas.', 'Exigir normalização até a 5FN em todas as dimensões.', 'Eliminar completamente a tabela fato.', 'Armazenar apenas logs operacionais em tempo real sem histórico.', 'Substituir SQL exclusivamente por consultas em grafos Cypher.'],
+            answer: 0, explain: 'Star Schema desnormaliza as dimensões (menos JOINs, consultas OLAP mais rápidas). Snowflake normaliza as dimensões em hierarquias, economizando espaço às custas de mais JOINs.' },
+          { q: 'Ao analisar o painel de produtividade do tribunal, o gestor parte do total anual por região e desce para visualizar mês a mês por comarca. Essa operação OLAP é chamada de:',
+            options: ['Roll-up', 'Drill-down', 'Pivot', 'TRUNCATE', 'VACUUM'],
+            answer: 1, explain: 'Descer na hierarquia de granularidade (ano → mês → dia) é Drill-down. O caminho inverso (agregar do detalhe para o resumo) é Roll-up.' }
+        ] },
+      { title: 'Governança de Dados (DMBOK), Data Lake e Dialetos SQL',
+        pages: [
+          'Governança de Dados (DAMA-DMBOK) & Arquiteturas:\n• Data Steward (curador): zela pela qualidade, definição e conformidade dos dados do domínio.\n• Metadados (técnicos, de negócio e operacionais) + Linhagem de Dados (origem até consumo) + Catálogo de Dados.\n• Data Lake: armazena dados estruturados, semiestruturados e não estruturados no formato nativo (schema-on-read).\n• Data Lakehouse: une governança/ACID transacional de DW sobre armazenamento barato de Data Lake (Delta Lake/Iceberg).',
+          'Dialetos SQL cobrados no Edital (PostgreSQL, Oracle, MySQL, SQL Server):\n• Limitação de linhas: PostgreSQL/MySQL usam LIMIT n; Oracle 12c+ / SQL Server padrão usam FETCH FIRST n ROWS ONLY (SQL Server legado também usa TOP n).\n• Concatenação de strings: PostgreSQL e Oracle usam ||; SQL Server usa + / CONCAT(); MySQL exige PIPES_AS_CONCAT para || (padrão é OR lógico!).\n• Autoincremento: PostgreSQL (SERIAL / GENERATED ALWAYS AS IDENTITY); MySQL (AUTO_INCREMENT); SQL Server (IDENTITY); Oracle 12c+ (GENERATED ... AS IDENTITY / SEQUENCE).',
+          'Recursos modernos de prova:\n• CTE (WITH cte AS (...)) e CTE Recursiva para hierarquias organizacionais.\n• Window Functions: ROW_NUMBER(), RANK(), DENSE_RANK(), LAG(), LEAD() com OVER (PARTITION BY ... ORDER BY ...) — NÃO reduzem linhas como GROUP BY!\n• PostgreSQL específico: MVCC com VACUUM para limpar tuplas mortas, JSONB indexável com GIN.'
+        ],
+        tip: 'Schema-on-write = DW tradicional. Schema-on-read = Data Lake. Window Function (OVER) mantém todas as linhas!',
+        quiz: [
+          { q: 'Qual característica distingue um Data Lake tradicional de um Data Warehouse corporativo clássico?',
+            options: ['O Data Lake armazena dados brutos estruturados, semiestruturados e não estruturados aplicando esquema na leitura (schema-on-read).', 'O Data Lake aceita apenas tabelas estritamente normalizadas na 3FN.', 'O Data Warehouse utiliza exclusivamente schema-on-read em arquivos Parquet sem modelo definido.', 'O Data Lake proíbe armazenamento em nuvem orientada a objetos.', 'O Data Warehouse é sempre um banco NoSQL chave-valor.'],
+            answer: 0, explain: 'Data Warehouse aplica schema-on-write com dados estruturados e limpos na carga; Data Lake aceita diversos formatos brutos com schema-on-read.' },
+          { q: 'Em SQL analítico nos principais SGBDs (PostgreSQL, Oracle, SQL Server, MySQL 8+), ao usar SUM(valor) OVER (PARTITION BY vara ORDER BY data), o resultado:',
+            options: ['Agrupa e reduz a saída para apenas uma linha por vara.', 'Calcula a soma acumulada/particionada preservando todas as linhas originais da consulta.', 'Gera erro por falta da cláusula HAVING.', 'Executa commit implícito na transação.', 'Equivale exatamente a TRUNCATE TABLE.'],
+            answer: 1, explain: 'Funções de janela (Window Functions com OVER) calculam métricas sobre partições sem colapsar as linhas como faz o GROUP BY.' }
         ] }
     ]
   }

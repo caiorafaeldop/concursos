@@ -12,18 +12,18 @@ window.TOPICS.push({ id:"logica", name:"Casa da Lógica", color:"#5a8fe8", npcs:
     "Condicional p→q só é F quando p é V e q é F. Nos demais casos é V.",
     "Bicondicional p↔q é V quando p e q têm o mesmo valor. Tautologia: sempre V."
   ]},
-  {name:"Fiscal Regra de Três", lines:[
-    "Porcentagem: aumento de 20% multiplica por 1,20. Desconto de 20% multiplica por 0,80.",
-    "Regra de três direta: grandezas crescem juntas. Inversa: uma sobe, a outra cai.",
-    "Inversa: 6 técnicos fazem em 4 dias. Com 12, o tempo cai: 6x4/12 = 2 dias.",
-    "Probabilidade = casos favoráveis / casos possíveis. Evento complementar: 1 - P."
+  {name:"Inspetor Verdade", lines:[
+    "Verdades e Mentiras: teste hipóteses (se A fala a verdade, há contradição nas outras falas?); apenas uma hipótese fecha 100%.",
+    "Associação lógica: monte uma tabela pessoas × profissões/cidades e vá marcando ✓ e ✗ por eliminação.",
+    "Contrapositiva de p→q é ~q→~p (equivalente lógica!). Recíproca (q→p) e inversa (~p→~q) NÃO são equivalentes.",
+    "Sequências lógicas podem misturar letras (alfabeto), posições espaciais, ciclos de dias ou duas sequências intercaladas."
   ]}
 ], boss:{name:"Prof. Raciocínio", intro:"Pense antes de responder! Quem cai em pegadinha de lógica não passa na minha banca.", questions:[
   {q:"A negação da proposição 'Todo servidor do tribunal é pontual' é:", options:["Nenhum servidor do tribunal é pontual","Todo servidor do tribunal não é pontual","Algum servidor do tribunal não é pontual","Algum servidor do tribunal é pontual"], answer:2, explain:"A negação de 'Todo A é B' é 'Algum A não é B'. A letra A é contrária (forte demais), não negação. A B repete a ideia de 'nenhum'. A D é compatível com a original, logo não a nega."},
   {q:"A proposição 'Se o processo é distribuído, então o juiz o analisa' é FALSA quando:", options:["o processo não é distribuído e o juiz o analisa","o processo é distribuído e o juiz não o analisa","o processo não é distribuído e o juiz não o analisa","o processo é distribuído e o juiz o analisa"], answer:1, explain:"A condicional p→q só é falsa com antecedente verdadeiro e consequente falso: distribuído (V) e juiz não analisa (F). Nas outras três combinações a condicional é verdadeira."},
-  {q:"Um técnico recebe salário de R$ 2.500,00 e tem aumento de 12%. O novo salário é:", options:["R$ 2.800,00","R$ 2.750,00","R$ 2.900,00","R$ 2.600,00"], answer:0, explain:"12% de 2.500 = 0,12 x 2.500 = 300. Novo salário: 2.500 + 300 = 2.800 (ou 2.500 x 1,12). As demais correspondem a aumentos de 10%, 16% e 4%, respectivamente."},
-  {q:"Seis servidores concluem uma tarefa em 4 dias, com o mesmo ritmo. Em quantos dias 8 servidores a concluiriam?", options:["2 dias","4 dias","5 dias","3 dias"], answer:3, explain:"Grandezas inversamente proporcionais: mais servidores, menos dias. 6 x 4 = 24 servidores-dia; 24 / 8 = 3 dias. Resposta 2 ou 5 ignora a proporção; 4 dias seria manter o mesmo número de servidores."},
-  {q:"Uma urna tem 5 bolas vermelhas, 3 azuis e 2 verdes. Sorteando uma bola ao acaso, a probabilidade de NÃO ser azul é:", options:["3/10","1/2","7/10","4/5"], answer:2, explain:"Total = 10 bolas. Não azuis = 5 + 2 = 7, logo 7/10. Também: 1 - 3/10 = 7/10. A letra A (3/10) é a probabilidade de ser azul; 1/2 e 4/5 não correspondem a nenhuma contagem."},
+  {q:"Uma afirmação logicamente EQUIVALENTE a 'Se chove, então levo guarda-chuva' é:", options:["Se não chove, então não levo guarda-chuva","Se não levo guarda-chuva, então não chove","Se levo guarda-chuva, então chove","Chove e não levo guarda-chuva"], answer:1, explain:"A contrapositiva (~q→~p) mantém sempre os mesmos valores lógicos de p→q. Inversa (~p→~q) e recíproca (q→p) não são equivalentes; 'chove e não levo' é a negação."},
+  {q:"Sabe-se que 'Todo analista do TJPB tem diploma' e 'Nenhum técnico é analista'. Conclui-se validamente que:", options:["Nenhum técnico tem diploma","Todo técnico tem diploma","Quem não tem diploma não é analista do TJPB","Algum técnico é analista do TJPB"], answer:2, explain:"De 'Todo A é B' vale a contrapositiva 'Quem não é B não é A' (contraposição em diagramas). Não é possível concluir se técnicos têm ou não diploma."},
+  {q:"Três colegas (Ana, Bruno e Carla) têm cores favoritas azul, verde e amarela. Ana não gosta de azul nem verde. Bruno não gosta de verde. Logo, Bruno e Carla gostam, respectivamente, de:", options:["azul e verde","verde e azul","amarela e azul","azul e amarela"], answer:0, explain:"Por eliminação em tabela: Ana só pode gostar de amarela. Sobram azul e verde; como Bruno não gosta de verde, Bruno fica com azul e Carla com verde."},
   {q:"A negação de 'Ana é juíza ou Beto é técnico' é:", options:["Ana não é juíza ou Beto não é técnico","Ana não é juíza e Beto não é técnico","Ana é juíza e Beto é técnico","Ana é juíza e Beto não é técnico"], answer:1, explain:"Pela Lei de De Morgan, ~(p∨q) = ~p∧~q: nega-se cada parte e troca 'ou' por 'e'. A letra A mantém o 'ou' (erro comum). C e D não negam as duas partes."}
 ]} });
 

@@ -1,0 +1,769 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LGPD na Prática e na Prova — aulas visuais</title>
+<link rel="stylesheet" href="aula.css?v=7">
+<style>
+pre{background:#1e2230;color:#e8eaf2;border-radius:12px;padding:10px 14px;font:14px/1.45 ui-monospace,Consolas,monospace;overflow-x:auto;margin:8px 0;white-space:pre}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+pre mark{background:#ffd84d;color:#2a2100}
+pre .c{color:#8fd19e}
+.mini{font-size:15px}
+.mini td,.mini th{font-size:15px}
+svg .mono{font:500 13px ui-monospace,Consolas,monospace;fill:var(--ink)}
+svg line,svg path.l{stroke:var(--muted);stroke-width:2;fill:none}
+svg .dash{stroke-dasharray:6 4}
+svg .acc{stroke:var(--acc)}
+svg .okl{stroke:var(--ok)}
+svg .badl{stroke:var(--bad)}
+</style>
+</head>
+<body data-subject="lgpd" data-title="LGPD na Prática e na Prova">
+
+<svg width="0" height="0" style="position:absolute;width:0;height:0;margin:0;overflow:hidden" aria-hidden="true">
+  <defs>
+    <marker id="ar" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker>
+    <marker id="arg" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8a93a6"/></marker>
+    <marker id="arok" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2ea043"/></marker>
+    <marker id="arbad" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e5484d"/></marker>
+  </defs>
+</svg>
+
+<!-- ===================================================== CAPÍTULO 1 ===================================================== -->
+<section class="chapter" data-title="Fundamentos, Papéis e os 10 Princípios (Arts. 1º–6º)">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 1</span>
+  <h1>Fundamentos, Papéis e os 10 Princípios (Arts. 1º–6º)</h1>
+  <span class="emoji">⚖️</span>
+  <div class="steps">
+    <div class="step"><b>1. Onde se aplica</b><span>Territorialidade, exceções do art. 4º e pessoa natural.</span></div>
+    <div class="step"><b>2. Tipos de dado</b><span>Pessoal, sensível, anonimizado e pseudoanonimizado.</span></div>
+    <div class="step"><b>3. Agentes</b><span>Controlador, operador e encarregado (DPO).</span></div>
+    <div class="step"><b>4. Os 10 Princípios</b><span>Art. 6º cobrado direto em objetiva e discursiva.</span></div>
+  </div>
+  <div class="analogy">
+    <span class="emoji">🪪</span>
+    <div><b>Para a vida e para a prova:</b> você pode ler a Lei nº 13.709/2018 inteira no <b>Acervo Oficial (tecla F no mapa)</b> sempre que precisar conferir um artigo na íntegra.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">ESCOPO E APLICAÇÃO</span>
+  <h2>Quando a LGPD manda? (Arts. 1º, 3º e 4º)</h2>
+  <p>Protege os direitos fundamentais de liberdade, privacidade e livre desenvolvimento da <b>pessoa natural</b> (viva). Pessoa jurídica não é "titular" de dados na LGPD.</p>
+  <table class="mini">
+    <tr><th>Aplica-se (Art. 3º) — basta UM critério</th><th>NÃO se aplica (Art. 4º)</th></tr>
+    <tr><td class="ok">• Operação realizada no território nacional.<br>• Oferta de bens/serviços ou tratamento de dados de pessoas no Brasil.<br>• Dados coletados no Brasil (mesmo processados fora).</td><td class="bad">• Pessoa natural p/ fins exclusivamente particulares e não econômicos.<br>• Fins exclusivamente jornalísticos, artísticos ou acadêmicos (arts. 7º/11 ainda incidem no acadêmico).<br>• Segurança pública, defesa nacional, segurança do Estado ou repressão penal.</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">CLASSIFICAÇÃO DOS DADOS</span>
+  <h2>Pessoal × Sensível × Anonimizado × Pseudo</h2>
+  <table class="mini">
+    <tr><th>Tipo (Art. 5º e 12/13)</th><th>Definição prática</th><th>Na LGPD?</th></tr>
+    <tr><td><b>Dado Pessoal (I)</b></td><td>Identifica ou torna identificável pessoa natural (CPF, nome, IP, matrícula).</td><td class="ok">Sim</td></tr>
+    <tr><td><b>Dado Sensível (II)</b></td><td>Raça/etnia, religião, política, sindicato, saúde, vida sexual, <b>genética ou biometria</b>.</td><td class="ok">Sim (rigor extra)</td></tr>
+    <tr><td><b>Anonimizado (III + 12)</b></td><td>Perdeu vínculo; <b>não dá</b> para reverter por meios técnicos razoáveis.</td><td class="bad">Não (sai da lei)</td></tr>
+    <tr><td><b>Pseudoanonimizado (13, §4º)</b></td><td>Trocou por token/hash, mas há tabela ou chave separada que reidentifica.</td><td class="ok">Sim (continua!)</td></tr>
+  </table>
+  <div class="say trap">
+    <b>Pegadinha FGV:</b> "Aplicou criptografia reversível ou tokenizou no banco → virou anonimizado." <b>MENTIRA!</b> Se dá para reverter com chave, é <b>pseudoanonimizado</b> e continua sob a LGPD.
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">AGENTES DE TRATAMENTO</span>
+  <h2>Controlador × Operador × Encarregado (DPO)</h2>
+  <svg viewBox="0 0 820 210">
+    <rect x="20" y="30" width="160" height="90" rx="14" class="box"/>
+    <text x="100" y="65" text-anchor="middle">Titular</text>
+    <text x="100" y="88" text-anchor="middle" class="small">Cidadão / Servidor</text>
+    <line x1="180" y1="75" x2="245" y2="75" class="acc" marker-end="url(#ar)"/>
+    <rect x="250" y="20" width="210" height="110" rx="14" class="accbox"/>
+    <text x="355" y="52" text-anchor="middle">Controlador (Art. 5º, VI)</text>
+    <text x="355" y="75" text-anchor="middle" class="small">Ex.: TJPB. Toma as DECISÕES</text>
+    <text x="355" y="95" text-anchor="middle" class="small">(finalidade, base legal, descarte).</text>
+    <line x1="460" y1="75" x2="535" y2="75" class="okl" marker-end="url(#arok)"/>
+    <rect x="540" y="20" width="250" height="110" rx="14" class="okbox"/>
+    <text x="665" y="52" text-anchor="middle">Operador (Art. 5º, VII)</text>
+    <text x="665" y="75" text-anchor="middle" class="small">Ex.: Fábrica / Nuvem terceirizada.</text>
+    <text x="665" y="95" text-anchor="middle" class="small">Executa EM NOME do controlador.</text>
+    <rect x="250" y="150" width="540" height="45" rx="10" class="warnbox"/>
+    <text x="520" y="177" text-anchor="middle" class="small">Encarregado / DPO (Art. 41): canal entre Controlador ↔ Titulares ↔ ANPD (contato público no site!)</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">EXEMPLO DE CÓDIGO</span>
+  <h2>Onde o dev erra papel e dado sensível</h2>
+<pre><code><span class="c">// ❌ ERRADO: coletando dado sensível sem finalidade num cadastro comum</span>
+POST /api/agendamento  { "cpf": "...", "religiao": "catolica", "foto_biometria": "..." }
+
+<span class="c">// ✔ CERTO: minimização (art. 6º, III) + separação de agente no contrato</span>
+POST /api/agendamento  { "cpf": "...", "servico": "emissao_certidao" }
+<span class="c">// Se usar provedor externo de push/cloud, configure-o em contrato como OPERADOR!</span></code></pre>
+  <div class="say law">
+    Funcionário subordinado do próprio tribunal <b>não é Operador</b> autônomo: ele integra a estrutura do Controlador.
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">ARTIGO 6º NA VEIA</span>
+  <h2>Boa-fé + Os 10 Princípios da LGPD</h2>
+  <table class="mini">
+    <tr><th>Princípio</th><th>Regra em 1 linha</th><th>Exemplo de erro na TI</th></tr>
+    <tr><td><b>Finalidade (I)</b></td><td>Propósito legítimo, específico e informado.</td><td>Usar e-mail da petição para marketing.</td></tr>
+    <tr><td><b>Adequação (II)</b></td><td>Compatível com o contexto informado.</td><td>Pedir câmera ao abrir extrato de folha.</td></tr>
+    <tr><td><b>Necessidade (III)</b></td><td><b>Mínimo necessário</b> (sem excesso).</td><td>Exigir nome da mãe/religião sem precisar.</td></tr>
+    <tr><td><b>Livre Acesso (IV)</b></td><td>Consulta facilitada e gratuita do titular.</td><td>Cobrar taxa para o cidadão ver seus dados.</td></tr>
+    <tr><td><b>Qualidade (V)</b></td><td>Exatidão, clareza e atualização.</td><td>Cadastro desatualizado que impede certidão.</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">OS OUTROS 5 PRINCÍPIOS</span>
+  <h2>Art. 6º (Incisos VI a X)</h2>
+  <table class="mini">
+    <tr><th>Princípio</th><th>Regra em 1 linha</th></tr>
+    <tr><td><b>Transparência (VI)</b></td><td>Informações claras e acessíveis (respeitado segredo comercial/industrial).</td></tr>
+    <tr><td><b>Segurança (VII)</b></td><td>Medidas técnicas/administrativas contra acessos não autorizados e acidentes.</td></tr>
+    <tr><td><b>Prevenção (VIII)</b></td><td>Agir <b>antes</b> do dano acontecer (privacy by design, testes, backups).</td></tr>
+    <tr><td><b>Não Discriminação (IX)</b></td><td>Impossibilidade de tratar para fins discriminatórios ilícitos ou abusivos.</td></tr>
+    <tr><td><b>Responsabilização (X)</b></td><td>Demonstrar eficácia das medidas (prestação de contas / accountability).</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO</span>
+  <h2>O essencial dos Arts. 1º a 6º</h2>
+  <div class="magic"><b>Pergunta mágica:</b> "Dá para identificar a pessoa com chave separada?" → Sim = <b>Pseudoanonimizado (DENTRO da LGPD)</b>. Coletou campo sem precisar? → Fere <b>Necessidade</b>!</div>
+  <div class="checklist">
+    <p>✔ Pessoa jurídica não é titular na LGPD (só pessoa natural).</p>
+    <p>✔ Biometria e saúde são <b>dados sensíveis</b> (art. 5º, II).</p>
+    <p>✔ Controlador decide; Operador executa em nome dele; DPO é a ponte pública.</p>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO (FGV)</span>
+  <h2>Confira antes de seguir</h2>
+  <details><summary>1. Um CNPJ sem qualquer associação a pessoa natural está protegido como dado pessoal na LGPD?</summary><p><b>Não.</b> Art. 1º e 5º, I restringem à pessoa natural.</p></details>
+  <details><summary>2. Substituir o CPF por um hash SHA-256 sem salt em uma tabela que o próprio sistema sabe reverter torna o dado anonimizado?</summary><p><b>Não.</b> Se é reversível com informação mantida pelo controlador ou brute-force trivial de 11 dígitos, é dado pessoal / pseudoanonimizado (art. 13, §4º) e continua na LGPD.</p></details>
+  <details><summary>3. Um sistema de RH pergunta a convicção religiosa sem justificativa legal. Quais princípios do art. 6º foram feridos?</summary><p><b>Finalidade, Necessidade</b> (coleta excessiva) e risco de <b>Não discriminação</b>.</p></details>
+  <details><summary>4. O DPO (encarregado) pode ficar em anonimato interno sem contato divulgado?</summary><p><b>Não.</b> Art. 41, §1º exige divulgação pública clara e objetiva da identidade e contato, preferencialmente no site.</p></details>
+</div>
+</section>
+
+<!-- ===================================================== CAPÍTULO 2 ===================================================== -->
+<section class="chapter" data-title="As 10 Bases Legais, Dados Sensíveis e Crianças (Arts. 7º–14)">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 2</span>
+  <h1>As 10 Bases Legais, Dados Sensíveis e Crianças</h1>
+  <span class="emoji">🔑</span>
+  <div class="steps">
+    <div class="step"><b>1. Mito do consentimento</b><span>Ele é apenas 1 de 10 hipóteses do art. 7º.</span></div>
+    <div class="step"><b>2. Dados Sensíveis</b><span>Rol menor no art. 11 (sem legítimo interesse!).</span></div>
+    <div class="step"><b>3. Dados Públicos</b><span>Art. 7º, §§3º e 4º — não viram terra sem lei.</span></div>
+    <div class="step"><b>4. Crianças/Adolescentes</b><span>Consentimento parental no art. 14.</span></div>
+  </div>
+  <div class="analogy">
+    <span class="emoji">🎟️</span>
+    <div><b>Pense nas bases legais como crachás de entrada:</b> todo tratamento precisa de pelo menos <b>1 crachá válido</b> para entrar no sistema. Consentimento é só o crachá nº 1 — no tribunal, os crachás mais comuns são o 2, o 3 e o 6!</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">ARTIGO 7º</span>
+  <h2>As 10 Bases Legais para Dados Comuns</h2>
+  <table class="mini">
+    <tr><th>#</th><th>Base Legal</th><th>Exemplo em Sistemas / Judiciário</th></tr>
+    <tr><td>I</td><td><b>Consentimento</b></td><td>Newsletter opcional (livre, informado e inequívoco).</td></tr>
+    <tr><td>II</td><td><b>Obrigação legal / regulatória</b></td><td>eSocial, retenção de logs do Marco Civil (Arts. 13/15).</td></tr>
+    <tr><td>III</td><td><b>Políticas públicas (Adm. Púb.)</b></td><td>Execução de políticas por lei, convênio ou contrato.</td></tr>
+    <tr><td>IV</td><td><b>Órgão de pesquisa</b></td><td>Estudos estatísticos (anonimizar sempre que possível).</td></tr>
+    <tr><td>V</td><td><b>Execução de contrato</b></td><td>Entrega de compra, contrato de estágio/serviço.</td></tr>
+    <tr><td>VI</td><td><b>Exercício regular de direitos</b></td><td><b>Processo judicial</b>, administrativo ou arbitral!</td></tr>
+    <tr><td>VII–X</td><td><b>Vida · Saúde · Leg. Interesse · Crédito</b></td><td>Emergência médica (VII), prontuário (VIII), antifraude (IX), SPC (X).</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">DADOS SENSÍVEIS (ART. 11)</span>
+  <h2>Onde o filtro aperta — compare Art. 7º × Art. 11</h2>
+  <svg viewBox="0 0 820 190">
+    <rect x="20" y="20" width="370" height="145" rx="14" class="box"/>
+    <text x="205" y="48" text-anchor="middle">Art. 7º (Dado Comum) — 10 bases</text>
+    <text x="205" y="76" text-anchor="middle" class="small">• Consentimento inequívoco</text>
+    <text x="205" y="100" text-anchor="middle" class="small">• Obrig. legal, Pol. Púb., Pesquisa, Contrato</text>
+    <text x="205" y="124" text-anchor="middle" class="small">• Proc. Judicial, Vida, Saúde</text>
+    <text x="205" y="148" text-anchor="middle" class="small" fill="#2ea043">✔ TEM Legítimo Interesse e Crédito!</text>
+
+    <rect x="425" y="20" width="375" height="145" rx="14" class="badbox"/>
+    <text x="612" y="48" text-anchor="middle">Art. 11 (Dado Sensível) — mais restrito</text>
+    <text x="612" y="76" text-anchor="middle" class="small">• Consentimento ESPECÍFICO e DESTACADO</text>
+    <text x="612" y="100" text-anchor="middle" class="small">• Sem consent.: Obrig. legal, Pol. Púb., Pesquisa,</text>
+    <text x="612" y="122" text-anchor="middle" class="small">  Proc. Jud., Vida, Saúde e Prevenção à FRAUDE (al. g)</text>
+    <text x="612" y="148" text-anchor="middle" class="small" fill="#e5484d">✖ SEM Exec. Contrato, Legítimo Interesse ou Crédito!</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHAS DE CONSENTIMENTO</span>
+  <h2>Como o consentimento cai na prova (Arts. 8º–9º)</h2>
+  <div class="say law">
+    <b>Art. 8º:</b> Por escrito em contrato → deve constar em <b>cláusula destacada</b>. Ônus da prova de que foi obtido regularmente é do <b>controlador</b>. Pode ser <b>revogado a qualquer momento</b> por procedimento gratuito e facilitado!
+  </div>
+  <div class="say trap">
+    <b>Autorização genérica é NULA (art. 8º, §4º)!</b> Caixa de seleção já pré-marcada ("checkbox pre-checked") ou cláusula escondida no meio de Termos de Uso gigantes fere o consentimento livre, informado e inequívoco.
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">LEGÍTIMO INTERESSE (ART. 10)</span>
+  <h2>Quando pode usar "Legítimo Interesse"?</h2>
+  <p>Não é carta branca! O art. 10 exige finalidade legítima para situações concretas (ex.: apoio/promoção do controlador ou proteção do titular) e impõe o teste de balanceamento (LIA):</p>
+  <div class="flow">
+    <span>1. Propósito legítimo</span><i>→</i>
+    <span>2. Mínimo necessário<br><small>Estreita necessidade</small></span><i>→</i>
+    <span>3. Transparência + Oposição<br><small>Direitos do titular</small></span><i>→</i>
+    <span>4. Registro (ROPA)<br><small>ANPD pode exigir RIPD</small></span>
+  </div>
+  <div class="say trap">
+    <b>Lembre:</b> Legítimo interesse <b>NUNCA</b> vale para dado sensível (art. 11) nem quando prevalecerem direitos e liberdades fundamentais do titular!
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">DADOS PÚBLICOS</span>
+  <h2>"Tá público na internet, posso raspar tudo?" (Art. 7º, §§3º–7º)</h2>
+  <table class="mini">
+    <tr><th>Situação</th><th>Dispensa consentimento?</th><th>Regra oculta na prova</th></tr>
+    <tr><td><b>Acesso público</b> (Art. 7º, §3º)</td><td>Sim, se dentro da finalidade pública original.</td><td>Respeitar finalidade, boa-fé e interesse público que justificou a disponibilização.</td></tr>
+    <tr><td><b>Tornados manifestamente públicos pelo titular</b> (§4º)</td><td>Sim (ex.: perfil aberto do próprio titular).</td><td>Resguardados os direitos do titular e os <b>princípios da LGPD</b> (inclusive necessidade!).</td></tr>
+    <tr><td><b>Uso posterior novo</b> (§7º)</td><td>Só se atender finalidades legítimas, específicas e preservar direitos.</td><td>Não autoriza spam abusivo ou venda indiscriminada por scraping!</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">CRIANÇAS E ADOLESCENTES (ART. 14)</span>
+  <h2>Melhor interesse e consentimento dos pais</h2>
+  <div class="say law">
+    <b>Art. 14, §1º:</b> Tratamento de dados pessoais de <b>crianças</b> exige consentimento <b>específico e em destaque</b> dado por <b>pelo menos um dos pais ou pelo responsável legal</b>.
+  </div>
+  <div class="two">
+    <div class="say ok">
+      <b>Exceção do §3º:</b> Pode coletar sem consentimento só para <b>contatar os pais/responsável</b>, usados <b>uma única vez</b> e sem armazenamento, nem repasse a terceiros.
+    </div>
+    <div class="say trap">
+      <b>Games/Apps (§4º):</b> Não podem condicionar participação de crianças ao fornecimento de dados além do estritamente necessário à atividade!
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO</span>
+  <h2>Mapa rápido das Bases Legais</h2>
+  <div class="magic"><b>Atalho FGV:</b> Processo judicial/administrativo → <b>Art. 7º, VI / Art. 11, II, "d"</b>. Dado sensível → <b>NUNCA</b> legítimo interesse! Criança → consentimento de pelo menos <b>1 dos pais/responsável</b>.</div>
+  <div class="checklist">
+    <p>✔ Consentimento genérico é nulo (art. 8º, §4º) e revogável a qualquer tempo gratuitamente.</p>
+    <p>✔ Ônus da prova do consentimento é do controlador.</p>
+    <p>✔ Dado público na web continua protegido pelos princípios da LGPD (art. 7º, §4º).</p>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO (FGV)</span>
+  <h2>Resolva pensando no texto da lei</h2>
+  <details><summary>1. Um aplicativo usa "legítimo interesse" para tratar histórico clínico de pacientes sem consentimento. Isso é válido?</summary><p><b>Não.</b> Histórico clínico é dado sensível (saúde). O art. 11 não prevê legítimo interesse.</p></details>
+  <details><summary>2. Uma plataforma de cadastro judicial coleta o CPF de um réu sem pedir consentimento. Há ilegalidade?</summary><p><b>Não, se houver base legal.</b> Exercício regular de direitos em processo judicial (art. 7º, VI) e execução de política/competência legal dispensam consentimento.</p></details>
+  <details><summary>3. Para tratar dados pessoais de uma criança de 9 anos em app escolar optativo, ambos os pais precisam assinar?</summary><p><b>Não.</b> Art. 14, §1º: consentimento específico e em destaque de <b>pelo menos um dos pais</b> ou responsável legal.</p></details>
+  <details><summary>4. Se um cidadão publica seu currículo aberto em rede social, empresas podem coletar e vender para telemarketing ilimitado?</summary><p><b>Não.</b> Art. 7º, §4º e §7º exigem respeito aos princípios da finalidade, boa-fé e direitos do titular mesmo em dados manifestamente públicos.</p></details>
+</div>
+</section>
+
+<!-- ===================================================== CAPÍTULO 3 ===================================================== -->
+<section class="chapter" data-title="Direitos do Titular e Vida Real (Arts. 15–22)">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 3</span>
+  <h1>Direitos do Titular e Vida Real (Arts. 15–22)</h1>
+  <span class="emoji">🙋</span>
+  <div class="steps">
+    <div class="step"><b>1. Cardápio do Art. 18</b><span>Os 9 direitos que você pode exigir de qualquer empresa ou órgão.</span></div>
+    <div class="step"><b>2. Prazos (Art. 19)</b><span>Imediato vs até 15 dias em declaração completa.</span></div>
+    <div class="step"><b>3. Decisão Automatizada</b><span>Art. 20 — direito de revisão algorítmica.</span></div>
+    <div class="step"><b>4. Término (Arts. 15–16)</b><span>Quando apagar × quando a lei obriga guardar.</span></div>
+  </div>
+  <div class="analogy">
+    <span class="emoji">🧾</span>
+    <div><b>Na sua vida fora da prova:</b> recebeu spam de banco ou app que nunca autorizou? Os artigos 18 e 19 dão direito gratuito de perguntar <i>"de onde pegaram meu CPF?"</i> e exigir eliminação ou revogação!</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">ARTIGO 18</span>
+  <h2>O que o Titular pode exigir a qualquer momento</h2>
+  <table class="mini">
+    <tr><th>Direito (Art. 18)</th><th>O que significa na prática</th></tr>
+    <tr><td><b>I · II — Confirmação e Acesso</b></td><td>Saber se tratam seus dados e obter cópia (gratuita!).</td></tr>
+    <tr><td><b>III — Correção</b></td><td>Corrigir dado incompleto, inexato ou desatualizado.</td></tr>
+    <tr><td><b>IV — Anonimização, bloqueio ou eliminação</b></td><td>De dados desnecessários, excessivos ou ilícitos.</td></tr>
+    <tr><td><b>V — Portabilidade</b></td><td>Levar dados a outro fornecedor (sem ferir segredo comercial/industrial).</td></tr>
+    <tr><td><b>VI — Eliminação (consentimento)</b></td><td>Apagar dados baseados em consentimento (salvo art. 16).</td></tr>
+    <tr><td><b>VII · VIII · IX — Compartilhamento / Revogação</b></td><td>Saber com quem compartilhou e informar consequência de negar consentimento.</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">PRAZOS DO ART. 19</span>
+  <h2>Como o sistema precisa responder ao Titular</h2>
+  <svg viewBox="0 0 820 175">
+    <rect x="20" y="25" width="220" height="120" rx="14" class="box"/>
+    <text x="130" y="65" text-anchor="middle">Titular requisita</text>
+    <text x="130" y="88" text-anchor="middle" class="small">Via canal DPO (sem custos)</text>
+    <line x1="240" y1="60" x2="345" y2="50" class="okl" marker-end="url(#arok)"/>
+    <line x1="240" y1="105" x2="345" y2="115" class="acc" marker-end="url(#ar)"/>
+    <rect x="350" y="15" width="445" height="65" rx="12" class="okbox"/>
+    <text x="572" y="42" text-anchor="middle">Formato Simplificado (Art. 19, I) → IMEDIATO</text>
+    <text x="572" y="62" text-anchor="middle" class="small">Resumo direto de quais dados existem.</text>
+    <rect x="350" y="95" width="445" height="65" rx="12" class="accbox"/>
+    <text x="572" y="122" text-anchor="middle">Declaração Clara e Completa (Art. 19, II) → Até 15 DIAS</text>
+    <text x="572" y="142" text-anchor="middle" class="small">Origem, critérios, finalidade e inexistência de registro.</text>
+  </svg>
+  <p class="lead">Por escolha do titular, o fornecimento é por meio eletrônico seguro ou impresso (§2º). Se não for o controlador competente, deve indicar quem é ou comunicar (§1º).</p>
+</div>
+
+<div class="slide">
+  <span class="tag">IA &amp; ALGORITMOS (ART. 20)</span>
+  <h2>Revisão de Decisões Automatizadas</h2>
+  <div class="say law">
+    <b>Art. 20:</b> O titular tem direito a solicitar a <b>revisão de decisões tomadas unicamente com base em tratamento automatizado</b> de dados pessoais que afetem seus interesses (ex.: perfil pessoal, profissional, de consumo, de crédito ou personalidade).
+  </div>
+  <div class="two">
+    <div class="say ok">
+      <b>O que a empresa/órgão deve explicar (§1º):</b> informações claras e adequadas sobre critérios e procedimentos usados, observados segredos comercial e industrial.
+    </div>
+    <div class="say trap">
+      <b>Auditoria (§2º):</b> se negar explicar alegando segredo comercial, a <b>ANPD pode auditar</b> o algoritmo para checar aspectos discriminatórios!
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">TÉRMINO DO TRATAMENTO (ARTS. 15–16)</span>
+  <h2>Quando apagar × Quando a lei manda guardar</h2>
+  <table class="mini">
+    <tr><th>Quando termina (Art. 15)</th><th>Quando PODE conservar após o fim (Art. 16)</th></tr>
+    <tr><td>• Finalidade alcançada ou dado não é mais necessário.<br>• Fim do período de tratamento.<br>• Revogação do consentimento pelo titular.<br>• Determinação da ANPD por violação.</td><td><b>I. Obrigação legal ou regulatória</b> (ex.: nota fiscal 5 anos, logs Marco Civil 6 meses/1 ano).<br><b>II. Estudo por órgão de pesquisa</b> (anonimizando sempre que possível).<br><b>III. Transferência a terceiro</b> (respeitados requisitos da lei).<br><b>IV. Uso exclusivo do controlador</b>, vedado acesso por terceiro, <b>desde que anonimizados</b>.</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">PORTABILIDADE E OPOSIÇÃO</span>
+  <h2>Direitos que a FGV adora confundir</h2>
+  <table class="mini">
+    <tr><th>Direito</th><th>Quando cabe / Limite legal</th></tr>
+    <tr><td><b>Portabilidade (Art. 18, V)</b></td><td>Transferência a outro fornecedor, <b>observados os segredos comercial e industrial</b>; não inclui dados já anonimizados.</td></tr>
+    <tr><td><b>Oposição (Art. 18, §2º)</b></td><td>Quando o tratamento <b>dispensa consentimento</b> (ex.: legítimo interesse) e descumpre a LGPD!</td></tr>
+    <tr><td><b>Peticionamento (Art. 18, §1º e §8º)</b></td><td>Titular pode peticionar contra o controlador perante a <b>ANPD</b> e também perante <b>organismos de defesa do consumidor</b> (PROCON/Senacon)!</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">USO PRÁTICO EM PORTAL WEB</span>
+  <h2>Checklist do Portal de Privacidade (Vida + Dev)</h2>
+  <div class="checklist">
+    <p>✔ Canal visível do Encarregado (DPO) com e-mail ou formulário direto (sem exigir ir presencialmente ou pagar taxa).</p>
+    <p>✔ Fluxo de exportação (JSON/CSV/PDF) e pedido de exclusão respeitando retenções legais obrigatórias (art. 16, I).</p>
+    <p>✔ Quando apagar conta: usar soft-delete temporário só se justificado por obrigação legal, ou anonimizar FKs que não podem quebrar auditoria.</p>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO</span>
+  <h2>Memória rápida dos Arts. 15–22</h2>
+  <div class="magic"><b>Guarde os números:</b> <b>0 reais</b> (gratuito!) · <b>Imediato</b> (simplificado) · <b>15 dias</b> (declaração completa) · <b>Art. 20</b> (revisão de decisão só automatizada) · <b>Art. 16</b> (reter só se obrigação legal/pesquisa/anonimizado exclusivo).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO (FGV)</span>
+  <h2>Confira antes de avançar</h2>
+  <details><summary>1. O titular pede cópia completa dos seus dados. A empresa pode cobrar R$ 20 pelo envio do PDF?</summary><p><b>Não.</b> Art. 18, §5º determina que o requerimento dos direitos do titular é atendido <b>sem custos</b>.</p></details>
+  <details><summary>2. Se uma empresa recusa explicar os critérios de um score automatizado alegando segredo industrial, o que acontece?</summary><p><b>Art. 20, §2º:</b> a <b>ANPD poderá realizar auditoria</b> para verificação de aspectos discriminatórios no tratamento automatizado.</p></details>
+  <details><summary>3. Um ex-cliente pede exclusão total de todos os registros. O sistema tem notas fiscais emitidas. Deve apagar as notas?</summary><p><b>Não.</b> Deve reter estritamente o exigido por lei tributária com base no <b>art. 16, I</b> (cumprimento de obrigação legal) e eliminar/desvincular dados de marketing sem base legal.</p></details>
+  <details><summary>4. É possível pedir portabilidade de um banco de dados proprietário contendo algoritmo secreto?</summary><p><b>Não nos dados protegidos por segredo comercial.</b> O art. 18, V garante portabilidade dos dados do titular <i>observados os segredos comercial e industrial</i>.</p></details>
+</div>
+</section>
+
+<!-- ===================================================== CAPÍTULO 4 ===================================================== -->
+<section class="chapter" data-title="LGPD no Poder Público e Judiciário (Arts. 23–36)">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 4</span>
+  <h1>LGPD no Poder Público e Judiciário (Arts. 23–36)</h1>
+  <span class="emoji">🏛️</span>
+  <div class="steps">
+    <div class="step"><b>1. Regime Público (Art. 23)</b><span>Finalidade pública, transparência no site e DPO obrigatório.</span></div>
+    <div class="step"><b>2. Formato &amp; Estatais</b><span>Interoperabilidade (art. 25) e estatais concorrentes (art. 24).</span></div>
+    <div class="step"><b>3. Compartilhamento</b><span>Entre públicos × vedação a entidades privadas (arts. 26–27).</span></div>
+    <div class="step"><b>4. Transferência Int.</b><span>Regras para nuvem fora do Brasil (arts. 33–36).</span></div>
+  </div>
+  <div class="analogy">
+    <span class="emoji">🏢</span>
+    <div><b>Por que isso cai TANTO no TJPB?</b> Porque o Tribunal é pessoa jurídica de direito público! As bancas adoram testar o que muda entre uma startup privada e um órgão público.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">REQUISITOS NO ÓRGÃO PÚBLICO</span>
+  <h2>O tripé do Art. 23 e a regra das Estatais (Art. 24)</h2>
+  <div class="say law">
+    <b>Art. 23:</b> Órgãos públicos tratam dados pessoais para atender sua <b>finalidade pública</b>, na persecução do interesse público, para executar competências/atribuições legais, desde que:<br>
+    • <b>I.</b> Informem em local de fácil acesso (preferencialmente no <b>site</b>) previsão legal, finalidade, procedimentos e práticas;<br>
+    • <b>III.</b> Indiquem um <b>encarregado (DPO)</b>.
+  </div>
+  <div class="say trap">
+    <b>Art. 24 (Pegadinha clássica!):</b> Empresas públicas e sociedades de economia mista (ex.: Banco do Brasil, Caixa) que atuam em <b>regime de concorrência</b> recebem o mesmo tratamento de <b>pessoa jurídica de direito PRIVADO</b> (inclusive podendo sofrer multa!).
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">ARQUITETURA E DADOS NO GOVERNO</span>
+  <h2>Interoperabilidade (Art. 25) e Acesso (Art. 29–30)</h2>
+  <div class="two">
+    <div class="say ok">
+      <b>Art. 25:</b> Os dados no Poder Público devem ser mantidos em <b>formato interoperável e estruturado</b> para o uso compartilhado (ex.: JSON/XML/API padronizada como MNI/PDPJ-Br, não PDF escaneado!).
+    </div>
+    <div class="say">
+      <b>Art. 29:</b> A ANPD pode solicitar a qualquer momento aos órgãos públicos informe específico sobre âmbito, natureza e detalhes do tratamento e emitir parecer técnico complementar.
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">COMPARTILHAMENTO (ARTS. 26–27)</span>
+  <h2>Público ↔ Público × Público → Privado</h2>
+  <svg viewBox="0 0 820 190">
+    <rect x="20" y="25" width="220" height="125" rx="14" class="accbox"/>
+    <text x="130" y="65" text-anchor="middle">Órgão Público A</text>
+    <text x="130" y="88" text-anchor="middle" class="small">(ex.: TJPB)</text>
+
+    <line x1="240" y1="55" x2="430" y2="55" class="okl" marker-end="url(#arok)"/>
+    <rect x="435" y="20" width="360" height="65" rx="12" class="okbox"/>
+    <text x="615" y="45" text-anchor="middle">✔ Órgão Público B (Art. 26, caput)</text>
+    <text x="615" y="66" text-anchor="middle" class="small">Permitido para política pública e atribuição legal.</text>
+
+    <line x1="240" y1="115" x2="430" y2="115" class="badl" marker-end="url(#arbad)"/>
+    <rect x="435" y="95" width="360" height="75" rx="12" class="badbox"/>
+    <text x="615" y="120" text-anchor="middle">⛔ Entidade Privada (Art. 26, §1º): VEDADO em regra</text>
+    <text x="615" y="140" text-anchor="middle" class="small">Exceções: execução descentralizada (LAI), dado público,</text>
+    <text x="615" y="156" text-anchor="middle" class="small">previsão legal ou prevenção à fraude/contratos (+ aviso ANPD).</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">TRANSFERÊNCIA INTERNACIONAL (ARTS. 33–36)</span>
+  <h2>Quando um servidor ou nuvem fora do Brasil pode receber dados</h2>
+  <p>Ao hospedar API ou LLM em região fora do Brasil (ex.: `us-east-1`), aplica-se o Capítulo V (Art. 33):</p>
+  <table class="mini">
+    <tr><th>Hipóteses válidas do Art. 33</th><th>Cuidado prático na TI</th></tr>
+    <tr><td>• País/organismo com <b>grau de proteção adequado</b> reconhecido pela ANPD.<br>• <b>Cláusulas-padrão contratuais</b>, cláusulas específicas ou normas corporativas globais.<br>• <b>Cooperação jurídica internacional</b> entre órgãos públicos.<br>• Cumprimento de obrigação legal, execução de contrato ou <b>consentimento específico e destacado</b>.</td><td>Em estudo de caso do Judiciário usando API externa de IA fora do país, exija <b>cláusulas-padrão + retenção zero + base de transferência (art. 33)</b>!</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">USO DE CPF E TRANSPARÊNCIA</span>
+  <h2>Regras práticas para sistemas do TJPB (Arts. 23–30)</h2>
+  <table class="mini">
+    <tr><th>Ponto do sistema</th><th>O que a LGPD exige no Poder Público</th></tr>
+    <tr><td><b>Comunicação à ANPD (Art. 27)</b></td><td>Transferir dados públicos para ente privado nas exceções do art. 26, §1º exige comunicar à ANPD (salvo dados públicos/execução descentralizada/contratos nos termos da lei).</td></tr>
+    <tr><td><b>Encarregado (Art. 23, III + 41)</b></td><td>Obrigatório também em órgãos públicos; a ANPD pode dispor sobre regras específicas para o setor público (art. 23, §3º / art. 32).</td></tr>
+    <tr><td><b>Princípio da Publicidade × LGPD</b></td><td>Autos processuais seguem publicidade constitucional/processual, mas consulta aberta na web deve aplicar <b>minimização</b> (não expor dado sensível sem necessidade legal).</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">RELAÇÃO COM A LAI</span>
+  <h2>LGPD × Lei de Acesso à Informação (Lei 12.527/2011)</h2>
+  <div class="say ok">
+    <b>Harmonização:</b> A LGPD <b>NÃO revogou</b> a transparência pública (LAI)! Dados como nome, cargo e remuneração de servidores públicos continuam divulgados por interesse público e obrigação legal — enquanto CPF completo, endereço residencial e prontuário médico ficam protegidos.
+  </div>
+  <div class="say trap">
+    <b>Não confunda:</b> Negar dado funcional público básico alegando LGPD genérica viola o interesse público e a própria LAI; expor dado bancário ou de saúde viola a LGPD!
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO</span>
+  <h2>Checklist do Setor Público na LGPD</h2>
+  <div class="magic"><b>Regra de ouro:</b> Órgão público = site transparente + DPO + dados interoperáveis (art. 25) + <b>não transfere livremente para privado</b> (art. 26, §1º).</div>
+  <div class="checklist">
+    <p>✔ Estatal em concorrência = regime privado (art. 24).</p>
+    <p>✔ Compartilhamento público→privado exige hipótese do art. 26 §1º (e comunicação à ANPD nos casos do art. 27).</p>
+    <p>✔ Uso de SaaS/nuvem no exterior dispara regras do Art. 33 (Transferência Internacional).</p>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO (FGV)</span>
+  <h2>Confira antes de seguir</h2>
+  <details><summary>1. O TJPB precisa publicar em seu site as hipóteses legais e o contato do seu DPO?</summary><p><b>Sim.</b> Art. 23, incisos I e III determinam transparência em sítio eletrônico e indicação de encarregado.</p></details>
+  <details><summary>2. A transferência de bases pessoais de um órgão público a empresa privada de análise comercial sem previsão legal ou convênio de serviço público é válida?</summary><p><b>Não.</b> Viola diretamente a vedação geral do art. 26, §1º.</p></details>
+  <details><summary>3. Um tribunal precisa integrar sistemas com API em nuvem localizada nos EUA. Qual capítulo da LGPD regula esse envio?</summary><p><b>Capítulo V — Transferência Internacional de Dados (Arts. 33 a 36).</b></p></details>
+  <details><summary>4. Cartórios notariais e de registro têm que observar a LGPD?</summary><p><b>Sim.</b> Art. 23, §4º equipara os serviços notariais e de registro ao tratamento aplicável às pessoas jurídicas referidas no caput.</p></details>
+</div>
+</section>
+
+<!-- ===================================================== CAPÍTULO 5 ===================================================== -->
+<section class="chapter" data-title="Segurança, Privacy by Design, RIPD e Incidentes (Arts. 37–51)">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 5</span>
+  <h1>Segurança, Privacy by Design, RIPD e Incidentes</h1>
+  <span class="emoji">🛡️</span>
+  <div class="steps">
+    <div class="step"><b>1. Registro (Art. 37)</b><span>ROPA obrigatório para Controlador e Operador.</span></div>
+    <div class="step"><b>2. RIPD (Art. 38)</b><span>O que vai no Relatório de Impacto.</span></div>
+    <div class="step"><b>3. Privacy by Design</b><span>Art. 46, §2º dentro do código e do banco.</span></div>
+    <div class="step"><b>4. Incidentes (Art. 48)</b><span>Quando e a quem comunicar vazamento.</span></div>
+  </div>
+  <div class="analogy">
+    <span class="emoji">🚨</span>
+    <div><b>Tema nº 1 de Discursiva:</b> Se a banca der um estudo de caso de sistema com vazamento de dados pessoais de jurisdicionados, este capítulo é o coração da resposta técnica + normativa!</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">GOVERNANÇA &amp; ROPA</span>
+  <h2>Art. 37 e Art. 38 (ROPA e RIPD)</h2>
+  <table class="mini">
+    <tr><th>Artefato</th><th>Quem faz / quando</th><th>Conteúdo obrigatório na lei</th></tr>
+    <tr><td><b>Registro das Operações — ROPA (Art. 37)</b></td><td><b>Controlador E Operador</b> (especialmente em legítimo interesse).</td><td>Inventário de fluxos: quais dados, finalidade, base legal, compartilhamento, retenção.</td></tr>
+    <tr><td><b>Relatório de Impacto — RIPD (Art. 38)</b></td><td>Controlador (quando determinado pela ANPD ou em alto risco/Poder Público — art. 32).</td><td><b>1.</b> Tipos de dados coletados;<br><b>2.</b> Metodologia de coleta e garantia de segurança;<br><b>3.</b> Análise de medidas, salvaguardas e mitigação de risco.</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">PRIVACY BY DESIGN (ART. 46)</span>
+  <h2>Da lei direto para a arquitetura do sistema</h2>
+  <div class="say law">
+    <b>Art. 46, §2º:</b> As medidas de segurança técnicas e administrativas devem ser observadas <b>desde a fase de concepção do produto ou do serviço até a sua execução</b> (<i>Privacy by Design</i> e <i>by Default</i>).
+  </div>
+<pre><code><span class="c">// ❌ Anti-pattern em APIs Java/Node/Python:</span>
+logger.info("Login falhou para CPF=" + req.cpf + " senha=" + req.senha); <span class="c">// vaza PII no ELK!</span>
+return userRepository.findById(id); <span class="c">// devolve entidade inteira com campos sensíveis</span>
+
+<span class="c">// ✔ Privacy by Design (Art. 46 + Art. 6º III):</span>
+logger.info("Login falhou userId={}", hashPseudonimo(req.userId));
+return UserPublicDTO.from(user); <span class="c">// DTO enxuto + RBAC + TLS + criptografia em repouso</span></code></pre>
+</div>
+
+<div class="slide">
+  <span class="tag">INCIDENTES DE SEGURANÇA (ART. 48)</span>
+  <h2>Fluxo oficial quando ocorre vazamento</h2>
+  <svg viewBox="0 0 820 185">
+    <rect x="20" y="35" width="185" height="90" rx="14" class="badbox"/>
+    <text x="112" y="68" text-anchor="middle">Incidente detectado</text>
+    <text x="112" y="92" text-anchor="middle" class="small">Com risco ou dano relevante</text>
+    <line x1="205" y1="80" x2="275" y2="80" class="badl" marker-end="url(#arbad)"/>
+    <rect x="280" y="20" width="235" height="125" rx="14" class="accbox"/>
+    <text x="397" y="48" text-anchor="middle">Controlador comunica</text>
+    <text x="397" y="72" text-anchor="middle" class="small">Em "prazo razoável" (Art. 48)</text>
+    <text x="397" y="94" text-anchor="middle" class="small">• Natureza dos dados e titulares</text>
+    <text x="397" y="114" text-anchor="middle" class="small">• Medidas prévias e riscos</text>
+    <text x="397" y="134" text-anchor="middle" class="small">• Mitigação + motivo de demora</text>
+    <line x1="515" y1="80" x2="585" y2="80" class="okl" marker-end="url(#arok)"/>
+    <rect x="590" y="25" width="205" height="115" rx="14" class="okbox"/>
+    <text x="692" y="58" text-anchor="middle">ANPD + Titulares</text>
+    <text x="692" y="82" text-anchor="middle" class="small">ANPD pode mandar divulgar</text>
+    <text x="692" y="102" text-anchor="middle" class="small">em veículos de comunicação</text>
+    <text x="692" y="122" text-anchor="middle" class="small">e reverter/mitigar efeitos (§2º)</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">BOAS PRÁTICAS (ART. 50)</span>
+  <h2>Programa de Governança em Privacidade</h2>
+  <p>Ter política de boas práticas e governança não é só "papel bonito": no art. 52, §1º, IX, ela funciona como <b>atenuante oficial</b> de sanções administrativas!</p>
+  <div class="checklist">
+    <p>✔ Comprometimento da alta administração + aplicado a toda a organização.</p>
+    <p>✔ Adaptado à estrutura, escala e sensibilidade dos dados.</p>
+    <p>✔ Planos de resposta a incidentes e remediação + avaliação periódica.</p>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">FUNÇÕES DO ENCARREGADO / DPO (ART. 41, §2º)</span>
+  <h2>O que o DPO faz de verdade no dia a dia</h2>
+  <table class="mini">
+    <tr><th>Inciso (Art. 41, §2º)</th><th>Atribuição legal literal</th></tr>
+    <tr><td><b>I</b></td><td>Aceitar reclamações e comunicações dos titulares, prestar esclarecimentos e adotar providências.</td></tr>
+    <tr><td><b>II</b></td><td>Receber comunicações da <b>ANPD</b> e adotar providências.</td></tr>
+    <tr><td><b>III</b></td><td>Orientar funcionários e contratados da entidade sobre práticas de proteção de dados.</td></tr>
+    <tr><td><b>IV</b></td><td>Executar as demais atribuições determinadas pelo controlador ou em normas complementares.</td></tr>
+  </table>
+  <p class="lead">Note: quem assina a decisão estratégica e responde diretamente pelas obrigações legais continua sendo o <b>Controlador</b>, não o DPO pessoalmente.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">DESCARTE &amp; ANONIMIZAÇÃO EM ARQUITETURA</span>
+  <h2>Como desenhar retenção e eliminação em sistemas</h2>
+  <div class="steps">
+    <div class="step"><b>Tabela de Temporalidade</b><span>Cada dado tem prazo claro de retenção vinculado à sua base legal.</span></div>
+    <div class="step"><b>Logs sem PII em aberto</b><span>Mascarar CPF/e-mail/JWT antes de enviar para ELK/OpenSearch.</span></div>
+    <div class="step"><b>Rotina de Expurgo / Anonimização</b><span>Job periódico apaga ou anonimiza de forma irreversível ao fim do ciclo (art. 15).</span></div>
+  </div>
+  <div class="say trap">
+    <b>Cuidado com Backup!</b> Ao eliminar um registro em produção por pedido do titular, documente a janela técnica de rotação dos backups imutáveis sem reativar o dado no ambiente ativo.
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO</span>
+  <h2>O que não esquecer em Seguranca/LGPD</h2>
+  <div class="magic"><b>Trinca de arquitetura:</b> <b>Art. 37</b> = ROPA (controlador+operador) · <b>Art. 38</b> = RIPD (dados+segurança+riscos) · <b>Art. 48</b> = Controlador avisa ANPD e titular quando há risco/dano relevante.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO (FGV)</span>
+  <h2>Confira antes de seguir</h2>
+  <details><summary>1. Apenas incidentes gigantes que vazam mais de 1 milhão de registros precisam ser comunicados?</summary><p><b>Não.</b> O critério do art. 48 é poder acarretar <b>risco ou dano relevante aos titulares</b> (mesmo para grupo menor se houver dados sensíveis/bancários).</p></details>
+  <details><summary>2. O operador precisa manter registro das operações (art. 37), ou só o controlador?</summary><p><b>Ambos.</b> Art. 37 determina expressamente que <i>o controlador e o operador</i> devem manter registro.</p></details>
+  <details><summary>3. Na hipótese de demora ao avisar a ANPD sobre um incidente, o que o art. 48, §1º exige?</summary><p>Informar <b>os motivos da demora</b>, no caso de a comunicação não ter sido imediata (inciso V).</p></details>
+  <details><summary>4. Privacy by Design está em qual artigo da LGPD?</summary><p><b>Art. 46, §2º</b> ("desde a fase de concepção do produto ou do serviço até a sua execução").</p></details>
+</div>
+</section>
+
+<!-- ===================================================== CAPÍTULO 6 ===================================================== -->
+<section class="chapter" data-title="Responsabilidade, Sanções da ANPD e Pegadinhas (Arts. 42–45, 52–59)">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 6</span>
+  <h1>Responsabilidade, Sanções da ANPD e Pegadinhas</h1>
+  <span class="emoji">⚖️</span>
+  <div class="steps">
+    <div class="step"><b>1. Dano Civil (Arts. 42–45)</b><span>Solidariedade do operador e as 3 excludentes.</span></div>
+    <div class="step"><b>2. Sanções (Art. 52)</b><span>Todas as penas e limites de multa.</span></div>
+    <div class="step"><b>3. Poder Público (§3º)</b><span>O que PODE e o que NÃO PODE aplicar ao órgão público.</span></div>
+    <div class="step"><b>4. Relação com CDC</b><span>Art. 45 — relações de consumo continuam protegidas.</span></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESPONSABILIDADE CIVIL</span>
+  <h2>Quando o Operador responde junto? (Art. 42)</h2>
+  <table class="mini">
+    <tr><th>Situação do Operador</th><th>Responde solidariamente?</th></tr>
+    <tr><td>Seguiu 100% das instruções lícitas do controlador e cumpriu todas as obrigações da LGPD.</td><td class="ok">Não (responde apenas o Controlador, se houver ilícito).</td></tr>
+    <tr><td>Descumpriu obrigações da LGPD <b>OU</b> não seguiu instruções lícitas do controlador.</td><td class="bad"><b>Sim — responsabilidade solidária</b> (equiparado a controlador)!</td></tr>
+  </table>
+  <div class="say law">
+    <b>Excludentes únicas (Art. 43):</b> (I) não realizou o tratamento; (II) não houve violação à LGPD; (III) dano por <b>culpa exclusiva</b> do titular ou de terceiro.
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">SANÇÕES ADMINISTRATIVAS (ART. 52)</span>
+  <h2>Privado × Poder Público — O quadro que decide questão</h2>
+  <table class="mini">
+    <tr><th>Sanção (Art. 52)</th><th>Setor Privado</th><th>Poder Público (§3º)</th></tr>
+    <tr><td><b>I. Advertência</b> (com prazo corretivo)</td><td class="ok">Sim</td><td class="ok">Sim</td></tr>
+    <tr><td><b>II. Multa simples</b> (até 2% fat., máx R$ 50M/infração)</td><td class="ok">Sim</td><td class="bad"><b>NÃO!</b></td></tr>
+    <tr><td><b>III. Multa diária</b> (dentro do teto de R$ 50M)</td><td class="ok">Sim</td><td class="bad"><b>NÃO!</b></td></tr>
+    <tr><td><b>IV. Publicização da infração</b></td><td class="ok">Sim</td><td class="ok">Sim</td></tr>
+    <tr><td><b>V / VI. Bloqueio ou Eliminação dos dados</b></td><td class="ok">Sim</td><td class="ok">Sim</td></tr>
+    <tr><td><b>X / XI / XII. Suspensão BD/atividade (6m+6m) / Proibição</b></td><td class="ok">Sim</td><td class="ok">Sim (além de 8.112/Improb./LAI!)</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">CRITÉRIOS DA ANPD</span>
+  <h2>O que agrava ou atenua a pena (§1º)</h2>
+  <div class="two">
+    <div class="say ok">
+      <b>Atenua / favorece:</b> boa-fé, cooperação, pronta adoção de medidas corretivas, adoção de <b>política de boas práticas e governança</b> (inciso IX), mecanismos internos de minimização.
+    </div>
+    <div class="say trap">
+      <b>Agrava:</b> gravidade e natureza da infração, vantagem auferida/pretendida, reincidência, grau do dano e condição econômica. Multas são destinadas ao Fundo de Defesa de Direitos Difusos!
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">DANO COLETIVO &amp; RELAÇÕES DE CONSUMO</span>
+  <h2>Art. 42, §3º + Art. 44 + Art. 45</h2>
+  <div class="two">
+    <div class="say ok">
+      <b>Tutela Coletiva (Art. 42, §3º):</b> Ações de reparação por danos <b>coletivos</b> têm por objeto a responsabilização nos termos da LGPD, podendo ser exercidas coletivamente em juízo.
+    </div>
+    <div class="say">
+      <b>Tratamento Irregular (Art. 44):</b> O tratamento é irregular quando descumpre a lei OU <b>não fornece a segurança que o titular dele pode esperar</b> (técnicas disponíveis à época, riscos razoáveis).
+    </div>
+  </div>
+  <div class="say law">
+    <b>Art. 45:</b> As hipóteses de violação do direito do titular no âmbito das <b>relações de consumo</b> permanecem sujeitas às regras de responsabilidade previstas na legislação pertinente (<b>CDC</b>).
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">ANPD NA ESTRUTURA (ART. 55-A+)</span>
+  <h2>Autoridade Nacional de Proteção de Dados</h2>
+  <p>Natureza jurídica atual (Lei nº 14.460/2022): <b>autarquia de natureza especial</b>, com autonomia técnica e decisória.</p>
+  <table class="mini">
+    <tr><th>Competência-chave (Art. 55-J)</th><th>Impacto em prova / sistemas</th></tr>
+    <tr><td><b>Fiscalizar e aplicar sanções</b></td><td>Única autoridade administrativa sancionadora da LGPD (art. 55-K: prevalece em matéria de proteção de dados).</td></tr>
+    <tr><td><b>Editar regulamentos simplificados</b></td><td>Ex.: agentes de pequeno porte, prazos de incidentes, dosimetria, transferência internacional.</td></tr>
+    <tr><td><b>Articular com órgãos reguladores e Poder Público</b></td><td>Comunica irregularidades no setor público aos órgãos de controle interno/externo!</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">QUANDO A LEI PODE SER USADA EM ESTUDO DE CASO</span>
+  <h2>Roteiro de 4 passos para Discursiva de LGPD</h2>
+  <svg viewBox="0 0 820 155">
+    <rect x="15" y="25" width="185" height="105" rx="12" class="box"/>
+    <text x="107" y="55" text-anchor="middle">1. Analise o fluxo</text>
+    <text x="107" y="78" text-anchor="middle" class="small">Quem é Controlador/Operador?</text>
+    <text x="107" y="98" text-anchor="middle" class="small">Há dado sensível/criança?</text>
+    <line x1="200" y1="77" x2="225" y2="77" class="acc" marker-end="url(#ar)"/>
+    <rect x="230" y="25" width="185" height="105" rx="12" class="badbox"/>
+    <text x="322" y="55" text-anchor="middle">2. Aponte violações</text>
+    <text x="322" y="78" text-anchor="middle" class="small">Princípio (Art. 6º), base legal,</text>
+    <text x="322" y="98" text-anchor="middle" class="small">transparência (Art. 23) ou falha</text>
+    <line x1="415" y1="77" x2="440" y2="77" class="acc" marker-end="url(#ar)"/>
+    <rect x="445" y="25" width="185" height="105" rx="12" class="accbox"/>
+    <text x="537" y="55" text-anchor="middle">3. Aplique normas</text>
+    <text x="537" y="78" text-anchor="middle" class="small">Art. 25, Art. 26, Art. 38 RIPD,</text>
+    <text x="537" y="98" text-anchor="middle" class="small">Art. 46 §2º, Art. 48 incidente</text>
+    <line x1="630" y1="77" x2="655" y2="77" class="okl" marker-end="url(#arok)"/>
+    <rect x="660" y="25" width="150" height="105" rx="12" class="okbox"/>
+    <text x="735" y="55" text-anchor="middle">4. Proponha TI</text>
+    <text x="735" y="78" text-anchor="middle" class="small">RBAC, cripto, mascarar</text>
+    <text x="735" y="98" text-anchor="middle" class="small">logs, ROPA e DPO</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO FINAL LGPD</span>
+  <h2>Os 5 pontos que mais derrubam na FGV</h2>
+  <div class="magic">
+    <b>1.</b> Pseudoanonimizado = <b>dentro</b> da LGPD.<br>
+    <b>2.</b> Dado sensível = <b>sem</b> legítimo interesse.<br>
+    <b>3.</b> Art. 19 = <b>imediato</b> (simplificado) ou <b>15 dias</b> (completo).<br>
+    <b>4.</b> Órgão público (art. 26) = <b>não</b> transfere livre p/ privado.<br>
+    <b>5.</b> Art. 52, §3º = órgão público <b>NÃO</b> toma multa simples nem diária!
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO (FGV)</span>
+  <h2>Feche o módulo com 100%</h2>
+  <details><summary>1. Qual o teto máximo da multa simples da ANPD por infração?</summary><p><b>Até 2% do faturamento</b> da pessoa jurídica/grupo no Brasil no último exercício (excluídos tributos), limitado a <b>R$ 50 milhões por infração</b> (art. 52, II).</p></details>
+  <details><summary>2. A suspensão do funcionamento de um banco de dados pela ANPD pode durar até quanto tempo?</summary><p><b>Máximo de 6 meses</b>, prorrogável por igual período, até regularização (art. 52, X).</p></details>
+  <details><summary>3. O juiz pode inverter o ônus da prova em processo civil envolvendo violação da LGPD?</summary><p><b>Sim!</b> Art. 42, §2º permite ao juiz inverter o ônus da prova a favor do titular quando for verossímil a alegação, houver hipossuficiência ou produção excessivamente onerosa.</p></details>
+  <details><summary>4. Onde consultar qualquer artigo da LGPD na íntegra aqui no jogo?</summary><p>No <b>Acervo Oficial</b> (tecla <b>D</b> ou botão <b>📚 Docs</b>), documento <i>LGPD — Lei nº 13.709/2018</i>!</p></details>
+</div>
+</section>
+
+<script src="aula.js?v=7"></script></body></html>

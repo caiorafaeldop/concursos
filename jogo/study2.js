@@ -69,7 +69,7 @@ quiz:[
 ]}
 ]};
 
-window.STUDY.logica = { title:"Biblioteca de Raciocínio Lógico e Matemática", chapters:[
+window.STUDY.logica = { title:"Biblioteca de Raciocínio Lógico", chapters:[
 { title:"Proposições, Conectivos e Tabela-Verdade", pages:[
 "PROPOSIÇÃO é sentença declarativa que pode ser julgada V ou F.\n• Não são proposições: perguntas, ordens, exclamações e sentenças abertas (x + 3 = 10).\n• Conectivos: ~p (não), p∧q (e), p∨q (ou), p⊻q (ou exclusivo), p→q (se...então), p↔q (se e somente se).\n• Exemplo: 'A Paraíba é um estado do Brasil' é proposição verdadeira.",
 "TABELA-VERDADE\n• Número de linhas = 2 elevado ao número de proposições (3 proposições = 8 linhas).\n• p∧q: V só quando ambas V.\n• p∨q: F só quando ambas F.\n• p→q: F só quando p=V e q=F.\n• p↔q: V quando p e q têm o mesmo valor.\n• p⊻q: V quando p e q têm valores diferentes.",
@@ -97,42 +97,22 @@ quiz:[
 {q:"Premissas: 'Se é servidor, tem matrícula'; 'João é servidor'. Conclusão válida:", options:["João não é servidor","João tem matrícula","João não tem matrícula","Todo servidor se chama João"], answer:1, explain:"Modus ponens: de p→q e p conclui-se q."},
 {q:"'Se P, então Q. Q é verdadeiro. Logo, P é verdadeiro.' Esse argumento é:", options:["inválido (afirmação do consequente)","válido (modus ponens)","válido (modus tollens)","válido (silogismo hipotético)"], answer:0, explain:"Afirmar o consequente é falácia: Q pode ser verdadeiro por outras razões, sem que P ocorra."}
 ]},
-{ title:"Diagramas Lógicos e Conjuntos", pages:[
-"PROPOSIÇÕES CATEGÓRICAS\n• Todo A é B: A dentro de B.\n• Nenhum A é B: conjuntos disjuntos.\n• Algum A é B: existe interseção.\n• Algum A não é B: existe elemento de A fora de B.\nDICA: na dúvida, desenhe o caso mais geral e procure a única conclusão que vale em todos os desenhos possíveis.",
-"CONJUNTOS: FÓRMULA DA UNIÃO\n• n(A∪B) = n(A) + n(B) − n(A∩B).\nExemplo: em 40 pessoas, 25 falam inglês, 18 espanhol e 5 nenhum idioma. Quem fala algum idioma: 40 − 5 = 35. Ambos: 25 + 18 − 35 = 8.\nRESOLUÇÃO: comece sempre pela interseção e depois preencha as demais regiões do diagrama.",
-"TRÊS CONJUNTOS\n• n(A∪B∪C) = n(A)+n(B)+n(C) − n(A∩B) − n(A∩C) − n(B∩C) + n(A∩B∩C).\n• Preencha primeiro a região central (A∩B∩C), depois as interseções duas a duas (subtraindo a central), e por fim as partes exclusivas.\n• 'Somente A' = n(A) menos todas as regiões em que A se sobrepõe a outro conjunto."
-], tip:"Comece pela interseção; n(A∪B) = n(A) + n(B) − n(A∩B).",
+{ title:"Diagramas Lógicos e Quantificadores", pages:[
+"PROPOSIÇÕES CATEGÓRICAS (DIAGRAMAS DE EULER)\n• Todo A é B: círculo A dentro de B (contrapositiva: quem não é B não é A; NÃO inverte para 'Todo B é A').\n• Nenhum A é B: círculos disjuntos (simétrica: 'Nenhum B é A').\n• Algum A é B: há interseção não vazia ('pelo menos um' — admite que sejam todos!).\n• Algum A não é B: existe elemento de A fora de B (não pode ser invertida!).",
+"TESTANDO CONCLUSÕES EM SILOGISMOS CATEGÓRICOS\n• Desenhe sempre o diagrama que TENTA DERRUBAR a conclusão mantendo as premissas verdadeiras.\n• Se houver ao menos um desenho válido pelas premissas em que a conclusão falha, o argumento é INVÁLIDO.\n• Exemplo: 'Todo juiz é advogado' + 'Algum advogado é professor' NÃO garante 'Algum juiz é professor' (os professores podem ficar fora do círculo dos juízes).",
+"PONTE COM CONJUNTOS E NEGAÇÃO CATEGÓRICA\n• Negar 'Todo A é B' → 'Algum A não é B' (nunca 'Nenhum A é B'!).\n• Negar 'Nenhum A é B' → 'Algum A é B'.\n• Contagens em Venn e interseções (n(A∪B) = n(A)+n(B)−n(A∩B)) ficam aprofundadas na cidade de Matemática!"
+], tip:"Desenhe sempre um contraexemplo que cumpra as premissas e derrube a conclusão. 'Algum' = pelo menos um.",
 quiz:[
-{q:"Em um grupo de 40 pessoas, 25 falam inglês, 18 falam espanhol e 5 não falam nenhum dos dois. Quantas falam ambos?", options:["6","7","8","9"], answer:2, explain:"Falam algum: 40 − 5 = 35. Ambos: 25 + 18 − 35 = 8."},
-{q:"A negação de 'Algum servidor é faltoso' é:", options:["Algum servidor não é faltoso","Todo servidor é faltoso","Todo faltoso é servidor","Nenhum servidor é faltoso"], answer:3, explain:"Negar 'Algum A é B' dá 'Nenhum A é B'."}
+{q:"Dadas as premissas 'Nenhum técnico é juiz' e 'Algum servidor é técnico', conclui-se necessariamente que:", options:["Algum servidor é juiz","Nenhum servidor é juiz","Algum servidor não é juiz","Todo servidor é técnico"], answer:2, explain:"O servidor que pertence a 'técnico' está obrigatoriamente fora de 'juiz'; logo, algum servidor não é juiz."},
+{q:"A negação lógica de 'Algum servidor é faltoso' é:", options:["Algum servidor não é faltoso","Todo servidor é faltoso","Todo faltoso é servidor","Nenhum servidor é faltoso"], answer:3, explain:"Negar 'Algum A é B' gera a universal negativa 'Nenhum A é B'."}
 ]},
-{ title:"Porcentagem, Razão e Regra de Três", pages:[
-"PORCENTAGEM\n• x% de N = (x/100)·N.\n• Desconto de 15% sobre R$ 250: 250 × 0,85 = R$ 212,50.\n• Variação percentual = (valor final − inicial)/inicial. De 80 para 100: 20/80 = 25%.\n• Aumentos sucessivos multiplicam-se: +10% e +10% = 1,1 × 1,1 = 1,21 (21%).\n• +20% seguido de −20%: 1,2 × 0,8 = 0,96, queda de 4%.",
-"RAZÃO E PROPORÇÃO\n• Razão é a divisão a/b; proporção é a igualdade a/b = c/d (produto dos meios = produto dos extremos).\n• Divisão proporcional: dividir 40 na razão 3:5. Partes = 3 + 5 = 8; cada parte = 40/8 = 5; resultados: 15 e 25.\n• Média ponderada = soma dos (valor × peso) dividida pela soma dos pesos.",
-"REGRA DE TRÊS SIMPLES\n• Direta (grandezas crescem juntas): 6 canetas custam R$ 15; 10 canetas custam x. x = 15 × 10/6 = R$ 25.\n• Inversa (uma cresce, a outra diminui): 4 pedreiros fazem a obra em 12 dias; 6 pedreiros levam x. 4 × 12 = 6 × x, logo x = 8 dias.",
-"REGRA DE TRÊS COMPOSTA\n• Compare cada grandeza com a incógnita (direta ou inversa) e multiplique as razões.\n• Exemplo: 4 operários produzem 80 peças em 5 dias. Quantas peças 6 operários produzem em 10 dias? Operários e dias são diretos em relação às peças: 80 × (6/4) × (10/5) = 80 × 1,5 × 2 = 240 peças."
-], tip:"Aumentos sucessivos: multiplique os fatores (1+i). Inversa: multiplica-se em linha (produto constante).",
+{ title:"Sequências Lógicas, Verdades e Associações", pages:[
+"VERDADES, MENTIRAS E CONTRADIÇÃO (FGV)\n• Quando há declarações conflitantes ('Foi Bruno' vs. 'Não foi Bruno'), formam um par contraditório: exatamente 1 fala V e 1 fala F.\n• Sabendo quantos mentem, teste a hipótese em cada suspeito até restar uma única atribuição sem contradição interna.\n• Atenção a declarações condicionais ou conjuntas de suspeitos.",
+"ASSOCIAÇÃO LÓGICA (TABELAS DE CORRELAÇÃO)\n• Quando o enunciado relaciona N pessoas, N profissões e N cidades, monte uma grade com ✓ e ✗.\n• Cada pista negativa elimina casas com ✗; ao restar apenas uma opção na linha ou coluna, marque ✓ e elimine o resto da mesma linha/coluna.\n• O método evita perda de tempo com tentativas aleatórias.",
+"SEQUÊNCIAS LÓGICAS E ORIENTAÇÃO TEMPORAL/ESPACIAL\n• Teste padrões não-aritméticos cobrados em RLM: alternância (duas séries intercaladas), Fibonacci (soma dos 2 anteriores), posição alfabética e ciclos de calendário.\n• Calendário: dividir o deslocamento em dias por 7 dá o resto (dia da semana após k dias = módulo 7).\n• Orientação espacial: desenhe setas N/S/L/O e rotações horárias/anti-horárias passo a passo."
+], tip:"Em Verdades & Mentiras, procure frases contraditórias primeiro! Em calendário, o resto da divisão por 7 decide o dia.",
 quiz:[
-{q:"Um produto de R$ 250,00 recebe 15% de desconto. O preço final é:", options:["R$ 212,50","R$ 210,00","R$ 215,00","R$ 237,50"], answer:0, explain:"250 × 0,85 = 212,50."},
-{q:"Se 4 pedreiros constroem um muro em 12 dias, 6 pedreiros, no mesmo ritmo, construirão em quantos dias?", options:["6","9","8","18"], answer:2, explain:"Grandezas inversas: 4 × 12 = 6 × x, logo x = 8 dias."}
-]},
-{ title:"Juros Simples e Compostos", pages:[
-"JUROS SIMPLES\n• Incidem sempre sobre o capital inicial: J = C·i·t; M = C + J.\n• A taxa e o tempo devem estar na mesma unidade.\n• Exemplo: C = R$ 2.000, 3% ao mês, 5 meses: J = 2000 × 0,03 × 5 = R$ 300; M = R$ 2.300.\n• Crescimento linear (progressão aritmética).",
-"JUROS COMPOSTOS\n• Juros sobre juros: M = C·(1+i)^t.\n• Exemplo: R$ 1.000 a 10% ao ano por 2 anos: 1000 × 1,1² = R$ 1.210 (juros de R$ 210).\n• Por 3 anos: 1000 × 1,331 = R$ 1.331.\n• Crescimento exponencial (progressão geométrica).\n• No 1º período, simples e compostos dão o mesmo resultado.",
-"TAXAS\n• Taxas proporcionais (juros simples): 12% ao ano = 1% ao mês.\n• Taxas equivalentes (juros compostos): (1+i_anual) = (1+i_mensal)^12.\n• Em prazos maiores que 1 período, compostos rendem mais que simples; em prazos menores que 1, o simples rende mais.\n• Em juros compostos, taxas de períodos diferentes não se somam: compõem-se por multiplicação."
-], tip:"Simples: J = C·i·t (linear). Composto: M = C·(1+i)^t (exponencial).",
-quiz:[
-{q:"Um capital de R$ 2.000,00 aplicado a juros simples de 3% ao mês durante 5 meses gera um montante de:", options:["R$ 2.150,00","R$ 2.600,00","R$ 2.030,00","R$ 2.300,00"], answer:3, explain:"J = 2000 × 0,03 × 5 = 300; M = 2000 + 300 = R$ 2.300."},
-{q:"R$ 5.000,00 a juros compostos de 10% ao ano, por 2 anos, resultam em:", options:["R$ 6.050,00","R$ 6.000,00","R$ 5.500,00","R$ 6.500,00"], answer:0, explain:"M = 5000 × 1,1² = 5000 × 1,21 = R$ 6.050."}
-]},
-{ title:"Combinatória, Probabilidade e Sequências", pages:[
-"ANÁLISE COMBINATÓRIA\n• Princípio multiplicativo: etapas independentes multiplicam-se.\n• Fatorial: n! = n·(n−1)···1.\n• Permutação: P = n! (anagramas de CASA: 4!/2! = 12, pois há 2 letras A).\n• Arranjo (ordem importa): A(n,p) = n!/(n−p)!; A(5,2) = 20.\n• Combinação (ordem não importa): C(n,p) = n!/[p!(n−p)!]; C(5,2) = 10.",
-"PROBABILIDADE\n• P = casos favoráveis / casos possíveis.\n• Dado: P(par) = 3/6 = 1/2.\n• Dois dados, soma 7: 6 casos em 36 = 1/6.\n• Complementar: P(não A) = 1 − P(A).\n• Eventos independentes (E): multiplica; duas caras em duas moedas = 1/2 × 1/2 = 1/4.\n• Eventos mutuamente exclusivos (OU): soma.",
-"PROGRESSÃO ARITMÉTICA (PA)\n• Razão r constante: an = a1 + (n−1)·r.\n• Soma: Sn = (a1 + an)·n/2.\n• Exemplo: 3, 7, 11...: a10 = 3 + 9×4 = 39; S10 = (3+39)×10/2 = 210.\n• Soma de 1 a 100 = (1+100)×100/2 = 5050.",
-"PROGRESSÃO GEOMÉTRICA (PG)\n• Razão q constante: an = a1·q^(n−1).\n• Exemplo: 2, 6, 18...: q = 3; a5 = 2 × 3⁴ = 162.\n• Em sequências de provas, teste primeiro diferença constante (PA), depois razão constante (PG), depois diferenças das diferenças ou padrões alternados (duas sequências intercaladas)."
-], tip:"Ordem importa = arranjo; ordem não importa = combinação. Independentes: multiplica.",
-quiz:[
-{q:"De quantas formas é possível escolher 2 pessoas entre 5 para formar uma comissão (sem funções distintas)?", options:["20","10","7","5"], answer:1, explain:"Ordem não importa: C(5,2) = 5!/(2!·3!) = 10."},
-{q:"Lançando dois dados honestos, a probabilidade de a soma ser 7 é:", options:["1/12","1/9","1/6","7/36"], answer:2, explain:"Há 6 casos favoráveis (1+6, 2+5, 3+4, 4+3, 5+2, 6+1) em 36: 6/36 = 1/6."}
+{q:"Três suspeitos: Ana diz 'Foi Bruno'; Bruno diz 'Ana mente'; Carlos diz 'Não fui eu'. Sabendo que apenas UM diz a verdade, quem cometeu o fato?", options:["Ana","Bruno","Carlos","Não é possível saber"], answer:2, explain:"Ana e Bruno se contradizem (1 fala V e 1 fala F), logo Carlos obrigatoriamente mente: 'Não fui eu' é F, portanto o fato foi cometido por Carlos (conferindo: Ana F, Bruno V, Carlos F)."},
+{q:"Hoje é quarta-feira. Daqui a 100 dias será:", options:["terça-feira","quinta-feira","sexta-feira","sábado"], answer:2, explain:"100 ÷ 7 = 14 semanas exatas com resto 2. Quarta + 2 dias = quinta (+1), sexta (+2)."}
 ]}
 ]};

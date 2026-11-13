@@ -1,4 +1,4 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Governança de TI — aulas visuais</title><link rel="stylesheet" href="aula.css?v=6">
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Governança de TI — aulas visuais</title><link rel="stylesheet" href="aula.css?v=7">
 <style>
 .mini{font-size:15.5px}
 .cmp td,.cmp th{padding:7px 9px}
@@ -474,11 +474,11 @@
 </section>
 
 <!-- ===================================================== CAPÍTULO 4 ===================================================== -->
-<section class="chapter" data-title="Projetos, Processos, Serviços e Indicadores">
+<section class="chapter" data-title="Projetos, Processos (BPMN), Serviços e Indicadores">
 
 <div class="slide">
   <span class="tag">CAPÍTULO 4</span>
-  <h1>Projetos, Processos, Serviços e Indicadores</h1>
+  <h1>Projetos, Processos (BPMN), Serviços e Indicadores</h1>
   <span class="emoji">📊</span>
   <div class="steps">
     <div class="step"><b>1. Projeto × Processo × Serviço</b><span>Temporário × contínuo × entrega de valor.</span></div>
@@ -499,6 +499,29 @@
     <tr><td><b>Serviço</b></td><td class="hk"><b>Entrega contínua de valor</b></td><td>Cliente atinge resultado sem gerir risco</td><td>Disponibilizar o PJe 24x7 para advogados</td></tr>
   </table></div>
   <div class="say law">Em <b>BPM (Gerenciamento de Processos de Negócio)</b>, primeiro mapeia-se o estado atual (<b>AS-IS</b>) para depois redesenhar o processo melhorado (<b>TO-BE</b>), automatizar e monitorar.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">NOTAÇÃO BPMN 2.0</span>
+  <h2>Eventos, Atividades, Gateways e Rais (Lanes)</h2>
+  <svg viewBox="0 0 700 170" role="img" aria-label="Elementos BPMN: Evento de Início, Tarefa, Gateway Exclusivo XOR e Evento de Fim">
+    <circle cx="55" cy="85" r="24" fill="#e6faee" stroke="#2ea043" stroke-width="3"/>
+    <text x="55" y="130" text-anchor="middle" font-size="12" font-weight="700">Início (Fino)</text>
+    <rect x="130" y="55" width="130" height="60" rx="10" fill="#eef1ff" stroke="#6d4aff" stroke-width="2"/>
+    <text x="195" y="90" text-anchor="middle" font-size="13" font-weight="700">Atividade / Tarefa</text>
+    <polygon points="355,50 390,85 355,120 320,85" fill="#fff6da" stroke="#d99a00" stroke-width="2.5"/>
+    <text x="355" y="92" text-anchor="middle" font-size="22" font-weight="700" fill="#705000">×</text>
+    <text x="355" y="140" text-anchor="middle" font-size="12" font-weight="700">Gateway XOR (1 caminho)</text>
+    <rect x="445" y="55" width="120" height="60" rx="10" fill="#eef1ff" stroke="#6d4aff" stroke-width="2"/>
+    <text x="505" y="90" text-anchor="middle" font-size="13" font-weight="700">Subprocesso</text>
+    <circle cx="635" cy="85" r="24" fill="#fdebec" stroke="#e5484d" stroke-width="6"/>
+    <text x="635" y="130" text-anchor="middle" font-size="12" font-weight="700">Fim (Grosso)</text>
+    <line x1="79" y1="85" x2="130" y2="85" stroke="#6d4aff" stroke-width="2"/>
+    <line x1="260" y1="85" x2="320" y2="85" stroke="#6d4aff" stroke-width="2"/>
+    <line x1="390" y1="85" x2="445" y2="85" stroke="#6d4aff" stroke-width="2"/>
+    <line x1="565" y1="85" x2="609" y2="85" stroke="#6d4aff" stroke-width="2"/>
+  </svg>
+  <p class="mini"><b>Gateways:</b> <b>× Exclusivo (XOR)</b> escolhe só 1 saída; <b>+ Paralelo (AND)</b> executa todos os ramos simultaneamente sem condição; <b>○ Inclusivo (OR)</b> segue 1 ou mais ramos válidos. <b>Pool</b> = organização/processo; <b>Lane</b> = papel/setor.</p>
 </div>
 
 <div class="slide">
@@ -717,13 +740,14 @@
 </div>
 
 <div class="slide">
-  <span class="tag">PRECAUÇÃO NORMATIVA</span>
-  <h2>O que conferir no texto oficial da Res. CNJ 468/2022</h2>
+  <span class="tag">REGRAS LITERAIS DA RES. CNJ 468/2022</span>
+  <h2>Artigos que derrubam candidatos (Arts. 6º a 9º)</h2>
   <div class="say law">
-    <p>Em prova discursiva ou objetiva da FGV, nunca chute número de artigo ou prazo se não tiver certeza absoluta:</p>
+    <p>Confirmado direto no texto oficial da <b>Res. CNJ 468/2022</b> (Acervo Oficial, tecla F):</p>
     <ul class="mini">
-      <li>Confira no texto oficial da <b>Res. CNJ 468/2022</b> os artigos exatos sobre vedações, dispensa de ETP em casos específicos, prazos de transição e modelos de contratação em nuvem/software.</li>
-      <li>Confira também a relação com a <b>Lei 14.133/2021</b> (Nova Lei de Licitações) e o <b>Guia de Contratações de STIC do Poder Judiciário</b>.</li>
+      <li><b>Art. 7º, parágrafo único:</b> O integrante <b>administrativo</b> da Equipe de Planejamento <b>NÃO poderá ser servidor da área de TIC</b> (salvo situação excepcional devidamente fundamentada)!</li>
+      <li><b>Art. 8º, caput e §2º:</b> É vedado contratar terceirizada para gerir processos de TIC; e a empresa que <b>provê</b> a solução de TIC <b>NÃO pode ser a mesma que avalia, mensura e/ou fiscaliza</b>!</li>
+      <li><b>Art. 9º (Vedações):</b> Proibido subordinação direta, indicar funcionários da contratada, fixar salário em edital (salvo exceções) ou exigir tarefa estranha ao objeto.</li>
     </ul>
   </div>
 </div>
@@ -772,5 +796,5 @@
 
 </section>
 
-<script src="aula.js?v=6"></script>
+<script src="aula.js?v=7"></script>
 </body></html>

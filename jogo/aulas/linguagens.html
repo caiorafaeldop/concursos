@@ -1,4 +1,4 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Linguagens e Frameworks — aulas visuais</title><link rel="stylesheet" href="aula.css?v=6">
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Linguagens e Frameworks — aulas visuais</title><link rel="stylesheet" href="aula.css?v=7">
 <style>
 pre{background:#1b1f2a;color:#e9ecf3;border-radius:12px;padding:10px 14px;margin:8px 0;overflow-x:auto;font:14px/1.5 ui-monospace,Consolas,"Cascadia Mono",monospace;white-space:pre}
 pre code{background:none;padding:0;font-size:inherit;color:inherit;border-radius:0}
@@ -998,19 +998,34 @@ setLista(lista);   <span class="c">// mesma referência</span></code></pre></div
 </section>
 
 <!-- ===================================================== CAPÍTULO 5 ===================================================== -->
-<section class="chapter" data-title="Python (FastAPI e Django), Dart e Flutter">
+<section class="chapter" data-title="Python Moderno, FastAPI e Django (MTV e ORM)">
 
 <div class="slide">
   <span class="tag">CAPÍTULO 5</span>
-  <h1>Python, Dart e Flutter</h1>
+  <h1>Python Moderno, FastAPI e Django (MTV e ORM)</h1>
   <span class="emoji">🐍</span>
   <div class="steps">
-    <div class="step"><b>1. Django (MTV)</b><span>Baterias inclusas, ORM próprio e templates no servidor.</span></div>
-    <div class="step"><b>2. FastAPI</b><span>APIs assíncronas rápidas com type hints e Pydantic.</span></div>
-    <div class="step"><b>3. Dart</b><span>Null safety, <code>final</code>/<code>const</code> e <code>Future</code>/<code>Stream</code>.</span></div>
-    <div class="step"><b>4. Flutter</b><span>Tudo é Widget, ciclo de vida, layout, rotas e estado.</span></div>
+    <div class="step"><b>1. Python na Prova</b><span>List comprehensions, mutáveis default, decoradores e typing.</span></div>
+    <div class="step"><b>2. Django (MTV)</b><span>Model, Template, View (=Controller) e middlewares.</span></div>
+    <div class="step"><b>3. Django ORM N+1</b><span>QuerySet lazy, select_related (JOIN) vs prefetch_related.</span></div>
+    <div class="step"><b>4. FastAPI (ASGI)</b><span>Pydantic v2, Depends(), OpenAPI automático e async def vs def.</span></div>
   </div>
-  <div class="analogy"><span class="emoji">🧰</span><div><b>Analogia do dia:</b> o <b>Django</b> é um kit completo de cozinha industrial (já vem com fogão, panela e estoque). O <b>FastAPI</b> é um food truck moderno e ágil: foca só em entregar pedidos via API na velocidade máxima. Já o <b>Flutter</b> é o salão colorido onde cada cadeira e placa é um <b>Widget</b> desenhado pelo Dart.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">PYTHON ARMADILHAS</span>
+  <h2>Pegadinhas clássicas de Python no código</h2>
+<pre><code><span class="c"># ERRADO: lista mutavel padrao eh compartilhada entre chamadas!</span>
+def add_item(x, lista=[]):
+    lista.append(x)
+    return lista  <span class="c"># add_item(1)->[1], add_item(2)->[1,2]!</span>
+
+<span class="c"># CERTO: use None e instancie dentro da funcao</span>
+def add_item_ok(x, lista=None):
+    lista = [] if lista is None else lista
+    lista.append(x)
+    return lista</code></pre>
+  <p class="mini"><b>Decoradores (@decorator):</b> recebem uma função e retornam outra modificada (ex.: <code>@login_required</code>, <code>@lru_cache</code>). <b>Compreensão de lista:</b> <code>[x*2 for x in nums if x &gt; 0]</code>.</p>
 </div>
 
 <div class="slide">
@@ -1029,105 +1044,145 @@ setLista(lista);   <span class="c">// mesma referência</span></code></pre></div
     <line class="ar" x1="665" y1="136" x2="730" y2="89" marker-end="url(#m51)"/>
     <rect class="box" x="735" y="55" width="130" height="68" rx="12"/><text x="800" y="84" text-anchor="middle">Resposta</text><text x="800" y="104" text-anchor="middle" class="small">HTML ou JSON</text>
   </svg>
-  <div class="say law"><b>MTV no Django:</b> <b>Model</b> = camada de dados/ORM; <b>Template</b> = camada de apresentação (HTML); <b>View</b> = função/classe Python que recebe a requisição e decide o que devolver (papel do <i>Controller</i> no MVC).</div>
+  <div class="say law"><b>MTV no Django:</b> <b>Model</b> = dados/ORM; <b>Template</b> = HTML (View do MVC); <b>View</b> = função/classe Python que recebe a requisição (Controller do MVC).</div>
 </div>
 
 <div class="slide">
-  <span class="tag">PYTHON: FASTAPI VS DJANGO</span>
+  <span class="tag">DJANGO ORM &amp; MIGRATIONS</span>
+  <h2>QuerySet Lazy, <code>select_related</code> vs <code>prefetch_related</code></h2>
+<pre><code><span class="c"># QuerySet eh LAZY: esta linha NAO bate no banco ainda!</span>
+qs = Processo.objects.filter(ativo=True)
+
+<span class="c"># FK / 1:1 -> SQL JOIN (1 query)</span>
+procs = Processo.objects.select_related(<span class="r">'vara'</span>).all()
+
+<span class="c"># ManyToMany / reverso -> 2 queries + juncao em Python</span>
+procs = Processo.objects.prefetch_related(<span class="r">'partes'</span>).all()</code></pre>
+  <p class="mini"><b>Migrations:</b> <code>makemigrations</code> gera o arquivo de alteração a partir dos Models; <code>migrate</code> aplica no banco. Para atomicidade, use <code>@transaction.atomic</code>.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">FASTAPI VS DJANGO</span>
   <h2>Quando escolher FastAPI ou Django?</h2>
   <table class="cmp mini">
-    <tr><th>Critério</th><th>Django</th><th>FastAPI</th></tr>
-    <tr><td><b>Estilo</b></td><td>Full-stack (“baterias inclusas”)</td><td>Microframework focado em APIs</td></tr>
-    <tr><td><b>Base</b></td><td>WSGI (padrão) ou ASGI</td><td>ASGI nativo (Starlette + Uvicorn)</td></tr>
-    <tr><td><b>Validação</b></td><td>Forms / ModelForms (ou DRF)</td><td><b>Pydantic</b> + <i>type hints</i> do Python</td></tr>
-    <tr><td><b>Docs API</b></td><td>Exige pacotes (ex.: drf-spectacular)</td><td><b>OpenAPI / Swagger</b> automático</td></tr>
-    <tr><td><b>Banco / Admin</b></td><td>ORM próprio, migrations e Admin prontos</td><td>Agnóstico (você escolhe SQLAlchemy etc.)</td></tr>
+    <tr><th>Critério</th><th>Django (+ DRF)</th><th>FastAPI</th></tr>
+    <tr><td><b>Estilo</b></td><td>Full-stack (“baterias inclusas”)</td><td>Microframework focado em APIs modernas</td></tr>
+    <tr><td><b>Protocolo</b></td><td>WSGI (clássico) / ASGI opcional</td><td><b>ASGI nativo</b> (Starlette + Uvicorn)</td></tr>
+    <tr><td><b>Validação</b></td><td>Forms / ModelForms / DRF Serializers</td><td><b>Pydantic</b> + <i>type hints</i> do Python</td></tr>
+    <tr><td><b>Docs API</b></td><td>Pacotes externos (ex.: drf-spectacular)</td><td><b>OpenAPI / Swagger UI</b> gerado automaticamente</td></tr>
   </table>
-  <pre><code><span class="c"># FastAPI: type hints validam entrada, geram Swagger e injetam dependências</span>
-<span class="kw">@app.get</span>(<span class="r">"/processos/{num}"</span>)
-<span class="kw">async def</span> buscar(num: <mark>int</mark>, db = <mark>Depends(get_db)</mark>):
-    <span class="kw">return</span> {<span class="r">"numero"</span>: num}</code></pre>
 </div>
 
 <div class="slide">
-  <span class="tag">PYTHON: PEGADINHAS</span>
-  <h2>Event loop do FastAPI e QuerySet lazy do Django</h2>
-  <div class="two">
-    <div class="card">
-      <h4>⚡ FastAPI: <code>async def</code> vs <code>def</code></h4>
-      <p>Funções <code>async def</code> rodam direto no <b>event loop</b>. Se você colocar uma chamada de banco síncrona (bloqueante) lá dentro, trava todas as requisições!</p>
-      <p class="ex ok">Use <code>async def</code> só com I/O assíncrono (<code>await</code>).</p>
-      <p class="ex ok">Se a lib for síncrona, declare <code>def</code> normal: o FastAPI joga para uma <i>threadpool</i>.</p>
-    </div>
-    <div class="card">
-      <h4>🐢 Django ORM: <i>Lazy</i> e N+1</h4>
-      <p>Um <code>QuerySet</code> é <b>preguiçoso (lazy)</b>: criar o filtro não consulta o banco; só executa quando você itera, fatia ou chama <code>list()</code>.</p>
-      <p><b>Para evitar N+1 queries:</b></p>
-      <ul>
-        <li><code>select_related()</code> → 1:1 e ForeignKey (faz <b>SQL JOIN</b>).</li>
-        <li><code>prefetch_related()</code> → M2M e reversos (faz 2 queries e junta em Python).</li>
-      </ul>
-    </div>
+  <span class="tag">FASTAPI NA PRÁTICA</span>
+  <h2>Pydantic, <code>Depends()</code> e Event Loop</h2>
+<pre><code><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI, Depends
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel, Field
+
+<span class="kw">class</span> PeticaoIn(BaseModel):
+    numero: str = Field(min_length=20)
+    urgente: bool = False
+
+<span class="kw">@app.post</span>(<span class="r">"/peticoes"</span>, status_code=201)
+<span class="kw">async def</span> criar(body: PeticaoIn, user = <mark>Depends(usuario_atual)</mark>):
+    <span class="kw">return</span> {<span class="r">"autor"</span>: user.id, <span class="r">"num"</span>: body.numero}</code></pre>
+  <div class="say trap"><b>Pegadinha mortal do FastAPI:</b> nunca chame I/O bloqueante (driver SQL síncrono, <code>requests.get</code>, <code>time.sleep</code>) dentro de <code>async def</code> — trava o event loop inteiro! Para bibliotecas síncronas, declare <code>def</code> normal (threadpool automática).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">GIL × ASYNC × MULTIPROCESSING</span>
+  <h2>Concorrência em Python: qual escolher?</h2>
+  <table class="cmp mini">
+    <tr><th>Cenário</th><th>Abordagem</th><th>Por quê?</th></tr>
+    <tr><td>I/O intenso (APIs, BD assíncrono)</td><td><code>asyncio</code> / FastAPI <code>async def</code></td><td>Event loop alterna corrotinas durante esperas de rede</td></tr>
+    <tr><td>CPU pesada (PDF, ML, criptografia)</td><td><code>multiprocessing</code> / Workers separados</td><td>Escapa do <b>GIL</b> (Global Interpreter Lock) usando múltiplos processos</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO</span>
+  <h2>Checklist Python — FGV</h2>
+  <ul class="checklist">
+    <li>Argumento default nunca deve ser lista/dict mutável (use <code>None</code>).</li>
+    <li>Django MTV: <b>View</b> = Controller; <b>Template</b> = tela; <code>select_related</code> (JOIN) vs <code>prefetch_related</code> (M2M).</li>
+    <li>FastAPI = ASGI + Pydantic + OpenAPI automático + <code>Depends()</code>.</li>
+    <li>I/O síncrono em FastAPI vai em <code>def</code>, jamais dentro de <code>async def</code>.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Validação FGV — Cap. 5</h2>
+  <details><summary>1. No Django, qual componente do padrão MTV corresponde ao Controller do MVC?</summary><p><b>A View.</b> A View recebe a requisição via URL e devolve Template ou JSON.</p></details>
+  <details><summary>2. Em FastAPI, o que acontece ao declarar <code>async def</code> usando driver síncrono bloqueante?</summary><p><b>Bloqueia o event loop</b>; use <code>def</code> normal para rodar no threadpool do FastAPI/AnyIO.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 6 ===================================================== -->
+<section class="chapter" data-title="Dart Moderno e Arquitetura Flutter (Widgets, Ciclo e Navegação)">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 6</span>
+  <h1>Dart Moderno e Arquitetura Flutter (Widgets, Ciclo e Navegação)</h1>
+  <span class="emoji">🦋</span>
+  <div class="steps">
+    <div class="step"><b>1. Dart moderno</b><span>Null safety (?. / ?? / !), final × const e Future × Stream.</span></div>
+    <div class="step"><b>2. As 3 árvores</b><span>Widgets (imutáveis) → Elements (State) → RenderObjects.</span></div>
+    <div class="step"><b>3. Ciclo do State</b><span>createState → initState (1x) → build (Nx) → dispose.</span></div>
+    <div class="step"><b>4. Layout &amp; Rotas</b><span>Constraints go down, Expanded/Stack e Navigator 1 vs go_router.</span></div>
   </div>
-  <div class="say trap">A banca adora trocar <code>select_related</code> (JOIN no SQL para relação única) com <code>prefetch_related</code> (consultas separadas para coleções/M2M), ou dizer que <code>QuerySet</code> executa SQL na linha em que <code>filter()</code> é chamado.</div>
 </div>
 
 <div class="slide">
   <span class="tag">DART ESSENCIAL</span>
-  <h2>Null safety, imutabilidade e assincronia</h2>
+  <h2><code>var</code>, <code>dynamic</code>, <code>final</code>, <code>const</code> e Null Safety</h2>
   <table class="cmp mini">
-    <tr><th>Palavra-chave</th><th>Pode reatribuir?</th><th>Quando o valor é definido?</th><th>Exemplo</th></tr>
+    <tr><th>Palavra-chave</th><th>Reatribui?</th><th>Quando define o valor?</th><th>Exemplo</th></tr>
     <tr><td><code>var</code></td><td>Sim (mesmo tipo inferido)</td><td>Execução</td><td><code>var x = 10;</code></td></tr>
-    <tr><td><code>dynamic</code></td><td>Sim (muda até o tipo!)</td><td>Execução (sem checagem estática)</td><td><code>dynamic d = "oi"; d = 5;</code></td></tr>
+    <tr><td><code>dynamic</code></td><td>Sim (muda tipo!)</td><td>Execução (sem checagem estática)</td><td><code>dynamic d = "oi"; d = 5;</code></td></tr>
     <tr><td><code>final</code></td><td><b>Não</b> (1 atribuição)</td><td>Tempo de <b>execução</b></td><td><code>final agora = DateTime.now();</code></td></tr>
     <tr><td><code>const</code></td><td><b>Não</b> (profundamente imutável)</td><td>Tempo de <b>compilação</b></td><td><code>const pi = 3.14;</code></td></tr>
   </table>
-  <div class="two">
-    <div class="say law"><b>Null Safety:</b> por padrão, <code>String nome</code> <b>não aceita <code>null</code></b>. Para aceitar, use <code>String?</code>. Operadores: <code>?.</code> (acesso seguro), <code>??</code> (valor padrão se nulo) e <code>!</code> (garante que não é nulo — lança erro se for).</div>
-    <div class="card">
-      <h4>⏳ Future vs Stream</h4>
-      <p><b><code>Future&lt;T&gt;</code></b>: entrega <b>1 valor</b> (ou erro) no futuro → usa <code>async</code> / <code>await</code>.</p>
-      <p><b><code>Stream&lt;T&gt;</code></b>: entrega <b>vários valores</b> ao longo do tempo → usa <code>async*</code> / <code>yield</code> e <code>await for</code>.</p>
-    </div>
-  </div>
+  <div class="say law"><b>Sound Null Safety:</b> <code>String s</code> nunca aceita <code>null</code>; <code>String?</code> aceita. Operadores: <code>s?.length</code> (seguro), <code>s ?? 'padrão'</code> (fallback) e <code>s!</code> (assert não nulo — lança erro em runtime se for <code>null</code>).</div>
 </div>
 
 <div class="slide">
-  <span class="tag">FLUTTER: ARQUITETURA</span>
-  <h2>Tudo é Widget — e as 3 árvores por baixo</h2>
+  <span class="tag">ASSINCRONIA EM DART</span>
+  <h2><code>Future</code> vs <code>Stream</code> e Isolates</h2>
+  <div class="grid2">
+    <div class="card"><h4>⏳ Future&lt;T&gt;</h4><p>Entrega <b>1 único resultado</b> (ou erro) no futuro. Consumido com <code>async / await</code> ou <code>FutureBuilder</code>.</p></div>
+    <div class="card"><h4>🌊 Stream&lt;T&gt;</h4><p>Entrega <b>sequência de eventos</b> ao longo do tempo (<code>async* / yield</code>). Consumido com <code>await for</code> ou <code>StreamBuilder</code>.</p></div>
+  </div>
+  <p class="mini"><b>Isolates:</b> Dart tem memória isolada por thread (sem memória compartilhada); trabalho CPU pesado usa <code>Isolate.run()</code> para não travar os 60/120 fps da UI.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">ARQUITETURA FLUTTER</span>
+  <h2>As 3 árvores por baixo de cada tela</h2>
   <svg viewBox="0 0 880 175" role="img" aria-label="As três árvores do Flutter: Widget cria Element que gerencia RenderObject">
     <defs><marker id="m52" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arh"/></marker></defs>
     <rect class="accbox" x="20" y="30" width="240" height="110" rx="14"/>
     <text x="140" y="62" text-anchor="middle">1. Árvore de Widgets</text>
     <text x="140" y="86" text-anchor="middle" class="small">Configuração IMUTÁVEL</text>
-    <text x="140" y="106" text-anchor="middle" class="small">“A planta da casa” (barata)</text>
+    <text x="140" y="106" text-anchor="middle" class="small">“Planta leve” (recriada)</text>
     <line class="ar" x1="260" y1="85" x2="315" y2="85" marker-end="url(#m52)"/>
     <rect class="keybox" x="320" y="30" width="240" height="110" rx="14"/>
     <text x="440" y="62" text-anchor="middle" class="kt">2. Árvore de Elements</text>
     <text x="440" y="86" text-anchor="middle" class="kt" style="font-size:13px">Ciclo de vida e State</text>
-    <text x="440" y="106" text-anchor="middle" class="kt" style="font-size:13px">Reaproveita quando pode</text>
+    <text x="440" y="106" text-anchor="middle" class="kt" style="font-size:13px">Reconcilia e reaproveita</text>
     <line class="ar" x1="560" y1="85" x2="615" y2="85" marker-end="url(#m52)"/>
     <rect class="okbox" x="620" y="30" width="240" height="110" rx="14"/>
     <text x="740" y="62" text-anchor="middle">3. RenderObjects</text>
-    <text x="740" y="86" text-anchor="middle" class="small">Tamanho, posição e pintura</text>
-    <text x="740" y="106" text-anchor="middle" class="small">Desenha via motor gráfico</text>
+    <text x="740" y="86" text-anchor="middle" class="small">Layout, posição e pintura</text>
+    <text x="740" y="106" text-anchor="middle" class="small">Motor Impeller / Skia</text>
   </svg>
-  <div class="say law"><b>Por que reconstruir Widgets é rápido?</b> Widgets são objetos leves e <b>imutáveis</b>. Quando o estado muda, o Flutter recria a árvore de Widgets, mas a árvore de <b>Elements</b> compara as alterações e atualiza só os <b>RenderObjects</b> necessários (usando <code>Key</code> para identificar itens em listas).</div>
+  <p class="mini"><b>Keys:</b> <code>ValueKey</code>/<code>ObjectKey</code> garantem que o <b>Element</b> e o <b>State</b> continuem ligados ao item certo ao reordenar ou inserir elementos numa lista.</p>
 </div>
 
 <div class="slide">
-  <span class="tag">FLUTTER: CICLO DE VIDA</span>
+  <span class="tag">CICLO DE VIDA</span>
   <h2>StatelessWidget × StatefulWidget</h2>
-  <div class="two">
-    <div class="card">
-      <h4>🪨 StatelessWidget</h4>
-      <p>Não guarda estado interno mutável. Só depende dos parâmetros recebidos no construtor. Tem apenas o método <code>build(BuildContext)</code>.</p>
-    </div>
-    <div class="card">
-      <h4>🔄 StatefulWidget</h4>
-      <p>Tem um objeto <b><code>State&lt;T&gt;</code></b> separado que sobrevive às reconstruções do widget. Chamar <code>setState(() { ... })</code> marca o widget como sujo para rodar <code>build()</code> de novo.</p>
-    </div>
-  </div>
   <div class="flow">
     <span>createState()</span><i>→</i>
     <span>initState() <small>(1x)</small></span><i>→</i>
@@ -1136,71 +1191,177 @@ setLista(lista);   <span class="c">// mesma referência</span></code></pre></div
     <span>didUpdateWidget()</span><i>→</i>
     <span>dispose() <small>(fim)</small></span>
   </div>
-  <div class="say trap"><b>Pegadinha clássica:</b> colocar chamada de API ou inicialização pesada dentro de <code>build()</code> — o <code>build()</code> roda dezenas de vezes! Inicialize no <b><code>initState()</code></b> e libere controllers/streams no <b><code>dispose()</code></b>.</div>
+<pre><code><span class="kw">class</span> _TelaState <span class="kw">extends</span> State&lt;Tela&gt; {
+  <span class="kw">late final</span> TextEditingController ctrl;
+  <span class="kw">@override void</span> initState() { super.initState(); ctrl = TextEditingController(); }
+  <span class="kw">@override void</span> dispose() { ctrl.dispose(); super.dispose(); }
+}</code></pre>
+  <div class="say trap"><b>Pegadinha mortal:</b> jamais faça requisição HTTP ou crie controllers dentro de <code>build()</code> — ele executa a cada reconstrução!</div>
 </div>
 
 <div class="slide">
-  <span class="tag">FLUTTER: LAYOUT E NAVEGAÇÃO</span>
-  <h2>Regra de ouro do layout e rotas</h2>
+  <span class="tag">LAYOUT &amp; CONSTRAINTS</span>
+  <h2>“Constraints go down. Sizes go up. Parent sets position.”</h2>
   <div class="two">
     <div class="card">
-      <h4>📐 Regra do Layout</h4>
-      <p><b>“Constraints go down. Sizes go up. Parent sets position.”</b></p>
+      <h4>📐 Widgets de Layout</h4>
       <ul>
-        <li><code>Row</code> (horizontal) e <code>Column</code> (vertical): eixos <i>main</i> e <i>cross</i>.</li>
-        <li><code>Expanded</code>: ocupa o espaço restante no eixo principal.</li>
-        <li><code>Stack</code>: sobrepõe widgets (eixo Z).</li>
-        <li><code>ListView.builder</code>: lista rolável sob demanda.</li>
+        <li><code>Row</code> (horizontal) / <code>Column</code> (vertical) com <code>mainAxis</code> e <code>crossAxis</code>.</li>
+        <li><code>Expanded</code> / <code>Flexible</code>: distribui espaço restante evitando <i>overflow</i>.</li>
+        <li><code>ListView.builder</code>: renderização preguiçosa (só constrói itens visíveis na tela!).</li>
       </ul>
     </div>
     <div class="card">
-      <h4>🧭 Navegação (Rotas)</h4>
-      <ul>
-        <li><b>Imperativa (Navigator 1.0):</b> pilha de telas com <code>Navigator.push()</code> / <code>pop()</code> ou rotas nomeadas (<code>pushNamed</code>).</li>
-        <li><b>Declarativa (Router / Navigator 2.0):</b> gerencia pilha pelo estado do app e URL (deep linking), muito usada com <code>go_router</code>.</li>
-      </ul>
+      <h4>⚠️ Erro Clássico de Prova</h4>
+      <p>Colocar um <code>ListView</code> ou <code>TextField</code> direto dentro de <code>Column</code>/<code>Row</code> sem altura/largura definida dá erro de <b>unbounded constraints</b> — envolva com <code>Expanded</code> ou <code>SizedBox</code>!</p>
     </div>
   </div>
-  <div class="say trap">Colocar um <code>ListView</code> ou <code>TextField</code> sem largura/altura dentro de uma <code>Row</code>/<code>Column</code> gera erro de <i>unbounded constraints</i> — resolva envolvendo com <code>Expanded</code> ou <code>SizedBox</code>.</div>
 </div>
 
 <div class="slide">
-  <span class="tag">FLUTTER: GERÊNCIA DE ESTADO</span>
-  <h2>Provider, Riverpod, Cubit e BLoC</h2>
+  <span class="tag">NAVEGAÇÃO E DESIGN</span>
+  <h2>Material vs Cupertino e Navegação (Imperativa vs Declarativa)</h2>
   <table class="cmp mini">
-    <tr><th>Solução</th><th>Como funciona</th><th>Destaque para a prova</th></tr>
-    <tr><td><b>setState</b></td><td>Estado local dentro de um único <code>State</code></td><td>Simples; não escala para várias telas</td></tr>
-    <tr><td><b>Provider</b></td><td>Wrapper sobre <code>InheritedWidget</code> (<code>ChangeNotifier</code>)</td><td><code>context.watch()</code> escuta; <code>context.read()</code> só lê</td></tr>
-    <tr><td><b>Riverpod</b></td><td>Reescrita do Provider, independente da árvore de widgets</td><td>Seguro em compilação; não precisa de <code>BuildContext</code></td></tr>
-    <tr><td><b>Cubit</b></td><td>Versão simplificada do BLoC: métodos chamam <code>emit(estado)</code></td><td>Sem classe de Eventos; menos boilerplate</td></tr>
-    <tr><td><b>BLoC</b></td><td>Recebe <b>Events</b> → processa → emite <b>States</b> (Streams)</td><td>Separação estrita UI × regra; alta testabilidade</td></tr>
+    <tr><th>Aspecto</th><th>Opções no Flutter</th></tr>
+    <tr><td><b>Design Language</b></td><td><code>MaterialApp / Scaffold</code> (Google/Android) vs <code>CupertinoApp</code> (estilo Apple/iOS)</td></tr>
+    <tr><td><b>Imperativa (Navigator 1.0)</b></td><td>Pilha explícita com <code>Navigator.push(context, route)</code> e <code>Navigator.pop()</code></td></tr>
+    <tr><td><b>Declarativa (Router / go_router)</b></td><td>URL + estado do app determinam a pilha (essencial para <b>deep links</b> e Flutter Web)</td></tr>
   </table>
-  <div class="say trap">No <b>Provider</b>: usar <code>context.watch&lt;T&gt;()</code> dentro de um callback como <code>onPressed</code> causa erro em runtime; em callbacks use sempre <b><code>context.read&lt;T&gt;()</code></b> (e <code>watch</code> dentro do <code>build</code>).</div>
 </div>
 
 <div class="slide">
-  <span class="tag">RESUMO</span>
-  <h2>O que levar para a prova</h2>
-  <div class="magic">Pergunta mágica: “Quem valida/controla os dados e onde mora o estado?”<small>Django (View = lógica, Template = HTML) · FastAPI (async + Pydantic) · Dart (null safety + const/final) · Flutter (Widgets imutáveis + State).</small></div>
+  <span class="tag">RESUMO DO CAPÍTULO</span>
+  <h2>Cola de bolso — Dart &amp; Flutter</h2>
   <ul class="checklist">
-    <li>Django usa <b>MTV</b>: Model (ORM/migrations), Template (HTML), View (lógica).</li>
-    <li>Django <code>QuerySet</code> é <i>lazy</i>; <code>select_related</code> = JOIN (FK/1:1); <code>prefetch_related</code> = 2 queries (M2M).</li>
-    <li>FastAPI = ASGI + <b>Pydantic</b> + OpenAPI automático + <code>Depends()</code>; I/O síncrono vai em <code>def</code>, não <code>async def</code>.</li>
-    <li>Dart: <code>final</code> é runtime, <code>const</code> é compile-time; <code>String?</code> aceita nulo; <code>Stream</code> emite vários valores.</li>
-    <li>Flutter: 3 árvores (Widget → Element → RenderObject); <code>initState</code> inicia, <code>dispose</code> limpa.</li>
-    <li>Layout: constraints descem, tamanhos sobem, pai posiciona; Navigator (pilha) vs Router (declarativo).</li>
-    <li>Estado: Provider (<code>watch</code>/<code>read</code>), Riverpod (sem context), Cubit (métodos→estados), BLoC (eventos→estados).</li>
+    <li><code>final</code> = 1 atribuição em runtime; <code>const</code> = constante em compile-time.</li>
+    <li><code>Future</code> = 1 valor futuro; <code>Stream</code> = fluxo contínuo de eventos.</li>
+    <li>3 Árvores: Widget (imutável) → Element (estado) → RenderObject (desenho).</li>
+    <li><code>initState</code> inicializa 1x; <code>dispose</code> libera controllers/assinaturas; <code>build</code> nunca faz I/O.</li>
   </ul>
 </div>
 
 <div class="slide">
   <span class="tag">TESTE RÁPIDO</span>
-  <h2>Estilo FGV: resolva antes de abrir</h2>
-  <details><summary>1. No Django, qual componente do padrão MTV corresponde ao Controller do MVC?</summary><p><b>A View.</b> No Django, a <b>View</b> contém a lógica que recebe a requisição e retorna a resposta; o <b>Template</b> é a camada de apresentação.</p></details>
-  <details><summary>2. Em FastAPI, o que acontece ao declarar uma rota com <code>async def</code> que faz consulta bloqueante (síncrona) ao banco?</summary><p><b>Bloqueia o event loop</b> e trava a concorrência das demais requisições. Para bibliotecas síncronas, deve-se usar <code>def</code> normal (executado em threadpool).</p></details>
-  <details><summary>3. Em Dart, qual a diferença entre <code>final</code> e <code>const</code>?</summary><p><b><code>final</code></b> é atribuído uma única vez em <b>tempo de execução</b> (ex.: resultado de função); <b><code>const</code></b> é constante em <b>tempo de compilação</b> e profundamente imutável.</p></details>
-  <details><summary>4. No Flutter com BLoC vs Cubit, qual a principal diferença na entrada de dados?</summary><p>O <b>BLoC</b> recebe objetos de <b>Evento</b> e os transforma em Estados via streams; o <b>Cubit</b> dispensa eventos e expõe <b>métodos</b> diretos que chamam <code>emit(estado)</code>.</p></details>
+  <h2>Validação FGV — Cap. 6</h2>
+  <details><summary>1. Em Dart, qual a diferença entre <code>final</code> e <code>const</code>?</summary><p><b>final</b> recebe valor em tempo de execução uma única vez; <b>const</b> precisa ser resolvido em tempo de compilação e torna toda a estrutura imutável.</p></details>
+  <details><summary>2. Por que usar <code>ListView.builder</code> em listas longas em vez de <code>ListView(children: ...)</code>?</summary><p>O construtor <code>builder</code> instancia widgets <b>sob demanda (lazy)</b> conforme entram na viewport, economizando memória e CPU.</p></details>
 </div>
+
 </section>
 
-<script src="aula.js?v=6"></script></body></html>
+<!-- ===================================================== CAPÍTULO 7 ===================================================== -->
+<section class="chapter" data-title="Gerência de Estado no Flutter (Provider, Riverpod, Cubit e BLoC)">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 7</span>
+  <h1>Gerência de Estado no Flutter (Provider, Riverpod, Cubit e BLoC)</h1>
+  <span class="emoji">🎛️</span>
+  <div class="steps">
+    <div class="step"><b>1. Estado Local vs Global</b><span>Quando setState basta vs quando compartilhar entre telas.</span></div>
+    <div class="step"><b>2. Provider</b><span>InheritedWidget + ChangeNotifier + watch vs read vs select.</span></div>
+    <div class="step"><b>3. Riverpod</b><span>Segurança em compilação, ref.watch/read sem BuildContext!</span></div>
+    <div class="step"><b>4. Cubit &amp; BLoC</b><span>Streams reativas, BlocBuilder/BlocListener e testes unitários.</span></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PANORAMA DE ESTADO</span>
+  <h2>Comparando as 5 abordagens do edital</h2>
+  <table class="cmp mini">
+    <tr><th>Abordagem</th><th>Base / Mecânica</th><th>Quando usar / Cai na prova</th></tr>
+    <tr><td><b>setState()</b></td><td>Local ao <code>State</code> do <code>StatefulWidget</code></td><td>Estado efêmero (aba ativa, animação, checkbox local)</td></tr>
+    <tr><td><b>Provider</b></td><td>Wrapper sobre <code>InheritedWidget</code> (<code>ChangeNotifier</code>)</td><td><code>context.watch()</code> no <code>build</code>; <code>context.read()</code> em callbacks</td></tr>
+    <tr><td><b>Riverpod</b></td><td>Reescrita desacoplada da árvore de widgets</td><td><code>ProviderScope</code> na raiz; compile-safe; usa <code>WidgetRef</code> sem context</td></tr>
+    <tr class="ok"><td><b>Cubit</b></td><td>Bloc simplificado: métodos chamam <code>emit(estado)</code></td><td>Menos boilerplate; ideal quando não precisa rastrear eventos complexos</td></tr>
+    <tr class="ok"><td><b>BLoC</b></td><td>Recebe <b>Events</b> → transforma em <b>States</b> (Streams)</td><td>Separação estrita UI × regra de negócio, rastreabilidade e testes</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">PROVIDER NA PRÁTICA</span>
+  <h2><code>watch</code> × <code>read</code> × <code>select</code></h2>
+<pre><code><span class="kw">@override Widget</span> build(BuildContext context) {
+  <span class="c">// Reconstroi ESTE widget quando Contador mudar:</span>
+  <span class="kw">final</span> total = context.<mark>watch</mark>&lt;Contador&gt;().valor;
+  <span class="c">// OU escuta apenas 1 campo especifico:</span>
+  <span class="kw">final</span> ativo = context.<mark>select</mark>&lt;Auth, bool&gt;((a) =&gt; a.logado);
+
+  <span class="kw">return</span> ElevatedButton(
+    onPressed: () =&gt; context.<mark>read</mark>&lt;Contador&gt;().incrementar(), <span class="c">// NUNCA watch aqui!</span>
+    child: Text(<span class="r">'$total ($ativo)'</span>),
+  );
+}</code></pre>
+  <div class="say trap"><b>Pegadinha clássica:</b> chamar <code>context.watch&lt;T&gt;()</code> dentro de <code>onPressed</code> ou <code>initState</code> dispara exceção em runtime no Provider! Use sempre <code>context.read&lt;T&gt;()</code> (equivalente a <code>listen: false</code>).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RIVERPOD</span>
+  <h2>Por que o Riverpod resolve as dores do Provider</h2>
+  <ul class="mini">
+    <li>Não depende da árvore de widgets (<code>InheritedWidget</code>) → elimina <code>ProviderNotFoundException</code> em runtime!</li>
+    <li>Permite dois providers do mesmo tipo sem conflito e descarte automático (<code>autoDispose</code>).</li>
+    <li>Widget estende <code>ConsumerWidget</code> e recebe <code>(BuildContext context, WidgetRef ref)</code>.</li>
+  </ul>
+<pre><code><span class="kw">final</span> filtroProvider = StateProvider&lt;String&gt;((ref) =&gt; <span class="r">'ativos'</span>);
+<span class="c">// No build: final f = ref.watch(filtroProvider);</span>
+<span class="c">// No onPressed: ref.read(filtroProvider.notifier).state = 'arquivados';</span></code></pre>
+</div>
+
+<div class="slide">
+  <span class="tag">CUBIT × BLOC</span>
+  <h2>Fluxo unidirecional de dados</h2>
+  <svg viewBox="0 0 860 175" role="img" aria-label="Fluxo BLoC: UI envia Event para BLoC, que emite novo State para a UI">
+    <defs><marker id="m71" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arh"/></marker></defs>
+    <rect class="box" x="25" y="50" width="170" height="75" rx="12"/><text x="110" y="83" text-anchor="middle" font-weight="700">UI (Widget)</text><text x="110" y="105" text-anchor="middle" class="small">dispara evento / método</text>
+    <line class="ar" x1="195" y1="72" x2="310" y2="72" marker-end="url(#m71)"/>
+    <text x="252" y="62" text-anchor="middle" class="small">Event (BLoC) / call</text>
+    <rect class="keybox" x="315" y="42" width="230" height="90" rx="14"/><text x="430" y="78" text-anchor="middle" class="kt" font-weight="700">BLoC / Cubit</text><text x="430" y="102" text-anchor="middle" class="kt" style="font-size:13px">Regra + Repositório (puro Dart)</text>
+    <line class="ar" x1="545" y1="88" x2="650" y2="88" marker-end="url(#m71)"/>
+    <text x="598" y="76" text-anchor="middle" class="small">emit(State)</text>
+    <rect class="okbox" x="655" y="50" width="180" height="75" rx="12"/><text x="745" y="83" text-anchor="middle" font-weight="700">BlocBuilder</text><text x="745" y="105" text-anchor="middle" class="small">reconstrói UI</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">BLOC NA PRÁTICA</span>
+  <h2><code>BlocBuilder</code> × <code>BlocListener</code> × <code>BlocConsumer</code></h2>
+  <table class="cmp mini">
+    <tr><th>Widget Flutter_bloc</th><th>Quando usar</th></tr>
+    <tr><td><b>BlocBuilder</b></td><td>Reconstrói a <b>interface</b> (retorna Widget) para cada novo estado</td></tr>
+    <tr><td><b>BlocListener</b></td><td>Executa <b>efeito colateral único</b> (abrir SnackBar, navegar rota, modal) sem reconstruir árvore</td></tr>
+    <tr><td><b>BlocConsumer</b></td><td>Combina <code>builder</code> + <code>listener</code> no mesmo lugar</td></tr>
+  </table>
+  <p class="mini"><b>Estados imutáveis:</b> prefira estados selados/subclasses (<code>Carregando</code>, <code>Sucesso</code>, <code>Erro</code>) com <code>Equatable</code> para evitar rebuilds repetidos com dados idênticos!</p>
+</div>
+
+<div class="slide">
+  <span class="tag">QUALIDADE &amp; TESTES EM FLUTTER</span>
+  <h2>Pirâmide de testes no Flutter</h2>
+  <ul class="clean">
+    <li><b>Unit Test (<code>test()</code>):</b> testa Cubit/BLoC (<code>blocTest</code>), repositórios e regras em Dart puro — sem emulador!</li>
+    <li><b>Widget Test (<code>testWidgets()</code>):</b> testa componentes na árvore simulada (<code>WidgetTester</code>, <code>pumpWidget</code>, <code>pumpAndSettle</code>).</li>
+    <li><b>Integration Test:</b> fluxo E2E real no dispositivo/emulador.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO</span>
+  <h2>Checklist — Gerência de Estado Flutter</h2>
+  <ul class="checklist">
+    <li><code>Provider</code>: <code>watch()</code> no <code>build</code>; <code>read()</code> dentro de callbacks.</li>
+    <li><code>Riverpod</code>: compile-safe, independe de <code>BuildContext</code>, exige <code>ProviderScope</code>.</li>
+    <li><code>Cubit</code> expõe métodos (<code>emit()</code>); <code>BLoC</code> recebe objetos <code>Event</code> e emite <code>State</code>.</li>
+    <li><code>BlocBuilder</code> desenha UI; <code>BlocListener</code> mostra SnackBar/navega.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Validação FGV — Cap. 7</h2>
+  <details><summary>1. Quando usar <code>BlocListener</code> em vez de <code>BlocBuilder</code>?</summary><p>Para efeitos colaterais de disparo único (exibir SnackBar de erro, diálogo ou <code>Navigator.push</code>) sem redesenhar widgets.</p></details>
+  <details><summary>2. No Provider, qual método é obrigatório ao acionar uma ação no <code>onPressed</code>?</summary><p><code>context.read&lt;T&gt;()</code> (nunca <code>watch</code> dentro de callbacks).</p></details>
+</div>
+
+</section>
+
+<script src="aula.js?v=7"></script></body></html>

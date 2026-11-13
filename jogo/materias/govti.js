@@ -16,10 +16,10 @@ window.MATERIAS['govti'] = {
       'São 4 dimensões: Organizações e pessoas, Informação e tecnologia, Parceiros e fornecedores, Fluxos e processos.'
     ] },
     { name: 'Fiscal Contratino', lines: [
-      'Contratação de TIC no Judiciário segue a Res. CNJ 468/2022: Planejamento → Seleção → Gestão do Contrato.',
-      'A ordem no planejamento é DOD → Equipe de Planejamento → ETP → Termo de Referência (TR).',
-      'Eficiência = fazer certo (menor custo); Eficácia = atingir a meta; Efetividade = impacto real na sociedade.',
-      'Na dúvida sobre artigo ou prazo exato de resolução, confira sempre o texto oficial da norma!'
+      'Contratação de TIC no Judiciário segue a Res. CNJ 468/2022: Planejamento → Seleção → Gestão do Contrato (Arts. 6º–9º).',
+      'Regra de ouro (Art. 7º, § único da Res. 468): integrante administrativo NÃO pode ser da TIC; e quem provê o serviço NÃO pode fiscalizar/mensurar (Art. 8º, §2º)!',
+      'BPMN 2.0: Gateway × Exclusivo (1 caminho), + Paralelo (todos), ○ Inclusivo (1 ou mais); Pool = organização e Lane = papel.',
+      'Todas as resoluções CNJ e o COBIT estão na íntegra no Acervo Oficial (tecla F no mapa)!'
     ] }
   ],
   boss: {
@@ -183,17 +183,17 @@ window.MATERIAS['govti'] = {
         ]
       },
       {
-        title: 'Projetos, Processos, Serviços e Indicadores',
+        title: 'Projetos, Processos (BPMN), Serviços e Indicadores',
         pages: [
           'Não confunda os 3 conceitos:\n• Projeto: esforço TEMPORÁRIO com início e fim definidos para criar produto/serviço ÚNICO.\n• Processo: fluxo CONTÍNUO e repetitivo que transforma entradas em saídas (BPM: mapear AS-IS, redesenhar TO-BE).\n• Serviço: entrega valor contínuo ao usuário sem que ele gerencie a infraestrutura.',
-          'Hierarquia de gestão:\n• Portfólio: "fazer os projetos certos" (alinhamento estratégico e priorização).\n• Programa: grupo de projetos relacionados gerenciados juntos para obter benefícios que não viriam isolados.\n• Projeto: "fazer certo o projeto" (escopo, prazo, custo, qualidade).\n• Ciclo clássico: Iniciação → Planejamento → Execução → Monitoramento e Controle → Encerramento.',
-          'Indicadores (3Es + métricas de TI):\n• Eficiência: fazer certo com menos recurso (tempo, dinheiro).\n• Eficácia: atingir a meta/resultado esperado.\n• Efetividade: impacto real na vida do usuário/sociedade.\n• Métricas de TI: MTBF (tempo médio entre falhas — confiabilidade), MTTR (tempo médio de reparo — agilidade), SLA (acordo com cliente) × OLA (acordo interno).'
+          'Notação BPMN 2.0 (cai direto no edital!):\n• Eventos: Início (círculo borda simples), Intermediário (borda dupla), Fim (borda grossa).\n• Gateways: Exclusivo × (XOR — segue só 1 caminho), Paralelo + (AND — dispara/sincroniza todos os fluxos), Inclusivo ○ (OR — 1 ou mais condições verdadeiras).\n• Pool (participante/organização) dividida em Lanes (raias = papéis/departamentos).',
+          'Indicadores (3Es + métricas de TI):\n• Portfólio ("projetos certos") → Programa (projetos relacionados) → Projeto ("fazer certo").\n• Eficiência (meios/menor custo), Eficácia (meta alcançada), Efetividade (impacto na sociedade).\n• Métricas: MTBF alto = confiável; MTTR baixo = repara rápido; SLA (cliente) × OLA (interno).'
         ],
-        tip: 'EficiÊNcia = mEios. EficÁcia = metA. EfetiVidade = Valor real na Vida do cidadão. MTTR baixo = conserta rápido!',
+        tip: 'BPMN: × = XOR (1 caminho), + = AND (todos em paralelo), ○ = OR (1+). EficiÊNcia = mEios; EficÁcia = metA.',
         quiz: [
-          { q: 'Um tribunal agrupa 4 projetos distintos de modernização do PJe porque, juntos, reduzem o tempo total de tramitação. Esse agrupamento coordenado chama-se:',
-            options: ['Processo de negócio', 'Programa', 'Central de Serviços', 'Acordo de Nível Operacional (OLA)', 'Incidente maior'],
-            answer: 1, explain: 'Programa é o conjunto de projetos relacionados gerenciados de modo coordenado para alcançar benefícios estratégicos que não seriam obtidos individualmente.' },
+          { q: 'Em um diagrama BPMN 2.0, o símbolo representado por um losango com o sinal de adição (+) indica um gateway:',
+            options: ['Exclusivo (XOR), que obriga escolher apenas um caminho alternativo', 'Paralelo (AND), que divide ou sincroniza fluxos simultâneos sem avaliar condições', 'Baseado em Eventos de Tempo', 'De erro fatal que encerra o processo', 'Inclusivo (OR) condicional'],
+            answer: 1, explain: 'No BPMN 2.0, losango com + é Gateway Paralelo (AND): executa/sincroniza todos os ramos concorrentemente. O × é Exclusivo (XOR) e o círculo ○ é Inclusivo (OR).' },
           { q: 'Se o tempo médio entre falhas (MTBF) de um sistema é alto e o tempo médio de reparo (MTTR) é muito baixo, isso indica:',
             options: [
               'baixa confiabilidade e lentidão na recuperação',
@@ -210,7 +210,7 @@ window.MATERIAS['govti'] = {
         pages: [
           'Comprar TIC no serviço público não é igual a comprar caneta: exige planejamento técnico para evitar dependência de fornecedor e contrato pago sem entrega.\n• No Judiciário, a Res. CNJ 468/2022 define diretrizes para contratação de Soluções de TIC (em sintonia com a Lei 14.133/2021).\n• Regra-chave: alinhamento ao PDTI e ao planejamento estratégico.',
           'As 3 Fases da Contratação de Solução de TIC:\n1) Planejamento da Contratação: DOD (Documento de Oficialização da Demanda) → Equipe de Planejamento (Integrantes Requisitante, Técnico e Administrativo) → ETP (Estudo Técnico Preliminar: viabilidade, mercado, riscos, TCO) → TR (Termo de Referência).\n2) Seleção do Fornecedor: edital, julgamento e homologação.\n3) Gestão do Contrato: execução, fiscalização e pagamentos.',
-          'Gestão e Fiscalização (quem faz o quê):\n• Equipe de Fiscalização: Gestor do Contrato, Fiscal Técnico, Fiscal Demandante/Requisitante e Fiscal Administrativo.\n• Execução por Ordem de Serviço (OS), recebimento provisório e definitivo.\n• Pagamento deve vincular-se a resultados / níveis de serviço (ANS/SLA), evitando mera alocação de postos sem medição. Confira prazos e artigos específicos no texto oficial da Res. CNJ 468/2022.'
+          'Gestão, Vedações e Fiscalização (Arts. 7º–9º da Res. CNJ 468/2022):\n• Regra literal (art. 7º, § único): integrante administrativo NÃO pode ser servidor de TIC (salvo exceção fundamentada).\n• Art. 8º, §2º: a empresa contratada para prover STIC NÃO pode ser a mesma que avalia, mensura ou fiscaliza!\n• Art. 9º: proibido subordinação direta ou indicação de funcionários; pagamento atrelado a resultados/ANS via OS.'
         ],
         tip: 'DOD abre → ETP estuda viabilidade → TR especifica → Seleção escolhe → Fiscalização recebe por resultado!',
         quiz: [

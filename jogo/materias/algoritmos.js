@@ -11,7 +11,7 @@ window.MATERIAS['algoritmos'] = {
     ] },
     { name: 'Seu Pilhado, o Guardião das Estruturas', lines: [
       'Pilha é LIFO (último a entrar sai primeiro); fila é FIFO (primeiro a entrar sai primeiro).',
-      'Busca em largura (BFS) usa fila; busca em profundidade (DFS) usa pilha ou recursão.',
+      'Heap (fila de prioridade) garante consultar o topo em O(1) e inserir/remover em O(log n); árvore B+ acelera índices em disco.',
       'Tabela hash busca em O(1) no caso médio, mas no pior caso, com tudo colidindo, vira O(n).',
       'Árvore binária de busca: esquerda menor, direita maior. Percurso em ordem sai ordenado!'
     ] },
@@ -32,9 +32,9 @@ window.MATERIAS['algoritmos'] = {
       { q: 'Em uma busca binária sobre um vetor ordenado com 1.024 elementos, o número máximo de comparações com elementos do vetor é:',
         options: ['10', '11', '512', '1.024', '32'], answer: 1,
         explain: 'Pior caso = ⌊log₂ n⌋ + 1 = 10 + 1 = 11: o intervalo cai 1024→512→...→1 e ainda se compara o último elemento. 512 e 1.024 seriam de busca linear.' },
-      { q: 'Na busca em largura (BFS) em um grafo, a estrutura auxiliar usada para controlar os próximos vértices a visitar é a:',
-        options: ['pilha', 'heap máximo', 'árvore AVL', 'tabela hash', 'fila'], answer: 4,
-        explain: 'BFS visita por camadas: quem foi descoberto primeiro é visitado primeiro (FIFO), logo fila. Pilha/recursão é da busca em profundidade (DFS).' },
+      { q: 'Em uma árvore binária de busca (BST) sem balanceamento automático, ao inserir chaves já em ordem crescente, a altura obtida e a complexidade de busca no pior caso tornam-se, respectivamente:',
+        options: ['O(log n) e O(1)', 'O(n) (degenerada em lista) e O(n)', 'O(log n) e O(log n)', 'O(1) e O(n²)', 'O(n²) e O(log n)'], answer: 1,
+        explain: 'Inserção já ordenada em BST comum faz cada chave cair sempre à direita, degenerando a árvore em uma lista encadeada com altura n−1 e busca O(n). AVL ou Rubro-Negra evitam isso com rotações.' },
       { q: 'Sobre o algoritmo quicksort, assinale a afirmativa correta.',
         options: ['É estável e tem pior caso O(n log n).', 'Exige O(n) de memória auxiliar para intercalar, como o merge sort.', 'Seu melhor caso é O(n), quando o vetor já está ordenado.', 'Seu pior caso é O(n²), por exemplo com pivô sempre no último elemento e vetor já ordenado.', 'Só pode ser aplicado a listas encadeadas.'], answer: 3,
         explain: 'Pivô extremo gera partições n−1 e 0: O(n²). Quicksort não é estável, particiona no próprio vetor e, com vetor ordenado e pivô no fim, cai justamente no pior caso.' },
@@ -61,7 +61,7 @@ window.MATERIAS['algoritmos'] = {
     ['Liskov (LSP)', 'subclasse substitui a superclasse sem quebrar nada']
   ] },
   quick: [
-    { q: 'Estrutura LIFO?', options: ['Pilha', 'Fila', 'Tabela hash', 'Grafo'], answer: 0, explain: 'LIFO = último a entrar, primeiro a sair: pilha.' },
+    { q: 'Estrutura LIFO?', options: ['Pilha', 'Fila', 'Tabela hash', 'Heap'], answer: 0, explain: 'LIFO = último a entrar, primeiro a sair: pilha.' },
     { q: 'A busca binária exige um vetor...', options: ['Encadeado', 'Ordenado', 'Pequeno', 'Circular'], answer: 1, explain: 'Sem ordem não dá para descartar metade a cada comparação.' },
     { q: 'Merge sort no pior caso?', options: ['O(n²)', 'O(n)', 'O(n log n)', 'O(log n)'], answer: 2, explain: 'Merge sort é O(n log n) em todos os casos.' },
     { q: 'Percurso de BST que sai ordenado?', options: ['Pré-ordem', 'Pós-ordem', 'Por nível', 'Em ordem'], answer: 3, explain: 'Em ordem: esquerda, raiz, direita = crescente.' },
@@ -73,19 +73,19 @@ window.MATERIAS['algoritmos'] = {
     chapters: [
       { title: 'Complexidade e Big-O',
         pages: [
-          'Complexidade = quantos passos o algoritmo dá em função do tamanho n da entrada (não em segundos).\n• Big-O (O): limite superior ("no máximo")\n• Ômega (Ω): limite inferior ("no mínimo")\n• Theta (Θ): limite justo (O e Ω ao mesmo tempo)\nf(n) = O(g(n)) se existem c > 0 e n₀ tais que f(n) ≤ c·g(n) para todo n ≥ n₀.',
+          'Complexidade mede como o número de passos cresce quando o tamanho n da entrada cresce (não mede segundos em hardware específico).\n• Foco de prova: notação Big-O (O(g)), que dá o limite superior ("cresce no máximo na ordem de g").\n• Contexto teórico breve: Ω (limite inferior) e Θ (limite justo, O e Ω juntos).',
           'Regras de bolso:\n• Descarte constantes: 5n → O(n)\n• Descarte termos menores: n² + n → O(n²)\n• Blocos em sequência: fica o maior\n• Laços aninhados: multiplica (n·n = n²)\n• Laço que dobra ou divide i ao meio: O(log n)\nEscada: 1 < log n < n < n log n < n² < n³ < 2ⁿ < n!',
           'Casos: melhor, médio e pior. Busca linear: melhor 1 comparação, pior n, médio ~n/2 → O(n).\nBig-O não é sinônimo de pior caso: é uma cota superior que pode descrever qualquer caso.\nRecursão gasta espaço na pilha de chamadas: fatorial recursivo usa O(n) de memória. Fibonacci ingênuo é exponencial; com memorização, O(n).'
         ],
         tip: 'Laço dentro de laço multiplica; laço depois de laço soma (fica o maior); dividir ao meio dá log n.',
         quiz: [
-          { q: 'A função f(n) = 4n³ + 2n² + 100 é, em notação assintótica:', options: ['O(n²)', 'O(100)', 'Θ(n³)', 'Θ(n⁴)', 'O(log n)'], answer: 2, explain: 'O termo dominante é n³ e constantes caem: f é Θ(n³). Ela também é O(n⁴) (cota frouxa), mas não Θ(n⁴); e não é O(n²).' },
+          { q: 'A função f(n) = 4n³ + 2n² + 100 tem qual ordem assintótica dominante em notação Big-O justa?', options: ['O(n²)', 'O(100)', 'O(n³)', 'O(log n)', 'O(2ⁿ)'], answer: 2, explain: 'O termo dominante de 4n³ + 2n² + 100 é n³; descartando constantes e termos menores, fica O(n³).' },
           { q: 'Um laço faz i = 1 e, enquanto i < n, executa i = i * 2. Quantas iterações, assintoticamente?', options: ['O(n)', 'O(n²)', 'O(1)', 'O(n log n)', 'O(log n)'], answer: 4, explain: 'i vale 1, 2, 4, 8... e alcança n após cerca de log₂ n dobras: O(log n).' }
         ] },
       { title: 'Listas, pilhas, filas e tabelas hash',
         pages: [
           'Vetor (array): memória contígua; acesso por índice O(1); inserir/remover no início ou meio O(n) (desloca elementos); inserir no fim de vetor dinâmico: O(1) amortizado.\nLista encadeada: nós com valor + ponteiro para o próximo. Acesso ao k-ésimo O(n); inserir no início O(1); inserir após um nó conhecido O(1). Duplamente encadeada tem ponteiro anterior também.',
-          'Pilha (stack) = LIFO: push, pop e top/peek em O(1). Usos: desfazer, pilha de chamadas, parênteses balanceados, notação pós-fixa, DFS.\nFila (queue) = FIFO: enqueue no fim, dequeue na frente, O(1). Usos: impressão, BFS, buffers.\nFila de prioridade (heap) NÃO é FIFO: sai o de maior prioridade.',
+          'Pilha (stack) = LIFO: push, pop e top/peek em O(1). Usos: desfazer, pilha de chamadas, parênteses balanceados, notação pós-fixa.\nFila (queue) = FIFO: enqueue no fim, dequeue na frente, O(1). Usos: fila de impressão, buffers de mensagens.\nFila de prioridade (heap) NÃO é FIFO: sai o elemento de maior (ou menor) prioridade.',
           'Tabela hash: função h(chave) → índice. Busca/inserção/remoção O(1) médio e O(n) no pior caso.\nColisão = duas chaves no mesmo índice. Tratamentos:\n• Encadeamento: lista em cada posição\n• Endereçamento aberto: sondagem linear, quadrática, hash duplo\nFator de carga α = n / m (elementos / posições); α alto → mais colisões → redimensionar.'
         ],
         tip: 'Pilha de pratos = LIFO; fila do banco = FIFO. Hash é O(1) na média, mas O(n) no pior caso!',
@@ -93,16 +93,16 @@ window.MATERIAS['algoritmos'] = {
           { q: 'Partindo de uma pilha vazia: push(3), push(7), push(5), pop(), push(9), pop(), pop(). O valor no topo ao final é:', options: ['9', '7', '5', '3', 'a pilha está vazia'], answer: 3, explain: 'Após push 3,7,5 e pop → [3,7]; push 9 → [3,7,9]; pop → [3,7]; pop → [3]. Topo = 3.' },
           { q: 'Em uma tabela hash de 7 posições com h(k) = k mod 7 e sondagem linear, inserem-se 10, 22 e 31, nessa ordem. Em que posição fica o 31?', options: ['1', '3', '5', '2', '4'], answer: 4, explain: '10 mod 7 = 3 e 22 mod 7 = 1. 31 mod 7 = 3, já ocupada pelo 10; a sondagem linear tenta a próxima: posição 4.' }
         ] },
-      { title: 'Árvores e grafos',
+      { title: 'Árvores Binárias, BST e Heaps',
         pages: [
-          'Árvore binária de busca (BST): para cada nó, esquerda < nó < direita.\nBusca/inserção/remoção: O(log n) se balanceada (média com inserções aleatórias) e O(n) no pior caso (degenerada, ex.: inserir já ordenado). AVL e rubro-negra se rebalanceiam com rotações e garantem O(log n).\nRemover nó com 2 filhos: troca pelo sucessor em ordem (menor da subárvore direita) ou antecessor.',
-          'Percursos (raiz é a referência):\n• Pré-ordem: raiz, esq., dir.\n• Em ordem: esq., raiz, dir. → em BST sai ordenado\n• Pós-ordem: esq., dir., raiz\n• Por nível: usa fila\nHeap (máximo): pai ≥ filhos; árvore completa guardada em vetor (filhos de i: 2i+1 e 2i+2). Inserir/remover topo O(log n); consultar topo O(1).',
-          'Grafo G = (V, E): vértices e arestas; dirigido ou não; ponderado ou não.\n• Matriz de adjacência: O(V²) de espaço; testa aresta em O(1)\n• Lista de adjacência: O(V + E); boa para grafo esparso\nBFS (fila) e DFS (pilha/recursão): O(V + E) com listas. BFS acha o menor caminho em número de arestas. Dijkstra: pesos não negativos.'
+          'Árvore binária de busca (BST): para cada nó, esquerda < nó < direita.\nBusca/inserção/remoção: O(log n) se balanceada e O(n) no pior caso (degenerada em lista, ex.: inserir já ordenado). AVL e rubro-negra se rebalanceiam com rotações e garantem O(log n).\nRemover nó com 2 filhos: troca pelo sucessor em ordem (menor da subárvore direita) ou antecessor.',
+          'Percursos (raiz é a referência):\n• Pré-ordem: raiz, esq., dir.\n• Em ordem: esq., raiz, dir. → em BST sai ordenado\n• Pós-ordem: esq., dir., raiz\n• Por nível: visita nível a nível usando fila.\nÁrvore B+: nós largos otimizados para disco com todas as chaves nas folhas encadeadas (base de índices SQL).',
+          'Heap (max-heap): pai ≥ filhos (no min-heap: pai ≤ filhos); árvore completa guardada em vetor (filhos de i: 2i+1 e 2i+2; pai em ⌊(i−1)/2⌋).\nInserir/remover topo custa O(log n); consultar topo custa O(1); construir do zero (heapify) custa O(n).'
         ],
-        tip: 'PRÉ = raiz primeiro; EM = raiz no meio; PÓS = raiz por último. BFS = fila, DFS = pilha.',
+        tip: 'PRÉ = raiz primeiro; EM = raiz no meio (sai ordenado em BST!); PÓS = raiz por último. Topo do heap: O(1).',
         quiz: [
-          { q: 'Inserindo 10, 20, 30, 40 e 50, nessa ordem, em uma BST comum (sem balanceamento), a altura obtida e o custo de busca no pior caso são:', options: ['altura logarítmica; O(log n)', 'altura n − 1 (lista degenerada); O(n)', 'altura 2; O(1)', 'altura logarítmica; O(n log n)', 'altura n; O(n²)'], answer: 1, explain: 'Cada valor vai à direita do anterior: a árvore vira uma "lista" com altura n − 1 (contando arestas) e busca O(n). AVL ou rubro-negra evitariam isso.' },
-          { q: 'Para representar um grafo esparso com V vértices e E arestas, ocupando O(V + E) de memória, usa-se:', options: ['matriz de adjacência', 'matriz de incidência', 'heap binário', 'lista de adjacência', 'árvore AVL'], answer: 3, explain: 'Lista de adjacência guarda só as arestas existentes: O(V + E). A matriz de adjacência sempre ocupa O(V²), desperdiçando espaço em grafos esparsos.' }
+          { q: 'Inserindo 10, 20, 30, 40 e 50, nessa ordem, em uma BST comum (sem balanceamento), a altura obtida e o custo de busca no pior caso são:', options: ['altura logarítmica; O(log n)', 'altura n − 1 (lista degenerada); O(n)', 'altura 2; O(1)', 'altura logarítmica; O(n log n)', 'altura n; O(n²)'], answer: 1, explain: 'Cada valor vai à direita do anterior: a árvore vira uma "lista" com altura n − 1 e busca O(n). AVL ou rubro-negra evitariam isso.' },
+          { q: 'Em um max-heap armazenado em vetor com índice inicial 0, quais as posições dos filhos do nó localizado no índice 3 e qual o custo de consultar o maior elemento?', options: ['6 e 7; O(n)', '7 e 8; O(1)', '7 e 8; O(log n)', '5 e 6; O(1)', '4 e 5; O(n log n)'], answer: 1, explain: 'Com base 0, filhos de i estão em 2i+1 = 7 e 2i+2 = 8. Consultar o maior elemento (índice 0) custa O(1).' }
         ] },
       { title: 'Busca e ordenação',
         pages: [

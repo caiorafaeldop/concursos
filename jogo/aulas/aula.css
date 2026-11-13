@@ -68,6 +68,13 @@ body {
   font-weight: 800;
 }
 .au-close:hover { background: var(--bad); color: #fff; }
+.au-fontes {
+  background: var(--acc-bg);
+  border-color: var(--acc);
+  color: var(--acc);
+  font-weight: 800;
+}
+.au-fontes:hover { background: var(--acc); color: #fff; }
 
 /* ---------- zoom controls no topo ---------- */
 .au-zoom {
@@ -292,6 +299,10 @@ mark.ng { background: var(--bad-bg); color: var(--bad); outline: 2px solid var(-
   .au-close {
     font-size: 13px;
     padding: 5px 10px;
+  }
+  .au-fontes {
+    font-size: 12px;
+    padding: 5px 8px;
   }
   .au-progress {
     top: calc(48px + var(--sat));

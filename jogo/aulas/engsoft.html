@@ -1,4 +1,4 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Engenharia de Software e Ágil — aulas visuais</title><link rel="stylesheet" href="aula.css?v=6">
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Engenharia de Software e Ágil — aulas visuais</title><link rel="stylesheet" href="aula.css?v=7">
 <style>
 .mini{font-size:15px}
 .calc{font-family:ui-monospace,Consolas,monospace;font-size:17px;background:var(--cell);border-radius:12px;padding:10px 14px;margin:8px 0;line-height:1.7}
@@ -650,45 +650,29 @@ td.L{background:var(--ok-bg)} td.M{background:var(--orange-bg)} td.H{background:
 </div>
 
 <div class="slide">
-  <span class="tag">COMPLEXIDADE</span>
-  <h2>TD, TR e ALR: o que se conta dentro de cada função</h2>
+  <span class="tag">CRITÉRIOS E PORTA DE ENTRADA</span>
+  <h2>O que é contado na APF (sem decoreba excessiva)</h2>
   <ul class="mini">
-    <li><b>TD</b> (tipo de dado, DER): campo único, reconhecido pelo usuário, não repetido. Em transações, botões de ação e mensagens também podem contar.</li>
-    <li><b>TR</b> (tipo de registro, RLR): subgrupo de dados dentro de um ALI/AIE (ex.: Servidor e seus Dependentes).</li>
-    <li><b>ALR</b> (arquivo referenciado, FTR): ALI ou AIE lido ou mantido pela transação.</li>
+    <li><b>TD</b> (tipo de dado / DER): campo único e reconhecido pelo usuário (não repetido).</li>
+    <li><b>TR</b> (tipo de registro / RLR): subgrupo lógico dentro de um ALI/AIE (ex.: Servidor e Dependentes).</li>
+    <li><b>ALR</b> (arquivo referenciado / FTR): ALI ou AIE lido ou atualizado pela transação.</li>
+    <li><b>Faixas de complexidade:</b> quanto mais TDs e TRs/ALRs, maior a classificação (<b>Baixa · Média · Alta</b>).</li>
   </ul>
-  <div class="tables">
-    <div class="tbox"><h4>ALI / AIE (linhas = TR, colunas = TD)</h4>
-      <table class="ctr mini"><tr><th>TR \ TD</th><th>1–19</th><th>20–50</th><th>51+</th></tr>
-        <tr><th>1</th><td class="L">Baixa</td><td class="L">Baixa</td><td class="M">Média</td></tr>
-        <tr><th>2–5</th><td class="L">Baixa</td><td class="M">Média</td><td class="H">Alta</td></tr>
-        <tr><th>6+</th><td class="M">Média</td><td class="H">Alta</td><td class="H">Alta</td></tr></table></div>
-    <div class="tbox"><h4>EE (linhas = ALR, colunas = TD)</h4>
-      <table class="ctr mini"><tr><th>ALR \ TD</th><th>1–4</th><th>5–15</th><th>16+</th></tr>
-        <tr><th>0–1</th><td class="L">Baixa</td><td class="L">Baixa</td><td class="M">Média</td></tr>
-        <tr><th>2</th><td class="L">Baixa</td><td class="M">Média</td><td class="H">Alta</td></tr>
-        <tr><th>3+</th><td class="M">Média</td><td class="H">Alta</td><td class="H">Alta</td></tr></table></div>
-    <div class="tbox"><h4>SE e CE (linhas = ALR, colunas = TD)</h4>
-      <table class="ctr mini"><tr><th>ALR \ TD</th><th>1–5</th><th>6–19</th><th>20+</th></tr>
-        <tr><th>0–1</th><td class="L">Baixa</td><td class="L">Baixa</td><td class="M">Média</td></tr>
-        <tr><th>2–3</th><td class="L">Baixa</td><td class="M">Média</td><td class="H">Alta</td></tr>
-        <tr><th>4+</th><td class="M">Média</td><td class="H">Alta</td><td class="H">Alta</td></tr></table></div>
-  </div>
+  <div class="say good"><b>Foco de prova (custo-benefício):</b> FGV cobra <b>classificar</b> ALI × AIE e EE × SE × CE pela regra funcional e diferenciar APF (tamanho) de esforço (h/PF) — raramente pede para decorar as 9 células de cada matriz TD×ALR!</div>
 </div>
 
 <div class="slide">
-  <span class="tag">PESOS</span>
-  <h2>A tabela de pesos (decore!)</h2>
+  <span class="tag">PESOS E TAMANHO</span>
+  <h2>Por que funções de dados pesam mais que transações</h2>
   <table class="ctr" style="max-width:560px">
     <tr><th>Função</th><th class="ok">Baixa</th><th class="k">Média</th><th class="ng">Alta</th></tr>
-    <tr><th>ALI</th><td>7</td><td>10</td><td>15</td></tr>
-    <tr><th>AIE</th><td>5</td><td>7</td><td>10</td></tr>
-    <tr><th>EE</th><td>3</td><td>4</td><td>6</td></tr>
-    <tr><th>SE</th><td>4</td><td>5</td><td>7</td></tr>
-    <tr><th>CE</th><td>3</td><td>4</td><td>6</td></tr>
+    <tr><th>ALI (mantém aqui)</th><td>7</td><td>10</td><td>15</td></tr>
+    <tr><th>AIE (só referencia)</th><td>5</td><td>7</td><td>10</td></tr>
+    <tr><th>EE (mantém/controla)</th><td>3</td><td>4</td><td>6</td></tr>
+    <tr><th>SE (sai com cálculo)</th><td>4</td><td>5</td><td>7</td></tr>
+    <tr><th>CE (consulta pura)</th><td>3</td><td>4</td><td>6</td></tr>
   </table>
-  <div class="magic">Macete: coluna “baixa” = 7-5-3-4-3. EE e CE têm os mesmos pesos; SE vale 1 a mais na baixa e média.</div>
-  <div class="say law">A soma dos pesos de todas as funções dá os pontos de função não ajustados. Funções de dados pesam mais que transações porque concentram o que o sistema guarda.</div>
+  <div class="magic">Intuição forte: ALI pesa mais que AIE (responsabilidade de manter dados); SE pesa mais que CE (tem cálculo/derivação). Baixa = <code>7-5-3-4-3</code> apenas como referência!</div>
 </div>
 
 <div class="slide">
@@ -756,7 +740,7 @@ td.L{background:var(--ok-bg)} td.M{background:var(--orange-bg)} td.H{background:
   <span class="tag">TESTE RÁPIDO</span>
   <h2>Teste rápido (estilo FGV)</h2>
   <details><summary>1. Um relatório exibe os processos de cada vara e o total por vara, calculado na hora. Classifica-se como: (A) CE (B) EE (C) SE (D) ALI (E) AIE</summary><p><b>C.</b> O total é calculado (dado derivado), então é SE. Sem o total, seria CE.</p></details>
-  <details><summary>2. Uma EE referencia 2 ALR e tem 16 TD. Sua complexidade e peso são: (A) baixa, 3 (B) média, 4 (C) alta, 6 (D) média, 5 (E) alta, 7</summary><p><b>C.</b> Na matriz da EE, 2 ALR com 16+ TD = alta → 6. Peso 7 é SE alta.</p></details>
+  <details><summary>2. Por que uma Saída Externa (SE) recebe mais pontos de função do que uma Consulta Externa (CE)?</summary><p>Porque a SE realiza lógica de processamento além da simples recuperação (cálculos, dados derivados ou atualização de ALI), enquanto a CE apenas consulta e exibe dados armazenados.</p></details>
   <details><summary>3. Uma aplicação tem 2 ALI médios e 1 AIE baixo. Quantos PF de dados?</summary><p><b>25.</b> 2 × 10 + 5 = 25.</p></details>
   <details><summary>4. Velocidade média de 25 pontos e 150 pontos no backlog: quantas Sprints, no mínimo?</summary><p><b>6 Sprints</b> (150 ÷ 25). Lembre que é previsão, não promessa.</p></details>
 </div>
@@ -928,6 +912,19 @@ const ehMaiorDeIdade = idade =&gt; idade &gt;= 18;</code></pre>
 </div>
 
 <div class="slide">
+  <span class="tag">SPECS EXECUTÁVEIS &amp; HARNESS</span>
+  <h2>Especificação Executável e Engineering Harness</h2>
+  <p class="mini">No SDD moderno, o modelo não gera código "no escuro": ele opera dentro de um <b>engineering harness</b> que verifica cada alteração em ciclo fechado.</p>
+  <table class="cmp mini">
+    <tr><th>Componente</th><th>Função no Fluxo SDD + Agentes</th></tr>
+    <tr><td><b>Especificações Executáveis</b></td><td>Cenários BDD/Gherkin (<code>Dado/Quando/Então</code>), contratos <b>OpenAPI</b> e schemas JSON verificados automaticamente contra o sistema.</td></tr>
+    <tr><td><b>Sandbox / Menor Privilégio</b></td><td>Agente executa comandos em ambiente isolado, sem acesso a credenciais de produção nem escrita irrestrita.</td></tr>
+    <tr><td><b>Gates de CI Automáticos</b></td><td><code>typecheck</code> + <code>lint</code> + testes unitários/integração/E2E + SAST/SCA bloqueiam código quebrado ou alucinado antes do PR humano.</td></tr>
+  </table>
+  <div class="say good"><b>Resumo para prova e discursiva:</b> "Harness de engenharia" = ambiente + ferramentas determinísticas (compilador, linter, suíte de testes, contratos OpenAPI/BDD) que cercam o agente não determinístico.</div>
+</div>
+
+<div class="slide">
   <span class="tag">PEGADINHA</span>
   <h2>IA no código: certo × errado</h2>
   <table class="mini">
@@ -964,4 +961,4 @@ const ehMaiorDeIdade = idade =&gt; idade &gt;= 18;</code></pre>
 
 </section>
 
-<script src="aula.js?v=6"></script></body></html>
+<script src="aula.js?v=7"></script></body></html>

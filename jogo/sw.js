@@ -1,12 +1,14 @@
-const CACHE = 'tjpb-quest-v8';
+const CACHE = 'tjpb-quest-v9';
 const ASSETS = [
   './',
   './index.html',
+  './fontes.html',
+  './fontes/index.js',
   './manifest.webmanifest',
   './icon.svg',
   './icon-192.png',
   './icon-512.png',
-  './engine.js?v=6',
+  './engine.js?v=7',
   './themes.js',
   './audio.js',
   './fx.js',
@@ -17,8 +19,24 @@ const ASSETS = [
   './study1.js',
   './study2.js',
   './study3.js',
-  './aulas/aula.css?v=6',
-  './aulas/aula.js?v=6'
+  './materias/infra.js',
+  './materias/engsoft.js',
+  './materias/arqsoft.js',
+  './materias/algoritmos.js',
+  './materias/bd.js',
+  './materias/linguagens.js',
+  './materias/sysdesign.js',
+  './materias/devops.js',
+  './materias/seguranca.js',
+  './materias/lgpd.js',
+  './materias/govti.js',
+  './materias/govjud.js',
+  './materias/ia.js',
+  './materias/interfaces.js',
+  './materias/discursiva.js',
+  './materias/matematica.js',
+  './aulas/aula.css?v=7',
+  './aulas/aula.js?v=7'
 ];
 
 self.addEventListener('install', e => {

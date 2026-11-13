@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Acervo de Fontes Oficiais — TJPB Quest</title>
+<style>
+  :root{
+    --bg:#fffaf0;--card:#ffffff;--ink:#1f2430;--muted:#5b6475;--line:#e6dfcf;
+    --acc:#4f46e5;--acc-bg:#eef2ff;--key:#ffd84d;--key-ink:#3a2e00;
+    --bad:#dc2626;--bad-bg:#fee2e2;--ok:#16a34a;--ok-bg:#dcfce7;
+    --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
+    --fs:16px;
+  }
+  :root[data-theme="dark"]{
+    --bg:#12151c;--card:#1a1e28;--ink:#f1f5f9;--muted:#94a3b8;--line:#2b3142;
+    --acc:#818cf8;--acc-bg:#1e1b4b;--key:#facc15;--key-ink:#2a2100;
+    --bad:#f87171;--bad-bg:#451a1a;--ok:#4ade80;--ok-bg:#14331f;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+  .top{
+    position:fixed;left:0;right:0;top:0;height:calc(54px + var(--sat));padding:var(--sat) 12px 0;
+    background:var(--card);border-bottom:2px solid var(--line);display:flex;align-items:center;gap:8px;z-index:20
+  }
+  .brand{font-weight:800;color:var(--acc);white-space:nowrap;font-size:15px}
+  .curdoc{flex:1;min-width:0;font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted)}
+  .tbtn{
+    border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;
+    padding:6px 10px;font:700 13px system-ui,sans-serif;cursor:pointer;white-space:nowrap;touch-action:manipulation
+  }
+  .tbtn:hover{border-color:var(--acc)}
+  .tbtn.close{background:var(--bad-bg);border-color:#fca5a5;color:var(--bad)}
+  .wrap{
+    position:fixed;left:0;right:0;top:calc(54px + var(--sat));bottom:var(--sab);
+    display:flex;overflow:hidden
+  }
+  .side{
+    width:310px;flex:none;border-right:2px solid var(--line);background:var(--card);
+    display:flex;flex-direction:column;overflow:hidden
+  }
+  .side-search{padding:10px;border-bottom:1px solid var(--line)}
+  .side-search input{
+    width:100%;padding:9px 12px;border:2px solid var(--line);border-radius:10px;
+    background:var(--bg);color:var(--ink);font:14px system-ui,sans-serif;outline:none
+  }
+  .side-search input:focus{border-color:var(--acc)}
+  .side-list{flex:1;overflow-y:auto;padding:8px;-webkit-overflow-scrolling:touch}
+  .cat-h{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:12px 6px 6px}
+  .doc-item{
+    width:100%;text-align:left;border:2px solid transparent;background:transparent;color:var(--ink);
+    border-radius:10px;padding:8px 10px;margin-bottom:4px;cursor:pointer;display:flex;flex-direction:column;gap:2px
+  }
+  .doc-item:hover{background:var(--bg);border-color:var(--line)}
+  .doc-item.on{background:var(--acc-bg);border-color:var(--acc)}
+  .doc-item .row1{display:flex;align-items:center;gap:6px;font-weight:700;font-size:14px}
+  .badge{font-size:10px;font-weight:800;padding:2px 6px;border-radius:6px;background:var(--acc);color:#fff;flex:none}
+  .doc-item .meta{font-size:12px;color:var(--muted)}
+  .main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;position:relative}
+  .docbar{
+    background:var(--card);border-bottom:1px solid var(--line);padding:8px 12px;
+    display:flex;flex-wrap:wrap;gap:8px;align-items:center
+  }
+  .docbar select{
+    flex:1;min-width:180px;max-width:420px;padding:8px 10px;border:2px solid var(--line);
+    border-radius:10px;background:var(--bg);color:var(--ink);font:600 14px system-ui,sans-serif
+  }
+  .docbar input{
+    flex:1;min-width:170px;padding:8px 10px;border:2px solid var(--line);border-radius:10px;
+    background:var(--bg);color:var(--ink);font:14px system-ui,sans-serif
+  }
+  .search-hits{
+    background:var(--acc-bg);border-bottom:1px solid var(--line);padding:6px 12px;
+    display:none;flex-wrap:wrap;gap:6px;align-items:center;max-height:110px;overflow-y:auto
+  }
+  .hit-pill{
+    border:1px solid var(--acc);background:var(--card);color:var(--ink);border-radius:999px;
+    padding:3px 10px;font-size:12px;font-weight:700;cursor:pointer
+  }
+  .hit-pill.on{background:var(--acc);color:#fff}
+  .reader{
+    flex:1;overflow-y:auto;padding:18px 20px 60px;-webkit-overflow-scrolling:touch;
+    font-size:var(--fs)
+  }
+  .reader-inner{max-width:840px;margin:0 auto}
+  .reader h1{font-size:1.5em;line-height:1.25;margin:0 0 12px;color:var(--acc)}
+  .reader h2{font-size:1.25em;line-height:1.3;margin:22px 0 8px;border-bottom:1px solid var(--line);padding-bottom:4px}
+  .reader h3{font-size:1.08em;margin:16px 0 6px;color:var(--acc)}
+  .reader p{margin:0 0 12px}
+  .reader ul,.reader ol{margin:0 0 12px;padding-left:22px}
+  .reader li{margin-bottom:4px}
+  .reader pre{background:#111827;color:#e5e7eb;padding:12px;border-radius:10px;overflow-x:auto;font-size:.86em}
+  .reader code{background:var(--acc-bg);padding:1px 5px;border-radius:5px;font-size:.9em}
+  .reader pre code{background:transparent;padding:0}
+  .reader table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.9em;display:block;overflow-x:auto}
+  .reader th,.reader td{border:1px solid var(--line);padding:6px 10px;text-align:left}
+  .reader th{background:var(--acc-bg)}
+  .art-tag{display:inline-block;background:var(--key);color:var(--key-ink);font-weight:800;padding:1px 6px;border-radius:6px;margin-right:4px}
+  mark.qhit{background:#fde047;color:#111;padding:1px 3px;border-radius:4px}
+  .nav-ch{display:flex;justify-content:space-between;gap:10px;margin-top:26px;padding-top:14px;border-top:2px solid var(--line)}
+  .note-box{background:var(--ok-bg);border:2px solid var(--ok);border-radius:12px;padding:12px 14px;margin:14px 0;font-size:14px}
+  .warn-box{background:var(--bad-bg);border:2px solid var(--bad);border-radius:12px;padding:12px 14px;margin:14px 0;font-size:14px}
+  .cards-home{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-top:12px}
+  .hcard{border:2px solid var(--line);background:var(--card);border-radius:12px;padding:12px;cursor:pointer;text-align:left}
+  .hcard:hover{border-color:var(--acc)}
+  .hcard b{display:block;font-size:15px;margin:4px 0}
+  .hcard small{color:var(--muted);font-size:12px;display:block}
+  #btnCatalog{display:none}
+  @media (max-width:860px){
+    #btnCatalog{display:inline-block}
+    .side{position:fixed;left:0;top:calc(54px + var(--sat));bottom:var(--sab);z-index:15;width:86vw;max-width:340px;transform:translateX(-105%);transition:transform .2s ease;box-shadow:8px 0 30px #0004}
+    .side.open{transform:translateX(0)}
+    .reader{padding:14px 14px 56px}
+  }
+</style>
+</head>
+<body>
+<div class="top">
+  <button type="button" class="tbtn" id="btnCatalog">☰ Docs</button>
+  <button type="button" class="tbtn" id="btnHome" title="Voltar ao catálogo">🏠</button>
+  <span class="brand">🏛️ Acervo Oficial</span>
+  <span class="curdoc" id="curDocTitle">Documentos na íntegra</span>
+  <button type="button" class="tbtn" id="fsDown" title="Diminuir fonte">A−</button>
+  <button type="button" class="tbtn" id="fsUp" title="Aumentar fonte">A+</button>
+  <button type="button" class="tbtn" id="btnTheme" title="Alternar tema">🌓</button>
+  <button type="button" class="tbtn close" id="btnClose">✖ Fechar</button>
+</div>
+<div class="wrap">
+  <aside class="side open" id="sidebar">
+    <div class="side-search">
+      <input type="search" id="catFilter" placeholder="Filtrar documento (ex: LGPD, OWASP, 615)...">
+    </div>
+    <div class="side-list" id="catList"></div>
+  </aside>
+  <main class="main">
+    <div class="docbar" id="docBar" style="display:none">
+      <select id="chapSelect" aria-label="Capítulo ou seção"></select>
+      <input type="search" id="docSearch" placeholder="Buscar neste documento (ex: Art. 52, BOLA, Prompt)...">
+    </div>
+    <div class="search-hits" id="searchHits"></div>
+    <div class="reader" id="reader">
+      <div class="reader-inner" id="readerInner"></div>
+    </div>
+  </main>
+</div>
+
+<script src="fontes/index.js"></script>
+<script>
+(function(){
+  'use strict';
+  var catalog = window.__FONTES_CATALOG || [];
+  var docs = window.__FONTE_DOCS = window.__FONTE_DOCS || {};
+  var hash = {};
+  location.hash.replace(/^#/, '').split('&').forEach(function(kv){
+    var p = kv.split('=');
+    if(p[0]) hash[p[0]] = decodeURIComponent((p[1] || '').replace(/\+/g, ' '));
+  });
+  var embed = hash.embed === '1' || window.parent !== window;
+
+  var sidebar = document.getElementById('sidebar');
+  var catList = document.getElementById('catList');
+  var catFilter = document.getElementById('catFilter');
+  var docBar = document.getElementById('docBar');
+  var chapSelect = document.getElementById('chapSelect');
+  var docSearch = document.getElementById('docSearch');
+  var searchHits = document.getElementById('searchHits');
+  var reader = document.getElementById('reader');
+  var readerInner = document.getElementById('readerInner');
+  var curDocTitle = document.getElementById('curDocTitle');
+
+  var state = { docId: null, chIdx: 0, query: '' };
+  var fs = parseInt(localStorage.getItem('fontes_fs') || '16', 10);
+  document.documentElement.style.setProperty('--fs', fs + 'px');
+  if (localStorage.getItem('fontes_theme') === 'dark' ||
+      (!localStorage.getItem('fontes_theme') && matchMedia('(prefers-color-scheme:dark)').matches)) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+
+  document.getElementById('fsDown').onclick = function(){ fs = Math.max(13, fs - 2); localStorage.setItem('fontes_fs', fs); document.documentElement.style.setProperty('--fs', fs + 'px'); };
+  document.getElementById('fsUp').onclick = function(){ fs = Math.min(24, fs + 2); localStorage.setItem('fontes_fs', fs); document.documentElement.style.setProperty('--fs', fs + 'px'); };
+  document.getElementById('btnTheme').onclick = function(){
+    var d = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', d);
+    localStorage.setItem('fontes_theme', d);
+  };
+  document.getElementById('btnCatalog').onclick = function(){ sidebar.classList.toggle('open'); };
+  document.getElementById('btnHome').onclick = function(){ showHome(); };
+  document.getElementById('btnClose').onclick = function(){
+    if (embed) {
+      try { window.parent.postMessage({ source: 'fontes', type: 'fontes-close' }, '*'); } catch(e){}
+    } else {
+      history.length > 1 ? history.back() : (location.href = 'index.html');
+    }
+  };
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && document.activeElement.tagName !== 'INPUT') document.getElementById('btnClose').onclick();
+  });
+
+  function esc(s){ return String(s).replace(/[&<>]/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]); }); }
+  function escRe(s){ return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+  function renderCatalog(filter){
+    var f = (filter || '').trim().toLowerCase();
+    var groups = {};
+    catalog.forEach(function(d){
+      if (f && !(d.title + ' ' + d.cat + ' ' + d.summary).toLowerCase().includes(f)) return;
+      (groups[d.cat] = groups[d.cat] || []).push(d);
+    });
+    catList.innerHTML = '';
+    Object.keys(groups).forEach(function(cat){
+      var h = document.createElement('div');
+      h.className = 'cat-h';
+      h.textContent = cat;
+      catList.appendChild(h);
+      groups[cat].forEach(function(d){
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'doc-item' + (state.docId === d.id ? ' on' : '');
+        b.innerHTML = '<span class="row1"><span class="badge">' + esc(d.badge) + '</span><span>' + esc(d.short) + '</span></span><span class="meta">' + d.chapters + ' seções · ' + Math.round(d.chars/1024) + ' KB</span>';
+        b.onclick = function(){ openDoc(d.id, 0, ''); };
+        catList.appendChild(b);
+      });
+    });
+  }
+  catFilter.oninput = function(){ renderCatalog(catFilter.value); };
+
+  function showHome(){
+    state.docId = null;
+    docBar.style.display = 'none';
+    searchHits.style.display = 'none';
+    curDocTitle.textContent = catalog.length + ' documentos oficiais offline';
+    var html = '<h1>🏛️ Acervo Oficial TJPB · Leitura na Íntegra</h1>' +
+      '<p>Consulte as leis, resoluções do CNJ, padrões OWASP, acessibilidade (eMAG/WCAG) e COBIT 2019 completos sem sair do jogo e 100% offline.</p>' +
+      '<div class="warn-box"><b>⚠ Nota de transparência sobre o PDTI TJPB 2024–2026:</b> o portal do TJPB bloqueou o download automatizado (<code>HTTP 403</code>). Por isso, os números/metas internos específicos do PDTI TJPB não foram inventados — confira diretamente no portal do tribunal.</div>' +
+      '<div class="cards-home">';
+    catalog.forEach(function(d){
+      html += '<button type="button" class="hcard" data-id="' + esc(d.id) + '">' +
+        '<span class="badge">' + esc(d.badge) + '</span>' +
+        '<b>' + esc(d.short) + '</b>' +
+        '<small>' + esc(d.summary) + '</small></button>';
+    });
+    html += '</div>';
+    readerInner.innerHTML = html;
+    readerInner.querySelectorAll('.hcard').forEach(function(el){
+      el.onclick = function(){ openDoc(el.dataset.id, 0, ''); };
+    });
+    renderCatalog(catFilter.value);
+  }
+
+  function loadDocScript(id, cb){
+    if (docs[id]) return cb(docs[id]);
+    readerInner.innerHTML = '<p>Carregando documento oficial...</p>';
+    var sc = document.createElement('script');
+    sc.src = 'fontes/data/' + encodeURIComponent(id) + '.js';
+    sc.onload = function(){ cb(docs[id]); };
+    sc.onerror = function(){ readerInner.innerHTML = '<div class="warn-box">Erro ao carregar ' + esc(id) + '.</div>'; };
+    document.head.appendChild(sc);
+  }
+
+  function formatBody(md, query){
+    var lines = md.split('\n');
+    var out = [], inUl = false, inCode = false, codeBuf = [], tblRows = [];
+    function closeUl(){ if(inUl){ out.push('</ul>'); inUl = false; } }
+    function closeTbl(){
+      if (!tblRows.length) return;
+      var html = '<table>';
+      tblRows.forEach(function(r, idx){
+        if (/^\|?[\s:-]+(?:\|[\s:-]+)+\|?$/.test(r.trim())) return;
+        var cells = r.trim().replace(/^\|/, '').replace(/\|$/, '').split('|');
+        var tag = idx === 0 ? 'th' : 'td';
+        html += '<tr>' + cells.map(function(c){ return '<' + tag + '>' + hi(c.trim()) + '</' + tag + '>'; }).join('') + '</tr>';
+      });
+      html += '</table>';
+      out.push(html);
+      tblRows = [];
+    }
+    function hi(txt){
+      var s = esc(txt);
+      s = s.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+      s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+      s = s.replace(/^((?:Art\.\s*\d+[º°]?|§\s*\d+[º°]?|Parágrafo único\.?))(\s)/i, '<span class="art-tag">$1</span>$2');
+      if (query && query.length >= 2) {
+        var re = new RegExp('(' + escRe(esc(query)) + ')', 'gi');
+        s = s.replace(re, '<mark class="qhit">$1</mark>');
+      }
+      return s;
+    }
+    for (var i = 0; i < lines.length; i++) {
+      var l = lines[i];
+      if (/^```/.test(l.trim())) {
+        closeUl(); closeTbl();
+        if (!inCode) { inCode = true; codeBuf = []; }
+        else { out.push('<pre><code>' + esc(codeBuf.join('\n')) + '</code></pre>'); inCode = false; }
+        continue;
+      }
+      if (inCode) { codeBuf.push(l); continue; }
+      var tr = l.trim();
+      if (/^\|.+\|$/.test(tr)) { closeUl(); tblRows.push(tr); continue; }
+      closeTbl();
+      if (!tr) { closeUl(); continue; }
+      if (/^###\s+/.test(tr)) { closeUl(); out.push('<h3>' + hi(tr.replace(/^###\s+/, '')) + '</h3>'); }
+      else if (/^##\s+/.test(tr)) { closeUl(); out.push('<h2>' + hi(tr.replace(/^##\s+/, '')) + '</h2>'); }
+      else if (/^#\s+/.test(tr)) { closeUl(); out.push('<h1>' + hi(tr.replace(/^#\s+/, '')) + '</h1>'); }
+      else if (/^[-*•]\s+/.test(tr)) {
+        if (!inUl) { out.push('<ul>'); inUl = true; }
+        out.push('<li>' + hi(tr.replace(/^[-*•]\s+/, '')) + '</li>');
+      } else {
+        closeUl();
+        out.push('<p>' + hi(tr) + '</p>');
+      }
+    }
+    closeUl(); closeTbl();
+    if (inCode) out.push('<pre><code>' + esc(codeBuf.join('\n')) + '</code></pre>');
+    return out.join('\n');
+  }
+
+  function renderDocView(){
+    var doc = docs[state.docId];
+    if (!doc) return;
+    curDocTitle.textContent = doc.title;
+    docBar.style.display = 'flex';
+    chapSelect.innerHTML = doc.chapters.map(function(c, i){
+      return '<option value="' + i + '"' + (i === state.chIdx ? ' selected' : '') + '>' + (i + 1) + '. ' + esc(c.title) + '</option>';
+    }).join('');
+
+    var q = state.query.trim();
+    if (q.length >= 2) {
+      var ql = q.toLowerCase(), hits = [];
+      doc.chapters.forEach(function(c, i){
+        var hay = (c.title + '\n' + c.body).toLowerCase();
+        var pos = 0, cnt = 0;
+        while ((pos = hay.indexOf(ql, pos)) !== -1) { cnt++; pos += ql.length; }
+        if (cnt > 0) hits.push({ i: i, title: c.title, cnt: cnt });
+      });
+      if (hits.length) {
+        searchHits.style.display = 'flex';
+        searchHits.innerHTML = '<small style="font-weight:700">Encontrados (' + hits.length + ' seções):</small>' +
+          hits.map(function(h){
+            return '<button type="button" class="hit-pill' + (h.i === state.chIdx ? ' on' : '') + '" data-i="' + h.i + '">' + esc(h.title.slice(0, 32)) + ' (' + h.cnt + ')</button>';
+          }).join('');
+        searchHits.querySelectorAll('.hit-pill').forEach(function(b){
+          b.onclick = function(){ state.chIdx = +b.dataset.i; renderDocView(); };
+        });
+      } else {
+        searchHits.style.display = 'flex';
+        searchHits.innerHTML = '<small>Nenhuma ocorrência para "' + esc(q) + '" neste documento.</small>';
+      }
+    } else {
+      searchHits.style.display = 'none';
+    }
+
+    var ch = doc.chapters[state.chIdx] || doc.chapters[0];
+    var nav = '<div class="nav-ch">' +
+      (state.chIdx > 0 ? '<button type="button" class="tbtn" id="chPrev">← Seção anterior</button>' : '<span></span>') +
+      (state.chIdx < doc.chapters.length - 1 ? '<button type="button" class="tbtn" id="chNext">Próxima seção →</button>' : '<span></span>') +
+      '</div>';
+
+    readerInner.innerHTML = '<div class="note-box"><b>' + esc(doc.title) + '</b> · Fonte: ' + esc(doc.source) +
+      ' · Seção ' + (state.chIdx + 1) + ' de ' + doc.chapters.length + '</div>' +
+      formatBody(ch.body, q) + nav;
+
+    var pBtn = document.getElementById('chPrev'), nBtn = document.getElementById('chNext');
+    if (pBtn) pBtn.onclick = function(){ state.chIdx--; renderDocView(); };
+    if (nBtn) nBtn.onclick = function(){ state.chIdx++; renderDocView(); };
+
+    var firstHit = readerInner.querySelector('mark.qhit');
+    if (firstHit) firstHit.scrollIntoView({ block: 'center' });
+    else reader.scrollTop = 0;
+  }
+
+  function openDoc(id, chIdx, q){
+    state.docId = id;
+    state.chIdx = chIdx || 0;
+    state.query = q || '';
+    docSearch.value = state.query;
+    renderCatalog(catFilter.value);
+    if (window.innerWidth <= 860) sidebar.classList.remove('open');
+    loadDocScript(id, function(doc){
+      if (!doc) return;
+      state.chIdx = Math.max(0, Math.min(doc.chapters.length - 1, state.chIdx));
+      if (state.query.length >= 2) {
+        var ql = state.query.toLowerCase();
+        var idx = doc.chapters.findIndex(function(c){ return (c.title + '\n' + c.body).toLowerCase().includes(ql); });
+        if (idx >= 0) state.chIdx = idx;
+      }
+      renderDocView();
+    });
+  }
+
+  chapSelect.onchange = function(){ state.chIdx = +chapSelect.value; renderDocView(); };
+  var sTimer = null;
+  docSearch.oninput = function(){
+    clearTimeout(sTimer);
+    sTimer = setTimeout(function(){ state.query = docSearch.value; renderDocView(); }, 180);
+  };
+
+  if (hash.doc && catalog.some(function(d){ return d.id === hash.doc; })) {
+    openDoc(hash.doc, parseInt(hash.c || '0', 10) || 0, hash.q || '');
+  } else {
+    showHome();
+  }
+})();
+</script>
+</body>
+</html>

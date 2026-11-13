@@ -240,6 +240,41 @@ window.STUDY.portugues = {
      "explain": "Infligir é aplicar (pena, castigo); infringir é violar, descumprir (a lei)."
     }
    ]
+  },
+  {
+   "title": "Redação Oficial (Manual da Presidência)",
+   "pages": [
+    "O Manual de Redação da Presidência da República (3ª ed.) rege comunicações oficiais no Judiciário e Executivo.\nAtributos fundamentais:\n• Impessoalidade (quem fala é o cargo/órgão, jamais interesse pessoal)\n• Clareza e Precisão (compreensão imediata, vocabulário exato, sem ambiguidade)\n• Concisão (máximo de informação com mínimo de palavras)\n• Formalidade, Padronização e Uso do Padrão Culto (norma padrão, sem gírias nem adjetivação excessiva).",
+    "Padrão Ofício (desde a 3ª ed. do Manual, extinguiu-se a distinção formal entre ofício, aviso e memorando — todos seguem o Padrão Ofício):\n• Cabeçalho/Brasão + Tipo e nº do expediente + Local e data + Destinatário + Assunto\n• Vocativo: 'Senhor(a) [Cargo],' (ex.: Senhor Juiz,) — 'Excelentíssimo(a) Senhor(a) [Cargo],' restringe-se aos Chefes de Poder.\n• Fechos oficiais (APENAS DOIS!):\n  - Respeitosamente, (para autoridade superior, inclusive Presidente)\n  - Atenciosamente, (para mesma hierarquia ou inferior).",
+    "Pronomes de Tratamento e Concordância (ARMADILHA FGV!):\n• Vossa Excelência / Vossa Senhoria → concordam na 3ª PESSOA (verbo, possessivo 'sua/seu', oblíquo 'lhe/o/a', nunca 'vossa/vosso' no corpo!). Ex.: 'Solicito que Vossa Excelência envie seu parecer.'\n• VOSSA (com quem falamos, em carta/ofício) × SUA (de quem falamos, em 3ª pessoa).\n• Gênero do adjetivo acompanha o SEXO da autoridade: 'Vossa Excelência está atenta' (juíza) ou 'atento' (juiz).\n• Digníssimo (DD.) e Ilustríssimo (Ilmo.): ABOLIDOS pelo Manual!"
+   ],
+   "tip": "Fechos: APENAS 'Respeitosamente,' (superior) e 'Atenciosamente,' (igual/inferior). Vossa/Sua Excelência sempre com verbo e possessivo na 3ª pessoa!",
+   "quiz": [
+    {
+     "q": "De acordo com o Manual de Redação da Presidência da República (3ª edição), no Padrão Ofício utiliza-se o fecho 'Respeitosamente,' quando o destinatário é:",
+     "options": [
+      "servidor subordinado ao signatário",
+      "autoridade de mesma hierarquia funcional",
+      "autoridade superior, inclusive o Presidente da República",
+      "cidadão particular em resposta a requerimento",
+      "empresa contratada para prestação de serviços de TI"
+     ],
+     "answer": 2,
+     "explain": "O Manual fixa apenas dois fechos: 'Respeitosamente,' para autoridades superiores (incluindo Presidente) e 'Atenciosamente,' para mesma hierarquia ou inferior."
+    },
+    {
+     "q": "Assinale a frase que emprega CORRETAMENTE o pronome de tratamento segundo o Manual de Redação Oficial:",
+     "options": [
+      "Vossa Excelência designastes vossos assessores para a audiência.",
+      "Encaminho a Vossa Senhoria os autos para que aprecie sua solicitação.",
+      "Ilustríssimo Senhor Diretor, enviamos o relatório de Sistema.",
+      "Digníssimo Desembargador, solicitamos vosso parecer técnico.",
+      "Sua Excelência, receba nesta data os autos para vossa análise."
+     ],
+     "answer": 1,
+     "explain": "Pronomes de tratamento exigem 3ª pessoa nos verbos e possessivos ('aprecie', 'sua'). 'Vossa' dirige-se com quem se fala (não 'Sua' em vocativo). 'Ilustríssimo' e 'Digníssimo' foram abolidos."
+    }
+   ]
   }
  ]
 };

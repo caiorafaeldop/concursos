@@ -1,4 +1,4 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Banco de Dados — aulas visuais</title><link rel="stylesheet" href="aula.css?v=6">
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Banco de Dados — aulas visuais</title><link rel="stylesheet" href="aula.css?v=7">
 <style>
 .mini{font-size:15px}
 .mini table,.io table{font-size:14px}
@@ -1098,4 +1098,235 @@ $$;
 
 </section>
 
-<script src="aula.js?v=6"></script></body></html>
+<!-- ===================================================== CAPÍTULO 6 ===================================================== -->
+<section class="chapter" data-title="Business Intelligence, Data Warehouse, OLAP e Modelagem Dimensional">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 6</span>
+  <h1>Business Intelligence, Data Warehouse, OLAP e Modelagem Dimensional</h1>
+  <span class="emoji">📊</span>
+  <div class="steps">
+    <div class="step"><b>1. OLTP × OLAP</b><span>Transacional normalizado (3FN) vs analítico histórico.</span></div>
+    <div class="step"><b>2. DW &amp; Data Mart</b><span>Os 4 pilares de Inmon e abordagem bottom-up de Kimball.</span></div>
+    <div class="step"><b>3. Star × Snowflake</b><span>Tabela Fato, dimensões desnormalizadas e menos JOINs.</span></div>
+    <div class="step"><b>4. OLAP e ETL/ELT</b><span>Drill-down, Roll-up, Slice, Dice e pipeline de carga.</span></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">OLTP VS OLAP</span>
+  <h2>Operacional do dia a dia vs Decisão Estratégica</h2>
+  <table class="cmp mini">
+    <tr><th>Critério</th><th>OLTP (Transacional)</th><th>OLAP / DW (Analítico)</th></tr>
+    <tr><td><b>Uso</b></td><td>Protocolo, cadastro, CRUD do sistema</td><td>Relatórios gerenciais, painéis BI, séries históricas</td></tr>
+    <tr><td><b>Dados</b></td><td>Atuais, voláteis (muito INSERT/UPDATE)</td><td>Históricos, <b>não voláteis</b> (append/carga)</td></tr>
+    <tr class="ok"><td><b>Modelagem</b></td><td>Normalizada (3FN) p/ consistência</td><td>Desnormalizada (<b>Estrela / Fato-Dimensão</b>) p/ leitura</td></tr>
+    <tr><td><b>Consultas</b></td><td>Curtas, tocam poucas linhas por índice</td><td>Pesadas, agregações (SUM, COUNT) sobre milhões de linhas</td></tr>
+  </table>
+  <div class="say law"><b>Definição clássica de DW (Bill Inmon):</b> conjunto de dados <b>orientado a assuntos</b>, <b>integrado</b>, <b>variante no tempo</b> e <b>não volátil</b>.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">INMON × KIMBALL</span>
+  <h2>Top-down Corporativo vs Bottom-up por Data Marts</h2>
+  <div class="two">
+    <div class="say good"><b>Top-Down (Inmon):</b> constrói o <b>EDW</b> central normalizado (3FN / CIF) e depois alimenta os Data Marts departamentais. Entrega corporativa sólida, porém mais lenta.</div>
+    <div class="say"><b>Bottom-Up (Kimball):</b> entrega rápido <b>Data Marts dimensionais (Star Schema)</b> ligados por <b>dimensões conformadas</b> (ex.: Dimensão Tempo/Comarca única no Barbus/Bus Matrix).</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">STAR SCHEMA</span>
+  <h2>Fato no centro, Dimensões em volta (Esquema Estrela)</h2>
+  <svg viewBox="0 0 700 220" role="img" aria-label="Esquema Estrela com Tabela Fato e Dimensões">
+    <rect class="keybox" x="235" y="65" width="230" height="90" rx="12"/>
+    <text x="350" y="95" text-anchor="middle" class="kt" font-weight="700" font-size="14">FATO_MOVIMENTACAO</text>
+    <text x="350" y="116" text-anchor="middle" class="kt" font-size="12">FK id_tempo, id_vara, id_classe</text>
+    <text x="350" y="136" text-anchor="middle" class="kt" font-size="12">métricas: qtd_proc, tempo_dias</text>
+    <rect class="okbox" x="25" y="18" width="165" height="60" rx="10"/>
+    <text x="107" y="45" text-anchor="middle" font-weight="700" font-size="13">DIM_TEMPO</text>
+    <text x="107" y="63" text-anchor="middle" font-size="11">dia, mes, trimestre, ano</text>
+    <rect class="okbox" x="25" y="138" width="165" height="60" rx="10"/>
+    <text x="107" y="165" text-anchor="middle" font-weight="700" font-size="13">DIM_VARA</text>
+    <text x="107" y="183" text-anchor="middle" font-size="11">vara, comarca, entrancia</text>
+    <rect class="okbox" x="510" y="18" width="165" height="60" rx="10"/>
+    <text x="592" y="45" text-anchor="middle" font-weight="700" font-size="13">DIM_CLASSE</text>
+    <text x="592" y="63" text-anchor="middle" font-size="11">classe, area, competencia</text>
+    <rect class="okbox" x="510" y="138" width="165" height="60" rx="10"/>
+    <text x="592" y="165" text-anchor="middle" font-weight="700" font-size="13">DIM_MAGISTRADO</text>
+    <text x="592" y="183" text-anchor="middle" font-size="11">nome, cargo, titularidade</text>
+    <line x1="190" y1="52" x2="235" y2="90" stroke="#2ea043" stroke-width="2.5"/>
+    <line x1="190" y1="168" x2="235" y2="132" stroke="#2ea043" stroke-width="2.5"/>
+    <line x1="510" y1="52" x2="465" y2="90" stroke="#2ea043" stroke-width="2.5"/>
+    <line x1="510" y1="168" x2="465" y2="132" stroke="#2ea043" stroke-width="2.5"/>
+  </svg>
+  <p class="mini"><b>Granularidade:</b> defina antes de tudo o que <i>uma linha</i> da tabela fato representa (ex.: 1 movimentação em 1 dia).</p>
+</div>
+
+<div class="slide">
+  <span class="tag">STAR × SNOWFLAKE</span>
+  <h2>Desnormalizar dimensão acelera leitura; normalizar complica</h2>
+  <table class="cmp mini">
+    <tr><th>Modelo</th><th>Estrutura das Dimensões</th><th>Prós × Contras</th></tr>
+    <tr class="ok"><td><b>Star Schema (Estrela)</b></td><td>Dimensões <b>desnormalizadas</b> (comarca e entrância dentro de <code>DIM_VARA</code>)</td><td>Poucos JOINs, queries rápidas (padrão ouro de BI!)</td></tr>
+    <tr><td><b>Snowflake (Floco de Neve)</b></td><td>Dimensões <b>normalizadas</b> em sub-tabelas (<code>DIM_VARA → DIM_COMARCA → DIM_REGIAO</code>)</td><td>Menos redundância em disco, mais JOINs nas consultas</td></tr>
+  </table>
+  <p class="mini"><b>Fato sem fato (Factless Fact):</b> registra apenas ocorrência do evento (ex.: presença/audiência sem valor monetário). <b>SCD Tipo 2:</b> guarda histórico da dimensão criando nova linha com validade (<code>dt_inicio/dt_fim</code>).</p>
+</div>
+
+<div class="slide">
+  <span class="tag">OPERAÇÕES OLAP</span>
+  <h2>Navegando no cubo multidimensional</h2>
+  <table class="cmp mini">
+    <tr><th>Operação</th><th>O que faz</th><th>Exemplo no TJPB</th></tr>
+    <tr><td><b>Drill-down</b></td><td>Desce do resumo para o detalhe</td><td>Total Anual → Trimestre → Mês → Dia</td></tr>
+    <tr><td><b>Roll-up</b></td><td>Sobe agregando do detalhe ao resumo</td><td>Varas → Comarca → Estado</td></tr>
+    <tr><td><b>Slice</b></td><td>Fatia fixando 1 valor de uma dimensão</td><td>Apenas o ano <code>2026</code></td></tr>
+    <tr><td><b>Dice</b></td><td>Subcubo filtrando faixas de várias dimensões</td><td><code>Ano 2025-2026</code> + <code>Varas Cíveis</code> + <code>João Pessoa</code></td></tr>
+    <tr><td><b>Pivot</b></td><td>Gira os eixos (linhas viram colunas)</td><td>Trocar Comarca × Mês na tabela cruzada</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">ETL VS ELT</span>
+  <h2>Quando transformar antes ou depois da carga</h2>
+  <div class="flow"><span>Fontes</span><i>→</i><span><b>E</b>xtract</span><i>→</i><span><b>T</b>ransform</span><i>→</i><span><b>L</b>oad (DW)</span></div>
+  <div class="flow"><span>Fontes</span><i>→</i><span><b>E</b>xtract</span><i>→</i><span><b>L</b>oad (Lake/Cloud)</span><i>→</i><span><b>T</b>ransform (SQL/Spark)</span></div>
+  <ul class="mini">
+    <li><b>ETL:</b> limpa, padroniza e deduplica em área de <i>staging</i> antes de entrar no DW rígido (schema-on-write).</li>
+    <li><b>ELT:</b> ingere dados brutos rápido no Data Lake/Lakehouse e aplica transformações SQL/Spark lá dentro (schema-on-read / escalável).</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Cola de bolso de BI &amp; DW</h2>
+  <ul class="checklist">
+    <li>DW (Inmon): orientado a assuntos, integrado, variante no tempo, não volátil.</li>
+    <li>Star Schema: Fato (métricas + FKs) + Dimensões <b>desnormalizadas</b> → menos JOINs!</li>
+    <li>Snowflake: dimensões normalizadas → mais JOINs.</li>
+    <li>Drill-down detalha; Roll-up agrega; Slice corta 1 dimensão; Dice recorta subcubo.</li>
+    <li>ETL transforma antes; ELT carrega bruto e transforma dentro do destino.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Validação FGV — Cap. 6</h2>
+  <details><summary>1) Qual a principal diferença entre Star Schema e Snowflake?</summary>
+    <p><span class="pill ok">Dimensões desnormalizadas vs normalizadas</span> Star mantém cada dimensão em uma tabela plana (menos JOINs); Snowflake normaliza hierarquias em várias subtabelas.</p></details>
+  <details><summary>2) Subir da visão por Vara para o total por Comarca no painel OLAP é:</summary>
+    <p><span class="pill ok">Roll-up</span> Descer para mais detalhes é Drill-down.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 7 ===================================================== -->
+<section class="chapter" data-title="Governança de Dados (DMBOK), Data Lake e Dialetos SQL">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 7</span>
+  <h1>Governança de Dados (DMBOK), Data Lake e Dialetos SQL</h1>
+  <span class="emoji">🧭</span>
+  <div class="steps">
+    <div class="step"><b>1. DAMA-DMBOK</b><span>Papéis (Data Owner/Steward), catálogo, qualidade e linhagem.</span></div>
+    <div class="step"><b>2. Lake vs Lakehouse</b><span>Schema-on-read, zonas Bronze/Prata/Ouro e ACID sobre objetos.</span></div>
+    <div class="step"><b>3. Dialetos do Edital</b><span>Pegadinhas entre PostgreSQL, Oracle, MySQL e SQL Server.</span></div>
+    <div class="step"><b>4. SQL Analítico Moderno</b><span>CTE (WITH), Window Functions (OVER) e PostgreSQL (MVCC/JSONB).</span></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">DAMA-DMBOK</span>
+  <h2>Governança de Dados: papéis e pilares</h2>
+  <table class="cmp mini">
+    <tr><th>Conceito DMBOK</th><th>O que faz na prática</th></tr>
+    <tr><td><b>Data Owner</b></td><td>Responsável executivo/de negócio pelo domínio (autoriza acesso e políticas)</td></tr>
+    <tr><td><b>Data Steward</b></td><td>Curador operacional: garante qualidade, glossário de negócio e regras do dado</td></tr>
+    <tr><td><b>Linhagem (Lineage)</b></td><td>Rastreia origem → transformações → consumo (auditoria e impacto de mudanças)</td></tr>
+    <tr><td><b>Metadados</b></td><td>"Dados sobre os dados": técnicos (tipo/tabela), de negócio (definição) e operacionais (última carga)</td></tr>
+    <tr><td><b>Dados Mestres (MDM)</b></td><td>"Golden Record" único (ex.: cadastro único de magistrado/serventia sem duplicatas)</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">DW × DATA LAKE × LAKEHOUSE</span>
+  <h2>Arquitetura moderna em camadas (Medalhão)</h2>
+  <div class="flow"><span><b>Bronze</b> (Bruto/Raw)</span><i>→</i><span><b>Prata</b> (Limpo/Padronizado)</span><i>→</i><span><b>Ouro</b> (Estrela/Agregado)</span></div>
+  <table class="cmp mini">
+    <tr><th>Arquitetura</th><th>Esquema</th><th>Dados</th></tr>
+    <tr><td><b>Data Warehouse</b></td><td><b>Schema-on-write</b> (exige estrutura na carga)</td><td>Estruturados, históricos, alto desempenho BI</td></tr>
+    <tr><td><b>Data Lake</b></td><td><b>Schema-on-read</b> (lê sob demanda)</td><td>Estruturados + JSON/log/PDF/imagem em object storage</td></tr>
+    <tr class="ok"><td><b>Data Lakehouse</b></td><td>Híbrido com metadados ACID (Delta/Iceberg)</td><td>Traz transações ACID, versionamento e SQL direto sobre o Lake</td></tr>
+  </table>
+  <div class="say trap"><b>Armadilha real:</b> Data Lake sem governança, catálogo e curadoria degenera em <b>Data Swamp (Pântano de Dados)</b>!</div>
+</div>
+
+<div class="slide">
+  <span class="tag">DIALETOS SQL DO EDITAL</span>
+  <h2>PostgreSQL × Oracle × MySQL × SQL Server</h2>
+  <table class="cmp mini">
+    <tr><th>Recurso</th><th>PostgreSQL</th><th>Oracle (12c+)</th><th>MySQL 8+</th><th>SQL Server (T-SQL)</th></tr>
+    <tr><td><b>Limitar linhas</b></td><td><code>LIMIT n</code> / <code>FETCH FIRST</code></td><td><code>FETCH FIRST n ROWS ONLY</code> (antigo: <code>ROWNUM</code>)</td><td><code>LIMIT n</code></td><td><code>TOP n</code> ou <code>OFFSET/FETCH</code></td></tr>
+    <tr><td><b>Concatenar</b></td><td><code>a || b</code> / <code>CONCAT</code></td><td><code>a || b</code> (1 arg extra: NULL vira ''!)</td><td><code>CONCAT(a,b)</code> (<code>||</code> = OR lógico!)</td><td><code>a + b</code> / <code>CONCAT</code></td></tr>
+    <tr><td><b>Auto-incremento</b></td><td><code>GENERATED ... AS IDENTITY</code> / <code>SERIAL</code></td><td><code>SEQUENCE</code> / <code>IDENTITY</code> (12c+)</td><td><code>AUTO_INCREMENT</code></td><td><code>IDENTITY(1,1)</code></td></tr>
+    <tr><td><b>NULL coalesce</b></td><td><code>COALESCE(a, b)</code></td><td><code>NVL</code> / <code>COALESCE</code></td><td><code>IFNULL</code> / <code>COALESCE</code></td><td><code>ISNULL</code> / <code>COALESCE</code></td></tr>
+  </table>
+  <div class="say trap"><b>Pegadinha Oracle vs ANSI:</b> no Oracle clássico, string vazia <code>''</code> é tratada como <b>NULL</b>, e <code>DDL</code> (CREATE/ALTER/TRUNCATE) faz <b>COMMIT implícito</b> (em Oracle e MySQL)! Já no PostgreSQL DDL participa normalmente da transação e pode sofrer <code>ROLLBACK</code>!</div>
+</div>
+
+<div class="slide">
+  <span class="tag">WINDOW FUNCTIONS &amp; CTE</span>
+  <h2>SQL analítico que cai em objetiva e discursiva</h2>
+<pre><code><b>WITH</b> rankings <b>AS</b> (  <i>-- CTE nomeada (legibilidade e modularidade)</i>
+  <b>SELECT</b> vara, processo, dias_parado,
+         <b>RANK()</b> OVER (<b>PARTITION BY</b> vara <b>ORDER BY</b> dias_parado <b>DESC</b>) <b>AS</b> pos
+  <b>FROM</b> processos
+)
+<b>SELECT</b> * <b>FROM</b> rankings <b>WHERE</b> pos &lt;= 3;</code></pre>
+  <p class="mini"><b>Diferença crucial:</b> <code>GROUP BY</code> <b>colapsa</b> linhas em 1 por grupo; <code>OVER (PARTITION BY ...)</code> calcula ranking/acumulado mantendo <b>todas as linhas</b>! E <code>ROW_NUMBER()</code> nunca empata (1,2,3); <code>RANK()</code> pula após empate (1,1,3); <code>DENSE_RANK()</code> não pula (1,1,2).</p>
+</div>
+
+<div class="slide">
+  <span class="tag">POSTGRESQL NA PRÁTICA</span>
+  <h2>MVCC, VACUUM e JSONB</h2>
+  <div class="grid2">
+    <div class="card"><h3>MVCC &amp; VACUUM</h3><p>Leitores não bloqueiam escritores (versões de linha). Updates/deletes deixam <i>dead tuples</i> que o <b>VACUUM / autovacuum</b> limpa.</p></div>
+    <div class="card"><h3>JSON vs JSONB</h3><p><code>JSON</code> guarda texto exato; <code>JSONB</code> guarda binário decomposto, mais rápido para consultar e indexável com índice <b>GIN</b>.</p></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">QUALIDADE DE DADOS</span>
+  <h2>As dimensões clássicas da qualidade (DMBOK)</h2>
+  <ul class="clean">
+    <li><b>Completude:</b> campos obrigatórios preenchidos sem nulos indevidos.</li>
+    <li><b>Unicidade:</b> sem registros duplicados da mesma entidade (ex.: CPF duplicado).</li>
+    <li><b>Consistência:</b> valores coerentes entre sistemas/regras (idade × data de nascimento).</li>
+    <li><b>Acurácia &amp; Tempestividade:</b> reflete o mundo real e está disponível no prazo certo.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Checklist Final — Banco &amp; Governança</h2>
+  <ul class="checklist">
+    <li>Data Owner decide acesso; Data Steward cura qualidade; Data Swamp = Lake sem governança.</li>
+    <li>Data Lake = schema-on-read; DW = schema-on-write; Lakehouse adiciona camada ACID.</li>
+    <li>PostgreSQL faz ROLLBACK de DDL; Oracle e MySQL dão commit implícito em DDL.</li>
+    <li>Window Function (<code>OVER</code>) preserva linhas; <code>RANK</code> pula após empate e <code>DENSE_RANK</code> não pula.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Validação FGV — Cap. 7</h2>
+  <details><summary>1) Em uma tabela com valores empatados [100, 100, 80], o que retornam ROW_NUMBER, RANK e DENSE_RANK?</summary>
+    <p><span class="pill ok">1,2,3 · 1,1,3 · 1,1,2</span> <code>RANK</code> cria lacuna no 2; <code>DENSE_RANK</code> segue sequencial sem lacuna.</p></details>
+  <details><summary>2) Em qual dos SGBDs um TRUNCATE TABLE dentro de BEGIN...ROLLBACK pode ser revertido?</summary>
+    <p><span class="pill ok">PostgreSQL (e SQL Server)</span> Em Oracle e MySQL, comandos DDL (como TRUNCATE) executam COMMIT implícito antes/depois.</p></details>
+</div>
+
+</section>
+
+<script src="aula.js?v=7"></script></body></html>

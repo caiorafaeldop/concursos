@@ -12,8 +12,8 @@ window.MATERIAS['engsoft'] = {
     { name: 'Seu Contador de Pontos', lines: [
       'Na APF, funções de dados são ALI (mantido dentro da fronteira) e AIE (só referenciado, mantido por outra aplicação).',
       'Transações: EE altera dados ou comportamento; SE mostra dados com cálculo ou dado derivado; CE só recupera, sem cálculo.',
-      'Pesos baixa/média/alta: ALI 7/10/15, AIE 5/7/10, EE 3/4/6, SE 4/5/7, CE 3/4/6. Some tudo e terá os PF não ajustados.',
-      'Complexidade de dados usa TD e TR; de transações usa TD e ALR (arquivos referenciados). APF mede o tamanho funcional, não esforço.'
+      'ALI pesa mais que AIE (manter > apenas ler) e SE pesa mais que CE (tem cálculo/derivação).',
+      'APF mede TAMANHO funcional (não esforço!): Esforço = Tamanho (PF) × Produtividade (h/PF).'
     ] },
     { name: 'Mestra Spec, a Engenheira', lines: [
       'Requisito funcional diz O QUE o sistema faz; não funcional diz COMO ele deve ser (desempenho, segurança, usabilidade).',
@@ -96,7 +96,7 @@ window.MATERIAS['engsoft'] = {
   quick: [
     { q: 'Duração máxima da Sprint no Guia do Scrum?', options: ['1 mês', '2 semanas', '6 semanas', '3 meses'], answer: 0, explain: 'Sprint: até um mês, com duração consistente.' },
     { q: 'Quem pode cancelar a Sprint?', options: ['Scrum Master', 'Developers', 'Stakeholders', 'Product Owner'], answer: 3, explain: 'Só o PO, se a Meta da Sprint ficar obsoleta.' },
-    { q: 'Peso de um ALI de complexidade baixa?', options: ['3 PF', '5 PF', '7 PF', '10 PF'], answer: 2, explain: 'ALI: 7 / 10 / 15 (baixa / média / alta).' },
+    { q: 'APF (IFPUG) mede diretamente:', options: ['Horas trabalhadas', 'Linhas de código', 'Tamanho funcional', 'Velocidade do time'], answer: 2, explain: 'APF mede tamanho funcional na visão do usuário; esforço depende da produtividade (h/PF).' },
     { q: 'Modelo de ciclo de vida guiado por análise de riscos?', options: ['Cascata', 'Espiral', 'Modelo V', 'Codifica-corrige'], answer: 1, explain: 'O espiral de Boehm gira em torno de riscos.' },
     { q: 'Ciclo do TDD?', options: ['Verde-vermelho', 'Testar no fim', 'Vermelho-verde-refatorar', 'Refatorar-codificar'], answer: 2, explain: 'Teste falha, código mínimo passa, depois refatora.' },
     { q: '"O sistema deve responder em até 2 s" é requisito:', options: ['Funcional', 'Não funcional', 'Regra de negócio', 'De domínio'], answer: 1, explain: 'Desempenho é qualidade: não funcional.' }
@@ -170,14 +170,14 @@ window.MATERIAS['engsoft'] = {
       { title: 'Análise de Pontos de Função e estimativas',
         pages: [
           'APF (IFPUG/CPM)\n• Mede o TAMANHO FUNCIONAL pela visão do usuário, independente de linguagem.\n• Dados: ALI (mantido dentro da fronteira) e AIE (só referenciado, mantido por outra aplicação).\n• Transações: EE (mantém ALI ou altera comportamento), SE (apresenta com cálculo, dado derivado, ou atualiza ALI), CE (só recupera e apresenta).',
-          'PESOS (baixa/média/alta)\n• ALI 7/10/15 · AIE 5/7/10\n• EE 3/4/6 · SE 4/5/7 · CE 3/4/6\n• Complexidade dos dados: TD (tipos de dados) × TR (tipos de registro).\n• Transações: TD × ALR (arquivos referenciados).\n• Soma = PF não ajustados. O fator de ajuste (14 características gerais) é opcional nas versões recentes.',
+          'COMPLEXIDADE E REFERÊNCIA DE PESOS\n• Critérios: dados usam TD (campos únicos) × TR (subgrupos lógicos); transações usam TD × ALR (arquivos referenciados).\n• Referência (baixa/média/alta): ALI 7/10/15, AIE 5/7/10, EE 3/4/6, SE 4/5/7, CE 3/4/6.\n• Na prova, foque em classificar funções (ALI vs AIE, EE vs SE vs CE) e saber que o VAF (14 características) tornou-se opcional nas versões recentes.',
           'ESTIMATIVAS\n• Esforço = tamanho × produtividade (ex.: 100 PF × 8 h/PF = 800 h).\n• NESMA indicativa: 35 PF por ALI, 15 por AIE.\n• Ágil: story points (tamanho relativo), Planning Poker com sequência tipo Fibonacci, velocidade = pontos entregues por Sprint.\n• Cone da incerteza: estimativas iniciais erram muito; melhoram com o tempo.'
         ],
-        tip: 'Pesos "7-5-3-4-3" para baixa: ALI 7, AIE 5, EE 3, SE 4, CE 3. Cálculo ou dado derivado na saída? Então é SE.',
+        tip: 'APF mede tamanho funcional (não esforço!). Cálculo/dado derivado na saída = SE; consulta pura = CE.',
         quiz: [
-          { q: 'Uma aplicação tem 1 ALI de complexidade baixa, 1 AIE baixa, 2 EE baixas e 1 SE média. O total de PF não ajustados é:',
-            options: ['23', '18', '20', '25', '27'], answer: 0,
-            explain: 'ALI baixa 7 + AIE baixa 5 + 2 × EE baixa 3 (=6) + SE média 5 = 23. Quem usa o peso do ALI no AIE chega a 25; quem usa SE baixa (4) chega a 22.' },
+          { q: 'Um sistema de protocolo mantém a tabela Processos e consulta apenas em modo leitura a tabela Servidores gerenciada pelo sistema de RH. Na contagem do sistema de protocolo, Servidores e a tela de consulta simples são, respectivamente:',
+            options: ['ALI e SE', 'AIE e CE', 'AIE e EE', 'ALI e CE', 'EE e SE'], answer: 1,
+            explain: 'Servidores é mantido por outro sistema → AIE. Consulta simples sem cálculo nem atualização de ALI → CE.' },
           { q: 'Sobre story points, é correto afirmar que:',
             options: [
               'equivalem sempre a 8 horas de trabalho.',
@@ -190,11 +190,11 @@ window.MATERIAS['engsoft'] = {
         ] },
       { title: 'Qualidade, testes, SDD e engenharia assistida por IA',
         pages: [
-          'QUALIDADE\n• Verificação: "estamos construindo o produto corretamente?" Validação: "estamos construindo o produto correto?"\n• ISO/IEC 25010 (2011): adequação funcional, eficiência de desempenho, compatibilidade, usabilidade, confiabilidade, segurança, manutenibilidade, portabilidade. Revisão 2023 mudou nomes: confira.\n• Erro (humano) → defeito (no código) → falha (em execução).',
+          'QUALIDADE\n• Verificação: "estamos construindo o produto corretamente?" Validação: "estamos construindo o produto correto?"\n• ISO/IEC 25010: adequação funcional, eficiência de desempenho, compatibilidade, usabilidade/capacidade de interação, confiabilidade, segurança, manutenibilidade, flexibilidade/portabilidade.\n• Erro (humano) → defeito (no código) → falha (em execução).',
           'TESTES\n• Níveis: unidade → integração → sistema → aceitação.\n• Caixa-preta (pela especificação): partição de equivalência, valor-limite. Caixa-branca (pela estrutura): cobertura de comandos e de decisões.\n• Regressão: reexecuta testes após mudança.\n• Pirâmide: muitos testes de unidade, poucos de ponta a ponta.\n• TDD: vermelho → verde → refatorar.',
-          'SDD E IA\n• SDD: especificação é a fonte da verdade. Fluxo: especificar → planejar → tarefas → implementar → verificar.\n• IA (assistentes e agentes) acelera, mas pode alucinar, gerar código inseguro e vazar dados.\n• Guardrails: testes automatizados, revisão humana, SAST, contexto mínimo, nada de segredos no prompt, responsabilidade do humano.'
+          'SDD, ESPECIFICAÇÕES EXECUTÁVEIS E HARNESS DE IA\n• SDD: especificação é a fonte da verdade (especificar → planejar → tarefas → implementar → verificar).\n• Especificações executáveis: cenários Gherkin/BDD e contratos OpenAPI/JSON Schema testados no CI.\n• Engineering harness: sandbox com menor privilégio, typecheck, linters, SAST/SCA e suíte automatizada que valida cada iteração de agentes de IA antes da revisão humana.'
         ],
-        tip: 'Valor-limite: teste nas bordas (mín-1, mín, máx, máx+1). IA escreve, mas teste e revisão humana decidem.',
+        tip: 'Valor-limite: teste nas bordas (mín-1, mín, máx, máx+1). Engineering harness = gates automáticos + sandbox cercando o agente de IA.',
         quiz: [
           { q: 'Um campo aceita idades de 18 a 65 anos. Pela análise de valor-limite (dois valores por fronteira), o melhor conjunto de testes é:',
             options: ['18 e 65', '0, 40 e 100', '19, 40 e 64', '20, 30, 40, 50 e 60', '17, 18, 65 e 66'], answer: 4,

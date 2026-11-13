@@ -12,15 +12,14 @@ const SUBJ_DEFS=[
   {id:'linguagens',band:'esp',name:'Linguagens e Frameworks',city:'Forja do Código',color:'#ef4444',theme:5},
   {id:'sysdesign',band:'esp',name:'Design de Sistemas',city:'Cidade Escalável',color:'#0ea5e9',theme:4},
   {id:'devops',band:'esp',name:'DevOps e Nuvem',city:'Nuvem Alta',color:'#06b6d4',theme:6},
-  {id:'seguranca',band:'esp',name:'Segurança e Qualidade',city:'Fortaleza Segura',color:'#dc2626',theme:2},
+  {id:'seguranca',band:'esp',name:'Segurança e AppSec',city:'Fortaleza Segura',color:'#dc2626',theme:2},
+  {id:'lgpd',band:'esp',name:'LGPD e Privacidade',city:'Cidadela da LGPD',color:'#059669',theme:4},
   {id:'govti',band:'esp',name:'Governança de TI',city:'Burgo da Governança',color:'#84cc16',theme:1},
   {id:'govjud',band:'esp',name:'Governança do Judiciário',city:'Cidade do CNJ',color:'#d4a017',theme:1},
   {id:'ia',band:'esp',name:'Inteligência Artificial',city:'Colônia Neural',color:'#ec4899',theme:3},
-  {id:'mobile',band:'esp',name:'Desenvolvimento Mobile',city:'Ilha Mobile',color:'#14b8a6',theme:4},
-  {id:'uiux',band:'esp',name:'UI/UX e Acessibilidade',city:'Praça Acessível',color:'#f97316',theme:0},
+  {id:'interfaces',band:'esp',name:'UI/UX, Acessibilidade e Mobile',city:'Praça das Interfaces',color:'#f97316',theme:0},
   {id:'discursiva',band:'esp',name:'Discursiva',city:'Arena da Discursiva',color:'#64748b',theme:5},
   {id:'portugues',band:'ger',name:'Português',city:'Vila das Letras',color:'#e8645a',theme:0},
-  {id:'redacao',band:'ger',name:'Escrita Discursiva',city:'Oficina da Escrita',color:'#b45309',theme:1},
   {id:'logica',band:'ger',name:'Raciocínio Lógico',city:'Vale da Lógica',color:'#5a8fe8',theme:3},
   {id:'matematica',band:'ger',name:'Matemática e Estatística',city:'Vila dos Números',color:'#0891b2',theme:5}
 ];
@@ -114,19 +113,39 @@ modal.addEventListener('click',e=>{if(e.target===modal)closeModal()});
 const aulaFrame=document.createElement('iframe');aulaFrame.id='aula';aulaFrame.title='Aula';
 aulaFrame.style.cssText='position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;border:0;display:none;z-index:999999;background:#fffaf0';
 document.body.appendChild(aulaFrame);
-let aulaCtx=null;
+const fontesFrame=document.createElement('iframe');fontesFrame.id='fontes';fontesFrame.title='Acervo Oficial';
+fontesFrame.style.cssText='position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;border:0;display:none;z-index:1000001;background:#fffaf0';
+document.body.appendChild(fontesFrame);
+let aulaCtx=null,fontesPrevMode='world';
 function openAula(tid,ci){
   aulaCtx={tid,ci};mode='aula';keys={};sfx('confirm');
-  aulaFrame.src='aulas/'+tid+'.html?v=6#c='+ci+'&embed=1';aulaFrame.style.display='block';
+  aulaFrame.src='aulas/'+tid+'.html?v=7#c='+ci+'&embed=1';aulaFrame.style.display='block';
   aulaFrame.onload=()=>{try{aulaFrame.contentWindow.focus()}catch(e){}};
 }
 function closeAula(){aulaFrame.style.display='none';aulaFrame.src='about:blank';mode=worldMode();window.focus();updateHud()}
-window.openAula=openAula;window.closeAula=closeAula;
+function openFontes(hash){
+  if(mode==='fontes')return;
+  fontesPrevMode=mode==='aula'?'aula':worldMode();
+  mode='fontes';keys={};sfx('confirm');
+  fontesFrame.src='fontes.html?v=1#'+(hash?hash+'&embed=1':'embed=1');
+  fontesFrame.style.display='block';
+  fontesFrame.onload=()=>{try{fontesFrame.contentWindow.focus()}catch(e){}};
+}
+function closeFontes(){
+  fontesFrame.style.display='none';fontesFrame.src='about:blank';
+  mode=fontesPrevMode==='aula'?'aula':worldMode();
+  if(mode==='aula'){try{aulaFrame.contentWindow.focus()}catch(e){}}else window.focus();
+  updateHud();
+}
+window.openAula=openAula;window.closeAula=closeAula;window.openFontes=openFontes;window.closeFontes=closeFontes;
 window.addEventListener('message',e=>{
-  const d=e.data;if(!d||d.source!=='aula'||!aulaCtx)return;
+  const d=e.data;if(!d)return;
+  if(d.source==='fontes'&&d.type==='fontes-close'){closeFontes();return}
+  if(d.source!=='aula'||!aulaCtx)return;
   const c=aulaCtx;
   if(d.type==='aula-close'){closeAula();aulaCtx=null}
   else if(d.type==='aula-done'){closeAula();aulaCtx=null;openChapter(c.tid,c.ci,true)}
+  else if(d.type==='aula-fontes'){openFontes(d.hash||'')}
 });
 
 // ---------- save ----------
@@ -137,23 +156,24 @@ const sealCount=()=>TOPICS.filter(t=>save.done[t.id]).length;
 
 // ---------- mapa ----------
 // Duas bandas separadas por um rio: em cima CONHECIMENTOS ESPECÍFICOS (15 cidades, 80 pts),
-// embaixo CONHECIMENTOS GERAIS (Português, Redação, hub, Lógica, Matemática).
+// embaixo CONHECIMENTOS GERAIS (Português, Acervo Oficial, Hub Central, Lógica, Matemática).
 // Cidades-ilha na mata, ligadas por trilhas estreitas de terra com curvas, becos e pontes.
-const CITY_W=16,CITY_H=13,GAP_X=6,GAP_Y=5,RIVER={y0:53,y1:55},HUBD=99;
+const CITY_W=16,CITY_H=13,GAP_X=6,GAP_Y=5,RIVER={y0:53,y1:55},HUBD=99,FONTESD=98;
 const colX=c=>2+c*(CITY_W+GAP_X);
 const SPEC_OY=r=>2+r*(CITY_H+GAP_Y), GEN_OY=59;
 const CELLS=[];
 SUBJECTS.forEach((s,i)=>{if(s.band==='esp'){const c=i%5,r=Math.floor(i/5);CELLS.push({si:i,ox:colX(c),oy:SPEC_OY(r),c,r})}});
-const GEN_ORDER=['portugues','redacao','HUB','logica','matematica'];
-GEN_ORDER.forEach((id,c)=>{const si=SUBJECTS.findIndex(s=>s.id===id);CELLS.push({si:id==='HUB'?HUBD:si,ox:colX(c),oy:GEN_OY,c,r:3,hub:id==='HUB'})});
+const GEN_ORDER=['portugues','FONTES','HUB','logica','matematica'];
+GEN_ORDER.forEach((id,c)=>{const si=SUBJECTS.findIndex(s=>s.id===id);CELLS.push({si:id==='HUB'?HUBD:id==='FONTES'?FONTESD:si,ox:colX(c),oy:GEN_OY,c,r:3,hub:id==='HUB',arch:id==='FONTES'})});
 const HUBCELL=CELLS.find(c=>c.hub);
+const ARCHCELL=CELLS.find(c=>c.arch);
 const cityO=si=>CELLS.find(c=>c.si===si)||HUBCELL;
 function distOf(x,y){
   for(const c of CELLS)if(x>=c.ox&&x<c.ox+CITY_W&&y>=c.oy&&y<c.oy+CITY_H)return c.si;
   return -1;
 }
 const THEMES=window.THEMES||[];
-const thOf=d=>d===HUBD?THEMES[6]:(d>=0&&SUBJECTS[d]?THEMES[SUBJECTS[d].theme]:null);
+const thOf=d=>(d===HUBD||d===FONTESD)?THEMES[6]:(d>=0&&SUBJECTS[d]?THEMES[SUBJECTS[d].theme]:null);
 const themeAt=(x,y)=>thOf(distOf(x,y))||null;
 const buildings=[];
 CELLS.forEach(c=>{
@@ -161,6 +181,10 @@ CELLS.forEach(c=>{
     buildings.push({kind:'cafe',id:'cafe',name:'Café do Foco',short:'Café',color:'#b5651d',x:c.ox+1,y:c.oy+1,d:HUBD});
     buildings.push({kind:'gallery',id:'gallery',name:'Galeria de Cartas',short:'Cartas',color:'#6a5acd',x:c.ox+9,y:c.oy+1,d:HUBD});
     buildings.push({kind:'tribunal',id:'tribunal',name:'Tribunal Final',short:'Tribunal',color:'#d4af37',x:c.ox+9,y:c.oy+7,d:HUBD,road:c.oy+11});
+    return;
+  }
+  if(c.arch){
+    buildings.push({kind:'archive',id:'archive',name:'Acervo Oficial',short:'Fontes',color:'#4f46e5',x:c.ox+5,y:c.oy+1,d:FONTESD});
     return;
   }
   const s=SUBJECTS[c.si],t=s.topic;
@@ -225,6 +249,7 @@ function zoneAt(x,y){
   for(const c of CORNERS)if(Math.abs(x-c.x)<=2&&Math.abs(y-c.y)<=2)return{id:c.id,name:c.name,track:'nook'};
   const d=distOf(x,y);
   if(d===HUBD)return{id:'hub',name:'Paraíba Central',track:'town'};
+  if(d===FONTESD)return{id:'fontes',name:'Acervo Oficial · Documentos na Íntegra',track:'town'};
   if(d<0)return{id:y<RIVER.y0?'wild_e':'wild_g',name:y<RIVER.y0?'Trilha · Banda dos Específicos':'Trilha · Banda dos Gerais',track:'nook'};
   const s=SUBJECTS[d];return{id:'d'+d,name:s.city+' · '+s.name,track:TRACKS[d%TRACKS.length]};
 }
@@ -373,7 +398,7 @@ function makeRoom(b){
     r.objs.push({x:2,y:2,type:'counter'},{x:3,y:3,type:'counter'},{x:4,y:3,type:'counter'});
   }else if(b.kind==='library'){
     r.music='library';const t=b.t,S=studyOf(t.id);
-    if(S){S.chapters.forEach((c,i)=>{if(i<7)r.objs.push({x:1+i,y:1,type:'chapter',t,ci:i})});r.objs.push({x:8,y:1,type:'chapter',t,ci:'sim'})}
+    if(S){const n=S.chapters.length;S.chapters.forEach((c,i)=>{if(i<8)r.objs.push({x:1+i,y:1,type:'chapter',t,ci:i})});r.objs.push({x:8,y:n>7?2:1,type:'chapter',t,ci:'sim'})}
     else r.objs.push({x:2,y:1,type:'shelf',t});
     r.npcs.push({n:{name:'Bibliotecário'},x:2,y:4,c:b.color,dir:'right',type:'libr'});
   }else if(b.kind==='gallery'){
@@ -541,7 +566,7 @@ function teleportTo(x,y){
   closeModal();mode='trans';sfx('whoosh');
   transition('iris',()=>{scene='world';room=null;P.x=x;P.y=y;P.px=x*T;P.py=y*T;P.moving=false;P.dir='down';keys={};padCool=true;playWorld();updateHud()},()=>{mode='world'});
 }
-const KIND_ICON={topic:'🏠',cafe:'☕',library:'📚',tribunal:'🏛',gallery:'🃏'};
+const KIND_ICON={topic:'🏠',cafe:'☕',library:'📚',tribunal:'🏛',gallery:'🃏',archive:'📜'};
 function mapSpots(){
   const s=[{name:'Paraíba Central',icon:'🏙',x:SPAWN.x+.5,y:SPAWN.y+.5,tx:SPAWN.x,ty:SPAWN.y,ok:true}];
   buildings.forEach(b=>s.push({name:b.name,icon:KIND_ICON[b.kind],x:b.x+2.5,y:b.y+2,tx:b.doorX,ty:b.doorY+1,ok:!!save.visited[b.id]}));
@@ -558,7 +583,7 @@ function paintMapBase(g,S0,spots){
   path.forEach(p=>{const[a,b]=p.split(',').map(Number);g.fillStyle=mp(a,b).path;g.fillRect(a*S,b*S,S,S);g.fillStyle='rgba(0,0,0,.08)';g.fillRect(a*S+3,b*S+8,3,2)});
   trees.forEach(([x,y])=>{const cx=(x+.5)*S,cy=(y+.5)*S,c=mp(x,y).tree;g.fillStyle='rgba(0,0,0,.28)';g.beginPath();g.arc(cx,cy+2,S*.55,0,7);g.fill();g.fillStyle=c;g.beginPath();g.arc(cx-1,cy-1,S*.47,0,7);g.fill();g.fillStyle='rgba(255,255,255,.25)';g.beginPath();g.arc(cx-3,cy-4,S*.16,0,7);g.fill()});
   PROPS.forEach(p=>{if(p.type==='deco'){g.fillStyle='rgba(255,255,255,.55)';g.fillRect(p.x*S+4,p.y*S+4,9,9)}});
-  CELLS.forEach(c=>{const nm=c.hub?'PARAÍBA CENTRAL':SUBJECTS[c.si].city;outline(nm,(c.ox+8)*S,(c.oy+12.8)*S,'bold 30px "Courier New"',c.hub?'#7a2a00':'#5a3416')});
+  CELLS.forEach(c=>{const nm=c.hub?'PARAÍBA CENTRAL':c.arch?'ACERVO OFICIAL':SUBJECTS[c.si].city;outline(nm,(c.ox+8)*S,(c.oy+12.8)*S,'bold 30px "Courier New"',c.hub?'#7a2a00':c.arch?'#312e81':'#5a3416')});
   outline('▲ CONHECIMENTOS ESPECÍFICOS · 40 questões + discursiva (80 pts)',W/2,(RIVER.y0-0.6)*S,'bold 34px "Courier New"','#1f3a7a');
   outline('▼ CONHECIMENTOS GERAIS · Português 10 + Raciocínio Lógico 10',W/2,(RIVER.y1+2.2)*S,'bold 34px "Courier New"','#1f5a2a');
   g.setLineDash([5,4]);g.strokeStyle='#8b6bd6';g.lineWidth=2;
@@ -632,7 +657,7 @@ function openTravel(){
   renderList();frame();
 }
 function showLibSign(b){
-  const s=SUBJECTS[b.d],S=studyOf(b.t.id);
+  const s=SUBJECTS[b.d],S=studyOf(b.t.id);if(!s)return;
   const pages=['Assunto: '+s.name+'\nCidade: '+s.city];
   if(S&&S.chapters&&S.chapters.length)pages.push('Capítulos:\n'+S.chapters.map((c,i)=>(i+1)+'. '+c.title).join(' · '));
   sfx('confirm');
@@ -640,7 +665,7 @@ function showLibSign(b){
 }
 function openSign(sg){
   CORNERS.forEach(c=>save.visited[c.id]=true);persist();
-  const items=[{name:'🏙  Paraíba Central (hub)',x:SPAWN.x,y:SPAWN.y}].concat(SUBJECTS.map((d,i)=>({name:(d.band==='esp'?'🔷 ':'🔸 ')+d.city+' — '+d.name,x:cityO(i).ox+7,y:cityO(i).oy+6})),CORNERS.map(c=>({name:c.arrow+'  '+c.name,x:c.x,y:c.y})),[{name:'✖  Ficar por aqui'}]);let sel=0;
+  const items=[{name:'🏙  Paraíba Central (hub)',x:SPAWN.x,y:SPAWN.y}].concat(ARCHCELL?[{name:'📜  Acervo Oficial (Leis, OWASP & CNJ)',x:ARCHCELL.ox+7,y:ARCHCELL.oy+6}]:[],SUBJECTS.map((d,i)=>({name:(d.band==='esp'?'🔷 ':'🔸 ')+d.city+' — '+d.name,x:cityO(i).ox+7,y:cityO(i).oy+6})),CORNERS.map(c=>({name:c.arrow+'  '+c.name,x:c.x,y:c.y})),[{name:'✖  Ficar por aqui'}]);let sel=0;
   function render(){
     let h='<div class="mbox"><h2>🪧 Placa de Paraíba City</h2><div class="hint" style="margin:0 0 8px">Para onde você quer ir?</div>';
     items.forEach((it,i)=>h+='<div class="row'+(i===sel?' sel':'')+'" data-i="'+i+'"><span>'+esc(it.name)+'</span></div>');
@@ -970,7 +995,7 @@ function updateHud(){
     if(near)txt=(save.done[near.id]?'★ ':'')+near.name+'  ·  '+txt;
     else txt='📍 '+zoneAt(P.x,P.y).name+'  ·  '+txt;
   }
-  txt+='   [M]apa [C]artas [B]inaural [N]'+(save.muted?'🔇':'🔊');
+  txt+='   [M]apa [F]ontes [C]artas [B]inaural [N]'+(save.muted?'🔇':'🔊');
   hud.textContent=txt;
 }
 
@@ -988,12 +1013,14 @@ addEventListener('keydown',e=>{
   if(e.repeat)return;
   if(mode==='mini')return;
   if(mode==='aula'){if(kk==='Escape'){closeAula();aulaCtx=null}return}
+  if(mode==='fontes'){if(kk==='Escape'){closeFontes()}return}
   if(mode==='title'&&(kk==='Enter'||kk===' ')){startGame();return}
   if(mode==='dialog'&&(kk==='Enter'||kk===' '||kk==='z'))return advanceDialog();
   if(mode==='modal'){modalKey&&modalKey(kk);return}
   if(mode==='battle'){if(battleKeyOverride)return battleKeyOverride(kk);return battleKey(kk)}
   if(kk==='b'&&mode!=='title'){try{SFX.setBinaural(!SFX.binaural);fx('popup','Batida binaural '+(SFX.binaural?'ligada':'desligada'),'Use fones de ouvido','🎧')}catch(err){}return}
   if(kk==='n'&&mode!=='title'){save.muted=!save.muted;try{SFX.mute(save.muted)}catch(e){}persist();updateHud();return}
+  if(kk==='f'&&mode!=='title'){openFontes();return}
   if(mode==='world'||mode==='room'){
     if(kk==='Enter'||kk===' '||kk==='z')interact();
     else if(kk==='m')openTravel();
@@ -1131,6 +1158,7 @@ function onWorldStep(){
   CORNERS.forEach(c=>{if(!save.visited[c.id]&&Math.abs(c.x-P.x)<=2&&Math.abs(c.y-P.y)<=2){save.visited[c.id]=true;persist();fx('popup','Mirante descoberto!',c.name,'🚩')}});
   const b=buildings.find(b=>b.doorX===P.x&&b.doorY===P.y);
   if(b){
+    if(b.kind==='archive'){P.y=b.doorY+1;P.py=P.y*T;save.visited[b.id]=true;persist();openFontes();return}
     if(b.kind==='tribunal'&&sealCount()<TRIB_REQ){
       P.y=b.doorY+1;P.py=P.y*T;sfx('error');say('🔒 Tribunal Final',['Trancado! Precisa de '+TRIB_REQ+' selos. Você tem '+sealCount()+'.']);return}
     save.visited[b.id]=true;enterRoom(makeRoom(b));return}
@@ -1201,6 +1229,7 @@ function drawBuildingDefault(b,ox,oy){
   R(X+W/2-9,Y+22,18,8,'#fff8');
   if(b.kind==='cafe'){R(X+W/2-4,Y+23,8,5,'#fff');R(X+W/2+4,Y+24,2,3,'#fff');R(X+W/2-3,Y+24,6,1,'#7a4a24');for(let i=0;i<W-4;i+=8)R(X+2+i,Y+30,4,4,'#e8453c')}
   else if(b.kind==='library'){R(X+W/2-6,Y+23,5,5,'#e8453c');R(X+W/2,Y+23,5,5,'#4a8fe8')}
+  else if(b.kind==='archive'){R(X+W/2-7,Y+23,14,6,'#eef2ff');R(X+W/2-5,Y+24,10,4,'#4f46e5')}
   else if(b.kind==='tribunal'){[8,W-14].forEach(cx=>{R(X+cx,Y+33,6,29,'#fff');R(X+cx-1,Y+33,8,2,'#d8c9a5')});R(X+W/2-3,Y+23,6,5,'#b38b00');R(X+W/2-1,Y-9,2,10,'#555');R(X+W/2+1,Y-9,8,4,sealCount()>=TOPICS.length?'#ffd84a':'#888');
     if(sealCount()<TRIB_REQ){R(dx+5,dy+2,6,5,'#555');R(dx+6,dy,4,3,'#999')}}
   else if(done){R(X+W/2-4,Y+23,8,6,'#ffd84a');R(X+W/2-2,Y+24,4,4,'#fff3a0')}

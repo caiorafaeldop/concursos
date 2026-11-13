@@ -1,0 +1,611 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mobile, UI/UX e Acessibilidade — aulas visuais</title>
+<link rel="stylesheet" href="aula.css?v=7">
+<style>
+pre{background:#1e2230;color:#e8eaf2;border-radius:12px;padding:10px 14px;font:14px/1.45 ui-monospace,Consolas,monospace;overflow-x:auto;margin:8px 0;white-space:pre}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+pre mark{background:#ffd84d;color:#2a2100}
+pre .c{color:#8fd19e}
+.mini{font-size:15px}
+.mini td,.mini th{font-size:15px}
+svg .mono{font:500 13px ui-monospace,Consolas,monospace;fill:var(--ink)}
+svg line,svg path.l{stroke:var(--muted);stroke-width:2;fill:none}
+svg .dash{stroke-dasharray:6 4}
+svg .acc{stroke:var(--acc)}
+svg .okl{stroke:var(--ok)}
+svg .badl{stroke:var(--bad)}
+</style>
+</head>
+<body data-subject="interfaces" data-title="Mobile, UI/UX e Acessibilidade">
+
+<svg width="0" height="0" style="position:absolute;width:0;height:0;margin:0;overflow:hidden" aria-hidden="true">
+  <defs>
+    <marker id="ar" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker>
+    <marker id="arg" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8a93a6"/></marker>
+    <marker id="arok" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2ea043"/></marker>
+    <marker id="arbad" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e5484d"/></marker>
+  </defs>
+</svg>
+
+<!-- ===================================================== CAPÍTULO 1 ===================================================== -->
+<section class="chapter" data-title="Ciclo Mobile Android/iOS e Persistência Local">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 1</span>
+  <h1>Ciclo Mobile Android/iOS e Persistência Local</h1>
+  <span class="emoji">📱</span>
+  <div class="steps">
+    <div class="step"><b>1. ROI de Edital</b><span>Mobile + UI/UX concentrados no que cai de verdade (~2 questões + eMAG/WCAG transversal).</span></div>
+    <div class="step"><b>2. Lifecycle</b><span>Activity Android (onCreate→onResume→onPause→onStop) vs UIKit/SwiftUI.</span></div>
+    <div class="step"><b>3. Banco offline</b><span>SQLite/Room vs preferências simples.</span></div>
+    <div class="step"><b>4. Onde guardar token</b><span>Keystore / Keychain vs SharedPreferences em texto.</span></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">CICLO DE VIDA ANDROID</span>
+  <h2>Activity: do nascimento à destruição</h2>
+  <svg viewBox="0 0 720 210">
+    <rect x="20" y="75" width="110" height="50" rx="10" fill="#eef1ff" stroke="#6d4aff"/>
+    <text x="75" y="104" text-anchor="middle" class="mono">onCreate()</text>
+    <rect x="155" y="75" width="110" height="50" rx="10" fill="#eef1ff" stroke="#6d4aff"/>
+    <text x="210" y="104" text-anchor="middle" class="mono">onStart()</text>
+    <rect x="290" y="75" width="120" height="50" rx="10" fill="#e6faee" stroke="#2ea043" stroke-width="2.5"/>
+    <text x="350" y="100" text-anchor="middle" class="mono">onResume()</text>
+    <text x="350" y="116" text-anchor="middle" font-size="11" fill="#176a32">em foco</text>
+    <rect x="435" y="75" width="115" height="50" rx="10" fill="#fff6da" stroke="#d99a00"/>
+    <text x="492" y="100" text-anchor="middle" class="mono">onPause()</text>
+    <text x="492" y="116" text-anchor="middle" font-size="11" fill="#705000">diálogo/foco</text>
+    <rect x="575" y="75" width="120" height="50" rx="10" fill="#fdebec" stroke="#e5484d"/>
+    <text x="635" y="100" text-anchor="middle" class="mono">onStop/Destroy</text>
+    <text x="635" y="116" text-anchor="middle" font-size="11" fill="#a21c22">invisível/fim</text>
+    <line x1="130" y1="100" x2="155" y2="100" class="acc" marker-end="url(#ar)"/>
+    <line x1="265" y1="100" x2="290" y2="100" class="okl" marker-end="url(#arok)"/>
+    <line x1="410" y1="100" x2="435" y2="100" class="l" marker-end="url(#arg)"/>
+    <line x1="550" y1="100" x2="575" y2="100" class="badl" marker-end="url(#arbad)"/>
+  </svg>
+  <div class="say trap"><b>Pegadinha clássica:</b> diálogo modal que cobre só parte da tela chama <code>onPause()</code>, NÃO chama <code>onStop()</code>!</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ESTADO &amp; ROTAÇÃO</span>
+  <h2>Rotação de tela e estados iOS</h2>
+  <p>No Android, girar o aparelho destrói e recria a <code>Activity</code> por padrão! Use <b>ViewModel + StateFlow</b> (nunca guarde referência da Activity em Singleton — causa memory leak).</p>
+  <table class="mini">
+    <tr><th>Plataforma</th><th>Callbacks de Tela</th><th>Sobrevive à Rotação / Background</th></tr>
+    <tr><td><b>Android</b></td><td><code>onCreate → onStart → onResume</code> / <code>onPause → onStop → onDestroy</code></td><td><code>ViewModel</code> + <code>SavedStateHandle</code> (process death)</td></tr>
+    <tr><td><b>iOS (UIKit)</b></td><td><code>viewDidLoad → viewWillAppear → viewDidAppear</code> / <code>Disappear</code></td><td>SceneDelegate: <code>Active → Inactive → Background → Suspended</code></td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">PERSISTÊNCIA LOCAL</span>
+  <h2>Onde salvar cada dado no celular</h2>
+  <table class="mini">
+    <tr><th>Necessidade</th><th>Android</th><th>iOS</th><th>Flutter</th></tr>
+    <tr><td>Preferência simples (tema, flag)</td><td><code>SharedPreferences</code> / DataStore</td><td><code>UserDefaults</code></td><td><code>shared_preferences</code></td></tr>
+    <tr><td>Dados estruturados relacionais</td><td>SQLite / <b>Room</b></td><td>SQLite / Core Data / SwiftData</td><td><code>sqflite</code> / Drift</td></tr>
+    <tr class="ok"><td><b>Token JWT, senha, chave</b></td><td><b>Android Keystore + EncryptedSharedPreferences</b></td><td><b>iOS Keychain Services</b></td><td><code>flutter_secure_storage</code></td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">CÓDIGO SEGURO</span>
+  <h2>Errado vs Certo no armazenamento de sessão</h2>
+  <pre><code><span class="c">// ERRADO: texto plano em XML do app</span>
+prefs.edit().putString("access_token", jwt).apply()
+
+<span class="c">// CERTO (Android): chave protegida pelo hardware Keystore</span>
+val encrypted = EncryptedSharedPreferences.create(
+  context, "secure_auth", masterKey,
+  PrefKeyEncryptionScheme.AES256_SIV,
+  PrefValueEncryptionScheme.AES256_GCM
+)
+encrypted.edit().putString("access_token", jwt).apply()</code></pre>
+</div>
+
+<div class="slide">
+  <span class="tag">ARMADILHA OFFLINE</span>
+  <h2>O que NUNCA deixar desprotegido no aparelho</h2>
+  <div class="grid2">
+    <div class="card"><h3>Riscos</h3><p>Backup automático na nuvem vazando banco local, SQLite sem SQLCipher para dados sigilosos e logs de debug com CPF/token no Logcat.</p></div>
+    <div class="card"><h3>Contramedidas</h3><p>Desabilitar <code>allowBackup</code> para arquivos sensíveis, cifrar segredos em Keychain/Keystore e limpar cache ao encerrar sessão.</p></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">SYNC OFFLINE</span>
+  <h2>Offline-first e sincronização resiliente</h2>
+  <p>Apps de campo/auditoria sincronizam fila local com o servidor quando volta a rede.</p>
+  <ul class="clean">
+    <li>Use <b>WorkManager</b> (Android) / <b>BGTaskScheduler</b> (iOS) em vez de serviços em loop consumindo bateria.</li>
+    <li>Exija <b>chaves de idempotência</b> (UUID por operação) para evitar duplicidade se o envio repetir por timeout.</li>
+    <li>Use <code>ETag</code> / <code>If-None-Match</code> para economizar banda móvel.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO</span>
+  <h2>Checklist Mobile essencial</h2>
+  <ul class="clean">
+    <li>Activity coberta parcialmente → <code>onPause()</code>; totalmente oculta → <code>onStop()</code>.</li>
+    <li><code>ViewModel</code> segura estado UI sem memory leak na rotação.</li>
+    <li>Token/credencial = <b>Keystore / Keychain</b>; dado relacional = <b>Room / Core Data / SQLite</b>.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TREINO FGV</span>
+  <h2>Validação rápida — Cap. 1</h2>
+  <details class="q"><summary>1. Onde armazenar um refresh token OAuth no iOS?</summary>
+    <p><b>No Keychain Services</b> (nunca em UserDefaults ou arquivo plist sem cifra).</p>
+  </details>
+  <details class="q"><summary>2. Qual callback roda quando um pop-up cobre parte da Activity mantendo-a visível?</summary>
+    <p><b>onPause()</b>. Se ela sair de vista por completo, segue para <code>onStop()</code>.</p>
+  </details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 2 ===================================================== -->
+<section class="chapter" data-title="Segurança Mobile, SSL Pinning, REST/JSON e Push">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 2</span>
+  <h1>Segurança Mobile, SSL Pinning, REST/JSON e Push</h1>
+  <span class="emoji">🔐</span>
+  <div class="steps">
+    <div class="step"><b>1. Engenharia reversa</b><span>APK/IPA é legível no cliente: nunca embuta segredos.</span></div>
+    <div class="step"><b>2. SSL/TLS Pinning</b><span>Bloquear MITM e rotacionar chaves sem quebrar o app.</span></div>
+    <div class="step"><b>3. Rede mobile</b><span>Timeout, retry idempotente e paginação leve.</span></div>
+    <div class="step"><b>4. Push FCM/APNs</b><span>Notificação como gatilho sem vazar dados na tela bloqueada.</span></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">OWASP MASVS</span>
+  <h2>O cliente móvel é ambiente hostil</h2>
+  <p>Quem baixa o APK/IPA pode descompilá-lo (jadx, Frida) ou rodar em aparelho com <i>root/jailbreak</i>.</p>
+  <div class="say trap"><b>Verdade absoluta de prova:</b> Ofuscação (ProGuard/R8) apenas dificulta leitura; autorização, validação de permissões e chaves privadas de API ficam SEMPRE no servidor!</div>
+</div>
+
+<div class="slide">
+  <span class="tag">SSL / TLS PINNING</span>
+  <h2>Barrando proxy interceptador (MITM)</h2>
+  <svg viewBox="0 0 720 190">
+    <rect x="20" y="60" width="145" height="65" rx="10" fill="#eef1ff" stroke="#6d4aff"/>
+    <text x="92" y="88" text-anchor="middle" font-weight="700" font-size="14">App Mobile</text>
+    <text x="92" y="108" text-anchor="middle" class="mono">pin SPKI sha256</text>
+    <rect x="280" y="60" width="155" height="65" rx="10" fill="#fdebec" stroke="#e5484d"/>
+    <text x="357" y="88" text-anchor="middle" font-weight="700" font-size="14">Proxy Atacante</text>
+    <text x="357" y="108" text-anchor="middle" font-size="12">CA falsa no SO</text>
+    <rect x="545" y="60" width="150" height="65" rx="10" fill="#e6faee" stroke="#2ea043"/>
+    <text x="620" y="88" text-anchor="middle" font-weight="700" font-size="14">API TJPB</text>
+    <text x="620" y="108" text-anchor="middle" class="mono">SPKI oficial</text>
+    <line x1="165" y1="92" x2="280" y2="92" class="badl" marker-end="url(#arbad)"/>
+    <text x="222" y="80" text-anchor="middle" font-size="12" fill="#e5484d" font-weight="700">Rejeitado!</text>
+    <line x1="435" y1="92" x2="545" y2="92" class="dash"/>
+  </svg>
+  <p>Fixe o hash da <b>chave pública (SPKI)</b> + uma chave de backup, não apenas o certificado folha que vence rápido.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">NETWORK SECURITY CONFIG</span>
+  <h2>Configuração declarativa no Android</h2>
+  <pre><code>&lt;network-security-config&gt;
+  &lt;domain-config cleartextTrafficPermitted="false"&gt;
+    &lt;domain includeSubdomains="true"&gt;api.tjpb.jus.br&lt;/domain&gt;
+    &lt;pin-set expiration="2027-06-01"&gt;
+      &lt;pin digest="SHA-256"&gt;BASE64_SPKI_ATUAL=&lt;/pin&gt;
+      <span class="c">&lt;!-- Pino reserva obrigatorio para rotacao --&gt;</span>
+      &lt;pin digest="SHA-256"&gt;BASE64_SPKI_BACKUP=&lt;/pin&gt;
+    &lt;/pin-set&gt;
+  &lt;/domain-config&gt;
+&lt;/network-security-config&gt;</code></pre>
+</div>
+
+<div class="slide">
+  <span class="tag">REST / JSON NO CELULAR</span>
+  <h2>Boas práticas em redes móveis instáveis</h2>
+  <table class="mini">
+    <tr><th>Problema Mobile</th><th>Solução Técnica</th></tr>
+    <tr><td>Banda cara / tela pequena</td><td>Paginação (<code>page/size</code> ou cursor) + payloads enxutos (DTO/BFF)</td></tr>
+    <tr><td>Túnel / oscilação 4G</td><td>Timeouts curtos (connect/read) + retry exponencial com <i>jitter</i> apenas em GET/idempotentes</td></tr>
+    <tr><td>Token expirado no meio da tela</td><td>Interceptor com refresh token em mutex único (sem disparar 10 refreshs simultâneos)</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">PUSH (FCM / APNS)</span>
+  <h2>Fluxo seguro de notificação Push</h2>
+  <svg viewBox="0 0 720 170">
+    <rect x="20" y="55" width="130" height="55" rx="10" fill="#eef1ff" stroke="#6d4aff"/>
+    <text x="85" y="87" text-anchor="middle" font-weight="700" font-size="13">Backend TJPB</text>
+    <rect x="220" y="55" width="140" height="55" rx="10" fill="#fff6da" stroke="#d99a00"/>
+    <text x="290" y="80" text-anchor="middle" font-weight="700" font-size="13">FCM / APNs</text>
+    <text x="290" y="98" text-anchor="middle" font-size="11">apenas ID opaco</text>
+    <rect x="430" y="55" width="120" height="55" rx="10" fill="#e6faee" stroke="#2ea043"/>
+    <text x="490" y="87" text-anchor="middle" font-weight="700" font-size="13">App Usuário</text>
+    <rect x="600" y="55" width="105" height="55" rx="10" fill="#eef1ff" stroke="#6d4aff"/>
+    <text x="652" y="80" text-anchor="middle" font-weight="700" font-size="12">GET /intimacoes</text>
+    <text x="652" y="96" text-anchor="middle" font-size="11">TLS + Token</text>
+    <line x1="150" y1="82" x2="220" y2="82" class="acc" marker-end="url(#ar)"/>
+    <line x1="360" y1="82" x2="430" y2="82" class="l" marker-end="url(#arg)"/>
+    <line x1="550" y1="82" x2="600" y2="82" class="okl" marker-end="url(#arok)"/>
+  </svg>
+  <p><b>Por quê?</b> O payload do push passa por servidores terceiros (Google/Apple) e aparece na tela bloqueada. Nunca coloque CPF, valor ou teor sigiloso no push!</p>
+</div>
+
+<div class="slide">
+  <span class="tag">PKCE NO MOBILE</span>
+  <h2>OAuth 2.0 + OIDC com PKCE em apps nativos</h2>
+  <p>App nativo é <b>cliente público</b> (não consegue guardar <code>client_secret</code>). Por isso a RFC 7636/8252 exige <b>Authorization Code + PKCE</b> usando o navegador do sistema (Custom Tabs / ASWebAuthenticationSession), nunca WebView embutida.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO</span>
+  <h2>Checklist de Rede &amp; Segurança Mobile</h2>
+  <ul class="clean">
+    <li>Zero segredo hardcoded no APK/IPA.</li>
+    <li>SSL Pinning por SPKI + chave backup.</li>
+    <li>Push envia só referência opaca; app busca conteúdo autenticado via HTTPS.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TREINO FGV</span>
+  <h2>Validação rápida — Cap. 2</h2>
+  <details class="q"><summary>1. Por que pinar SPKI em vez de apenas o certificado final?</summary>
+    <p>Se a chave pública for mantida (ou houver pino de backup), o app não para de funcionar durante a renovação rotineira do certificado no servidor.</p>
+  </details>
+  <details class="q"><summary>2. Por que app mobile deve usar Custom Tabs / Safari View + PKCE?</summary>
+    <p>Porque apps móveis são clientes públicos sem client_secret seguro e WebView interna permitiria ao app espionar a senha digitada no login.</p>
+  </details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 3 ===================================================== -->
+<section class="chapter" data-title="UI/UX, User Flows, Design Systems e Responsividade">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 3</span>
+  <h1>UI/UX, User Flows, Design Systems e Responsividade</h1>
+  <span class="emoji">🎨</span>
+  <div class="steps">
+    <div class="step"><b>1. UI × UX</b><span>Aparência interativa vs experiência integral do usuário.</span></div>
+    <div class="step"><b>2. Artefatos</b><span>User Flow, Wireframe, Mockup e Protótipo clicável.</span></div>
+    <div class="step"><b>3. Design System</b><span>Design Tokens, componentes e diretrizes.</span></div>
+    <div class="step"><b>4. Mobile-First</b><span>Base pequena + min-width crescente + HIG × Material.</span></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">DO CONCEITO À TELA</span>
+  <h2>Wireframe vs Mockup vs Protótipo</h2>
+  <table class="mini">
+    <tr><th>Artefato</th><th>Fidelidade</th><th>Interativo?</th><th>Foco Principal</th></tr>
+    <tr><td><b>User Flow</b></td><td>Diagrama de fluxo</td><td>Não</td><td>Caminhos, decisões e estados (sucesso/erro)</td></tr>
+    <tr><td><b>Wireframe</b></td><td>Baixa (caixas/linhas)</td><td>Não / mínimo</td><td>Hierarquia da informação e layout sem distração visual</td></tr>
+    <tr><td><b>Mockup</b></td><td>Alta (cores/fontes)</td><td>Não</td><td>Visual final, paleta e tipografia</td></tr>
+    <tr class="ok"><td><b>Protótipo</b></td><td>Média ou Alta</td><td><b>Sim (clicável)</b></td><td>Testar navegação, microinterações e usabilidade com usuários</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">DESIGN SYSTEM</span>
+  <h2>Tokens + Biblioteca + Documentação</h2>
+  <svg viewBox="0 0 720 180">
+    <rect x="25" y="45" width="195" height="90" rx="12" fill="#eef1ff" stroke="#6d4aff"/>
+    <text x="122" y="75" text-anchor="middle" font-weight="700" font-size="14">Design Tokens</text>
+    <text x="122" y="98" text-anchor="middle" class="mono">--color-brand: #0B2545</text>
+    <text x="122" y="116" text-anchor="middle" class="mono">--space-md: 16px</text>
+    <rect x="260" y="45" width="200" height="90" rx="12" fill="#e6faee" stroke="#2ea043"/>
+    <text x="360" y="75" text-anchor="middle" font-weight="700" font-size="14">Componentes UI</text>
+    <text x="360" y="98" text-anchor="middle" font-size="12">Button, Input, Modal</text>
+    <text x="360" y="116" text-anchor="middle" font-size="12">com ARIA + foco nativo</text>
+    <rect x="500" y="45" width="195" height="90" rx="12" fill="#fff6da" stroke="#d99a00"/>
+    <text x="597" y="75" text-anchor="middle" font-weight="700" font-size="14">Regras &amp; Tom</text>
+    <text x="597" y="98" text-anchor="middle" font-size="12">Quando usar, erros,</text>
+    <text x="597" y="116" text-anchor="middle" font-size="12">acessibilidade e copy</text>
+    <line x1="220" y1="90" x2="260" y2="90" class="acc" marker-end="url(#ar)"/>
+    <line x1="460" y1="90" x2="500" y2="90" class="okl" marker-end="url(#arok)"/>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">MOBILE-FIRST VS DESKTOP-FIRST</span>
+  <h2>CSS que cresce com <code>min-width</code></h2>
+  <pre><code><span class="c">/* MOBILE-FIRST: base para telas pequenas (1 coluna) */</span>
+.grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+
+<span class="c">/* Tablet em diante */</span>
+@media (<mark>min-width</mark>: 768px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+
+<span class="c">/* Desktop */</span>
+@media (<mark>min-width</mark>: 1200px) { .grid { grid-template-columns: repeat(3, 1fr); } }</code></pre>
+  <div class="say">Desktop-First faz o caminho inverso usando <code>max-width</code> decrescente.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">MATERIAL 3 × HIG</span>
+  <h2>Padrões de plataforma previstos no edital</h2>
+  <table class="mini">
+    <tr><th>Guia</th><th>Ecossistema</th><th>Características Cobradas</th></tr>
+    <tr><td><b>Material Design 3</b></td><td>Google / Android / Web</td><td>Material You (cores dinâmicas), FAB, Navigation Bar/Rail, botão voltar do sistema</td></tr>
+    <tr><td><b>Human Interface Guidelines (HIG)</b></td><td>Apple / iOS / macOS</td><td>Tab Bar, Safe Area, gesto swipe-back da borda esquerda, SF Symbols</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">USABILIDADE</span>
+  <h2>Heurísticas essenciais de Nielsen na prática</h2>
+  <div class="grid2">
+    <div class="card"><h3>Feedback &amp; Prevenção</h3><p>Visibilidade do status (loading/sucesso), prevenção de erro antes de confirmação destrutiva e mensagens de erro claras com ação corretiva.</p></div>
+    <div class="card"><h3>Consistência &amp; Reconhecimento</h3><p>Ícones e rótulos padrão em todo o sistema; reconhecer em vez de obrigar o usuário a memorizar códigos entre telas.</p></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">DESIGN RESPONSIVO</span>
+  <h2>Cuidados de viewport e tipografia</h2>
+  <ul class="clean">
+    <li>Sempre inclua <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code>.</li>
+    <li>NUNCA trave zoom com <code>user-scalable=no</code> — é barreira grave de acessibilidade para baixa visão!</li>
+    <li>Prefira unidades <code>rem</code>/<code>em</code> e layouts flexíveis em Grid/Flexbox sem pixels rígidos horizontais.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO</span>
+  <h2>Pontos-chave de UI/UX</h2>
+  <ul class="clean">
+    <li>Wireframe = esqueleto sem cor; Protótipo = clicável/testável.</li>
+    <li>Design System = Tokens + Componentes + Regras.</li>
+    <li>Mobile-First = CSS base pequeno + <code>@media (min-width: ...)</code>.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TREINO FGV</span>
+  <h2>Validação rápida — Cap. 3</h2>
+  <details class="q"><summary>1. Qual técnica CSS caracteriza o Mobile-First?</summary>
+    <p>Estilos base para telas pequenas ampliados com media queries <code>min-width</code> crescentes.</p>
+  </details>
+  <details class="q"><summary>2. Por que proibir <code>user-scalable=no</code> na tag viewport?</summary>
+    <p>Porque impede pessoas com baixa visão de dar zoom (WCAG 1.4.4 exige ampliação até 200% sem perda de funcionalidade).</p>
+  </details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 4 ===================================================== -->
+<section class="chapter" data-title="eMAG 3.1 na Prática (Governo Digital BR)">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 4</span>
+  <h1>eMAG 3.1 na Prática (Governo Digital BR)</h1>
+  <span class="emoji">🇧🇷</span>
+  <div class="steps">
+    <div class="step"><b>1. O que é o eMAG</b><span>Cartilha oficial do governo brasileiro baseada na WCAG (Decreto 5.296/2004).</span></div>
+    <div class="step"><b>2. As 6 Seções</b><span>Marcação, Comportamento/DOM, Conteúdo, Apresentação, Multimídia e Formulários.</span></div>
+    <div class="step"><b>3. Padrão Seção 4</b><span>Atalhos 1/2/3, Barra de acessibilidade e Alto Contraste >= 7:1.</span></div>
+    <div class="step"><b>4. Avaliação Real</b><span>Validador automático + teclado + leitor de tela + humano.</span></div>
+  </div>
+  <div class="analogy">
+    <span class="emoji">📚</span>
+    <div><b>Leitura na íntegra disponível:</b> O manual completo <b>eMAG v3.1</b> está carregado no <b>Acervo Oficial (tecla F)</b> dentro do jogo!</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">VISÃO GERAL</span>
+  <h2>As 6 Seções do eMAG 3.1</h2>
+  <table class="mini">
+    <tr><th>Seção</th><th>Foco Técnico no Código</th></tr>
+    <tr><td><b>3.1 Marcação</b></td><td>HTML válido semântico, headings h1–h6 sem pular nível, âncoras skip-link, zero tabela para layout</td></tr>
+    <tr><td><b>3.2 Comportamento (DOM)</b></td><td>100% operável por teclado, sem refresh/redirect automático nem piscadas perigosas</td></tr>
+    <tr><td><b>3.3 Conteúdo/Informação</b></td><td><code>lang="pt-BR"</code>, <code>&lt;title&gt;</code> descritivo, links autoexplicativos, <code>alt</code> útil, <code>&lt;th scope&gt;</code> em tabelas</td></tr>
+    <tr><td><b>3.4 Apresentação/Design</b></td><td>Contraste suficiente, não depender só de cor, foco visível e zoom/reflow</td></tr>
+    <tr><td><b>3.5 Multimídia</b></td><td>Legendas sincronizadas, audiodescrição e alternativa textual para áudio/vídeo</td></tr>
+    <tr><td><b>3.6 Formulários</b></td><td><code>&lt;label&gt;</code> associado, agrupamento lógico (<code>&lt;fieldset&gt;</code>), erro claro e confirmação antes do envio</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">SEÇÃO 4 DO EMAG</span>
+  <h2>Atalhos de teclado padronizados no Governo BR</h2>
+  <svg viewBox="0 0 720 175">
+    <rect x="25" y="45" width="205" height="85" rx="12" fill="#eef1ff" stroke="#6d4aff"/>
+    <text x="127" y="78" text-anchor="middle" font-weight="700" font-size="16" fill="#6d4aff">Atalho 1</text>
+    <text x="127" y="104" text-anchor="middle" font-size="14">Ir para o conteúdo</text>
+    <rect x="257" y="45" width="205" height="85" rx="12" fill="#e6faee" stroke="#2ea043"/>
+    <text x="360" y="78" text-anchor="middle" font-weight="700" font-size="16" fill="#176a32">Atalho 2</text>
+    <text x="360" y="104" text-anchor="middle" font-size="14">Ir para o menu</text>
+    <rect x="490" y="45" width="205" height="85" rx="12" fill="#fff6da" stroke="#d99a00"/>
+    <text x="592" y="78" text-anchor="middle" font-weight="700" font-size="16" fill="#705000">Atalho 3</text>
+    <text x="592" y="104" text-anchor="middle" font-size="14">Ir para a busca</text>
+  </svg>
+  <p>Devem constar visíveis na <b>Barra de Acessibilidade</b> do topo e na página explicativa de recursos de acessibilidade.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">ALTO CONTRASTE DO EMAG</span>
+  <h2>Seção 4.2 — Folha de Alto Contraste</h2>
+  <div class="say law"><b>Regra literal do eMAG 3.1:</b> A folha de alto contraste exige razão mínima de <b>7:1</b>: fundo <code>#000000</code>, texto <code>#FFFFFF</code>, links sublinhados em amarelo <code>#FFF333</code>, ícones e bordas em branco.</div>
+  <pre><code>&lt;div id="acessibilidade"&gt;
+  &lt;ul id="atalhos"&gt;
+    &lt;li&gt;&lt;a href="#iniciodoconteudo" accesskey="1"&gt;Conteúdo [1]&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#iniciodomenu" accesskey="2"&gt;Menu [2]&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#busca" accesskey="3"&gt;Busca [3]&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+</div>
+
+<div class="slide">
+  <span class="tag">MARCAÇÃO E LINKS</span>
+  <h2>Recomendações que caem direto em questões</h2>
+  <div class="grid2">
+    <div class="card"><h3>Evite</h3><p>Links com texto genérico <i>"clique aqui"</i> ou <i>"saiba mais"</i> isolados; pular de <code>&lt;h1&gt;</code> para <code>&lt;h4&gt;</code>; abrir nova aba sem avisar o usuário (Rec. 1.9).</p></div>
+    <div class="card"><h3>Prefira</h3><p>Texto descritivo (<i>"Baixar Edital TJPB (PDF, 420 KB)"</i>); hierarquia contínua <code>h1→h2→h3</code>; aviso prévio quando abrir nova janela.</p></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">FORMULÁRIOS NO EMAG</span>
+  <h2>Seção 3.6 — Dados sem barreira</h2>
+  <ul class="clean">
+    <li>Botão de imagem (<code>type="image"</code>) exige texto alternativo (Rec. 6.1).</li>
+    <li>Todo campo precisa de <code>&lt;label for="..."&gt;</code> explícito (não use apenas <i>placeholder</i>, que some ao digitar).</li>
+    <li>Em envios críticos/irreversíveis, exiba tela de <b>confirmação/revisão</b> para o usuário conferir antes do envio final.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">AVALIAÇÃO</span>
+  <h2>Como validar um portal segundo o eMAG</h2>
+  <p>O próprio eMAG define fluxo em <b>2 etapas</b>: (1) validadores automáticos (ex.: ASES/axe) + (2) <b>avaliação humana</b> com checklist, navegação apenas por teclado (Tab/Shift+Tab/Enter/Esc) e leitores de tela reais.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO</span>
+  <h2>Checklist eMAG 3.1</h2>
+  <ul class="clean">
+    <li>Atalhos padrão: <b>1-Conteúdo · 2-Menu · 3-Busca</b>.</li>
+    <li>Alto contraste mínimo <b>7:1</b> (fundo preto, texto branco, links <code>#FFF333</code> sublinhados).</li>
+    <li>Validador automático NÃO substitui teclado + leitor de tela + revisão humana.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TREINO FGV</span>
+  <h2>Validação rápida — Cap. 4</h2>
+  <details class="q"><summary>1. Quais são os 3 atalhos padrão da barra do eMAG?</summary>
+    <p><b>1</b> para conteúdo, <b>2</b> para menu principal e <b>3</b> para caixa de pesquisa.</p>
+  </details>
+  <details class="q"><summary>2. Por que "Clique aqui" viola o eMAG (Rec. 3.5)?</summary>
+    <p>Leitores de tela listam os links fora de contexto; o texto do próprio link deve descrever claramente o destino.</p>
+  </details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 5 ===================================================== -->
+<section class="chapter" data-title="WCAG 2.1/2.2, ARIA e HTML5 Semântico">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 5</span>
+  <h1>WCAG 2.1/2.2, ARIA e HTML5 Semântico</h1>
+  <span class="emoji">♿</span>
+  <div class="steps">
+    <div class="step"><b>1. POUR + A/AA/AAA</b><span>4 princípios acumulativos e razões de contraste.</span></div>
+    <div class="step"><b>2. WCAG 2.2 (novo!)</b><span>Focus Not Obscured, Target Size 24px, Login Acessível, fim da 4.1.1.</span></div>
+    <div class="step"><b>3. HTML5 Semântico</b><span>Landmarks e 1ª Regra da ARIA.</span></div>
+    <div class="step"><b>4. Foco &amp; Leitores</b><span>tabindex 0 vs -1, aria-live e testes reais.</span></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PRINCÍPIOS POUR</span>
+  <h2>Os 4 pilares da WCAG</h2>
+  <table class="mini">
+    <tr><th>Princípio</th><th>Pergunta-Chave</th><th>Exemplos de Critérios</th></tr>
+    <tr><td><b>P — Perceptível</b></td><td>Usuário consegue ver/ouvir?</td><td><code>alt</code> (1.1.1), legendas (1.2), contraste (1.4.3), zoom 200% (1.4.4)</td></tr>
+    <tr><td><b>O — Operável</b></td><td>Funciona sem mouse?</td><td>Teclado (2.1.1), foco visível (2.4.7), target size (2.5.8)</td></tr>
+    <tr><td><b>C — Compreensível</b></td><td>Texto e erros são claros?</td><td><code>lang</code> (3.1.1), navegação consistente, ajuda em erros</td></tr>
+    <tr><td><b>R — Robusto</b></td><td>Leitor de tela entende?</td><td>Name, Role, Value (4.1.2) e Status Messages (4.1.3)</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">NÍVEIS E CONTRASTE</span>
+  <h2>A, AA (padrão legal) e AAA</h2>
+  <svg viewBox="0 0 720 175">
+    <rect x="40" y="35" width="180" height="105" rx="12" fill="#eef1ff" stroke="#6d4aff"/>
+    <text x="130" y="65" text-anchor="middle" font-weight="700" font-size="16">Nível A</text>
+    <text x="130" y="90" text-anchor="middle" font-size="12">Mínimo essencial</text>
+    <text x="130" y="110" text-anchor="middle" font-size="12">(alt, teclado, lang)</text>
+    <rect x="270" y="35" width="185" height="105" rx="12" fill="#e6faee" stroke="#2ea043" stroke-width="2.5"/>
+    <text x="362" y="65" text-anchor="middle" font-weight="700" font-size="16" fill="#176a32">Nível AA (Alvo)</text>
+    <text x="362" y="90" text-anchor="middle" font-size="12">Texto normal: 4,5:1</text>
+    <text x="362" y="110" text-anchor="middle" font-size="12">Texto grande: 3:1</text>
+    <rect x="505" y="35" width="175" height="105" rx="12" fill="#fff6da" stroke="#d99a00"/>
+    <text x="592" y="65" text-anchor="middle" font-weight="700" font-size="16" fill="#705000">Nível AAA</text>
+    <text x="592" y="90" text-anchor="middle" font-size="12">Máximo rigor</text>
+    <text x="592" y="110" text-anchor="middle" font-size="12">Texto normal: 7:1</text>
+    <line x1="220" y1="88" x2="270" y2="88" class="okl" marker-end="url(#arok)"/>
+    <line x1="455" y1="88" x2="505" y2="88" class="l" marker-end="url(#arg)"/>
+  </svg>
+  <p><b>Cumulativo:</b> ser <b>AA</b> obriga cumprir todo <b>A + AA</b>.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">WCAG 2.2 (CONFERIDO NO W3C)</span>
+  <h2>Os 9 novos critérios da 2.2 + remoção do 4.1.1</h2>
+  <table class="mini">
+    <tr><th>Critério</th><th>Nível</th><th>Regra Prática</th></tr>
+    <tr><td><b>2.4.11 Focus Not Obscured</b></td><td>AA</td><td>Elemento focado pelo Tab não pode ficar totalmente escondido por header/banner fixo</td></tr>
+    <tr><td><b>2.5.7 Dragging Movements</b></td><td>AA</td><td>Ação de arrastar deve ter alternativa com toque/clique único</td></tr>
+    <tr class="ok"><td><b>2.5.8 Target Size (Minimum)</b></td><td>AA</td><td>Alvo clicável/toque de pelo menos <b>24 × 24 CSS pixels</b></td></tr>
+    <tr><td><b>3.2.6 Consistent Help</b></td><td>A</td><td>Links de ajuda na mesma ordem relativa entre páginas</td></tr>
+    <tr><td><b>3.3.7 Redundant Entry</b></td><td>A</td><td>Não exigir redigitar dado já informado na mesma jornada</td></tr>
+    <tr class="ok"><td><b>3.3.8 Accessible Auth</b></td><td>AA</td><td>Login sem teste cognitivo obrigatório (permitir colar senha/passkey/biometria)</td></tr>
+  </table>
+  <div class="say trap"><b>Pegadinha 2.2:</b> <code>2.4.12</code> (nenhuma parte coberta), <code>2.4.13</code> (Focus Appearance) e <code>3.3.9</code> são AAA. E o <b>4.1.1 Parsing foi REMOVIDO/OBSOLETO</b> na WCAG 2.2!</div>
+</div>
+
+<div class="slide">
+  <span class="tag">1ª REGRA DA ARIA</span>
+  <h2>HTML5 nativo ganha de <code>&lt;div role="..."&gt;</code></h2>
+  <pre><code><span class="c">&lt;!-- CERTO: foco por Tab, Enter/Espaco e leitor prontos --&gt;</span>
+&lt;button type="button" onclick="salvar()"&gt;Salvar petição&lt;/button&gt;
+
+<span class="c">&lt;!-- FRAGIL: ARIA NAO adiciona Tab nem clique por Enter! --&gt;</span>
+&lt;div role="button" tabindex="0" onclick="salvar()"
+     onkeydown="if(event.key==='Enter'||event.key===' ')salvar()"&gt;Salvar&lt;/div&gt;</code></pre>
+  <p><b>Landmarks nativos:</b> <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;aside&gt;</code>, <code>&lt;footer&gt;</code>.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">CONTROLE DE FOCO E LIVE REGIONS</span>
+  <h2><code>tabindex</code> e anúncios dinâmicos</h2>
+  <table class="mini">
+    <tr><th>Atributo</th><th>Comportamento</th></tr>
+    <tr><td><code>tabindex="0"</code></td><td>Inclui elemento não interativo na ordem natural do <code>Tab</code></td></tr>
+    <tr class="ok"><td><code>tabindex="-1"</code></td><td>Foca apenas via JS (<code>el.focus()</code>), ótimo ao abrir modal sem poluir o <code>Tab</code></td></tr>
+    <tr class="bad"><td><code>tabindex="1+"</code></td><td>Antipadrão — quebra a sequência natural de leitura</td></tr>
+    <tr><td><code>aria-live="polite" / "assertive"</code></td><td>Leitor de tela anuncia toasts/erros inseridos dinamicamente sem roubar foco</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">ACESSIBILIDADE NA DISCURSIVA</span>
+  <h2>Como citar acessibilidade em 3 linhas de prova</h2>
+  <p>Se a questão discursiva pedir portal/serviço público no TJPB, cite objetivamente: <b>"aderência ao eMAG 3.1 e à WCAG 2.2 nível AA (contraste 4,5:1, navegação integral por teclado com foco não obscurecido 2.4.11, alvos mínimos de 24×24 CSS px e semântica HTML5/ARIA antes de validadores manuais)"</b>.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO</span>
+  <h2>Checklist WCAG 2.2 &amp; ARIA</h2>
+  <ul class="clean">
+    <li>POUR; nível AA exige contraste <b>4,5:1</b> (normal) e <b>3:1</b> (grande).</li>
+    <li>Novidades WCAG 2.2: <code>2.4.11</code>, <code>2.5.7</code>, <code>2.5.8 (24×24)</code>, <code>3.2.6</code>, <code>3.3.7</code>, <code>3.3.8</code>; saiu <code>4.1.1</code>.</li>
+    <li>HTML5 semântico nativo sempre antes de ARIA.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TREINO FGV</span>
+  <h2>Validação rápida — Cap. 5</h2>
+  <details class="q"><summary>1. Qual a diferença de efeito entre tabindex="0" e tabindex="-1"?</summary>
+    <p><code>0</code> coloca o elemento no fluxo normal do Tab; <code>-1</code> tira do Tab mas permite <code>elemento.focus()</code> via script.</p>
+  </details>
+  <details class="q"><summary>2. O critério 3.3.8 (Accessible Authentication) proíbe o quê?</summary>
+    <p>Proíbe exigir testes cognitivos (memorizar senha sem poder colar, resolver captcha visual/puzzle) sem fornecer alternativa como passkey, copy-paste ou suporte a gerenciador de senhas.</p>
+  </details>
+</div>
+
+</section>
+
+<script src="aula.js?v=7"></script>
+</body></html>

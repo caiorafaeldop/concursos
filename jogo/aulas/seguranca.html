@@ -1,6 +1,6 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Segurança e Qualidade — aulas visuais</title>
-<link rel="stylesheet" href="aula.css?v=6">
+<link rel="stylesheet" href="aula.css?v=7">
 <style>
 pre{background:#1e2230;color:#e8eaf2;border-radius:12px;padding:10px 14px;font:14px/1.45 ui-monospace,Consolas,monospace;overflow-x:auto;margin:8px 0;white-space:pre}
 pre code{background:none;padding:0;color:inherit;font-size:inherit}
@@ -28,7 +28,7 @@ svg .badl{stroke:var(--bad)}
 </svg>
 
 <!-- ===================================================== CAPÍTULO 1 ===================================================== -->
-<section class="chapter" data-title="CID, Riscos, Continuidade e LGPD">
+<section class="chapter" data-title="CID, Riscos, Continuidade e Marco Civil">
 
 <div class="slide">
   <span class="tag">CAPÍTULO 1</span>
@@ -158,20 +158,19 @@ svg .badl{stroke:var(--bad)}
     <div class="card">
       <h3>Agentes de Tratamento</h3>
       <ul>
-        <li><b>Controlador:</b> toma as <b>decisões</b> sobre os dados.</li>
-        <li><b>Operador:</b> trata os dados <b>em nome</b> do controlador.</li>
-        <li><b>Encarregado (DPO):</b> canal entre controlador, titular e <b>ANPD</b>.</li>
+        <li><b>Conexão vs Aplicação (Marco Civil — Lei 12.965/2014):</b> Art. 13 obriga provedor de conexão a guardar registros de conexão por <b>1 ano</b>; Art. 15 obriga provedor de aplicação a guardar registros de acesso por <b>6 meses</b>.</li>
+        <li><b>Neutralidade de rede (Art. 9º)</b> e <b>LGPD</b> (que agora tem sua própria <b>Cidade de LGPD</b> no mapa + lei completa no Acervo <b>[D]</b>!).</li>
       </ul>
     </div>
     <div class="card">
-      <h3>Dado Pessoal vs Sensível</h3>
+      <h3>Privacidade × Sigilo Judicial</h3>
       <ul>
-        <li><b>Pessoal:</b> identifica pessoa natural (nome, CPF, e-mail).</li>
-        <li><b>Sensível:</b> origem racial/étnica, religião, opinião política, sindicato, saúde, vida sexual, dado genético ou biométrico.</li>
+        <li><b>Dados pessoais / sensíveis:</b> minimização (coletar só o estritamente necessário) e criptografia em repouso e trânsito.</li>
+        <li><b>Logs de auditoria:</b> nunca logar senhas ou tokens; registrar <i>quem acessou, quando e de onde</i> com proteção contra alteração.</li>
       </ul>
     </div>
   </div>
-  <div class="say law">Princípios cobrados: <b>finalidade</b> (propósito legítimo), <b>adequação</b>, <b>necessidade</b> (mínimo possível) e <b>segurança</b>. (Confira o texto oficial da Lei 13.709/2018 para a lista completa de 10 princípios e bases legais.)</div>
+  <div class="say law"><b>Regra literal (Arts. 13 e 15 da Lei 12.965/2014):</b> registro de <b>conexão = 1 ano</b>; registro de <b>acesso a aplicações = 6 meses</b> (sob sigilo, em ambiente controlado).</div>
 </div>
 
 <div class="slide">
@@ -179,7 +178,7 @@ svg .badl{stroke:var(--bad)}
   <h2>Guarde antes de ir para a prova</h2>
   <div class="magic">
     “RTO olha pra frente (tempo parado); RPO olha pra trás (dados perdidos).”
-    <small>E na LGPD: Controlador decide, Operador executa, Encarregado (DPO) conversa com titular e ANPD.</small>
+    <small>Marco Civil: guarda de conexão = 1 ano (Art. 13); guarda de acesso a aplicações = 6 meses (Art. 15). E explore a Cidade LGPD para os arts. 1º–59!</small>
   </div>
   <ul class="checklist">
     <li>CID = Confidencialidade, Integridade, Disponibilidade (+ Autenticidade e Não-repúdio).</li>
@@ -198,8 +197,8 @@ svg .badl{stroke:var(--bad)}
   <details><summary>2. Backup diário feito às 02h; servidor queima às 14h e só volta às 18h. Qual foi o RPO e o RTO?</summary>
     <p><span class="pill ok">RPO = 12h · RTO = 4h</span> Perderam-se dados das 02h às 14h (12h = RPO); o sistema ficou parado das 14h às 18h (4h = RTO).</p>
   </details>
-  <details><summary>3. Empresa terceirizada de folha de pagamento processa salários seguindo ordens do Tribunal. Qual seu papel na LGPD?</summary>
-    <p><span class="pill ok">Operador</span> O Tribunal decide a finalidade (Controlador); a terceirizada apenas executa em nome dele (Operador).</p>
+  <details><summary>3. Pelo Marco Civil da Internet (Lei nº 12.965/2014), quais os prazos de guarda obrigatória dos registros de conexão e de acesso a aplicações?</summary>
+    <p><span class="pill ok">1 ano (conexão) · 6 meses (aplicação)</span> Arts. 13 e 15 da Lei 12.965/2014.</p>
   </details>
   <details><summary>4. Qual norma ISO define os controles detalhados, mas NÃO é certificável?</summary>
     <p><span class="pill ok">ISO/IEC 27002</span> A certificável é a 27001 (requisitos do SGSI). A 27005 é para riscos.</p>
@@ -530,11 +529,11 @@ svg .badl{stroke:var(--bad)}
 </section>
 
 <!-- ===================================================== CAPÍTULO 4 ===================================================== -->
-<section class="chapter" data-title="AppSec, OWASP Top 10 e Segurança de IA">
+<section class="chapter" data-title="AppSec, OWASP Web/API 2023 e Segurança de IA (LLM v2)">
 
 <div class="slide">
   <span class="tag">CAPÍTULO 4</span>
-  <h1>AppSec, OWASP Top 10 e Segurança de IA</h1>
+  <h1>AppSec, OWASP Web/API 2023 e Segurança de IA (LLM v2)</h1>
   <span class="emoji">🕵️</span>
   <div class="steps">
     <div class="step"><b>1. DevSecOps</b><span>Shift-Left: segurança desde o primeiro commit.</span></div>
@@ -614,6 +613,32 @@ ps.setString(1, input);</code></pre>
       <p class="lead">O banco trata <code>input</code> só como <b>dado</b>, nunca como comando SQL.</p>
     </div>
   </div>
+</div>
+
+<div class="slide">
+  <span class="tag">OWASP API SECURITY 2023</span>
+  <h2>As falhas de API que mais derrubam candidatos</h2>
+  <table class="mini">
+    <tr><th>Item OWASP API 2023</th><th>O que acontece na prática</th></tr>
+    <tr class="ok"><td><b>API1: BOLA</b> (Broken Object Level Auth)</td><td>Trocar <code>/processos/10</code> por <code>/processos/11</code> sem validar posse do objeto (IDOR em APIs)</td></tr>
+    <tr><td><b>API3: BOPLA</b> (Object Property Level)</td><td><b>Mass Assignment</b> (enviar <code>"role":"ADMIN"</code> no JSON) ou expor campos extras na resposta</td></tr>
+    <tr><td><b>API4: Unrestricted Resource</b></td><td>Sem <b>rate limit</b>, paginação máxima ou cota — abre porta para DoS financeiro/CPU</td></tr>
+    <tr class="ok"><td><b>API5: BFLA</b> (Function Level Auth)</td><td>Usuário comum chama endpoint admin (<code>DELETE /usuarios</code>) sem checagem de papel/escopo</td></tr>
+    <tr><td><b>API9 / API10</b></td><td>Endpoints zumbis/versões antigas (<code>/v1</code>) e confiar em JSON/webhook externo sem validar</td></tr>
+  </table>
+  <p class="mini"><i>Leia o OWASP Top 10 Web, OWASP API 2023 e OWASP LLM v2 completos no <b>Acervo Oficial (tecla F)</b>!</i></p>
+</div>
+
+<div class="slide">
+  <span class="tag">OWASP TOP 10 LLM v2 (2025)</span>
+  <h2>Os 10 riscos oficiais de IA Generativa</h2>
+  <table class="mini">
+    <tr><th>Código</th><th>Risco Oficial (OWASP LLM 2025)</th><th>Contramedida Chave</th></tr>
+    <tr><td><b>LLM01 / LLM07</b></td><td>Prompt Injection &amp; System Prompt Leakage</td><td>Separar instrução de dado não confiável; não por segredo no prompt</td></tr>
+    <tr><td><b>LLM02 / LLM04</b></td><td>Vazamento Sensível &amp; Envenenamento (Poisoning)</td><td>DLP/mascaramento de PII, Retenção Zero, curadoria de dados/RAG</td></tr>
+    <tr class="ok"><td><b>LLM05 / LLM06</b></td><td>Manipulação Imprópria de Saída &amp; Autonomia Excessiva</td><td>Escapar saída antes de HTML/SQL; menor privilégio e aprovação humana em ações</td></tr>
+    <tr><td><b>LLM08 / LLM09 / LLM10</b></td><td>Fraquezas em Vetores/RAG, Desinformação e Consumo Irrestrito</td><td>ACL nos chunks do RAG, citação de fonte/grounding e cotas de tokens</td></tr>
+  </table>
 </div>
 
 <div class="slide">
@@ -824,6 +849,6 @@ ps.setString(1, input);</code></pre>
 
 </section>
 
-<script src="aula.js?v=6"></script>
+<script src="aula.js?v=7"></script>
 </body>
 </html>

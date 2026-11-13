@@ -6,7 +6,7 @@ window.MATERIAS['seguranca'] = {
     { name: 'Guardiã Cida (CID)', lines: [
       'CID é o tripé básico: Confidencialidade (só quem pode vê), Integridade (ninguém alterou) e Disponibilidade (no ar quando precisar).',
       'Autenticação prova QUEM você é (senha, token, biometria). Autorização decide O QUE você pode fazer depois de entrar.',
-      'Na LGPD, o Controlador decide os fins do tratamento; o Operador executa em nome dele; o Encarregado (DPO) faz a ponte com a ANPD.',
+      'Marco Civil (Lei 12.965/2014): registros de conexão = 1 ano (art. 13); registros de acesso a aplicações = 6 meses (art. 15). E a LGPD agora tem cidade própria no mapa!',
       'ISO 27001 traz os requisitos do SGSI (certificável); ISO 27002 traz o catálogo de controles; ISO 27005 trata de gestão de riscos.'
     ] },
     { name: 'Mestre Chaveiro', lines: [
@@ -123,20 +123,20 @@ window.MATERIAS['seguranca'] = {
     title: 'Biblioteca de Segurança e Qualidade',
     chapters: [
       {
-        title: 'CID, Riscos, Continuidade e LGPD',
+        title: 'CID, Riscos, Continuidade e Marco Civil',
         pages: [
           '• CID: Confidencialidade (sigilo), Integridade (não alterado) e Disponibilidade (acessível).\n• Pilares extras: Autenticidade (quem é) e Não-repúdio (não pode negar).\n• Controle de acesso: Autenticação (prova quem é, ex.: MFA) ≠ Autorização (o que pode fazer).\n• Modelos: DAC (dono decide), MAC (rótulos rígidos), RBAC (papéis/cargos) e ABAC (atributos como hora/local).',
           '• Risco = probabilidade × impacto de uma ameaça explorar uma vulnerabilidade.\n• 4 respostas ao risco: Mitigar (reduzir), Transferir (seguro), Aceitar (assumir), Evitar (parar atividade).\n• Continuidade: BIA identifica processos críticos; RTO = tempo máximo parado; RPO = perda máxima de dados.\n• ISO 27001 (requisitos do SGSI), ISO 27002 (controles), ISO 27005 (gestão de riscos).',
-          '• LGPD (Lei 13.709/2018): protege dados pessoais de pessoa natural.\n• Dado sensível (origem racial, saúde, biometria, religião) exige proteção reforçada.\n• Papéis: Controlador (toma decisões), Operador (trata em nome do controlador) e Encarregado/DPO (canal com titular e ANPD).\n• Princípios-chave: finalidade, adequação, necessidade (minimização) e segurança.'
+          '• Marco Civil da Internet (Lei nº 12.965/2014):\n  - Art. 13: provedor de CONEXÃO guarda registros de conexão sob sigilo por 1 (um) ano.\n  - Art. 15: provedor de APLICAÇÕES guarda registros de acesso a aplicações por 6 (seis) meses.\n• LGPD (Lei 13.709/2018): ganhou uma Cidade inteira dedicada no mapa e texto completo no Acervo Oficial (tecla F)!'
         ],
-        tip: 'RTO é Tempo para voltar ao ar; RPO é Ponto de dados no passado (quanto dado pode perder).',
+        tip: 'RTO é Tempo para voltar ao ar; RPO é Ponto de dados perdido. Marco Civil: conexão = 1 ano; aplicação = 6 meses!',
         quiz: [
           { q: 'Um sistema permite acesso apenas durante o expediente (08h–18h) e somente a partir da rede interna do tribunal para analistas de TI. Esse controle combina características de:',
             options: ['DAC puro', 'ABAC (Attribute-Based Access Control)', 'MAC militar sem contexto', 'Criptografia simétrica', 'Autenticação anônima'], answer: 1,
             explain: 'ABAC avalia atributos do usuário, do recurso e do ambiente/contexto (horário, IP/rede) para autorizar ou negar o acesso.' },
-          { q: 'Na LGPD, o agente de tratamento a quem competem as decisões referentes ao tratamento de dados pessoais é o:',
-            options: ['Operador', 'Encarregado (DPO)', 'Controlador', 'Titular', 'Auditor independente'], answer: 2,
-            explain: 'Controlador decide o porquê e como tratar os dados. Operador executa seguindo as ordens do Controlador; Encarregado faz a comunicação.' }
+          { q: 'Nos termos dos arts. 13 e 15 do Marco Civil da Internet (Lei nº 12.965/2014), os prazos mínimos de guarda sob sigilo dos registros de conexão e de acesso a aplicações de internet são, respectivamente:',
+            options: ['6 meses e 1 ano', '1 ano e 6 meses', '5 anos e 2 anos', '30 dias e 90 dias', '2 anos e 1 ano'], answer: 1,
+            explain: 'Art. 13: administrador de sistema autônomo guarda registros de conexão por 1 ano. Art. 15: provedor de aplicações guarda registros de acesso por 6 meses.' }
         ]
       },
       {
@@ -192,13 +192,13 @@ window.MATERIAS['seguranca'] = {
         ]
       },
       {
-        title: 'AppSec, OWASP Top 10 e Segurança de IA',
+        title: 'AppSec, OWASP Web/API 2023 e Segurança de IA (LLM v2)',
         pages: [
-          '• DevSecOps: "Shift-Left" — segurança desde o design e código, automatizada no CI/CD, não só antes do deploy.\n• Modelagem de ameaças: desenha DFD (fluxo de dados) e aplica STRIDE.\n• STRIDE: Spoofing (falsificação), Tampering (adulteração), Repudiation (negação), Info Disclosure (vazamento), DoS, Elevation of Privilege.',
-          '• OWASP Top 10 (pontos-chave): Broken Access Control (#1, ex.: IDOR), Cryptographic Failures (dados sem TLS/hash fraco), Injection (SQLi — mitigue com Prepared Statements/queries parametrizadas).\n• Outros críticos: Insecure Design, Security Misconfiguration, Vulnerable Components, SSRF (servidor faz requisição forjada para rede interna).',
-          '• Segurança de IA Generativa:\n• Prompt Injection: direto (usuário manda ignorar regras) ou indireto (instrução escondida em PDF/site lido pelo RAG).\n• Jailbreak: técnica para contornar guardrails de segurança do modelo.\n• Vazamento / Retenção Zero: evitar envio de PII/segredos e contratar API com política de zero data retention (sem log/treino).'
+          '• DevSecOps: "Shift-Left" — segurança desde o design e código, automatizada no CI/CD.\n• STRIDE: Spoofing (falsificação), Tampering (adulteração), Repudiation (negação), Info Disclosure (vazamento), DoS, Elevation of Privilege.\n• OWASP Web: A01 Broken Access Control (#1), A02 Cryptographic Failures, A03 Injection (use Prepared Statements), A10 SSRF (requisição forjada para rede interna).',
+          '• OWASP API Security Top 10 (2023) — muito cobrado em backend:\n  - API1 BOLA (Broken Object Level Auth): trocar /doc/10 por /doc/11 sem checar dono.\n  - API3 BOPLA: Mass Assignment (mandar campo extra "isAdmin":true) ou vazar propriedades na resposta.\n  - API5 BFLA: usuário comum chamando endpoint administrativo (função sem autorização).\n  - API4 Unrestricted Resource Consumption (falta de rate limit/paginação).',
+          '• OWASP Top 10 LLM v2 (2025): LLM01 Prompt Injection (direto/indireto), LLM02 Sensitive Info Disclosure, LLM03 Supply Chain, LLM04 Data/Model Poisoning, LLM05 Improper Output Handling, LLM06 Excessive Agency (conceder ferramentas perigosas sem aprovação humana!), LLM07 System Prompt Leakage, LLM08 Vector/Embedding Weaknesses (RAG sem ACL), LLM09 Misinformation, LLM10 Unbounded Consumption.\n• Todo texto oficial da OWASP está no Acervo Oficial (tecla F)!'
         ],
-        tip: 'SQL Injection se evita com Prepared Statement (query parametrizada), nunca só com blacklist de palavras.',
+        tip: 'API1 BOLA = dono do objeto (/id/11); API3 BOPLA = propriedade/Mass Assignment; API5 BFLA = função/papel admin!',
         quiz: [
           { q: 'Uma API recebe uma URL informada pelo usuário para buscar a foto de perfil e, sem validar o destino, o servidor passa a consultar http://169.254.169.254/latest/meta-data/. Essa vulnerabilidade é:',
             options: ['XSS armazenado', 'SSRF (Server-Side Request Forgery)', 'SQL Injection', 'Broken Authentication', 'Clickjacking'], answer: 1,

@@ -50,7 +50,7 @@
   #mctrl{display:none;align-items:center;justify-content:space-between;width:100%;max-width:960px;padding:10px 14px;box-sizing:border-box;gap:10px;touch-action:none}
   body.is-touch #mctrl,body.force-ctrl #mctrl{display:flex}
   @media (hover:none),(pointer:coarse),(max-width:900px),(max-height:560px){#mctrl{display:flex}}
-  body[data-mode="aula"] #mctrl,body[data-mode="mini"] #mctrl,body.hide-ctrl #mctrl,body[data-mode="aula"] #mtoggle,body[data-mode="mini"] #mtoggle{display:none!important}
+  body[data-mode="aula"] #mctrl,body[data-mode="mini"] #mctrl,body[data-mode="fontes"] #mctrl,body.hide-ctrl #mctrl,body[data-mode="aula"] #mtoggle,body[data-mode="mini"] #mtoggle,body[data-mode="fontes"] #mtoggle{display:none!important}
   .dpad{--b:clamp(42px,13vw,58px);display:grid;grid-template-columns:repeat(3,var(--b));grid-template-rows:repeat(3,var(--b));gap:4px;flex:none}
   .dpad button,.macts button{border:3px solid #4e567a;background:#2a2e45;color:#fff;border-radius:12px;font:bold 18px "Courier New",monospace;display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:none;box-shadow:0 4px 0 #151726;padding:0;white-space:nowrap}
   .dpad button:active,.dpad button.on,.macts button:active{transform:translateY(2px);box-shadow:0 2px 0 #151726;background:#454c73}
@@ -136,6 +136,7 @@
   <div class="macts">
     <div class="mpills">
       <button type="button" class="mpill" data-key="m" aria-label="Mapa">🗺 Mapa</button>
+      <button type="button" class="mpill" data-key="f" aria-label="Acervo Oficial">📜 Fontes</button>
       <button type="button" class="mpill" data-key="c" aria-label="Cartas">🃏</button>
       <button type="button" class="mpill" data-key="n" aria-label="Som">🔊</button>
     </div>
@@ -160,20 +161,20 @@
 <script src="materias/sysdesign.js"></script>
 <script src="materias/devops.js"></script>
 <script src="materias/seguranca.js"></script>
+<script src="materias/lgpd.js"></script>
 <script src="materias/govti.js"></script>
 <script src="materias/govjud.js"></script>
 <script src="materias/ia.js"></script>
-<script src="materias/mobile.js"></script>
-<script src="materias/uiux.js"></script>
+<script src="materias/interfaces.js"></script>
 <script src="materias/discursiva.js"></script>
-<script src="materias/redacao.js"></script>
 <script src="materias/matematica.js"></script>
+<script src="fontes/index.js"></script>
 <script src="themes.js"></script>
 <script src="audio.js"></script>
 <script src="fx.js"></script>
 <script src="minidata.js"></script>
 <script src="minigames.js?v=4"></script>
-<script src="engine.js?v=6"></script>
+<script src="engine.js?v=7"></script>
 <script>
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
   navigator.serviceWorker.register('./sw.js').then(reg => {

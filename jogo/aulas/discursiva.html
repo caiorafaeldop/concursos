@@ -1,4 +1,4 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Prova Discursiva (Estudo de Caso) — aulas visuais</title><link rel="stylesheet" href="aula.css?v=6">
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Prova Discursiva (Estudo de Caso) — aulas visuais</title><link rel="stylesheet" href="aula.css?v=7">
 <style>
 .mini{font-size:15.5px}
 .cmp td,.cmp th{padding:7px 9px}
@@ -307,7 +307,7 @@ pre{background:var(--cell);border:2px solid var(--line);border-radius:14px;paddi
   <span class="emoji">🏛️</span>
   <div class="steps">
     <div class="step"><b>1. Escala e Banco</b><span>Monólito lento, cache, mensageria, circuit breaker e CAP.</span></div>
-    <div class="step"><b>2. Integração CNJ</b><span>PDPJ-Br (Res. 335/2020), MNI (Res. 91/2009) e DDD.</span></div>
+    <div class="step"><b>2. Integração CNJ</b><span>PDPJ-Br (Res. 335/2020), MNI (Res. Conj. 3/2013) e DDD.</span></div>
     <div class="step"><b>3. LGPD e Segurança</b><span>Logs, OWASP, OAuth 2.0 / JWT e ICP-Brasil.</span></div>
   </div>
   <div class="analogy"><span class="emoji">🏦</span><div><b>Analogia do Cartório Lotado:</b> se um único atendente faz tudo (monólito), no último dia de prazo forma fila até a rua. A solução é abrir vários guichês iguais (escala horizontal), colocar um painel com os papéis mais pedidos (cache) e uma caixa de protocolo rápido para pedidos demorados (mensageria).</div></div>
@@ -378,10 +378,10 @@ pre{background:var(--cell);border:2px solid var(--line);border-radius:14px;paddi
     <tr><th>Conceito / Norma</th><th>Para que serve na resposta</th></tr>
     <tr><td><b>DDD + API Gateway</b></td><td>Extrair microsserviços por domínio aos poucos, expondo APIs padronizadas</td></tr>
     <tr><td><b>PDPJ-Br (Res. CNJ 335/2020)</b></td><td>Arquitetura modular em nuvem e publicação de serviços no <b>Marketplace do CNJ</b></td></tr>
-    <tr><td><b>MNI (Res. CNJ 91/2009)</b></td><td>Padrão nacional de intercâmbio de dados processuais entre tribunais, MP e Defensoria</td></tr>
+    <tr><td><b>MNI (Res. Conjunta CNJ/CNMP 3/2013)</b></td><td>Padrão nacional de intercâmbio de dados processuais entre tribunais, MP e Defensoria</td></tr>
     <tr><td><b>MInG</b></td><td>Modelo de Interoperabilidade do Governo para padrões de troca de dados</td></tr>
   </table></div>
-  <p class="mini">📌 Para artigos e prazos específicos das resoluções do CNJ, confira sempre os textos oficiais.</p>
+  <p class="mini">📌 Consulte os textos completos de MNI, PDPJ-Br, Res. 468/2022 e Res. 615/2025 no <b>Acervo Oficial (tecla F no mapa)</b>.</p>
 </div>
 
 <div class="slide">
@@ -430,7 +430,7 @@ pre{background:var(--cell);border:2px solid var(--line);border-radius:14px;paddi
   <div class="magic">Problema → Conceito Técnico → Norma Aplicável → Trade-off.<small>Ex.: Contenção no BD → Réplicas + Redis + CAP → ACID na gravação vs. eventual na leitura.</small></div>
   <ul class="checklist">
     <li>Monólito travado: balanceador stateless, réplicas, Redis, Kafka/RabbitMQ e circuit breaker.</li>
-    <li>Integração: migração gradual (DDD), API Gateway, PDPJ-Br (Res. 335/2020) e MNI (Res. 91/2009).</li>
+    <li>Integração: migração gradual (DDD), API Gateway, PDPJ-Br (Res. 335/2020) e MNI (Res. Conjunta 3/2013).</li>
     <li>Dados e segurança: LGPD (mascaramento, minimização, TLS), OWASP Top 10, OAuth 2.0/OIDC/JWT e PKI.</li>
   </ul>
 </div>
@@ -440,7 +440,7 @@ pre{background:var(--cell);border:2px solid var(--line);border-radius:14px;paddi
   <h2>4 questões no estilo FGV</h2>
   <details><summary>1. Como justificar o uso de réplicas de leitura em sistema judicial usando o Teorema CAP?</summary><p><b>Resposta:</b> Na partição de rede escolhe-se entre consistência e disponibilidade. Mantém-se consistência forte (ACID) nas gravações de atos processuais no primário e admite-se consistência eventual nas consultas às réplicas.</p></details>
   <details><summary>2. Qual a função do padrão Circuit Breaker em arquitetura de microsserviços?</summary><p><b>Resposta:</b> Interromper chamadas a um serviço que está falhando repetidamente, evitando esgotamento de recursos e falha em cascata no restante do sistema.</p></details>
-  <details><summary>3. Quais normas do CNJ fundamentam a modularização em microsserviços e a troca de dados processuais?</summary><p><b>Resposta:</b> <b>PDPJ-Br (Res. CNJ 335/2020)</b> para arquitetura em microsserviços e Marketplace; <b>MNI (Res. CNJ 91/2009)</b> para interoperabilidade de dados processuais.</p></details>
+  <details><summary>3. Quais normas do CNJ fundamentam a modularização em microsserviços e a troca de dados processuais?</summary><p><b>Resposta:</b> <b>PDPJ-Br (Res. CNJ 335/2020)</b> para arquitetura em microsserviços e Marketplace; <b>MNI (Res. Conjunta CNJ/CNMP 3/2013)</b> para interoperabilidade de dados processuais.</p></details>
   <details><summary>4. O que propor quando logs de aplicação registram CPF e nome das partes sem controle?</summary><p><b>Resposta:</b> Adequação à <b>LGPD (Lei 13.709/2018)</b> com mascaramento de dados pessoais nos logs, minimização, criptografia TLS/em repouso, controle de acesso (RBAC) e trilha de auditoria.</p></details>
 </div>
 
@@ -481,13 +481,13 @@ pre{background:var(--cell);border:2px solid var(--line);border-radius:14px;paddi
     <text x="585" y="95" text-anchor="middle" style="font-size:13px">Revisão Humana</text>
     <text x="585" y="114" text-anchor="middle" class="small">Apoia, não decide</text>
   </svg>
-  <p class="mini">Sempre cite <b>sanitização de saídas</b>, <b>auditabilidade</b>, <b>transparência</b> e <b>avaliação de impacto algorítmico</b> conforme as normas do CNJ sobre IA (confira os textos oficiais).</p>
+  <p class="mini">Sempre cite <b>sanitização de saídas</b>, <b>auditabilidade</b>, <b>transparência</b> e <b>supervisão humana obrigatória</b> conforme a <b>Res. CNJ 615/2025</b> (que revogou a Res. 332/2020 — texto disponível no Acervo Oficial).</p>
 </div>
 
 <div class="slide">
   <span class="tag">GOVERNANÇA DE IA</span>
   <h2>O que é obrigatório escrever em casos de IA</h2>
-  <div class="say law">Pelos normativos do CNJ sobre inteligência artificial no Poder Judiciário, a ferramenta tem caráter exclusivamente <b>auxiliar</b>, exigindo <b>supervisão humana</b>, transparência, auditabilidade e mitigação de vieses discriminatórios.</div>
+  <div class="say law">Pela <b>Res. CNJ 615/2025</b> (Art. 10 veda risco excessivo sem revisão humana), a IA tem caráter exclusivamente <b>auxiliar</b>, exigindo <b>supervisão humana</b>, transparência, auditabilidade, compatibilidade com PDPJ-Br/Sinapses e mitigação de vieses.</div>
   <ul>
     <li><b>RAG (Retrieval-Augmented Generation):</b> ancora as respostas em jurisprudência e normas do próprio tribunal, reduzindo alucinações.</li>
     <li><b>Retenção zero:</b> garantia contratual e técnica de que os dados enviados ao modelo não serão armazenados nem usados para retreino público.</li>
@@ -707,5 +707,196 @@ pre{background:var(--cell);border:2px solid var(--line);border-radius:14px;paddi
 
 </section>
 
-<script src="aula.js?v=6"></script>
+<!-- ===================================================== CAPÍTULO 6 ===================================================== -->
+<section class="chapter" data-title="Técnica de Texto: Coesão, Concisão e Planejamento">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 6 · REDAÇÃO TÉCNICA</span>
+  <h1>Técnica de Texto: Coesão, Concisão e Planejamento</h1>
+  <span class="emoji">✍️</span>
+  <div class="steps">
+    <div class="step"><b>1. Diagramação Limpa</b><span>Sem pular linhas, com recuo, 4 a 6 parágrafos e paralelismo 1→2→3→4.</span></div>
+    <div class="step"><b>2. Coesão FGV</b><span>Tópico frasal + conectivos de causa, consequência e contraste.</span></div>
+    <div class="step"><b>3. Concisão e Norma</b><span>Corte de gordura verbal, ordem direta, crase e rasura limpa.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🍋</span><div><b>Texto de 30 linhas é suco concentrado:</b> cada palavra vazia ("devido ao fato de que", "acaba causando") é água que dilui a nota e rouba espaço dos conceitos que pontuam.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">ESQUELETO EM TÓPICOS</span>
+  <h2>Rascunho em 5–10 min e Diagramação na Folha</h2>
+  <p>Nunca passe direto sem planejar nem escreva dois rascunhos completos. Monte um <b>esqueleto em tópicos</b> (Problema → Conceito → Norma → Ação) e vá para a definitiva:</p>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Hábito na folha definitiva</th><th>Efeito</th><th>O que fazer na prova</th></tr>
+    <tr><td>Pular linha entre parágrafos</td><td class="hl">Perde 4 a 5 linhas úteis</td><td class="hk">Não pule linha; use recuo (~1,5 cm)</td></tr>
+    <tr><td>Tópicos soltos com bolinhas (•)</td><td class="hl">Quebra a prosa técnico-dissertativa</td><td class="hk">Use prosa contínua com numeração inline <code>(1)...; (2)...</code></td></tr>
+    <tr><td>Recontar o caso em 6 linhas</td><td class="hl">Falta espaço para a proposta</td><td class="hk">Resuma o cenário em no máximo 1 linha</td></tr>
+    <tr><td>Inverter a ordem dos itens</td><td class="hl">Dificulta o espelho do corretor</td><td class="hk">Siga exatamente a ordem 1 → 2 → 3 → 4</td></tr>
+  </table></div>
+</div>
+
+<div class="slide">
+  <span class="tag">COESÃO E CLAREZA</span>
+  <h2>Tópico Frasal e Conectivos Estratégicos</h2>
+  <p>Abra cada parágrafo anunciando o eixo que será tratado e conecte causa → regra → solução → trade-off:</p>
+  <div class="two">
+    <div class="card">
+      <h3>🧭 Tópicos frasais modelo</h3>
+      <ul>
+        <li><i>"<b>Quanto à disponibilidade,</b> recomenda-se escala horizontal..."</i></li>
+        <li><i>"<b>No tocante ao banco,</b> a contenção decorre da concorrência..."</i></li>
+        <li><i>"<b>Em relação à LGPD,</b> o registro de CPF em logs viola..."</i></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🔗 Conectivos que pontuam</h3>
+      <ul>
+        <li><b>Causa:</b> em razão de, visto que, haja vista</li>
+        <li><b>Consequência:</b> portanto, logo, dessa forma</li>
+        <li><b>Trade-off:</b> contudo, entretanto, em contrapartida</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">CORTE DE GORDURA</span>
+  <h2>Enxugue a frase para ganhar 5 linhas de conteúdo</h2>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Expressão inchada (evite)</th><th>Troca enxuta (use)</th></tr>
+    <tr><td class="hl">devido ao fato de que</td><td class="hk">porque / em razão de</td></tr>
+    <tr><td class="hl">vai estar implementando</td><td class="hk">implementará</td></tr>
+    <tr><td class="hl">integrar através de API</td><td class="hk">integrar por meio de / via API</td></tr>
+    <tr><td class="hl">a arquitetura onde rodam serviços</td><td class="hk">a arquitetura na qual / em que rodam serviços</td></tr>
+    <tr><td class="hl">fazer a verificação do código</td><td class="hk">executar análise SAST no código</td></tr>
+  </table></div>
+  <p class="mini">Escreva períodos de <b>2 a 3 linhas</b> em ordem direta (<b>Sujeito → Verbo → Complemento</b>) para eliminar erros de vírgula e concordância.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">NORMA CULTA &amp; RASURA</span>
+  <h2>Crase rápida, concordância e erro à caneta</h2>
+  <div class="steps">
+    <div class="step"><b>Truque da crase</b><span>Troque por masculino <i>ao</i>: "atender <b>à</b> LGPD" (ao regulamento ✓) × "proteção <b>a</b> dados" / "submeter <b>a</b> uma auditoria" (sem crase ✗).</span></div>
+    <div class="step"><b>Verbos armadilha</b><span>"Haver" (existir) é singular (<i>Havia falhas</i>); "Tratar-se de" fica no singular (<i>Trata-se de medidas</i>).</span></div>
+    <div class="step"><b>Rasura limpa</b><span>Errou à caneta? Passe <b>UM traço simples</b> (<s>apresentam</s> apresenta) — nunca use parênteses, "(digo)" nem setinhas.</span></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA DO ESPAÇO</span>
+  <h2>Escrever "o mesmo" ou deixar linhas soltas</h2>
+  <div class="say trap">Evite expressões como <i>"o banco falhou e o mesmo travou"</i> (troque por elipse ou pronome: <i>"falhou e travou"</i>) e jamais separe sujeito e verbo com vírgula (<i>"O sistema, apresenta"</i>).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 6</span>
+  <h2>Redação técnica de alto impacto em 30 linhas</h2>
+  <div class="magic">Tópico frasal + Ordem direta + Conectivo certo = clareza máxima com menos palavras.<small>Recuo de parágrafo, zero linha pulada e rasura apenas com traço simples.</small></div>
+  <ul class="checklist">
+    <li>Planejamento de 5–10 min em tópicos antes da folha definitiva.</li>
+    <li>Paralelismo rigoroso entre o Diagnóstico e o desenvolvimento.</li>
+    <li>Sem "através de" para meio instrumental, sem "onde" não locativo e sem código-fonte.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 6</span>
+  <h2>4 questões de escrita técnica FGV</h2>
+  <details><summary>1. Como ganhar 4 a 5 linhas na folha definitiva sem apertar a letra?</summary><p><b>Resposta:</b> Não pular linha em branco entre parágrafos — basta marcar o recuo inicial (~1,5 cm).</p></details>
+  <details><summary>2. Por que evitar "onde" em "a arquitetura onde os serviços se comunicam"?</summary><p><b>Resposta:</b> "Onde" indica lugar físico na norma culta; use "em que" ou "na qual".</p></details>
+  <details><summary>3. Há crase em "proteção à dados" e "submeter à uma auditoria"?</summary><p><b>Resposta:</b> Não em ambas (antes de plural sem artigo e antes de "uma"). Correto: "proteção a dados" e "submeter a uma auditoria".</p></details>
+  <details><summary>4. Como corrigir uma palavra escrita errada com caneta azul ou preta?</summary><p><b>Resposta:</b> Passar um único traço horizontal simples sobre a palavra e escrever a correta logo ao lado, sem parênteses nem "(digo)".</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 7 ===================================================== -->
+<section class="chapter" data-title="Estudos de Caso Temáticos: 3 Modelos em 30 Linhas">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 7 · MODELOS DE PROVA</span>
+  <h1>Estudos de Caso Temáticos: 3 Modelos em 30 Linhas</h1>
+  <span class="emoji">📐</span>
+  <div class="steps">
+    <div class="step"><b>Modelo A</b><span>Vazamento em API (OWASP API1 BOLA / API3) + Logs com CPF (LGPD).</span></div>
+    <div class="step"><b>Modelo B</b><span>Assistente de Minutas com IA no Tribunal (Res. CNJ 615/2025 + RAG).</span></div>
+    <div class="step"><b>Modelo C</b><span>Contratação de TIC (Res. 468/2022) + MoReq-Jus + eMAG/WCAG 2.2.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🧱</span><div><b>Moldes prontos para a caneta:</b> estes 3 casos cobrem os cruzamentos com maior probabilidade de cobrança na discursiva do TJPB — técnica moderna + legislação literal do Acervo Oficial, zero código.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">MODELO A · OWASP API + LGPD</span>
+  <h2>Caso: Endpoint expõe processo alheio e grava CPF</h2>
+  <div class="card"><p class="mini"><b>Enunciado simulado:</b> Portal de consulta permite acessar petições sigilosas alterando o ID do processo na URL, retorna campos cadastrais completos da parte e registra CPF em texto claro nos logs. Identifique as falhas, fundamente na LGPD e no OWASP API Security 2023 e proponha mitigação com trade-offs.</p></div>
+  <p class="mini"><b>Estrutura modelo (~28L em prosa):</b><br>
+  <b>1. Diagnóstico (4L):</b> Identificam-se três falhas centrais: (1) autorização quebrada em nível de objeto (BOLA/IDOR); (2) exposição excessiva de propriedades da entidade (BOPLA); e (3) tratamento inadequado de dados pessoais em logs.<br>
+  <b>2. Fundamentação (9L):</b> Sob o <b>OWASP API Security 2023</b>, a manipulação de identificador na URL caracteriza <b>API1 (BOLA)</b>, enquanto a devolução de campos sensíveis além do necessário configura <b>API3 (BOPLA)</b>. À luz da <b>LGPD (Lei 13.709/2018)</b>, logs em claro violam necessidade/minimização (Art. 6º) e medidas de segurança (Art. 46), expondo o Controlador a risco de incidente comunicável à ANPD e ao titular (Art. 48).</p>
+</div>
+
+<div class="slide">
+  <span class="tag">MODELO A · PROPOSTA E TRADE-OFF</span>
+  <h2>Fechando o Modelo A com precisão</h2>
+  <p class="mini"><b>3. Proposta (11L):</b> Em resposta à falha (1), impõe-se autenticação via <b>OAuth 2.0/OIDC</b> com validação obrigatória de posse/vínculo processual no servidor a cada requisição (RBAC/ABAC). Quanto à falha (2), adotam-se contratos explícitos com DTOs mínimos por perfil e filtragem estrita de saída. Quanto à (3), aplicam-se mascaramento e sanitização de CPF/tokens antes do registro de log, TLS em trânsito, cifragem em repouso e política de retenção mínima.<br>
+  <b>4. Riscos, Trade-off e Fecho (4L):</b> A verificação granular e a filtragem aumentam discretamente a latência e o custo de manutenção de testes; mitiga-se com cache de permissões de curta duração e testes automatizados de autorização na esteira CI/CD, assegurando conformidade legal e sigilo processual.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">MODELO B · IA + RES. CNJ 615/2025</span>
+  <h2>Caso: LLM público para minutas sem revisão</h2>
+  <div class="card"><p class="mini"><b>Enunciado simulado:</b> Tribunal avalia enviar autos sigilosos em PDF para LLM comercial público gerar e assinar minutas automaticamente, sem validação humana. Avalie a aderência normativa, aponte riscos de segurança e proponha arquitetura segura.</p></div>
+  <p class="mini"><b>Estrutura modelo (~28L em prosa):</b><br>
+  <b>1. Diagnóstico (4L):</b> A proposta incorre em três desvios críticos: (1) delegação decisória sem supervisão humana; (2) exposição de dados sigilosos a terceiro externo (LGPD); e (3) vulnerabilidade a alucinações e sequestro de prompt.<br>
+  <b>2. Fundamentação (9L):</b> A <b>Resolução CNJ 615/2025</b> (que revogou a Res. 332/2020) veda soluções de risco excessivo sem supervisão humana efetiva (Art. 10) e impõe transparência, auditabilidade e compatibilidade com a <b>PDPJ-Br/Sinapses</b> (Art. 43 §3º). Tecnicamente, anexar PDFs externos sem filtragem viola a LGPD (minimização e transferência controlada) e expõe o modelo a <b>OWASP LLM01 (Prompt Injection)</b> e vazamento de contexto.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">MODELO B · PROPOSTA E TRADE-OFF</span>
+  <h2>Fechando o Modelo B sem alucinação</h2>
+  <p class="mini"><b>3. Proposta (11L):</b> Mantém-se a IA estritamente como ferramenta de apoio, exigindo revisão e assinatura ICP-Brasil exclusiva do magistrado. Adota-se arquitetura <b>RAG (Geração Aumentada por Recuperação)</b> ancorada em base jurisprudencial e normativa institucional, operando em provedor homologado ou on-premise com cláusula técnica de <b>retenção zero</b> (proibição de retreino). Implementam-se mascaramento prévio de PII, isolamento entre instruções do sistema e texto dos autos contra injeção de prompt, sanitização de saídas e trilha imutável de auditoria.<br>
+  <b>4. Riscos, Trade-off e Fecho (4L):</b> O pipeline RAG com filtros eleva o tempo de resposta e demanda curadoria contínua dos índices vetoriais; mitiga-se com atualização incremental da base e monitoramento periódico de vieses e acurácia.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">MODELO C · RES. 468 + MOREQ-JUS + WCAG 2.2</span>
+  <h2>Caso: Contratação de Fábrica + Portal Documental</h2>
+  <div class="card"><p class="mini"><b>Enunciado simulado:</b> Tribunal pretende contratar fábrica para desenvolver módulo de gestão de documentos acessíveis, deixando que a própria contratada mensure os pontos de função e fiscalize entregas, sem prever requisitos arquivísticos nem acessibilidade.</p></div>
+  <p class="mini"><b>Estrutura modelo (~28L em prosa):</b><br>
+  <b>1. Diagnóstico (4L):</b> Verificam-se duas falhas graves: (1) violação à segregação de funções e impedimento na fiscalização contratual; e (2) omissão de requisitos obrigatórios de gestão arquivística e acessibilidade.<br>
+  <b>2. Fundamentação (9L):</b> Pela <b>Res. CNJ 468/2022</b>, a contratação segue planejamento, seleção e gestão (Art. 6º), exige integrante administrativo externo à TIC (Art. 7º § único) e <b>veda expressamente</b> que a fornecedora da solução mensure, avalie ou fiscalize o próprio contrato (Art. 8º §2º). No plano funcional, documentos judiciais submetem-se ao <b>MoReq-Jus/RDC-Arq</b> (autenticidade e custódia), e portais públicos atendem ao <b>e-MAG 3.1</b> e à <b>WCAG 2.2 AA</b> (princípios POUR).</p>
+</div>
+
+<div class="slide">
+  <span class="tag">MODELO C · PROPOSTA E TRADE-OFF</span>
+  <h2>Fechando o Modelo C dentro da lei</h2>
+  <p class="mini"><b>3. Proposta (11L):</b> Reestrutura-se a governança com equipe de planejamento composta por integrantes demandante, técnico e administrativo (não pertencente à TIC), atribuindo a contagem de <b>APF/IFPUG</b> e o aceite exclusivamente a servidores do tribunal ou empresa terceira independente. No escopo técnico, exigem-se metadados arquivísticos e cadeia de custódia compatíveis com o MoReq-Jus, além de HTML5 semântico, atalhos padronizados (e-MAG 1/2/3), contraste adequado e alvos de toque mínimos (WCAG 2.2).<br>
+  <b>4. Riscos, Trade-off e Fecho (4L):</b> A segregação documental e os critérios extras aumentam o esforço inicial de planejamento e homologação; mitiga-se com listas de verificação objetivas e validação automatizada de acessibilidade no CI/CD.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 7</span>
+  <h2>O que os 3 modelos têm em comum</h2>
+  <div class="magic">4 blocos enxutos + normas literais (CNJ/LGPD/OWASP) + trade-off realista = 34 a 37 pts.<small>Consulte qualquer texto normativo na íntegra no Acervo Oficial (tecla F no mapa).</small></div>
+  <ul class="checklist">
+    <li>Zero linhas de código SQL, Java ou YAML em qualquer dos 3 modelos.</li>
+    <li>Todos os problemas do Diagnóstico aparecem na mesma ordem na Fundamentação e Proposta.</li>
+    <li>Normas literais citadas sem inventar números: LGPD, API1/API3, Res. CNJ 615/2025, Res. CNJ 468/2022, MoReq-Jus, e-MAG/WCAG 2.2.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 7</span>
+  <h2>4 checagens dos 3 modelos</h2>
+  <details><summary>1. No Modelo A, qual a diferença entre API1 (BOLA) e API3 (BOPLA)?</summary><p><b>Resposta:</b> <b>API1 (BOLA)</b> é acessar objeto/processo de outro usuário manipulando o ID; <b>API3 (BOPLA)</b> é expor propriedades demais no JSON ou aceitar alteração em campos restritos.</p></details>
+  <details><summary>2. No Modelo B, por que NÃO citar a Res. CNJ 332/2020 como norma vigente?</summary><p><b>Resposta:</b> Porque o <b>Art. 46 da Res. CNJ 615/2025 revogou a Res. CNJ 332/2020</b>. Citar a 615/2025 com supervisão humana e compatibilidade Sinapses/PDPJ-Br evita erro normativo.</p></details>
+  <details><summary>3. No Modelo C, por que a empresa contratada não pode medir seus próprios Pontos de Função para pagamento?</summary><p><b>Resposta:</b> Conflito de interesses vedado pelo <b>Art. 8º §2º da Res. CNJ 468/2022</b>: quem provê a solução de TIC não pode mensurar, avaliar nem fiscalizar o próprio contrato.</p></details>
+  <details><summary>4. Qual trade-off acompanha autenticação granular (A) e RAG com filtros (B)?</summary><p><b>Resposta:</b> Aumento discreto de latência e custo de manutenção/curadoria, mitigado por cache de curta duração, atualização incremental e automação em CI/CD.</p></details>
+</div>
+
+</section>
+
+<script src="aula.js?v=7"></script>
 </body></html>

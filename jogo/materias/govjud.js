@@ -16,10 +16,10 @@ window.MATERIAS['govjud'] = {
       'Sobre artigos e prazos exatos da Res. CNJ 522/2023 e tabelas de temporalidade, confira sempre o texto oficial.'
     ] },
     { name: 'Delegado de Dados & IA', lines: [
-      'Na LGPD: Controlador decide o tratamento; Operador executa em nome dele; Encarregado (DPO) faz a ponte com titulares e ANPD.',
-      'No Marco Civil: provedor de conexão guarda IP/tempo de conexão; provedor de aplicação guarda logs de acesso ao serviço.',
-      'IA no Judiciário exige supervisão humana, transparência, auditabilidade e controle de vieses (Res. CNJ 332/2020 e 615/2025).',
-      'Res. 370/2021 trata da ENTIC-JUD; Res. 396/2021 de Segurança Cibernética; confira os textos oficiais para detalhes.'
+      'Na LGPD: para arts. 1º–59 completos (bases, sanções, ANPD), explore a nova Cidade LGPD e o Acervo Oficial (tecla F)!',
+      'No Marco Civil (Lei 12.965/2014): provedor de conexão guarda registro por 1 ANO (art. 13); de aplicação guarda por 6 MESES (art. 15).',
+      'Res. CNJ 615/2025 REVOGOU a Res. 332/2020! Veda reconhecimento biométrico de emoções, perfilamento criminal e IA sem revisão humana (art. 10).',
+      'Res. Conjunta CNJ/CNMP 3/2013 instituiu o MNI; Res. 370/2021 = ENTIC-JUD; Res. 396/2021 = Segurança Cibernética.'
     ] }
   ],
   boss: {
@@ -152,7 +152,7 @@ window.MATERIAS['govjud'] = {
       { title: 'Interoperabilidade: MNI, MInG e Integração',
         pages: [
           'O que é interoperabilidade?\n• É a capacidade de sistemas diferentes conversarem e entenderem os mesmos dados.\n• Tem 3 dimensões: Técnica (protocolos/APIs), Semântica (significado igual dos campos) e Organizacional (processos e acordos entre órgãos).\n• Evita redigitação entre Tribunal, MP, Defensoria e OAB.',
-          'MNI e MInG:\n• MNI (Modelo Nacional de Interoperabilidade): padrão comum para envio e consulta de dados processuais entre sistemas de justiça.\n• MInG (Modelo de Interoperabilidade do Governo): diretrizes e padrões abertos para troca de informações no setor público.\n• Confira a Res. CNJ 91/2009 e atualizações oficiais do MNI para detalhes normativos.',
+          'MNI e MInG:\n• MNI (Modelo Nacional de Interoperabilidade — Res. Conjunta CNJ/CNMP nº 3/2013): padrão comum para envio e consulta de dados processuais entre sistemas de justiça, MP, Defensoria e OAB.\n• MInG (Modelo de Interoperabilidade do Governo): diretrizes e padrões abertos para troca de informações no setor público.\n• Textos oficiais disponíveis na íntegra no Acervo Oficial (tecla F).',
           'Como funciona na prática?\n• O sistema A envia uma mensagem padronizada (XML/SOAP ou JSON/REST) validada por esquema (XSD/OpenAPI).\n• O sistema B valida a estrutura, verifica autenticidade/certificado e grava os autos sem intervenção manual.\n• Padrões abertos evitam aprisionamento a um único fornecedor (vendor lock-in).'
         ],
         tip: 'Interoperabilidade = Técnica (fio/API) + Semântica (dicionário) + Organizacional (acordo).',
@@ -203,11 +203,11 @@ window.MATERIAS['govjud'] = {
             ],
             answer: 1, explain: 'Metadados preservam o contexto, a autenticidade, a classificação e a trilha de auditoria do documento digital.' }
         ] },
-      { title: 'LGPD e Marco Civil da Internet no Judiciário',
+      { title: 'Marco Civil, MNI e Ponte com a LGPD',
         pages: [
-          'Marco Civil da Internet (Lei 12.965/2014):\n• Princípios: neutralidade de rede, privacidade, liberdade de expressão.\n• Provedor de conexão: guarda registro de conexão (IP, início/fim).\n• Provedor de aplicação: guarda registro de acesso a aplicações.\n• Entrega de registros exige ordem judicial (confira prazos exatos nos arts. 13 e 15 da lei).',
-          'LGPD (Lei 13.709/2018) — Conceitos e Papéis:\n• Dado pessoal: identifica ou torna identificável pessoa natural. Sensível: saúde, biometria, religião, etc.\n• Dado anonimizado não é dado pessoal, salvo reversão com esforço razoável.\n• Controlador (decide) × Operador (executa) × Encarregado/DPO (canal com titular e ANPD).',
-          'Princípios e Bases Legais no Judiciário:\n• Princípios: finalidade, adequação, necessidade (minimização), transparência, segurança e responsabilização.\n• Bases legais comuns no setor público/Judiciário: cumprimento de obrigação legal, execução de políticas públicas e exercício regular de direitos em processo judicial.\n• Incidentes relevantes exigem comunicação à ANPD e aos titulares.'
+          'Marco Civil da Internet (Lei 12.965/2014):\n• Princípios: neutralidade de rede (art. 9º), privacidade, liberdade de expressão.\n• Provedor de conexão (art. 13): guarda registros de conexão sob sigilo pelo prazo de 1 (um) ano.\n• Provedor de aplicação (art. 15): guarda registros de acesso a aplicações pelo prazo de 6 (seis) meses.\n• Entrega de registros exige ordem judicial.',
+          'Ponte com a LGPD no Judiciário:\n• A LGPD completa (arts. 1º–59, 10 bases legais, Poder Público arts. 23–30 e sanções do art. 52 §3º) ganhou sua própria Cidade LGPD no mapa!\n• Papéis-chave: Controlador (Tribunal decide), Operador (nuvem/fornecedor executa) e Encarregado/DPO (canal com titulares e ANPD).',
+          'Regra de ouro no setor público:\n• Bases típicas do Judiciário: obrigação legal, execução de políticas públicas e exercício regular de direitos em processo judicial (não precisa consentimento do réu!).\n• Dados devem ser mantidos em formato interoperável e estruturado (LGPD art. 25).'
         ],
         tip: 'Controlador = manda no "porquê/como"; Operador = executa; DPO = ponte; Anonimizado = fora da LGPD se irreversível.',
         quiz: [
@@ -233,10 +233,10 @@ window.MATERIAS['govjud'] = {
       { title: 'Governança Algorítmica, IA e Normas CNJ de TIC',
         pages: [
           'Governança Algorítmica e IA no Judiciário:\n• Algoritmos podem reproduzir vieses dos dados históricos e gerar decisões opacas.\n• Pilares: transparência, explicabilidade, auditabilidade, segurança e supervisão humana (human-in-the-loop).\n• A IA apoia triagem, pesquisa e minutas; a decisão jurisdicional pertence sempre ao magistrado.',
-          'Normas do CNJ sobre IA:\n• Res. CNJ 332/2020: ética, transparência e governança na produção e uso de IA no Judiciário.\n• Res. CNJ 615/2025: diretrizes atualizadas de governança e gestão de riscos de IA no Judiciário.\n• Confira o texto oficial da Res. 615/2025 para classificações de risco e obrigações detalhadas.',
-          'Ecossistema de Normas CNJ e TJPB:\n• Res. CNJ 370/2021: ENTIC-JUD (Estratégia Nacional de TIC).\n• Res. CNJ 396/2021: Estratégia Nacional de Segurança Cibernética.\n• Res. CNJ 468/2022: Contratações de soluções de TIC.\n• PDTI TJPB 2024–2026: desdobra essas diretrizes no tribunal (confira documento oficial do TJPB).'
+          'Res. CNJ 615/2025 (REVOGOU a Res. CNJ 332/2020 — Art. 46!):\n• Regula IA e LLMs/IA generativa no Judiciário e uso da plataforma Sinapses + disponibilização na PDPJ-Br (art. 43, §3º).\n• VEDAÇÕES (art. 10 — Risco Excessivo): solução sem revisão humana; avaliação preditiva de crime/reiteração ou perfilamento trabalhista; ranqueamento social de mérito judicial; biometria para reconhecimento de emoções.\n• Alto risco exige auditoria e monitoramento contínuo (art. 11). Prazo de adequação: 12 meses (art. 45).',
+          'Ecossistema de Normas CNJ e TJPB:\n• Res. CNJ 370/2021: ENTIC-JUD (Estratégia Nacional de TIC).\n• Res. CNJ 396/2021: Estratégia Nacional de Segurança Cibernética.\n• Res. CNJ 468/2022: Contratações de soluções de TIC.\n• Res. Conjunta CNJ/CNMP 3/2013: MNI · Res. 522/2023: MoReq-Jus/RDC-Arq.\n• PDTI TJPB 2024–2026: site institucional bloqueia coleta automatizada (HTTP 403) — foque no alinhamento estratégico à ENTIC-JUD.'
         ],
-        tip: '332/615 = IA · 335 = PDPJ-Br · 370 = ENTIC-JUD · 396 = Ciber · 468 = Contratações · 522 = Gestão Doc.',
+        tip: '615/2025 (revogou 332) = IA · 335 = PDPJ-Br · 370 = ENTIC-JUD · 396 = Ciber · 468 = STIC · 522 = Docs · Conj. 3/2013 = MNI.',
         quiz: [
           { q: 'Em um sistema de IA utilizado para priorização de processos ou apoio à decisão no Judiciário, o princípio da supervisão humana significa que:',
             options: [

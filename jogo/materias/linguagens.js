@@ -326,13 +326,13 @@ window.MATERIAS['linguagens'] = {
         ]
       },
       {
-        title: 'Python (FastAPI e Django), Dart e Flutter',
+        title: 'Python Moderno, FastAPI e Django (MTV e ORM)',
         pages: [
-          'Python — Django vs FastAPI:\n• Django usa MTV: Model (ORM/migrations), Template (HTML), View (lógica = Controller do MVC).\n• QuerySet do Django é lazy; select_related() usa JOIN (FK/1:1) e prefetch_related() usa 2 queries (M2M) para evitar N+1.\n• FastAPI roda sobre ASGI/Starlette, valida com Pydantic + type hints, gera OpenAPI automático e injeta com Depends().',
-          'Dart essencial:\n• Null safety: String não aceita null; String? aceita. Operadores ?., ?? e !.\n• final = atribuído 1x em runtime; const = constante em tempo de compilação.\n• var infere tipo estático; dynamic desliga checagem estática.\n• Future (async/await) = 1 valor futuro; Stream (async*/yield) = múltiplos valores ao longo do tempo.',
-          'Flutter:\n• 3 árvores: Widgets (config imutável) → Elements (ciclo de vida/State) → RenderObjects (layout/pintura).\n• Ciclo do State: createState → initState (1x) → didChangeDependencies → build (Nx) → dispose (limpeza).\n• Layout: "Constraints go down, sizes go up, parent sets position".\n• Estado: Provider (watch/read), Riverpod (sem context), Cubit (métodos→estados), BLoC (eventos→estados).'
+          'Python no Edital:\n• Nunca use lista/dict mutável como argumento default (def f(x, l=[])) — ele é criado uma única vez e vaza entre chamadas! Use l=None.\n• Decoradores (@login_required, @lru_cache) envolvem funções; list comprehensions simplificam transformações.\n• Concorrência: asyncio/event loop para I/O; multiprocessing para CPU (contorna o GIL).',
+          'Django (MTV):\n• Model = dados/ORM/migrations (makemigrations + migrate); Template = HTML (equivale à View do MVC); View = lógica da requisição (equivale ao Controller!).\n• QuerySet é LAZY: filter() monta a consulta sem ir ao banco; select_related() faz SQL JOIN (FK/1:1); prefetch_related() faz 2 queries (M2M/reverso) e evita N+1.',
+          'FastAPI (ASGI):\n• Roda sobre Starlette + Uvicorn, valida schemas com Pydantic + type hints, gera OpenAPI/Swagger automático e injeta dependências com Depends().\n• ARMADILHA: I/O bloqueante (driver síncrono, requests) dentro de "async def" trava o event loop inteiro! Use "def" normal para libs síncronas (threadpool).'
         ],
-        tip: 'Django View = Controller! FastAPI I/O bloqueante vai em def, não async def. Flutter: initState inicia, dispose limpa.',
+        tip: 'Django View = Controller! select_related = JOIN (1:1/FK); prefetch_related = M2M. FastAPI I/O bloqueante vai em def!',
         quiz: [
           {
             q: 'No Django ORM, qual método deve ser utilizado para otimizar consultas em relacionamentos Many-to-Many ou reversos evitando o problema N+1?',
@@ -347,6 +347,64 @@ window.MATERIAS['linguagens'] = {
             explain: 'select_related() faz SQL JOIN (ideal para ForeignKey/OneToOne). prefetch_related() faz consultas separadas e associa em memória (ideal para ManyToMany e reversos).'
           },
           {
+            q: 'Em uma função Python "def anexar(item, caixa=[]):", chamadas sucessivas sem passar o segundo argumento causam:',
+            options: [
+              'Erro de sintaxe na compilação do módulo.',
+              'Compartilhamento da mesma lista mutável entre todas as chamadas subsequentes.',
+              'Criação automática de cópia profunda a cada execução.',
+              'Conversão automática da lista em tupla imutável.',
+              'Execução paralela em processo separado para escapar do GIL.'
+            ],
+            answer: 1,
+            explain: 'Valores padrão em Python são avaliados uma única vez na definição da função. Usar None e inicializar dentro da função evita esse bug clássico.'
+          }
+        ]
+      },
+      {
+        title: 'Dart Moderno e Arquitetura Flutter (Widgets, Ciclo e Navegação)',
+        pages: [
+          'Dart Essencial:\n• Null safety: String não aceita null; String? aceita. Operadores ?. (acesso seguro), ?? (fallback) e ! (assert não nulo).\n• final = atribuído 1x em runtime; const = constante em tempo de compilação e profundamente imutável.\n• Future<T> (async/await) entrega 1 valor futuro; Stream<T> (async*/yield) entrega múltiplos valores ao longo do tempo.',
+          'As 3 Árvores e Ciclo de Vida:\n• Widgets (configuração imutável leve) → Elements (ciclo de vida/State + Keys) → RenderObjects (layout/pintura).\n• Ciclo do State: createState → initState (1x) → didChangeDependencies → build (Nx) → didUpdateWidget → dispose (limpa controllers/streams).\n• NUNCA coloque chamadas de API dentro de build()!',
+          'Layout e Navegação:\n• Regra de ouro: "Constraints go down, sizes go up, parent sets position". ListView/TextField dentro de Column/Row pede Expanded/SizedBox.\n• ListView.builder constrói itens sob demanda.\n• Navigator 1.0 (pilha push/pop) vs Router/go_router (declarativo por URL e deep linking); Material vs Cupertino.'
+        ],
+        tip: 'Dart: final é runtime, const é compile-time. Flutter: initState inicia 1x, dispose limpa, build só desenha!',
+        quiz: [
+          {
+            q: 'Em Dart, ao tentar inicializar uma variável "const hora = DateTime.now();", o compilador rejeita a linha porque:',
+            options: [
+              'const só pode ser usado para números inteiros.',
+              'const exige valor conhecido em tempo de compilação; para valor calculado 1 vez em execução deve-se usar final.',
+              'DateTime.now() retorna sempre um Stream assíncrono.',
+              'Variáveis imutáveis exigem a palavra-chave dynamic em Dart.',
+              'O operador null safety exige ? em todo const.'
+            ],
+            answer: 1,
+            explain: 'const é avaliado em tempo de compilação. Valores obtidos em execução (como DateTime.now()) que não devem ser reatribuídos usam final.'
+          },
+          {
+            q: 'No ciclo de vida de um StatefulWidget em Flutter, o método adequado para inicializar um TextEditingController uma única vez e o método para liberá-lo ao destruir a tela são:',
+            options: [
+              'build() e setState()',
+              'initState() e dispose()',
+              'didUpdateWidget() e createState()',
+              'main() e runApp()',
+              'onPressed() e build()'
+            ],
+            answer: 1,
+            explain: 'initState() executa uma única vez na inserção do State na árvore e dispose() executa na remoção permanente, evitando memory leaks.'
+          }
+        ]
+      },
+      {
+        title: 'Gerência de Estado no Flutter (Provider, Riverpod, Cubit e BLoC)',
+        pages: [
+          'Provider vs Riverpod:\n• setState() resolve estado local simples.\n• Provider encapsula InheritedWidget + ChangeNotifier: use context.watch<T>() no build (reconstrói ao mudar), context.select() para campo específico e context.read<T>() dentro de callbacks (onPressed).\n• Riverpod elimina dependência de BuildContext e erros de runtime usando ProviderScope + WidgetRef (ref.watch / ref.read).',
+          'Cubit e BLoC:\n• Cubit é a versão simplificada: expõe métodos diretos (ex.: carregar()) que emitem estados com emit(novoEstado).\n• BLoC recebe objetos de Evento via add(Evento) e transforma em fluxo de Estados imutáveis.\n• BlocBuilder reconstrói widgets; BlocListener executa efeitos colaterais únicos (SnackBar, navegação); BlocConsumer une ambos.',
+          'Qualidade e Testes no Flutter:\n• Unit Tests (test / blocTest): testam regras, Cubit e BLoC em Dart puro sem interface gráfica.\n• Widget Tests (testWidgets + WidgetTester + pumpWidget): verificam árvore de widgets sem dispositivo real.\n• Integration Tests: fluxo completo ponta a ponta.'
+        ],
+        tip: 'No Provider: watch() no build, read() no onPressed! BlocBuilder desenha tela; BlocListener navega/mostra SnackBar.',
+        quiz: [
+          {
             q: 'No Flutter utilizando o pacote Provider, qual é a forma correta de disparar uma ação de um controller dentro do callback onPressed de um botão sem escutar reconstruções?',
             options: [
               'context.watch<MeuController>().salvar()',
@@ -357,6 +415,18 @@ window.MATERIAS['linguagens'] = {
             ],
             answer: 1,
             explain: 'Dentro de callbacks (onPressed), usa-se context.read<T>() para apenas ler/chamar o método sem inscrever o widget para rebuild. context.watch<T>() é usado dentro do build().'
+          },
+          {
+            q: 'Ao exibir uma notificação temporária (SnackBar) ou navegar para outra tela apenas quando um Cubit/BLoC emite o estado "SalvoComSucesso", qual widget do pacote flutter_bloc é o indicado para essa reação lateral?',
+            options: [
+              'MaterialApp',
+              'BlocListener (ou listener dentro de BlocConsumer)',
+              'StatelessWidget puro sem Provider',
+              'const SizedBox',
+              'InheritedModel estático'
+            ],
+            answer: 1,
+            explain: 'BlocListener dispara ações únicas por transição de estado (navegação, SnackBar, diálogo) sem reconstruir os filhos visuais.'
           }
         ]
       }
