@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-const T=16,MW=108,MH=74,VW=240,VH=160;
+const T=16,MW=108,MH=74;let VW=240,VH=160;
 // ---------- matérias (edital TJPB 2026 · TI – Desenvolvimento de Sistemas) ----------
 // band 'esp' = Conhecimentos Específicos (40 questões + discursiva = 80 pts); 'ger' = Gerais (Português 10, RLM 10).
 const SUBJ_DEFS=[
@@ -53,6 +53,18 @@ if(window.MINIDATA&&MINIDATA.quick){
 const cv=document.getElementById('c'),ctx=cv.getContext('2d');
 const $=id=>document.getElementById(id);
 const screenEl=$('screen'),hud=$('hud'),box=$('box'),battleEl=$('battle'),titleEl=$('title');
+function syncViewport(){
+  const r=screenEl.getBoundingClientRect();
+  if(!r.width||!r.height)return;
+  if(window.innerWidth<=900||window.innerHeight<=560){
+    if(r.height>r.width){VW=192;VH=Math.max(160,Math.min(288,Math.round(VW*r.height/r.width)))}
+    else{VH=160;VW=Math.max(200,Math.min(352,Math.round(VH*r.width/r.height)))}
+  }else{VW=240;VH=160}
+  if(cv.width!==VW||cv.height!==VH){cv.width=VW;cv.height=VH}
+}
+syncViewport();
+addEventListener('resize',syncViewport);
+addEventListener('orientationchange',()=>setTimeout(syncViewport,120));
 
 // ---------- helpers de módulos opcionais ----------
 const sfx=(n,a)=>{try{window.SFX&&SFX.play(n,a)}catch(e){}};
