@@ -40,11 +40,53 @@
   var cur = 0, seen = {};
   chap.style.display = 'block';
 
+  // ----- zoom controller -----
+  var zoomLevel = 1.0;
+  function setZoom(z) {
+    var nz = Math.max(1.0, Math.min(2.5, Math.round(z * 100) / 100));
+    zoomLevel = nz;
+    var s = slides[cur];
+    if (nz > 1.01) {
+      stage.classList.add('is-zoomed');
+      stage.style.overflowX = 'auto';
+      if (s) {
+        s.style.zoom = nz;
+        s.style.setProperty('--slide-zoom', nz);
+      }
+      zbadge.textContent = Math.round(nz * 100) + '%';
+      zbadge.classList.add('on');
+    } else {
+      zoomLevel = 1.0;
+      stage.classList.remove('is-zoomed');
+      stage.style.overflowX = 'hidden';
+      if (s) {
+        s.style.zoom = '';
+        s.style.removeProperty('--slide-zoom');
+      }
+      zbadge.textContent = '100%';
+      zbadge.classList.remove('on');
+      stage.scrollLeft = 0;
+    }
+  }
+
   // ----- moldura -----
   var top = el('div', 'au-top');
   top.appendChild(el('span', 'au-sub', '📚 ' + subjTitle));
   top.appendChild(el('span', 'au-ch', 'Cap. ' + (ci + 1) + ' · ' + (chap.getAttribute('data-title') || '')));
   var count = el('span', 'au-count'); top.appendChild(count);
+
+  // Controles de zoom dedicados no cabeçalho
+  var zgrp = el('div', 'au-zoom');
+  var zout = el('button', 'au-zbtn', '−'); zout.title = 'Diminuir zoom'; zout.type = 'button';
+  var zbadge = el('button', 'au-zbadge', '100%'); zbadge.title = 'Toque p/ redefinir zoom'; zbadge.type = 'button';
+  var zin = el('button', 'au-zbtn', '+'); zin.title = 'Aumentar zoom'; zin.type = 'button';
+  zgrp.appendChild(zout); zgrp.appendChild(zbadge); zgrp.appendChild(zin);
+  top.appendChild(zgrp);
+
+  zout.onclick = function (e) { if (e) e.stopPropagation(); setZoom(zoomLevel - 0.25); };
+  zin.onclick = function (e) { if (e) e.stopPropagation(); setZoom(zoomLevel + 0.25); };
+  zbadge.onclick = function (e) { if (e) e.stopPropagation(); setZoom(1.0); };
+
   var close = el('button', 'au-btn au-close', '✖ Fechar'); close.title = 'Esc'; close.type = 'button';
   close.onclick = function (e) {
     if (e) { e.preventDefault(); e.stopPropagation(); }
@@ -70,10 +112,12 @@
   }
   function go(i) {
     if (i < 0 || i >= slides.length) return;
+    setZoom(1.0); // redefine zoom ao mudar de slide
     slides[cur].classList.remove('on');
     cur = i; seen[i] = true;
     slides[cur].classList.add('on');
     stage.scrollTop = 0;
+    stage.scrollLeft = 0;
     count.textContent = (cur + 1) + ' / ' + slides.length;
     prog.firstChild.style.width = ((cur + 1) / slides.length * 100) + '%';
     Array.prototype.forEach.call(dots.children, function (d, j) { d.className = j === cur ? 'on' : (seen[j] ? 'seen' : ''); });
@@ -89,15 +133,54 @@
     else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(cur - 1); }
     else if (e.key === 'Escape') { close.onclick(); }
     else if (e.key === 'Home') go(0);
+    else if (e.key === '+' || e.key === '=') setZoom(zoomLevel + 0.25);
+    else if (e.key === '-' || e.key === '_') setZoom(zoomLevel - 0.25);
+    else if (e.key === '0') setZoom(1.0);
   });
+
+  // ----- Gestos móveis: Pinch-to-zoom, Duplo toque e Swipe -----
   var sx = null, sy = null;
+  var pinchDist = null, pinchZoom = 1.0;
+  var lastTapTime = 0;
+
   stage.addEventListener('touchstart', function (e) {
-    if (e.touches && e.touches.length === 1) {
+    if (e.touches.length === 2) {
+      pinchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      pinchZoom = zoomLevel;
+    } else if (e.touches.length === 1) {
       sx = e.touches[0].clientX;
       sy = e.touches[0].clientY;
     }
   }, { passive: true });
+
+  stage.addEventListener('touchmove', function (e) {
+    if (e.touches.length === 2 && pinchDist) {
+      var d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      var factor = d / pinchDist;
+      setZoom(pinchZoom * factor);
+    }
+  }, { passive: true });
+
   stage.addEventListener('touchend', function (e) {
+    if (pinchDist && e.touches.length < 2) {
+      pinchDist = null;
+      if (zoomLevel < 1.08) setZoom(1.0);
+      return;
+    }
+
+    // Duplo toque para dar zoom instantâneo em diagramas/tabelas/textos
+    var now = Date.now();
+    if (now - lastTapTime < 320 && e.changedTouches && e.changedTouches.length === 1) {
+      lastTapTime = 0;
+      if (zoomLevel > 1.1) setZoom(1.0);
+      else setZoom(1.6);
+      return;
+    }
+    lastTapTime = now;
+
+    // Quando o slide está com zoom ampliado, o arrasto serve para navegar pelo conteúdo (pan), não para passar slide
+    if (zoomLevel > 1.08) return;
+
     if (sx == null || sy == null || !e.changedTouches || !e.changedTouches.length) return;
     var dx = e.changedTouches[0].clientX - sx;
     var dy = e.changedTouches[0].clientY - sy;
@@ -106,6 +189,7 @@
     }
     sx = null; sy = null;
   });
+
   go(0);
   window.focus();
 })();

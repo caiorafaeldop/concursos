@@ -69,6 +69,68 @@ body {
 }
 .au-close:hover { background: var(--bad); color: #fff; }
 
+/* ---------- zoom controls no topo ---------- */
+.au-zoom {
+  display: inline-flex;
+  align-items: center;
+  background: var(--cell);
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  padding: 1px 2px;
+  gap: 2px;
+  user-select: none;
+}
+.au-zbtn {
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  font: 800 15px system-ui, sans-serif;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 6px;
+  touch-action: manipulation;
+}
+.au-zbtn:active { background: var(--line); }
+.au-zbadge {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  font: 700 11px system-ui, sans-serif;
+  padding: 2px 4px;
+  cursor: pointer;
+  border-radius: 6px;
+  min-width: 36px;
+  text-align: center;
+  touch-action: manipulation;
+}
+.au-zbadge.on {
+  background: var(--acc);
+  color: #fff;
+  font-weight: 800;
+}
+
+/* Modo ampliado / com zoom */
+.au-stage.is-zoomed {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+.au-stage.is-zoomed .slide.on {
+  min-width: calc(100% * var(--slide-zoom, 1));
+  width: max-content;
+}
+.au-stage.is-zoomed .slide.on svg {
+  min-width: calc(480px * (var(--slide-zoom, 1.2) / 1.2));
+  max-width: none;
+  width: auto;
+}
+.au-stage.is-zoomed .slide.on table {
+  min-width: 480px;
+}
+
 .au-progress {
   position: fixed;
   left: 0; right: 0;
@@ -219,6 +281,9 @@ mark.ng { background: var(--bad-bg); color: var(--bad); outline: 2px solid var(-
     padding: 3px 8px;
     border-radius: 6px;
   }
+  .au-zoom { padding: 1px; gap: 1px; }
+  .au-zbtn { width: 24px; height: 24px; font-size: 14px; }
+  .au-zbadge { min-width: 32px; font-size: 10.5px; padding: 2px 3px; }
   .au-btn {
     padding: 6px 12px;
     font-size: 14px;
