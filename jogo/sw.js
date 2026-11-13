@@ -1,4 +1,4 @@
-const CACHE = 'tjpb-quest-v3';
+const CACHE = 'tjpb-quest-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -11,7 +11,7 @@ const ASSETS = [
   './audio.js',
   './fx.js',
   './minidata.js',
-  './minigames.js',
+  './minigames.js?v=2',
   './content1.js',
   './content2.js',
   './study1.js',
@@ -44,3 +44,4 @@ self.addEventListener('fetch', e => {
     }).catch(() => caches.match(e.request))
   );
 });
+
