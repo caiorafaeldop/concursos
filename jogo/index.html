@@ -173,7 +173,13 @@
 <script src="fx.js"></script>
 <script src="minidata.js"></script>
 <script src="minigames.js?v=4"></script>
-<script src="engine.js?v=5"></script>
-<script>if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});</script>
+<script src="engine.js?v=6"></script>
+<script>
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  navigator.serviceWorker.register('./sw.js').then(reg => {
+    reg.update();
+  }).catch(() => {});
+}
+</script>
 </body>
 </html>

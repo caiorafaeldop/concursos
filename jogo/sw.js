@@ -1,4 +1,4 @@
-const CACHE = 'tjpb-quest-v6';
+const CACHE = 'tjpb-quest-v7';
 const ASSETS = [
   './',
   './index.html',
@@ -6,19 +6,19 @@ const ASSETS = [
   './icon.svg',
   './icon-192.png',
   './icon-512.png',
-  './engine.js?v=3',
+  './engine.js?v=6',
   './themes.js',
   './audio.js',
   './fx.js',
   './minidata.js',
-  './minigames.js?v=2',
+  './minigames.js?v=4',
   './content1.js',
   './content2.js',
   './study1.js',
   './study2.js',
   './study3.js',
-  './aulas/aula.css',
-  './aulas/aula.js'
+  './aulas/aula.css?v=6',
+  './aulas/aula.js?v=6'
 ];
 
 self.addEventListener('install', e => {

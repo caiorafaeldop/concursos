@@ -117,7 +117,7 @@ document.body.appendChild(aulaFrame);
 let aulaCtx=null;
 function openAula(tid,ci){
   aulaCtx={tid,ci};mode='aula';keys={};sfx('confirm');
-  aulaFrame.src='aulas/'+tid+'.html#c='+ci+'&embed=1';aulaFrame.style.display='block';
+  aulaFrame.src='aulas/'+tid+'.html?v=6#c='+ci+'&embed=1';aulaFrame.style.display='block';
   aulaFrame.onload=()=>{try{aulaFrame.contentWindow.focus()}catch(e){}};
 }
 function closeAula(){aulaFrame.style.display='none';aulaFrame.src='about:blank';mode=worldMode();window.focus();updateHud()}
