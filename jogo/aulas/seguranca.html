@@ -1,0 +1,829 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Segurança e Qualidade — aulas visuais</title>
+<link rel="stylesheet" href="aula.css">
+<style>
+pre{background:#1e2230;color:#e8eaf2;border-radius:12px;padding:10px 14px;font:14px/1.45 ui-monospace,Consolas,monospace;overflow-x:auto;margin:8px 0;white-space:pre}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+pre mark{background:#ffd84d;color:#2a2100}
+pre .c{color:#8fd19e}
+.mini{font-size:15px}
+.mini td,.mini th{font-size:15px}
+svg .mono{font:500 13px ui-monospace,Consolas,monospace;fill:var(--ink)}
+svg line,svg path.l{stroke:var(--muted);stroke-width:2;fill:none}
+svg .dash{stroke-dasharray:6 4}
+svg .acc{stroke:var(--acc)}
+svg .okl{stroke:var(--ok)}
+svg .badl{stroke:var(--bad)}
+</style>
+</head>
+<body data-subject="seguranca" data-title="Segurança e Qualidade">
+
+<svg width="0" height="0" style="position:absolute;width:0;height:0;margin:0;overflow:hidden" aria-hidden="true">
+  <defs>
+    <marker id="ar" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker>
+    <marker id="arg" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8a93a6"/></marker>
+    <marker id="arok" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2ea043"/></marker>
+    <marker id="arbad" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e5484d"/></marker>
+  </defs>
+</svg>
+
+<!-- ===================================================== CAPÍTULO 1 ===================================================== -->
+<section class="chapter" data-title="CID, Riscos, Continuidade e LGPD">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 1</span>
+  <h1>CID, Riscos, Continuidade e LGPD</h1>
+  <span class="emoji">🛡️</span>
+  <div class="steps">
+    <div class="step"><b>1. Tripé CID</b><span>Confidencialidade, Integridade, Disponibilidade.</span></div>
+    <div class="step"><b>2. Acesso &amp; Riscos</b><span>DAC, MAC, RBAC, ABAC e 4 respostas ao risco.</span></div>
+    <div class="step"><b>3. Continuidade</b><span>BIA, RTO vs RPO e normas ISO 2700x.</span></div>
+    <div class="step"><b>4. LGPD</b><span>Dados sensíveis e quem manda em quê.</span></div>
+  </div>
+  <div class="analogy">
+    <span class="emoji">🏦</span>
+    <div><b>Pense num cofre de banco:</b> só quem tem a senha abre (Confidencialidade), ninguém risca as notas lá dentro (Integridade) e o gerente consegue abrir na hora do expediente (Disponibilidade).</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PILARES DA SEGURANÇA</span>
+  <h2>O tripé CID + dois irmãos famosos</h2>
+  <p>A banca FGV ama misturar os três pilares básicos com os complementares:</p>
+  <table class="cmp">
+    <tr><th>Pilar</th><th>Pergunta simples</th><th>Exemplo prático</th></tr>
+    <tr><td><b>Confidencialidade</b></td><td>Quem pode ver?</td><td>Criptografia e controle de acesso em processo sigiloso.</td></tr>
+    <tr><td><b>Integridade</b></td><td>Ninguém alterou?</td><td>Hash SHA-256 garante que o arquivo não foi adulterado.</td></tr>
+    <tr><td><b>Disponibilidade</b></td><td>Está no ar quando precisa?</td><td>Servidores redundantes e proteção contra DDoS.</td></tr>
+    <tr><td><b>Autenticidade</b></td><td>Quem enviou é quem diz ser?</td><td>Login com MFA ou certificado digital.</td></tr>
+    <tr><td><b>Não-repúdio</b></td><td>Pode negar depois?</td><td>Assinatura digital (irretratabilidade).</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">CONTROLE DE ACESSO</span>
+  <h2>Autenticação ≠ Autorização</h2>
+  <div class="flow">
+    <span>1. Identificação<br><small>Dizer o nome</small></span><i>→</i>
+    <span>2. Autenticação<br><small>Provar quem é (MFA)</small></span><i>→</i>
+    <span>3. Autorização<br><small>O que pode fazer</small></span><i>→</i>
+    <span>4. Auditoria<br><small>Registrar logs</small></span>
+  </div>
+  <div class="say law">
+    <b>MFA (Múltiplos Fatores)</b> exige 2 ou mais fatores de categorias distintas: <b>algo que você sabe</b> (senha), <b>algo que você tem</b> (token/celular) ou <b>algo que você é</b> (biometria).
+  </div>
+  <div class="say trap">
+    Digitar senha + PIN continua sendo <b>1 fator só</b> (ambos são "algo que você sabe"). Não é MFA!
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">MODELOS DE ACESSO</span>
+  <h2>DAC, MAC, RBAC e ABAC</h2>
+  <table class="mini">
+    <tr><th>Modelo</th><th>Quem/O quê decide?</th><th>Exemplo</th></tr>
+    <tr><td><b>DAC</b> (Discricionário)</td><td>O <b>dono</b> do arquivo decide quem acessa.</td><td>Compartilhar pasta no Drive com colega.</td></tr>
+    <tr><td><b>MAC</b> (Mandatório)</td><td>O <b>sistema</b> impõe rótulos rígidos de sigilo.</td><td>Militar: "Ultra-secreto" só lê "Secreto".</td></tr>
+    <tr><td><b>RBAC</b> (Papéis)</td><td>O <b>cargo/papel</b> do usuário define permissões.</td><td>Perfil "Juiz" assina; "Estagiário" só lê.</td></tr>
+    <tr><td><b>ABAC</b> (Atributos)</td><td><b>Regras dinâmicas</b> (cargo + hora + IP + local).</td><td>Analista acessa só de 08h–18h na rede interna.</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">GESTÃO DE RISCOS</span>
+  <h2>Ameaça, Vulnerabilidade e 4 Respostas</h2>
+  <svg viewBox="0 0 820 185">
+    <rect x="20" y="30" width="165" height="75" rx="14" class="badbox"/>
+    <text x="102" y="60" text-anchor="middle">Ameaça</text>
+    <text x="102" y="82" text-anchor="middle" class="small">Ex.: atacante / raio</text>
+    <line x1="185" y1="67" x2="235" y2="67" class="badl" marker-end="url(#arbad)"/>
+    <rect x="240" y="30" width="175" height="75" rx="14" class="box"/>
+    <text x="327" y="60" text-anchor="middle">Vulnerabilidade</text>
+    <text x="327" y="82" text-anchor="middle" class="small">Ex.: porta sem senha</text>
+    <line x1="415" y1="67" x2="465" y2="67" class="acc" marker-end="url(#ar)"/>
+    <rect x="470" y="30" width="145" height="75" rx="14" class="accbox"/>
+    <text x="542" y="60" text-anchor="middle">Risco</text>
+    <text x="542" y="82" text-anchor="middle" class="small">Prob. × Impacto</text>
+    <line x1="615" y1="67" x2="665" y2="67" class="okl" marker-end="url(#arok)"/>
+    <rect x="670" y="20" width="135" height="145" rx="14" class="okbox"/>
+    <text x="737" y="45" text-anchor="middle">4 Respostas</text>
+    <text x="737" y="70" text-anchor="middle" class="small">1. Mitigar (controle)</text>
+    <text x="737" y="92" text-anchor="middle" class="small">2. Transferir (seguro)</text>
+    <text x="737" y="114" text-anchor="middle" class="small">3. Evitar (desligar)</text>
+    <text x="737" y="136" text-anchor="middle" class="small">4. Aceitar (assumir)</text>
+  </svg>
+  <p class="lead">Risco residual é o que sobra depois de aplicar controles. Nenhum sistema tem risco zero.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">CONTINUIDADE DE NEGÓCIOS</span>
+  <h2>RTO vs RPO na linha do tempo</h2>
+  <svg viewBox="0 0 820 210">
+    <line x1="40" y1="115" x2="780" y2="115" class="acc" marker-end="url(#ar)"/>
+    <circle cx="210" cy="115" r="10" fill="#2ea043"/>
+    <text x="210" y="150" text-anchor="middle">Último Backup</text>
+    <circle cx="430" cy="115" r="12" fill="#e5484d"/>
+    <text x="430" y="150" text-anchor="middle">Desastre 💥</text>
+    <circle cx="670" cy="115" r="10" fill="#2ea043"/>
+    <text x="670" y="150" text-anchor="middle">Sistema Volta</text>
+    <rect x="215" y="40" width="210" height="46" rx="10" class="badbox"/>
+    <text x="320" y="68" text-anchor="middle">RPO (perda de dados)</text>
+    <rect x="435" y="40" width="230" height="46" rx="10" class="keybox"/>
+    <text x="550" y="68" text-anchor="middle" class="kt">RTO (tempo parado)</text>
+  </svg>
+  <div class="two">
+    <div class="card"><b>BIA (Análise de Impacto):</b> mapeia processos críticos e define quanto tempo/dado pode perder.</div>
+    <div class="card"><b>BCP vs DRP:</b> BCP mantém o negócio operando; DRP restaura a TI após o desastre.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">FAMÍLIA ISO 27000</span>
+  <h2>Qual ISO faz o quê?</h2>
+  <table class="cmp">
+    <tr><th>Norma</th><th>Papel principal</th><th>Certificável?</th></tr>
+    <tr><td><b>ISO/IEC 27001</b></td><td>Requisitos do <b>SGSI</b> (Sistema de Gestão de Segurança da Informação) em ciclo PDCA.</td><td class="hk"><b>Sim</b> (única da trinca)</td></tr>
+    <tr><td><b>ISO/IEC 27002</b></td><td>Código de prática com o <b>catálogo de controles</b> (Anexo A da 27001 detalhado).</td><td class="hl">Não (é guia)</td></tr>
+    <tr><td><b>ISO/IEC 27005</b></td><td>Diretrizes específicas para <b>Gestão de Riscos</b> de segurança da informação.</td><td class="hl">Não (é guia)</td></tr>
+  </table>
+  <div class="say trap">
+    A FGV adora trocar 27001 por 27002. Lembre: <b>01</b> = número 1, é a que <b>certifica</b> o SGSI!
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">LGPD · LEI 13.709/2018</span>
+  <h2>Quem é quem e o que é dado sensível</h2>
+  <div class="two">
+    <div class="card">
+      <h3>Agentes de Tratamento</h3>
+      <ul>
+        <li><b>Controlador:</b> toma as <b>decisões</b> sobre os dados.</li>
+        <li><b>Operador:</b> trata os dados <b>em nome</b> do controlador.</li>
+        <li><b>Encarregado (DPO):</b> canal entre controlador, titular e <b>ANPD</b>.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Dado Pessoal vs Sensível</h3>
+      <ul>
+        <li><b>Pessoal:</b> identifica pessoa natural (nome, CPF, e-mail).</li>
+        <li><b>Sensível:</b> origem racial/étnica, religião, opinião política, sindicato, saúde, vida sexual, dado genético ou biométrico.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="say law">Princípios cobrados: <b>finalidade</b> (propósito legítimo), <b>adequação</b>, <b>necessidade</b> (mínimo possível) e <b>segurança</b>. (Confira o texto oficial da Lei 13.709/2018 para a lista completa de 10 princípios e bases legais.)</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 1</span>
+  <h2>Guarde antes de ir para a prova</h2>
+  <div class="magic">
+    “RTO olha pra frente (tempo parado); RPO olha pra trás (dados perdidos).”
+    <small>E na LGPD: Controlador decide, Operador executa, Encarregado (DPO) conversa com titular e ANPD.</small>
+  </div>
+  <ul class="checklist">
+    <li>CID = Confidencialidade, Integridade, Disponibilidade (+ Autenticidade e Não-repúdio).</li>
+    <li>MFA exige fatores de <b>categorias diferentes</b> (saber, ter, ser).</li>
+    <li>ISO 27001 certifica SGSI; 27002 lista controles; 27005 trata riscos.</li>
+    <li>4 respostas ao risco: Mitigar, Transferir, Evitar, Aceitar.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 1</span>
+  <h2>4 questões no estilo FGV</h2>
+  <details><summary>1. Usuário digita senha e responde uma pergunta secreta ("nome da mãe"). Há MFA?</summary>
+    <p><span class="pill ng">Não</span> Ambos pertencem à mesma categoria ("algo que você sabe"). MFA exige pelo menos 2 categorias distintas.</p>
+  </details>
+  <details><summary>2. Backup diário feito às 02h; servidor queima às 14h e só volta às 18h. Qual foi o RPO e o RTO?</summary>
+    <p><span class="pill ok">RPO = 12h · RTO = 4h</span> Perderam-se dados das 02h às 14h (12h = RPO); o sistema ficou parado das 14h às 18h (4h = RTO).</p>
+  </details>
+  <details><summary>3. Empresa terceirizada de folha de pagamento processa salários seguindo ordens do Tribunal. Qual seu papel na LGPD?</summary>
+    <p><span class="pill ok">Operador</span> O Tribunal decide a finalidade (Controlador); a terceirizada apenas executa em nome dele (Operador).</p>
+  </details>
+  <details><summary>4. Qual norma ISO define os controles detalhados, mas NÃO é certificável?</summary>
+    <p><span class="pill ok">ISO/IEC 27002</span> A certificável é a 27001 (requisitos do SGSI). A 27005 é para riscos.</p>
+  </details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 2 ===================================================== -->
+<section class="chapter" data-title="Criptografia, PKI e Assinatura Digital">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 2</span>
+  <h1>Criptografia, PKI e Assinatura Digital</h1>
+  <span class="emoji">🔐</span>
+  <div class="steps">
+    <div class="step"><b>1. Simétrica vs Assimétrica</b><span>AES (1 chave) vs RSA e Curvas Elípticas (2 chaves).</span></div>
+    <div class="step"><b>2. Hash</b><span>Impressão digital de mão única (SHA-256).</span></div>
+    <div class="step"><b>3. Assinatura Digital</b><span>Como funciona por dentro e o que ela garante.</span></div>
+    <div class="step"><b>4. PKI &amp; ICP-Brasil</b><span>Certificado X.509, AC, AR e A1 vs A3.</span></div>
+  </div>
+  <div class="analogy">
+    <span class="emoji">📬</span>
+    <div><b>Cadeado aberto vs chave única:</b> na simétrica, os dois têm a mesma chave. Na assimétrica, você distribui cadeados abertos (chave pública) e só você tem a chave que abre (chave privada).</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">SIMÉTRICA VS ASSIMÉTRICA</span>
+  <h2>1 chave rápida vs 2 chaves matemáticas</h2>
+  <table class="cmp">
+    <tr><th>Critério</th><th>Simétrica (ex.: AES)</th><th>Assimétrica (ex.: RSA, ECC)</th></tr>
+    <tr><td><b>Chaves</b></td><td><b>1 chave</b> secreta compartilhada.</td><td><b>Par</b>: chave pública + chave privada.</td></tr>
+    <tr><td><b>Velocidade</b></td><td class="hk"><b>Muito rápida</b> (ideal para arquivos/disco).</td><td class="hl"><b>Mais lenta</b> (cálculo matemático pesado).</td></tr>
+    <tr><td><b>Maior desafio</b></td><td>Como entregar a chave sem vazar?</td><td>Gerir confiança (quem garante que a chave pública é sua?).</td></tr>
+    <tr><td><b>Uso típico</b></td><td>Cifrar dados em massa (AES-256).</td><td>Trocar chave de sessão (TLS) e <b>assinatura digital</b>.</td></tr>
+  </table>
+  <p class="lead">Na prática (HTTPS/TLS), usa-se <b>assimétrica</b> para combinar uma <b>chave simétrica</b> de sessão e depois cifrar tudo com AES!</p>
+</div>
+
+<div class="slide">
+  <span class="tag">ALGORITMOS NA PROVA</span>
+  <h2>AES, RSA e Curvas Elípticas (ECC)</h2>
+  <div class="two">
+    <div class="card">
+      <h3>AES (Simétrico)</h3>
+      <p>Padrão atual (substituiu DES/3DES). Opera em blocos de 128 bits com chaves de <b>128, 192 ou 256 bits</b>.</p>
+    </div>
+    <div class="card">
+      <h3>RSA vs ECC (Assimétricos)</h3>
+      <p><b>RSA</b> baseia-se na fatoração de primos grandes (chaves de 2048–4096 bits).</p>
+      <p><b>ECC (Curvas Elípticas)</b> dá a <b>mesma segurança com chaves muito menores</b> (ex.: 256 bits), poupando bateria e CPU.</p>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">FUNÇÃO HASH</span>
+  <h2>Hash NÃO é criptografia!</h2>
+  <div class="flow">
+    <span>Arquivo de 10 GB</span><i>→</i>
+    <span>SHA-256</span><i>→</i>
+    <span>256 bits fixos<br><small>64 chars hex</small></span>
+  </div>
+  <ul>
+    <li><b>Mão única (unidirecional):</b> impossível voltar do hash para o texto original.</li>
+    <li><b>Tamanho fixo:</b> "oi" ou um vídeo de 4 GB geram sempre 256 bits no SHA-256.</li>
+    <li><b>Efeito avalanche:</b> mudar 1 vírgula muda completamente o hash.</li>
+  </ul>
+  <div class="say trap">
+    "Descriptografar um hash SHA-256" <b>não existe</b>! Senhas são guardadas com hash + <b>salt</b> (e funções lentas como Argon2/bcrypt), nunca com criptografia reversível.
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">ASSINATURA DIGITAL</span>
+  <h2>Passo a passo por dentro</h2>
+  <svg viewBox="0 0 820 220">
+    <rect x="20" y="25" width="145" height="58" rx="12" class="box"/>
+    <text x="92" y="59" text-anchor="middle">Documento</text>
+    <line x1="165" y1="54" x2="215" y2="54" class="acc" marker-end="url(#ar)"/>
+    <rect x="220" y="25" width="145" height="58" rx="12" class="accbox"/>
+    <text x="292" y="52" text-anchor="middle">Hash (SHA-256)</text>
+    <text x="292" y="71" text-anchor="middle" class="small">Resumo único</text>
+    <line x1="365" y1="54" x2="415" y2="54" class="acc" marker-end="url(#ar)"/>
+    <rect x="420" y="20" width="185" height="68" rx="12" class="keybox"/>
+    <text x="512" y="49" text-anchor="middle" class="kt">Cifra com Chave</text>
+    <text x="512" y="70" text-anchor="middle" class="kt">PRIVADA do Autor</text>
+    <line x1="605" y1="54" x2="650" y2="54" class="okl" marker-end="url(#arok)"/>
+    <rect x="655" y="25" width="145" height="58" rx="12" class="okbox"/>
+    <text x="727" y="59" text-anchor="middle">Assinatura ✍️</text>
+
+    <rect x="130" y="135" width="560" height="64" rx="12" class="box"/>
+    <text x="410" y="162" text-anchor="middle">Verificação: Destinatário decifra a assinatura com a Chave PÚBLICA do autor</text>
+    <text x="410" y="184" text-anchor="middle" class="small">e compara com o Hash recalculado do documento. Se bater → íntegro e autêntico!</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">O QUE GARANTE?</span>
+  <h2>A pegadinha nº 1 de Criptografia na FGV</h2>
+  <table class="mini">
+    <tr><th>Operação</th><th>Chave usada</th><th>Propriedades garantidas</th></tr>
+    <tr><td><b>Assinar</b> documento</td><td><b>Privada</b> do remetente</td><td class="hk">Autenticidade + Integridade + Não-repúdio</td></tr>
+    <tr><td><b>Sigilo</b> (cifrar mensagem)</td><td><b>Pública</b> do destinatário</td><td class="hk">Confidencialidade</td></tr>
+    <tr><td><b>Assinar apenas</b></td><td>Privada do remetente</td><td class="hl"><b>NÃO garante Confidencialidade!</b></td></tr>
+  </table>
+  <div class="say good">
+    Assinatura digital não esconde o texto: qualquer um que tiver sua chave pública consegue conferir a assinatura. Quer sigilo + assinatura? Assine primeiro e depois cifre com a chave pública de quem recebe.
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PKI E CERTIFICADO DIGITAL</span>
+  <h2>Como confiar numa chave pública?</h2>
+  <p>Se qualquer um pode gerar um par de chaves, como sei que aquela chave pública é mesmo do Juiz João?</p>
+  <div class="say law">
+    Um <b>Certificado Digital (padrão X.509)</b> é o "RG eletrônico" que amarra uma identidade à sua chave pública, assinado por uma <b>Autoridade Certificadora (AC)</b> confiável.
+  </div>
+  <ul>
+    <li><b>LCR (CRL):</b> lista periódica de certificados revogados antes do vencimento.</li>
+    <li><b>OCSP:</b> consulta online em tempo real para checar se um certificado ainda vale.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">ICP-BRASIL</span>
+  <h2>Estrutura hierárquica e tipos A1 / A3</h2>
+  <svg viewBox="0 0 820 190">
+    <rect x="290" y="10" width="240" height="46" rx="12" class="keybox"/>
+    <text x="410" y="38" text-anchor="middle" class="kt">AC Raiz (ITI)</text>
+    <line x1="410" y1="56" x2="210" y2="95" class="acc" marker-end="url(#ar)"/>
+    <line x1="410" y1="56" x2="610" y2="95" class="acc" marker-end="url(#ar)"/>
+    <rect x="110" y="98" width="200" height="44" rx="12" class="accbox"/>
+    <text x="210" y="125" text-anchor="middle">AC (Emite / Revoga)</text>
+    <rect x="510" y="98" width="200" height="44" rx="12" class="box"/>
+    <text x="610" y="125" text-anchor="middle">AR (Valida documentos)</text>
+    <line x1="510" y1="120" x2="315" y2="120" class="dash" marker-end="url(#arg)"/>
+    <text x="410" y="176" text-anchor="middle" class="small">A1: arquivo em software (validade 1 ano) · A3: token/smartcard (validade até 5 anos)</text>
+  </svg>
+  <p class="lead">A <b>AC Raiz (ITI)</b> não emite certificados para o cidadão final; ela credencia e audita as ACs.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 2</span>
+  <h2>Regra de ouro das chaves</h2>
+  <div class="magic">
+    “Assinou? Usa MINHA privada. Quer sigilo? Usa a PÚBLICA dele.”
+    <small>Hash (SHA-256) é mão única; ECC dá a força do RSA com chaves menores; ICP-Brasil tem AC Raiz no ITI.</small>
+  </div>
+  <ul class="checklist">
+    <li>AES = simétrico (rápido, 1 chave). RSA/ECC = assimétrico (par de chaves).</li>
+    <li>Assinatura digital = Autenticidade + Integridade + Não-repúdio (sem confidencialidade).</li>
+    <li>AR valida a identidade/documentos; AC emite e revoga o certificado X.509.</li>
+    <li>A1 fica no computador/servidor (1 ano); A3 fica em token/cartão (até 5 anos).</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 2</span>
+  <h2>4 questões no estilo FGV</h2>
+  <details><summary>1. Cifrei um contrato apenas com a minha chave privada. O conteúdo está sigiloso?</summary>
+    <p><span class="pill ng">Não</span> Qualquer pessoa com a sua chave pública pode decifrar. Isso prova autoria/assinatura, não sigilo.</p>
+  </details>
+  <details><summary>2. Por que sistemas embarcados e mobile preferem ECC a RSA?</summary>
+    <p><span class="pill ok">Chaves menores</span> Curvas Elípticas oferecem segurança equivalente com chaves muito menores e menor gasto de CPU.</p>
+  </details>
+  <details><summary>3. Qual órgão exerce o papel de Autoridade Certificadora Raiz na ICP-Brasil?</summary>
+    <p><span class="pill ok">ITI</span> O Instituto Nacional de Tecnologia da Informação (ITI) é a AC Raiz e não emite certificados ao usuário final.</p>
+  </details>
+  <details><summary>4. Qual protocolo verifica em tempo real se um certificado X.509 foi revogado?</summary>
+    <p><span class="pill ok">OCSP</span> Ao contrário da LCR (lista baixada periodicamente), o OCSP consulta o status na hora.</p>
+  </details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 3 ===================================================== -->
+<section class="chapter" data-title="SAML, OAuth 2.0, OIDC e JWT">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 3</span>
+  <h1>SAML, OAuth 2.0, OIDC e JWT</h1>
+  <span class="emoji">🪪</span>
+  <div class="steps">
+    <div class="step"><b>1. Rate Limiting</b><span>Freio contra força bruta e abuso de APIs.</span></div>
+    <div class="step"><b>2. SAML 2.0</b><span>SSO corporativo em XML (IdP e SP).</span></div>
+    <div class="step"><b>3. OAuth 2.0 &amp; OIDC</b><span>Autorização delegada vs Identidade.</span></div>
+    <div class="step"><b>4. JWT por dentro</b><span>Header.Payload.Signature (Base64URL).</span></div>
+  </div>
+  <div class="analogy">
+    <span class="emoji">🚗</span>
+    <div><b>A chave do manobrista (OAuth 2.0):</b> você entrega ao manobrista uma chave especial que só liga o carro e dirige 50 metros, mas <b>não abre o porta-luvas</b>. Ele tem permissão limitada, sem virar o dono do carro!</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PROTEÇÃO DE BORDA</span>
+  <h2>Rate Limiting contra abuso e força bruta</h2>
+  <p>Antes mesmo de validar tokens complexos, a API precisa impedir que um atacante faça 10.000 tentativas de senha por segundo.</p>
+  <div class="two">
+    <div class="card">
+      <h3>Como funciona</h3>
+      <p>Limita requisições por IP, usuário ou API Key em uma janela de tempo (ex.: 60 req/min). Quando passa do limite, retorna <b>HTTP 429 (Too Many Requests)</b>.</p>
+    </div>
+    <div class="card">
+      <h3>Algoritmos comuns</h3>
+      <ul>
+        <li><b>Token Bucket:</b> balde com fichas que reabastece aos poucos (aceita rajadas curtas).</li>
+        <li><b>Sliding Window:</b> janela deslizante precisa sem picos na virada do minuto.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">SAML 2.0</span>
+  <h2>SSO corporativo em XML</h2>
+  <p>Muito usado em portais corporativos e sistemas governamentais para <b>Single Sign-On (SSO)</b> via navegador:</p>
+  <div class="flow">
+    <span>Usuário acessa<br><b>SP</b> (Sistema)</span><i>→</i>
+    <span>Redireciona ao<br><b>IdP</b> (Login único)</span><i>→</i>
+    <span>IdP devolve<br><b>Assertion XML</b></span><i>→</i>
+    <span>SP libera acesso</span>
+  </div>
+  <div class="say law">
+    <b>SAML 2.0</b> trafega mensagens em <b>XML</b> assinadas digitalmente. Os dois papéis centrais são o <b>IdP</b> (Identity Provider, que autentica) e o <b>SP</b> (Service Provider, o sistema acessado).
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">OAUTH 2.0</span>
+  <h2>Autorização delegada em 4 papéis</h2>
+  <svg viewBox="0 0 820 210">
+    <rect x="20" y="25" width="160" height="60" rx="12" class="box"/>
+    <text x="100" y="52" text-anchor="middle">Resource Owner</text>
+    <text x="100" y="72" text-anchor="middle" class="small">Usuário (dono)</text>
+
+    <rect x="20" y="130" width="160" height="60" rx="12" class="accbox"/>
+    <text x="100" y="157" text-anchor="middle">Client</text>
+    <text x="100" y="177" text-anchor="middle" class="small">App terceiro</text>
+
+    <rect x="330" y="25" width="200" height="60" rx="12" class="keybox"/>
+    <text x="430" y="52" text-anchor="middle" class="kt">Authorization Server</text>
+    <text x="430" y="72" text-anchor="middle" class="kt small">Emite Access Token</text>
+
+    <rect x="610" y="130" width="190" height="60" rx="12" class="okbox"/>
+    <text x="705" y="157" text-anchor="middle">Resource Server</text>
+    <text x="705" y="177" text-anchor="middle" class="small">API protegida</text>
+
+    <line x1="100" y1="85" x2="100" y2="128" class="acc" marker-end="url(#ar)"/>
+    <line x1="180" y1="145" x2="328" y2="70" class="acc" marker-end="url(#ar)"/>
+    <line x1="180" y1="165" x2="608" y2="165" class="okl" marker-end="url(#arok)"/>
+  </svg>
+  <p class="lead">Fluxo padrão atual: <b>Authorization Code + PKCE</b> (evita interceptação do código em apps SPA e mobile).</p>
+</div>
+
+<div class="slide">
+  <span class="tag">OAUTH 2.0 vs OIDC vs SAML</span>
+  <h2>Comparação direta que cai toda hora</h2>
+  <table class="cmp">
+    <tr><th>Padrão</th><th>Foco principal</th><th>Formato</th><th>Token típico</th></tr>
+    <tr><td><b>SAML 2.0</b></td><td>Autenticação (SSO web corporativo)</td><td><b>XML</b></td><td>SAML Assertion</td></tr>
+    <tr><td><b>OAuth 2.0</b></td><td><b>Autorização</b> delegada (scopes)</td><td>JSON / HTTP</td><td><b>Access Token</b></td></tr>
+    <tr><td><b>OpenID Connect (OIDC)</b></td><td><b>Autenticação</b> sobre OAuth 2.0</td><td>JSON / REST</td><td><b>ID Token (JWT)</b> + Access Token</td></tr>
+  </table>
+  <div class="say trap">
+    OAuth 2.0 <b>não é</b> protocolo de autenticação! Ele diz o que o app pode acessar. Quem diz <b>quem é o usuário</b> é o <b>OpenID Connect (OIDC)</b> via <b>ID Token</b>.
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">JWT POR DENTRO</span>
+  <h2>Header . Payload . Signature</h2>
+  <pre><code><mark>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9</mark>.<mark class="ok">eyJzdWIiOiIxMjMiLCJuYW1lIjoiQW5hIiwiZXhwIjoxNzkwfQ</mark>.<mark class="ng">SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</mark></code></pre>
+  <div class="steps">
+    <div class="step"><b>1. Header</b><span>Algoritmo (<code>alg: HS256/RS256</code>) e tipo (<code>JWT</code>).</span></div>
+    <div class="step"><b>2. Payload</b><span>Claims do usuário: <code>sub</code>, <code>iss</code>, <code>exp</code>, papéis.</span></div>
+    <div class="step"><b>3. Signature</b><span>Assinatura que garante que ninguém alterou os 2 primeiros.</span></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">CUIDADO COM JWT</span>
+  <h2>Base64URL ≠ Criptografia!</h2>
+  <div class="two">
+    <div class="say bad">
+      <b>Erro fatal:</b> colocar senha, CPF sigiloso ou segredo no payload de um JWT padrão (JWS) achando que está escondido. Qualquer pessoa faz <code>atob()</code> e lê tudo!
+    </div>
+    <div class="say good">
+      <b>Boas práticas JWT:</b> validar sempre <code>alg</code> (bloquear <code>alg: none</code>), checar <code>exp</code> (expiração) e usar HTTPS. Se precisar esconder o payload, use <b>JWE</b> (JWT criptografado).
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 3</span>
+  <h2>Mapa mental da identidade</h2>
+  <div class="magic">
+    “OAuth 2.0 = permissão (Access Token). OIDC = identidade (ID Token). JWT = envelope legível, porém assinado.”
+    <small>SAML 2.0 usa XML entre IdP e SP. Rate Limiting devolve HTTP 429 quando passa do limite.</small>
+  </div>
+  <ul class="checklist">
+    <li>Rate Limiting (Token Bucket / Sliding Window) freia brute force e DoS.</li>
+    <li>OAuth 2.0 usa scopes e fluxo Authorization Code + PKCE.</li>
+    <li>OIDC roda em cima do OAuth 2.0 e entrega ID Token.</li>
+    <li>JWS é assinado (integridade), mas legível (Base64URL); sigilo exige JWE.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 3</span>
+  <h2>4 questões no estilo FGV</h2>
+  <details><summary>1. Qual código HTTP indica que o cliente excedeu o limite do Rate Limiting?</summary>
+    <p><span class="pill ok">HTTP 429</span> Too Many Requests (frequentemente acompanhado do cabeçalho <code>Retry-After</code>).</p>
+  </details>
+  <details><summary>2. No SAML 2.0, quem emite a asserção XML após autenticar o usuário?</summary>
+    <p><span class="pill ok">IdP (Identity Provider)</span> O IdP autentica e envia a asserção assinada para o SP (Service Provider).</p>
+  </details>
+  <details><summary>3. Um app mobile quer autenticar o usuário e pegar seu nome/e-mail com segurança. Qual protocolo usar sobre OAuth 2.0?</summary>
+    <p><span class="pill ok">OpenID Connect (OIDC)</span> Usando Authorization Code + PKCE e recebendo o ID Token (JWT).</p>
+  </details>
+  <details><summary>4. Se eu decodificar o Payload de um JWT HS256 em Base64URL, consigo ler as claims?</summary>
+    <p><span class="pill ok">Sim</span> JWS não criptografa o conteúdo; a assinatura apenas impede adulteração sem a chave.</p>
+  </details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 4 ===================================================== -->
+<section class="chapter" data-title="AppSec, OWASP Top 10 e Segurança de IA">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 4</span>
+  <h1>AppSec, OWASP Top 10 e Segurança de IA</h1>
+  <span class="emoji">🕵️</span>
+  <div class="steps">
+    <div class="step"><b>1. DevSecOps</b><span>Shift-Left: segurança desde o primeiro commit.</span></div>
+    <div class="step"><b>2. STRIDE</b><span>Modelagem de ameaças antes de codar.</span></div>
+    <div class="step"><b>3. OWASP Top 10</b><span>As falhas web mais cobradas pela banca.</span></div>
+    <div class="step"><b>4. Segurança de IA</b><span>Prompt injection, jailbreak e retenção zero.</span></div>
+  </div>
+  <div class="analogy">
+    <span class="emoji">🏗️</span>
+    <div><b>Shift-Left na obra:</b> corrigir uma parede torta na planta custa R$ 50; quebrar a parede depois do prédio pronto custa R$ 50.000. Segurança no início do ciclo economiza tempo e dinheiro.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">DEVSECOPS</span>
+  <h2>Segurança em toda a esteira CI/CD</h2>
+  <div class="flow">
+    <span>Design<br><small>STRIDE</small></span><i>→</i>
+    <span>IDE / Commit<br><small>Secret Scan</small></span><i>→</i>
+    <span>Build / CI<br><small>SAST + SCA</small></span><i>→</i>
+    <span>Staging<br><small>DAST</small></span><i>→</i>
+    <span>Produção<br><small>WAF + Logs</small></span>
+  </div>
+  <div class="say law">
+    <b>Shift-Left</b> significa mover testes e revisões de segurança para a <b>esquerda</b> na linha do tempo (design, codificação e CI), em vez de testar só na véspera do deploy.
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">MODELAGEM DE AMEAÇAS</span>
+  <h2>STRIDE letra por letra</h2>
+  <table class="mini">
+    <tr><th>Letra</th><th>Ameaça</th><th>Propriedade violada</th></tr>
+    <tr><td><b>S</b> — Spoofing</td><td>Fingir ser outro usuário/sistema</td><td>Autenticidade</td></tr>
+    <tr><td><b>T</b> — Tampering</td><td>Adulterar dados em trânsito ou no banco</td><td>Integridade</td></tr>
+    <tr><td><b>R</b> — Repudiation</td><td>Negar ter feito uma ação</td><td>Não-repúdio</td></tr>
+    <tr><td><b>I</b> — Info Disclosure</td><td>Vazar dados sigilosos</td><td>Confidencialidade</td></tr>
+    <tr><td><b>D</b> — Denial of Service</td><td>Derrubar ou travar o serviço</td><td>Disponibilidade</td></tr>
+    <tr><td><b>E</b> — Elevation of Privilege</td><td>Usuário comum virar admin</td><td>Autorização</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">OWASP TOP 10</span>
+  <h2>Os campeões de prova</h2>
+  <div class="two">
+    <div class="card">
+      <h3>1. Broken Access Control (#1)</h3>
+      <p>Usuário troca <code>?id=10</code> por <code>?id=11</code> (IDOR) e vê dados alheios. Sempre valide autorização no <b>backend</b>!</p>
+      <h3>2. Cryptographic Failures</h3>
+      <p>Tráfego sem TLS, uso de MD5/SHA-1 para senha, chaves hardcoded no Git.</p>
+    </div>
+    <div class="card">
+      <h3>3. Injection (SQLi / XSS)</h3>
+      <p>Concatenar entrada do usuário direto em comando SQL ou HTML.</p>
+      <h3>4. SSRF (Server-Side Request Forgery)</h3>
+      <p>Servidor busca uma URL fornecida pelo usuário e acaba acessando a rede interna ou metadados da nuvem.</p>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">CODIFICAÇÃO SEGURA</span>
+  <h2>SQL Injection: errado × certo</h2>
+  <div class="two">
+    <div>
+      <p><span class="pill ng">✗ Vulnerável (concatenação)</span></p>
+      <pre><code>String sql = "SELECT * FROM users WHERE cpf = '<mark class="ng">" + input + "</mark>'";
+stmt.executeQuery(sql);</code></pre>
+      <p class="lead">Se <code>input</code> for <code>' OR '1'='1</code>, vaza a tabela inteira!</p>
+    </div>
+    <div>
+      <p><span class="pill ok">✓ Seguro (Prepared Statement)</span></p>
+      <pre><code>String sql = "SELECT * FROM users WHERE cpf = <mark class="ok">?</mark>";
+PreparedStatement ps = conn.prepareStatement(sql);
+ps.setString(1, input);</code></pre>
+      <p class="lead">O banco trata <code>input</code> só como <b>dado</b>, nunca como comando SQL.</p>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">SEGURANÇA DE IA GENERATIVA</span>
+  <h2>Prompt Injection: Direto vs Indireto</h2>
+  <svg viewBox="0 0 820 200">
+    <rect x="20" y="20" width="365" height="75" rx="12" class="badbox"/>
+    <text x="202" y="48" text-anchor="middle">Prompt Injection Direto</text>
+    <text x="202" y="72" text-anchor="middle" class="small">Usuário digita no chat: "Ignore suas regras..."</text>
+
+    <rect x="435" y="20" width="365" height="75" rx="12" class="badbox"/>
+    <text x="617" y="48" text-anchor="middle">Prompt Injection Indireto</text>
+    <text x="617" y="72" text-anchor="middle" class="small">Instrução oculta num PDF / e-mail lido pelo RAG</text>
+
+    <line x1="202" y1="95" x2="360" y2="132" class="badl" marker-end="url(#arbad)"/>
+    <line x1="617" y1="95" x2="460" y2="132" class="badl" marker-end="url(#arbad)"/>
+    <rect x="250" y="135" width="320" height="50" rx="12" class="keybox"/>
+    <text x="410" y="165" text-anchor="middle" class="kt">LLM obedece ao atacante e vaza dados</text>
+  </svg>
+  <p class="lead"><b>Jailbreak</b> é um tipo de prompt injection focado em burlar filtros éticos/de segurança do modelo.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">GOVERNANÇA DE IA</span>
+  <h2>Vazamento e Retenção Zero</h2>
+  <ul>
+    <li><b>Vazamento de dados (Data Leakage):</b> colar processos sigilosos ou chaves de API em chats públicos pode expor dados em logs ou futuro treinamento.</li>
+    <li><b>System Prompt Leakage:</b> atacante induz o modelo a repetir suas instruções internas secretas.</li>
+    <li><b>Retenção Zero (Zero Data Retention):</b> cláusula/configuração em APIs corporativas garantindo que o provedor <b>não armazena</b> prompts nem respostas e <b>não os usa para treinar</b> modelos.</li>
+  </ul>
+  <div class="say trap">
+    Retenção zero protege no provedor da API, mas você ainda precisa validar entrada/saída e mascarar PII antes de enviar, se a política exigir!
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 4</span>
+  <h2>Escudo de AppSec e IA</h2>
+  <div class="magic">
+    “Nunca confie no input do usuário — seja numa query SQL, numa URL (SSRF) ou num PDF lido por IA.”
+    <small>DevSecOps traz segurança para a esquerda (Shift-Left); STRIDE mapeia ameaças no desenho.</small>
+  </div>
+  <ul class="checklist">
+    <li>STRIDE: Spoofing, Tampering, Repudiation, Info Disclosure, DoS, Elevation of Privilege.</li>
+    <li>Broken Access Control (#1 OWASP): valide permissões no servidor a cada requisição.</li>
+    <li>SQLi se evita com consultas parametrizadas (Prepared Statements).</li>
+    <li>Prompt Injection indireto vem escondido em documentos/sites; Retenção Zero evita log/treino no provedor.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 4</span>
+  <h2>4 questões no estilo FGV</h2>
+  <details><summary>1. No STRIDE, qual categoria corresponde a um usuário comum conseguir executar funções de administrador?</summary>
+    <p><span class="pill ok">Elevation of Privilege</span> Ganho indevido de privilégios acima do autorizado.</p>
+  </details>
+  <details><summary>2. Remover as palavras SELECT e DROP com replace() resolve SQL Injection?</summary>
+    <p><span class="pill ng">Não</span> Blacklist é facilmente burlada (ex.: variações de caixa ou comentários). Use Prepared Statements.</p>
+  </details>
+  <details><summary>3. Um assistente de IA resume um e-mail externo que contém texto branco oculto mandando encaminhar dados. Que ataque é esse?</summary>
+    <p><span class="pill ok">Prompt Injection indireto</span> A instrução maliciosa veio de uma fonte externa de dados consumida pelo LLM.</p>
+  </details>
+  <details><summary>4. O que garante a política de "retenção zero" (zero data retention) em uma API de LLM?</summary>
+    <p><span class="pill ok">Sem armazenamento nem treino</span> O provedor não grava prompts/respostas em disco nem os usa para treinar futuros modelos.</p>
+  </details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 5 ===================================================== -->
+<section class="chapter" data-title="Qualidade, Testes, SAST, DAST e Sonar">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 5</span>
+  <h1>Qualidade, Testes, SAST, DAST e Sonar</h1>
+  <span class="emoji">🧪</span>
+  <div class="steps">
+    <div class="step"><b>1. Pirâmide &amp; TDD</b><span>Unitário, integração, E2E e Red-Green-Refactor.</span></div>
+    <div class="step"><b>2. Contrato &amp; Mutação</b><span>Pact entre APIs e testar os próprios testes.</span></div>
+    <div class="step"><b>3. SAST, DAST e IAST</b><span>Parado, rodando por fora e por dentro.</span></div>
+    <div class="step"><b>4. SonarQube</b><span>Quality Gate contra bugs e code smells.</span></div>
+  </div>
+  <div class="analogy">
+    <span class="emoji">🏭</span>
+    <div><b>Fábrica de carros:</b> testar cada parafuso na bancada é rápido e barato (Unitário). Montar o motor inteiro é o de Integração. Dirigir o carro na pista é o E2E — caro e lento, então faça só os essenciais!</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PIRÂMIDE DE TESTES</span>
+  <h2>Base larga, topo fino</h2>
+  <svg viewBox="0 0 820 210">
+    <polygon points="410,18 290,82 530,82" class="badbox"/>
+    <text x="410" y="66" text-anchor="middle">E2E / UI (poucos, lentos)</text>
+    <polygon points="290,86 530,86 600,140 220,140" class="keybox"/>
+    <text x="410" y="120" text-anchor="middle" class="kt">Integração (médio custo)</text>
+    <polygon points="220,144 600,144 670,198 150,198" class="okbox"/>
+    <text x="410" y="178" text-anchor="middle">Unitários (muitos, rápidos, isolados)</text>
+  </svg>
+  <p class="lead"><b>Caixa Branca</b> olha o código interno (cobertura de linhas/ramos). <b>Caixa Preta</b> testa só entradas e saídas (partição de equivalência, valor-limite).</p>
+</div>
+
+<div class="slide">
+  <span class="tag">TDD (TEST-DRIVEN DEVELOPMENT)</span>
+  <h2>O ciclo Red → Green → Refactor</h2>
+  <div class="flow">
+    <span>1. 🔴 RED<br><small>Escreve teste que falha</small></span><i>→</i>
+    <span>2. 🟢 GREEN<br><small>Código mínimo passa</small></span><i>→</i>
+    <span>3. 🔵 REFACTOR<br><small>Melhora sem quebrar</small></span>
+  </div>
+  <div class="say law">
+    No TDD, o teste nasce <b>antes</b> do código de produção. Ele guia o design da classe e garante que todo comportamento novo já nasça coberto.
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONTRACT &amp; MUTATION TESTING</span>
+  <h2>Testando APIs e testando os próprios testes</h2>
+  <div class="two">
+    <div class="card">
+      <h3>Contract Testing (ex.: Pact)</h3>
+      <p>Valida o <b>contrato</b> (campos, tipos, status) entre Serviço Consumidor e Serviço Provedor sem precisar subir um ambiente E2E completo.</p>
+    </div>
+    <div class="card">
+      <h3>Mutation Testing</h3>
+      <p>A ferramenta injeta <b>pequenos defeitos (mutantes)</b> no código, como trocar <code>&gt;</code> por <code>&gt;=</code> ou <code>+</code> por <code>-</code>.</p>
+      <p>Se o teste falhar, o mutante foi <b>morto</b> (bom!). Se o teste passar, o mutante <b>sobreviveu</b> (sua suíte tem falha de assert!).</p>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">APLICAÇÃO SEGURA NO CI/CD</span>
+  <h2>SAST vs DAST vs IAST</h2>
+  <table class="cmp">
+    <tr><th>Técnica</th><th>Quando roda?</th><th>Visão</th><th>Ponto forte</th></tr>
+    <tr><td><b>SAST</b> (Static)</td><td>Código parado (IDE / CI)</td><td>Caixa Branca</td><td>Aponta arquivo e linha exata; acha falhas cedo.</td></tr>
+    <tr><td><b>DAST</b> (Dynamic)</td><td>App rodando (Staging)</td><td>Caixa Preta</td><td>Acha falhas de runtime, cabeçalhos HTTP e config real.</td></tr>
+    <tr><td><b>IAST</b> (Interactive)</td><td>App rodando com agente</td><td>Híbrida (Cinza)</td><td>Cruza tráfego real com código interno; menos falsos positivos.</td></tr>
+  </table>
+  <div class="say trap">
+    SAST <b>não precisa</b> do aplicativo no ar; DAST <b>não precisa</b> do código-fonte!
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">SONARQUBE</span>
+  <h2>Quality Gate: o porteiro do merge</h2>
+  <svg viewBox="0 0 820 185">
+    <rect x="20" y="45" width="175" height="90" rx="14" class="box"/>
+    <text x="107" y="82" text-anchor="middle">Código + Cobertura</text>
+    <text x="107" y="106" text-anchor="middle" class="small">Scanner no CI</text>
+    <line x1="195" y1="90" x2="255" y2="90" class="acc" marker-end="url(#ar)"/>
+    <rect x="260" y="25" width="280" height="130" rx="14" class="accbox"/>
+    <text x="400" y="55" text-anchor="middle">SonarQube analisa:</text>
+    <text x="400" y="80" text-anchor="middle" class="small">• Bugs (confiabilidade)</text>
+    <text x="400" y="102" text-anchor="middle" class="small">• Vulnerabilities &amp; Hotspots (segurança)</text>
+    <text x="400" y="124" text-anchor="middle" class="small">• Code Smells (manutenibilidade) + Duplicação</text>
+    <line x1="540" y1="90" x2="600" y2="90" class="okl" marker-end="url(#arok)"/>
+    <rect x="605" y="45" width="195" height="90" rx="14" class="okbox"/>
+    <text x="702" y="82" text-anchor="middle">Quality Gate</text>
+    <text x="702" y="106" text-anchor="middle" class="small">Aprova ou barra PR</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">SONARQUBE NA PRÁTICA</span>
+  <h2>Code Smell ≠ Bug ≠ Vulnerability</h2>
+  <ul>
+    <li><b>Bug:</b> erro no código que provavelmente causa comportamento errado em execução.</li>
+    <li><b>Vulnerability:</b> ponto explorável por atacante (ex.: SQLi, segredo no código).</li>
+    <li><b>Security Hotspot:</b> trecho sensível que exige revisão humana para decidir se há risco.</li>
+    <li><b>Code Smell:</b> código confuso/duplicado/complexo (gera dívida técnica, mas compila e roda).</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 5</span>
+  <h2>Checklist final de Qualidade</h2>
+  <div class="magic">
+    “SAST olha o código parado; DAST ataca o app rodando; Mutation Testing testa se seus testes prestam.”
+    <small>E o Quality Gate do SonarQube barra o merge quando cobertura cai ou surge vulnerabilidade nova.</small>
+  </div>
+  <ul class="checklist">
+    <li>Pirâmide: muitos unitários (base), menos integração, poucos E2E (topo).</li>
+    <li>TDD: Red (falha) → Green (passa) → Refactor (limpa).</li>
+    <li>Contract Testing garante compatibilidade consumidor–provedor sem E2E pesado.</li>
+    <li>IAST combina execução real com agente dentro do runtime.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 5</span>
+  <h2>4 questões no estilo FGV</h2>
+  <details><summary>1. Uma equipe tem 95% de cobertura de linhas, mas quase nenhum assert nos testes. Que técnica expõe essa ilusão?</summary>
+    <p><span class="pill ok">Mutation Testing</span> Os mutantes vão sobreviver porque os testes não verificam os resultados de fato.</p>
+  </details>
+  <details><summary>2. Qual ferramenta analisa o aplicativo em execução sem ter acesso ao código-fonte?</summary>
+    <p><span class="pill ok">DAST</span> Dynamic Application Security Testing atua como caixa preta contra o app rodando.</p>
+  </details>
+  <details><summary>3. No SonarQube, um método com 120 linhas e 6 níveis de if aninhados, porém funcional, é classificado como:</summary>
+    <p><span class="pill ok">Code Smell</span> Afeta a manutenibilidade (dívida técnica), não é necessariamente um bug nem vulnerabilidade.</p>
+  </details>
+  <details><summary>4. Qual é a ordem correta dos passos no ciclo do TDD?</summary>
+    <p><span class="pill ok">Red → Green → Refactor</span> Primeiro o teste que falha, depois o código mínimo que passa, depois a refatoração.</p>
+  </details>
+</div>
+
+</section>
+
+<script src="aula.js"></script>
+</body>
+</html>

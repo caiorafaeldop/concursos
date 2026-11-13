@@ -1,0 +1,706 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Governança do Judiciário — aulas visuais</title><link rel="stylesheet" href="aula.css">
+<style>
+.mini{font-size:15.5px}
+.cmp td,.cmp th{padding:7px 9px}
+pre{background:var(--cell);border:2px solid var(--line);border-radius:14px;padding:12px 14px;overflow-x:auto;font-size:14.5px;line-height:1.45}
+</style>
+</head>
+<body data-subject="govjud" data-title="Governança do Judiciário">
+
+<!-- ===================================================== CAPÍTULO 1 ===================================================== -->
+<section class="chapter" data-title="PDPJ-Br, PJe e Marketplace do Judiciário">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 1</span>
+  <h1>PDPJ-Br, PJe e Marketplace do Judiciário</h1>
+  <span class="emoji">🏛️</span>
+  <div class="steps">
+    <div class="step"><b>1. Do Monólito à Plataforma</b><span>Por que o PJe precisou ganhar módulos independentes.</span></div>
+    <div class="step"><b>2. PDPJ-Br e Marketplace</b><span>Microsserviços, APIs e colaboração entre tribunais.</span></div>
+    <div class="step"><b>3. Governo e Acessibilidade</b><span>Serviços digitais centrados no cidadão (e-MAG/WCAG).</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🧱</span><div><b>Analogia do LEGO:</b> um castelo colado com supercola (sistema monolítico) quebra inteiro se você tentar trocar uma torre. Com peças de <b>LEGO</b> encaixadas por pinos padrão (microsserviços + APIs), qualquer tribunal cria uma torre nova e compartilha na caixa comum (Marketplace).</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">O PROBLEMA DO MONÓLITO</span>
+  <h2>PJe único × Ecossistema modular</h2>
+  <p>O <b>PJe</b> (Processo Judicial Eletrônico) acabou com o papel, mas evoluir um sistema gigante e acoplado ficou lento: cada tribunal fazia adaptações próprias difíceis de reaproveitar.</p>
+  <svg viewBox="0 0 660 215" role="img" aria-label="Comparação entre sistema monolítico acoplado e PDPJ-Br modular">
+    <defs><marker id="g1a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="badbox" x="20" y="24" width="230" height="150" rx="14"/>
+    <text x="135" y="54" text-anchor="middle">Antes: Monólito</text>
+    <text x="135" y="82" text-anchor="middle" class="small">Protocolo + Cálculos +</text>
+    <text x="135" y="102" text-anchor="middle" class="small">Assinador + Notificação</text>
+    <text x="135" y="132" text-anchor="middle" class="small" style="fill:#e5484d">tudo misturado num bloco só</text>
+    <line x1="256" y1="99" x2="318" y2="99" stroke="#6d4aff" stroke-width="3" marker-end="url(#g1a)"/>
+    <rect class="okbox" x="326" y="24" width="314" height="150" rx="14"/>
+    <text x="483" y="50" text-anchor="middle">Agora: PDPJ-Br</text>
+    <rect class="box" x="342" y="66" width="88" height="42" rx="8"/><text x="386" y="92" text-anchor="middle" style="font-size:13px">Cálculos</text>
+    <rect class="box" x="440" y="66" width="88" height="42" rx="8"/><text x="484" y="92" text-anchor="middle" style="font-size:13px">IA Triagem</text>
+    <rect class="box" x="538" y="66" width="88" height="42" rx="8"/><text x="582" y="92" text-anchor="middle" style="font-size:13px">Assinador</text>
+    <rect class="keybox" x="342" y="122" width="284" height="36" rx="8"/><text class="kt" x="484" y="145" text-anchor="middle" style="font-size:13px">APIs + Serviços Estruturantes (SSO, Tabelas)</text>
+  </svg>
+  <div class="say good"><b>Ideia-chave:</b> a PDPJ-Br <b>não joga fora</b> os sistemas dos tribunais (PJe, e-Proc etc.); ela os conecta a módulos comuns via APIs.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RES. CNJ 335/2020</span>
+  <h2>O que é a PDPJ-Br na lei?</h2>
+  <p>A <b>Plataforma Digital do Poder Judiciário Brasileiro (PDPJ-Br)</b> foi instituída pela <b>Resolução CNJ 335/2020</b> para modernizar e integrar os sistemas judiciais do país.</p>
+  <div class="say law">A PDPJ-Br adota modelo de <b>desenvolvimento colaborativo</b> em nuvem, baseado em <b>microsserviços</b>, APIs padronizadas, serviços estruturantes compartilhados e <b>Marketplace</b> de soluções entre tribunais.</div>
+  <p class="mini">📌 <b>Atenção normativa:</b> prazos de adesão e regras operacionais específicas de portarias devem ser conferidos no texto oficial da Res. CNJ 335/2020.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">ARQUITETURA EM CAMADAS</span>
+  <h2>Como os blocos da PDPJ-Br se encaixam</h2>
+  <svg viewBox="0 0 660 230" role="img" aria-label="Camadas da PDPJ-Br: sistemas locais, APIs, microsserviços e serviços estruturantes">
+    <rect class="accbox" x="30" y="14" width="600" height="52" rx="12"/>
+    <text x="330" y="38" text-anchor="middle">Sistemas Processuais dos Tribunais (PJe, e-Proc, Projudi...)</text>
+    <text x="330" y="56" text-anchor="middle" class="small">Cada tribunal mantém sua interface e base processual local</text>
+    <rect class="keybox" x="30" y="82" width="600" height="44" rx="12"/>
+    <text class="kt" x="330" y="109" text-anchor="middle">Barramento de APIs REST / JSON e Mensageria</text>
+    <rect class="okbox" x="30" y="142" width="290" height="72" rx="12"/>
+    <text x="175" y="168" text-anchor="middle">Marketplace de Módulos</text>
+    <text x="175" y="190" text-anchor="middle" class="small">Microsserviços criados por TJs, TRFs, TRTs</text>
+    <rect class="box" x="340" y="142" width="290" height="72" rx="12"/>
+    <text x="485" y="168" text-anchor="middle">Serviços Estruturantes</text>
+    <text x="485" y="190" text-anchor="middle" class="small">Login único (SSO), Tabelas Unificadas, Pessoas</text>
+  </svg>
+  <p class="mini">Se o TJPB cria um módulo ótimo de cálculo de custas, publica no Marketplace e o TJPE pode plugar via API sem reescrever do zero.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">MARKETPLACE NA PRÁTICA</span>
+  <h2>Desenvolvimento colaborativo sem retrabalho</h2>
+  <div class="flow">
+    <span>1. TJ desenvolve microsserviço</span><i>→</i>
+    <span>2. Valida padrões CNJ</span><i>→</i>
+    <span>3. Publica no Marketplace</span><i>→</i>
+    <span>4. Outros tribunais consomem</span>
+  </div>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Componente</th><th>O que faz</th><th>Erro clássico em prova</th></tr>
+    <tr><td><b>Microsserviço</b></td><td>Resolve uma função específica de forma independente</td><td>Dizer que acessa direto o banco de outro sistema</td></tr>
+    <tr><td><b>Marketplace</b></td><td>Catálogo compartilhado de soluções entre tribunais</td><td>Achar que é loja paga para vender a empresas</td></tr>
+    <tr><td><b>Serv. Estruturante</b></td><td>Base comum (autenticação, tabelas, notificações)</td><td>Confundir com sistema monolítico único</td></tr>
+  </table></div>
+</div>
+
+<div class="slide">
+  <span class="tag">GOVERNO DIGITAL</span>
+  <h2>Transformação digital além de "digitalizar PDF"</h2>
+  <p>Digitalizar papel para PDF é apenas <b>digitalização</b>. <b>Governo Digital</b> é redesenhar o serviço para o cidadão resolver tudo online, com dados estruturados e autosserviço.</p>
+  <div class="two">
+    <div class="say bad"><b>Falsa transformação:</b><br>Imprimir formulário, assinar à mão, escanear PDF e mandar por e-mail para alguém redigitar.</div>
+    <div class="say good"><b>Governo Digital real:</b><br>Login único, formulário acessível, validação automática por API e protocolo instantâneo.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">ACESSIBILIDADE DIGITAL</span>
+  <h2>e-MAG e WCAG: os 4 princípios (POUR)</h2>
+  <p>Portais e sistemas do Judiciário devem funcionar para pessoas com deficiência visual, auditiva, motora ou cognitiva. A base internacional (<b>WCAG</b>) e o modelo brasileiro (<b>e-MAG</b>) usam 4 pilares:</p>
+  <div class="steps">
+    <div class="step"><b>Perceptível</b><span>Texto alternativo em imagens, legendas, bom contraste.</span></div>
+    <div class="step"><b>Operável</b><span>Tudo funciona só com teclado, sem armadilhas de foco.</span></div>
+    <div class="step"><b>Compreensível</b><span>Linguagem clara, rótulos óbvios, mensagens de erro úteis.</span></div>
+    <div class="step"><b>Robusto</b><span>HTML semântico compatível com leitores de tela.</span></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA FGV</span>
+  <h2>O que a banca adora inverter sobre PDPJ-Br</h2>
+  <div class="say trap"><b>Cuidado com o "substitui tudo":</b> a FGV costuma afirmar que a PDPJ-Br <i>extinguiu o PJe</i> ou <i>obrigou todos os tribunais a usar um único banco de dados físico centralizado</i>. <b>Falso!</b></div>
+  <div class="scroll">
+  <table>
+    <tr><th class="ng">✗ Pegadinha na alternativa</th><th class="ok">✓ Verdade da prova</th></tr>
+    <tr><td class="hl">Sistema monolítico único que apaga o PJe</td><td class="hk">Plataforma modular que integra o PJe e outros sistemas</td></tr>
+    <tr><td class="hl">Microsserviços compartilham tabelas SQL diretas</td><td class="hk">Comunicação ocorre via APIs e contratos definidos</td></tr>
+    <tr><td class="hl">Acessibilidade é só aumentar a fonte</td><td class="hk">Inclui leitor de tela, teclado, contraste e semântica</td></tr>
+  </table></div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 1</span>
+  <h2>O que você precisa levar na memória</h2>
+  <div class="magic">
+    “PDPJ-Br = PJe conectado a microsserviços via APIs + Marketplace colaborativo.”
+    <small>Res. CNJ 335/2020 · Governo Digital · Acessibilidade (Perceptível, Operável, Compreensível, Robusto).</small>
+  </div>
+  <ul class="checklist">
+    <li><b>Res. CNJ 335/2020</b> instituiu a PDPJ-Br sem exigir abandono imediato dos sistemas legados.</li>
+    <li><b>Microsserviços + APIs</b> reduzem acoplamento e aceleram evolução.</li>
+    <li><b>Marketplace</b> promove reuso de soluções criadas pelos próprios tribunais.</li>
+    <li><b>Acessibilidade (e-MAG / WCAG)</b> segue os 4 princípios: P-O-U-R.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 1</span>
+  <h2>4 questões para fixar (clique para ver)</h2>
+  <details><summary>1. A Res. CNJ 335/2020 criou a PDPJ-Br com foco em qual arquitetura?</summary><p><b>Resposta:</b> Arquitetura modular baseada em <b>microsserviços</b>, APIs, serviços estruturantes e Marketplace colaborativo entre tribunais.</p></details>
+  <details><summary>2. Verdadeiro ou falso: na PDPJ-Br, um microsserviço do TJ-A lê direto as tabelas do banco do PJe do TJ-B.</summary><p><b>Resposta:</b> <b>Falso.</b> Microsserviços são desacoplados e se comunicam por APIs e mensageria padronizadas, nunca por acesso direto ao banco alheio.</p></details>
+  <details><summary>3. Qual é o papel do Marketplace na PDPJ-Br?</summary><p><b>Resposta:</b> Funcionar como vitrine/repositório colaborativo onde tribunais publicam módulos validados para que outros tribunais reutilizem sem retrabalho.</p></details>
+  <details><summary>4. Um portal do tribunal impede navegação pela tecla Tab. Qual princípio de acessibilidade foi violado?</summary><p><b>Resposta:</b> <b>Operável</b> (da tríade/quadra WCAG: Perceptível, Operável, Compreensível e Robusto).</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 2 ===================================================== -->
+<section class="chapter" data-title="Interoperabilidade: MNI, MInG e Integração">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 2</span>
+  <h1>Interoperabilidade: MNI, MInG e Integração</h1>
+  <span class="emoji">🔌</span>
+  <div class="steps">
+    <div class="step"><b>1. O que é interoperar</b><span>Fazer sistemas distintos conversarem sem redigitação.</span></div>
+    <div class="step"><b>2. As 3 Dimensões</b><span>Técnica, Semântica e Organizacional.</span></div>
+    <div class="step"><b>3. MNI e MInG</b><span>Os padrões do Judiciário e do Governo.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🔌</span><div><b>Analogia da tomada e do idioma:</b> não basta ter um adaptador que encaixe na tomada (<b>técnica</b>); os dois aparelhos precisam falar o mesmo idioma (<b>semântica</b>) e ter um combinado de horário de funcionamento (<b>organizacional</b>).</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">AS 3 DIMENSÕES</span>
+  <h2>Técnica × Semântica × Organizacional</h2>
+  <p>Em prova, "interoperabilidade" quase sempre cai cobrando qual dimensão falhou em um caso concreto:</p>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Dimensão</th><th>Pergunta que responde</th><th>Exemplo de falha</th></tr>
+    <tr><td><b>Técnica</b></td><td>Os sistemas conseguem trocar bits/mensagens?</td><td>Firewall bloqueia HTTPS ou formato XML/JSON incompatível</td></tr>
+    <tr><td><b>Semântica</b></td><td>Ambos entendem o <i>mesmo significado</i> dos campos?</td><td>Um envia <code>dt_nasc</code> e o outro lê como data da sentença</td></tr>
+    <tr><td><b>Organizacional</b></td><td>Os órgãos alinharam processos, papéis e regras?</td><td>MP e Tribunal têm fluxos conflitantes para intimação</td></tr>
+  </table></div>
+</div>
+
+<div class="slide">
+  <span class="tag">MNI NA JUSTIÇA</span>
+  <h2>Modelo Nacional de Interoperabilidade (MNI)</h2>
+  <p>O Judiciário não vive isolado: precisa trocar autos, petições e intimações com <b>Ministério Público, Defensoria, Advocacia Pública e OAB</b>.</p>
+  <svg viewBox="0 0 660 200" role="img" aria-label="MNI conectando sistemas do MP, Defensoria e OAB aos tribunais">
+    <defs><marker id="g2a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2ea043"/></marker></defs>
+    <rect class="box" x="20" y="20" width="170" height="44" rx="10"/><text x="105" y="47" text-anchor="middle">Sistema do MP</text>
+    <rect class="box" x="20" y="78" width="170" height="44" rx="10"/><text x="105" y="105" text-anchor="middle">Defensoria / AGU</text>
+    <rect class="box" x="20" y="136" width="170" height="44" rx="10"/><text x="105" y="163" text-anchor="middle">Sistemas de OAB</text>
+    <rect class="keybox" x="255" y="52" width="150" height="96" rx="14"/>
+    <text class="kt" x="330" y="92" text-anchor="middle">Padrão MNI</text>
+    <text class="kt small" x="330" y="114" text-anchor="middle">Esquema comum</text>
+    <text class="kt small" x="330" y="132" text-anchor="middle">de dados/serviços</text>
+    <rect class="okbox" x="470" y="34" width="170" height="58" rx="10"/><text x="555" y="68" text-anchor="middle">PJe (Tribunal A)</text>
+    <rect class="okbox" x="470" y="108" width="170" height="58" rx="10"/><text x="555" y="142" text-anchor="middle">e-Proc (Tribunal B)</text>
+    <line x1="192" y1="42" x2="251" y2="80" stroke="#2ea043" stroke-width="2.5" marker-end="url(#g2a)"/>
+    <line x1="192" y1="100" x2="251" y2="100" stroke="#2ea043" stroke-width="2.5" marker-end="url(#g2a)"/>
+    <line x1="192" y1="158" x2="251" y2="120" stroke="#2ea043" stroke-width="2.5" marker-end="url(#g2a)"/>
+    <line x1="407" y1="86" x2="466" y2="63" stroke="#2ea043" stroke-width="2.5" marker-end="url(#g2a)"/>
+    <line x1="407" y1="114" x2="466" y2="137" stroke="#2ea043" stroke-width="2.5" marker-end="url(#g2a)"/>
+  </svg>
+  <div class="say law">O <b>MNI</b> padroniza o intercâmbio de informações processuais entre órgãos do Judiciário e entidades externas, evitando que cada órgão crie uma integração proprietária diferente.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">MNI E RES. CNJ 91/2009</span>
+  <h2>Atenção ao histórico normativo</h2>
+  <p>O edital cita <b>MNI (Res. CNJ 91/2009)</b> e <b>MInG</b> no Bloco 11. Como banca cobra nomenclatura do edital, memorize a associação:</p>
+  <div class="steps">
+    <div class="step"><b>MNI</b><span>Modelo Nacional de Interoperabilidade (troca processual CNJ/CNMP).</span></div>
+    <div class="step"><b>Res. CNJ 91/2009</b><span>Marco normativo citado no edital sobre interoperabilidade/modelos de sistemas.</span></div>
+    <div class="step"><b>MInG</b><span>Modelo de Interoperabilidade do Governo (padrões abertos no setor público).</span></div>
+  </div>
+  <p class="mini">📌 <b>Atenção normativa:</b> confira o texto oficial da Res. CNJ 91/2009 e das resoluções conjuntas/portarias atuais do MNI (como versões 2.x/3.0) para não errar numeração de artigos ou serviços.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">POR DENTRO DO CONTRATO</span>
+  <h2>Exemplo de contrato interoperável</h2>
+  <p>Na prática, interoperabilidade usa <b>contratos formais</b> (WSDL/XSD em SOAP ou OpenAPI/JSON Schema em REST) para validar os dados antes de gravar:</p>
+  <pre><code>{
+  "<mark>numeroProcesso</mark>": "0801234-55.2026.8.15.0001",
+  "<mark>classeProcessual</mark>": 7,
+  "orgaoJulgador": "1ª Vara Cível",
+  "documentos": [{ "tipo": "Petição Inicial", "mime": "application/pdf" }]
+}</code></pre>
+  <div class="say good"><b>Por que isso importa?</b> O código <code>classeProcessual: 7</code> vem das <b>Tabelas Processuais Unificadas (TPU)</b> do CNJ — garantia de interoperabilidade <b>semântica</b>!</div>
+</div>
+
+<div class="slide">
+  <span class="tag">MInG E PADRÕES ABERTOS</span>
+  <h2>Por que padrões abertos evitam aprisionamento?</h2>
+  <p>O <b>MInG</b> (e padrões equivalentes de governo digital, como e-PING) orienta o uso de protocolos e formatos abertos (HTTP/REST, JSON, XML, UTF-8, TLS).</p>
+  <div class="two">
+    <div class="say bad"><b>Formato proprietário fechado:</b><br>Só o software do fornecedor X consegue ler o arquivo. Se trocar de empresa, o tribunal fica refém (<i>vendor lock-in</i>).</div>
+    <div class="say good"><b>Padrão aberto documentado:</b><br>Qualquer linguagem (Java, Python, Node) lê e escreve os dados seguindo a especificação pública.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PASSO A PASSO DE INTEGRAÇÃO</span>
+  <h2>Enviando uma petição do MP ao Tribunal</h2>
+  <svg viewBox="0 0 660 155" role="img" aria-label="Fluxo de envio de petição via MNI">
+    <defs><marker id="g2b" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="box" x="10" y="32" width="142" height="72" rx="12"/><text x="81" y="62" text-anchor="middle" style="font-size:13px">1. MP monta</text><text x="81" y="80" text-anchor="middle" style="font-size:13px">pacote MNI</text>
+    <rect class="accbox" x="176" y="32" width="142" height="72" rx="12"/><text x="247" y="62" text-anchor="middle" style="font-size:13px">2. Assina com</text><text x="247" y="80" text-anchor="middle" style="font-size:13px">certificado TLS</text>
+    <rect class="keybox" x="342" y="32" width="142" height="72" rx="12"/><text class="kt" x="413" y="62" text-anchor="middle" style="font-size:13px">3. TJ valida</text><text class="kt" x="413" y="80" text-anchor="middle" style="font-size:13px">esquema + TPU</text>
+    <rect class="okbox" x="508" y="32" width="142" height="72" rx="12"/><text x="579" y="62" text-anchor="middle" style="font-size:13px">4. Protocola e</text><text x="579" y="80" text-anchor="middle" style="font-size:13px">devolve recibo</text>
+    <line x1="154" y1="68" x2="172" y2="68" stroke="#6d4aff" stroke-width="3" marker-end="url(#g2b)"/>
+    <line x1="320" y1="68" x2="338" y2="68" stroke="#6d4aff" stroke-width="3" marker-end="url(#g2b)"/>
+    <line x1="486" y1="68" x2="504" y2="68" stroke="#6d4aff" stroke-width="3" marker-end="url(#g2b)"/>
+    <text x="330" y="136" text-anchor="middle" class="small">Tudo automático, auditável e sem ninguém digitar os dados duas vezes.</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA FGV</span>
+  <h2>Interoperabilidade NÃO é banco único</h2>
+  <div class="say trap"><b>Armadilha clássica:</b> a banca escreve que "interoperabilidade exige que todos os órgãos unifiquem suas bases em um único banco de dados central". <b>Errado!</b></div>
+  <div class="scroll">
+  <table>
+    <tr><th class="ng">✗ Pegadinha</th><th class="ok">✓ Realidade</th></tr>
+    <tr><td class="hl">Todos os sistemas usam o mesmo banco físico</td><td class="hk">Cada sistema mantém sua base e troca mensagens por padrão</td></tr>
+    <tr><td class="hl">Interoperar é só abrir porta de rede (técnica)</td><td class="hk">Exige também semântica (significado) e organizacional</td></tr>
+    <tr><td class="hl">MNI serve só para backup de arquivos</td><td class="hk">MNI padroniza intercâmbio de dados processuais</td></tr>
+  </table></div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 2</span>
+  <h2>O que você precisa levar na memória</h2>
+  <div class="magic">
+    “Interoperar = Técnica (conectar) + Semântica (entender) + Organizacional (combinar).”
+    <small>MNI (troca processual) · MInG (padrões abertos de governo) · Res. CNJ 91/2009.</small>
+  </div>
+  <ul class="checklist">
+    <li><b>Interoperabilidade</b> permite que sistemas heterogêneos troquem dados sem redigitação.</li>
+    <li><b>MNI</b> é o padrão nacional de intercâmbio processual no Judiciário.</li>
+    <li><b>MInG</b> orienta padrões abertos, evitando dependência de fornecedor único.</li>
+    <li><b>Tabelas unificadas (TPU)</b> garantem que códigos tenham o mesmo sentido em todo o país.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 2</span>
+  <h2>4 questões para fixar (clique para ver)</h2>
+  <details><summary>1. Dois tribunais trocam XML válido, mas "parte_ativa" significa autor em um e réu no outro. Que dimensão falhou?</summary><p><b>Resposta:</b> <b>Interoperabilidade semântica</b> (o formato técnico funcionou, mas o significado dos termos divergiu).</p></details>
+  <details><summary>2. Qual é o objetivo do MNI no ecossistema de Justiça?</summary><p><b>Resposta:</b> Padronizar o intercâmbio eletrônico de dados e documentos processuais entre tribunais e órgãos como MP, Defensoria e OAB.</p></details>
+  <details><summary>3. Por que o MInG e o CNJ priorizam padrões abertos em integrações?</summary><p><b>Resposta:</b> Para garantir independência tecnológica, transparência e evitar aprisionamento a fornecedor único (<i>vendor lock-in</i>).</p></details>
+  <details><summary>4. Verdadeiro ou falso: para haver interoperabilidade via MNI, o MP precisa usar o mesmo SGBD do tribunal.</summary><p><b>Resposta:</b> <b>Falso.</b> A integração ocorre na camada de serviços/mensagens padronizadas, mantendo a autonomia dos bancos internos.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 3 ===================================================== -->
+<section class="chapter" data-title="Gestão Documental Digital, MoReq-Jus e RDC-Arq">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 3</span>
+  <h1>Gestão Documental Digital, MoReq-Jus e RDC-Arq</h1>
+  <span class="emoji">🗄️</span>
+  <div class="steps">
+    <div class="step"><b>1. Ciclo de Vida e Metadados</b><span>Do nascimento do documento à eliminação ou guarda eterna.</span></div>
+    <div class="step"><b>2. MoReq-Jus</b><span>Os requisitos arquivísticos que o sistema do tribunal deve ter.</span></div>
+    <div class="step"><b>3. RDC-Arq (OAIS)</b><span>Como garantir que um arquivo de 2026 abra e prove verdade em 2076.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🏷️</span><div><b>Analogia do museu com etiqueta:</b> jogar mil fotos digitais numa pasta sem nome é perder a história. Um documento arquivístico precisa de <b>etiqueta completa (metadados)</b>, regra de quanto tempo fica guardado (<b>temporalidade</b>) e cofre climatizado (<b>RDC-Arq</b>).</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">CICLO DE VIDA</span>
+  <h2>Da criação à destinação final</h2>
+  <p>Documento digital não nasce para ficar jogado em disco para sempre. Ele segue um ciclo de vida controlado:</p>
+  <svg viewBox="0 0 660 155" role="img" aria-label="Ciclo de vida documental: produção, tramitação, avaliação e destinação">
+    <defs><marker id="g3a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="box" x="10" y="34" width="136" height="68" rx="12"/><text x="78" y="62" text-anchor="middle" style="font-size:13px">1. Produção /</text><text x="78" y="80" text-anchor="middle" style="font-size:13px">Captura</text>
+    <rect class="accbox" x="172" y="34" width="136" height="68" rx="12"/><text x="240" y="62" text-anchor="middle" style="font-size:13px">2. Classificação</text><text x="240" y="80" text-anchor="middle" style="font-size:13px">&amp; Tramitação</text>
+    <rect class="keybox" x="334" y="34" width="136" height="68" rx="12"/><text class="kt" x="402" y="62" text-anchor="middle" style="font-size:13px">3. Avaliação /</text><text class="kt" x="402" y="80" text-anchor="middle" style="font-size:13px">Temporalidade</text>
+    <rect class="okbox" x="496" y="34" width="154" height="68" rx="12"/><text x="573" y="62" text-anchor="middle" style="font-size:13px">4. Eliminação ou</text><text x="573" y="80" text-anchor="middle" style="font-size:13px">Guarda Permanente</text>
+    <line x1="148" y1="68" x2="168" y2="68" stroke="#6d4aff" stroke-width="3" marker-end="url(#g3a)"/>
+    <line x1="310" y1="68" x2="330" y2="68" stroke="#6d4aff" stroke-width="3" marker-end="url(#g3a)"/>
+    <line x1="472" y1="68" x2="492" y2="68" stroke="#6d4aff" stroke-width="3" marker-end="url(#g3a)"/>
+    <text x="330" y="134" text-anchor="middle" class="small">Só se elimina documento após cumprir prazo da Tabela de Temporalidade e rito oficial.</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">METADADOS E AUTENTICIDADE</span>
+  <h2>O "RG" que prova quem fez, quando e se mudou</h2>
+  <p>Um arquivo PDF sozinho não prova sua história. Quem garante <b>autenticidade, integridade e rastreabilidade</b> são os <b>metadados arquivísticos</b>:</p>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Tipo de Metadado</th><th>O que registra</th><th>Exemplo no Judiciário</th></tr>
+    <tr><td><b>Descritivo</b></td><td>Identificação e busca</td><td>Número do processo, classe, assunto, partes</td></tr>
+    <tr><td><b>Estrutural / Técnico</b></td><td>Formato e composição</td><td>PDF/A, tamanho, resolução, algoritmo de hash</td></tr>
+    <tr><td><b>Administrativo / Preservação</b></td><td>Custódia e eventos</td><td>Quem assinou, data/hora, migração de formato</td></tr>
+  </table></div>
+</div>
+
+<div class="slide">
+  <span class="tag">MOREQ-JUS</span>
+  <h2>O que o MoReq-Jus exige do sistema?</h2>
+  <div class="say law">O <b>MoReq-Jus</b> (Modelo de Requisitos para Sistemas Informatizados de Gestão de Processos e Documentos do Poder Judiciário) define requisitos funcionais e não funcionais para que o sistema preserve o valor arquivístico e probatório dos documentos.</div>
+  <div class="steps">
+    <div class="step"><b>Captura segura</b><span>Registra documento com metadados obrigatórios no ato.</span></div>
+    <div class="step"><b>Plano de Classificação</b><span>Vincula cada documento ao código de assunto/classe.</span></div>
+    <div class="step"><b>Trilha de Auditoria</b><span>Impede alteração silenciosa de datas, autores ou histórico.</span></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RDC-ARQ E MODELO OAIS</span>
+  <h2>Como funciona o cofre digital (SIP → AIP → DIP)</h2>
+  <p>Sistema de processo (PJe) é ótimo para <b>tramitar</b>, mas não basta para <b>preservar por 50+ anos</b>. Para isso existe o <b>RDC-Arq</b> (Repositório Arquivístico Digital Confiável), baseado no modelo <b>OAIS</b>:</p>
+  <svg viewBox="0 0 660 190" role="img" aria-label="Modelo OAIS no RDC-Arq: SIP entra, AIP preserva, DIP entrega">
+    <defs><marker id="g3b" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2ea043"/></marker></defs>
+    <rect class="box" x="18" y="42" width="160" height="90" rx="12"/>
+    <text x="98" y="72" text-anchor="middle">Produtor (PJe)</text>
+    <text x="98" y="96" text-anchor="middle" class="small">Envia pacote <tspan font-weight="800">SIP</tspan></text>
+    <text x="98" y="114" text-anchor="middle" class="small">(Submissão)</text>
+    <rect class="okbox" x="235" y="28" width="190" height="118" rx="14"/>
+    <text x="330" y="58" text-anchor="middle">RDC-Arq (OAIS)</text>
+    <text x="330" y="84" text-anchor="middle" class="small">Guarda pacote <tspan font-weight="800">AIP</tspan></text>
+    <text x="330" y="104" text-anchor="middle" class="small">(Arquivamento + Hash +</text>
+    <text x="330" y="122" text-anchor="middle" class="small">Migração de formato)</text>
+    <rect class="accbox" x="482" y="42" width="160" height="90" rx="12"/>
+    <text x="562" y="72" text-anchor="middle">Consumidor</text>
+    <text x="562" y="96" text-anchor="middle" class="small">Recebe pacote <tspan font-weight="800">DIP</tspan></text>
+    <text x="562" y="114" text-anchor="middle" class="small">(Disseminação)</text>
+    <line x1="180" y1="87" x2="231" y2="87" stroke="#2ea043" stroke-width="3" marker-end="url(#g3b)"/>
+    <line x1="427" y1="87" x2="478" y2="87" stroke="#2ea043" stroke-width="3" marker-end="url(#g3b)"/>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">PRESERVAÇÃO DIGITAL</span>
+  <h2>Por que não basta fazer "backup na nuvem"?</h2>
+  <p><b>Backup</b> só copia bytes para recuperar de um desastre curto. <b>Preservação digital</b> combate dois inimigos de longo prazo:</p>
+  <div class="two">
+    <div class="say bad"><b>Obsolescência de formato:</b><br>Um arquivo salvo em formato proprietário antigo pode não abrir daqui a 30 anos. Solução: formatos abertos como <b>PDF/A</b> e migração controlada.</div>
+    <div class="say good"><b>Perda de cadeia de custódia:</b><br>Sem hash e registro de eventos, não dá para provar que o arquivo não foi adulterado. Solução: <b>AIP</b> com metadados de preservação.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RES. CNJ 522/2023</span>
+  <h2>Política de gestão documental no Judiciário</h2>
+  <p>O edital destaca a <b>Res. CNJ 522/2023</b> junto ao MoReq-Jus e ao RDC-Arq no Bloco 1, reforçando a governança da gestão documental e preservação digital nos tribunais.</p>
+  <div class="say law">Os tribunais devem manter políticas de gestão documental, tabelas de temporalidade, preservação digital confiável e descarte seguro quando autorizada a eliminação.</div>
+  <p class="mini">📌 <b>Atenção normativa:</b> confira o texto oficial da Res. CNJ 522/2023 (e normas correlatas de gestão documental do CNJ) para prazos exatos de guarda e composição de comissões de avaliação.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA FGV</span>
+  <h2>Erros clássicos sobre RDC-Arq e MoReq-Jus</h2>
+  <div class="say trap"><b>Cuidado:</b> a banca adora misturar <b>Backup</b> com <b>RDC-Arq</b>, ou dizer que <b>documento digital dispensa tabela de temporalidade</b> porque "custa barato guardar".</div>
+  <div class="scroll">
+  <table>
+    <tr><th class="ng">✗ Pegadinha</th><th class="ok">✓ Verdade da prova</th></tr>
+    <tr><td class="hl">Backup diário já é um RDC-Arq completo</td><td class="hk">RDC-Arq exige OAIS (SIP/AIP/DIP), metadados e preservação</td></tr>
+    <tr><td class="hl">Arquivo digital nunca precisa ser eliminado</td><td class="hk">Segue tabela de temporalidade (eliminação ou guarda permanente)</td></tr>
+    <tr><td class="hl">SIP é o pacote entregue ao cidadão</td><td class="hk">SIP entra (Submissão); DIP sai (Disseminação)</td></tr>
+  </table></div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 3</span>
+  <h2>O que você precisa levar na memória</h2>
+  <div class="magic">
+    “MoReq-Jus rege o sistema; RDC-Arq (SIP → AIP → DIP) preserva o documento no tempo.”
+    <small>Metadados = contexto e autenticidade · Backup ≠ Preservação Digital · Confira Res. CNJ 522/2023.</small>
+  </div>
+  <ul class="checklist">
+    <li><b>Ciclo de vida</b> inclui produção, classificação, avaliação (temporalidade) e destinação.</li>
+    <li><b>MoReq-Jus</b> define requisitos arquivísticos para sistemas judiciais.</li>
+    <li><b>RDC-Arq (OAIS)</b> usa <b>SIP</b> (entra), <b>AIP</b> (preserva) e <b>DIP</b> (sai).</li>
+    <li><b>Preservação</b> combate obsolescência de formato e garante cadeia de custódia.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 3</span>
+  <h2>4 questões para fixar (clique para ver)</h2>
+  <details><summary>1. No modelo OAIS do RDC-Arq, qual pacote armazena o documento + metadados de preservação a longo prazo?</summary><p><b>Resposta:</b> <b>AIP</b> (<i>Archival Information Package</i>). O SIP é o pacote de entrada e o DIP é o pacote de saída/consulta.</p></details>
+  <details><summary>2. Por que fazer backup em fita ou nuvem não substitui um RDC-Arq?</summary><p><b>Resposta:</b> Porque backup apenas copia bytes para recuperação de curto prazo, sem garantir migração contra obsolescência de formatos, cadeia de custódia nem metadados arquivísticos.</p></details>
+  <details><summary>3. Qual é a função do MoReq-Jus?</summary><p><b>Resposta:</b> Estabelecer requisitos para que sistemas informatizados de processos e documentos do Judiciário mantenham valor arquivístico, metadados e auditoria.</p></details>
+  <details><summary>4. Verdadeiro ou falso: documentos digitais podem ser apagados livremente pelo desenvolvedor quando o disco encher.</summary><p><b>Resposta:</b> <b>Falso.</b> A destinação (eliminação ou guarda permanente) depende de avaliação e cumprimento da tabela de temporalidade.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 4 ===================================================== -->
+<section class="chapter" data-title="LGPD e Marco Civil da Internet no Judiciário">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 4</span>
+  <h1>LGPD e Marco Civil da Internet no Judiciário</h1>
+  <span class="emoji">🛡️</span>
+  <div class="steps">
+    <div class="step"><b>1. Marco Civil (Lei 12.965/2014)</b><span>Neutralidade de rede e guarda de registros de conexão/aplicação.</span></div>
+    <div class="step"><b>2. LGPD (Lei 13.709/2018)</b><span>Dados pessoais, sensíveis, anonimizados e agentes.</span></div>
+    <div class="step"><b>3. Bases e Princípios</b><span>Como o tribunal trata dados sem violar a lei.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">📬</span><div><b>Analogia dos Correios e da Caixa-Forte:</b> o <b>Marco Civil</b> diz que o carteiro não pode abrir nem atrasar cartas por preferência (<b>neutralidade</b>). A <b>LGPD</b> diz quem é o dono da carta (<b>titular</b>), quem decide o uso (<b>controlador</b>) e quem só transporta (<b>operador</b>).</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">MARCO CIVIL (LEI 12.965/2014)</span>
+  <h2>Neutralidade de rede e os dois tipos de provedor</h2>
+  <p>A Lei 12.965/2014 estabelece princípios, garantias, direitos e deveres para o uso da Internet no Brasil:</p>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Conceito</th><th>O que faz</th><th>Regra-chave na prova</th></tr>
+    <tr><td><b>Neutralidade de Rede</b></td><td>Trata pacotes de dados de forma isonômica</td><td>Proíbe bloquear ou degradar por conteúdo, origem ou serviço</td></tr>
+    <tr><td><b>Provedor de Conexão</b></td><td>Dá acesso à internet (operadora)</td><td>Guarda <b>registro de conexão</b> (IP, data/hora início e fim)</td></tr>
+    <tr><td><b>Provedor de Aplicação</b></td><td>Oferece site, app ou portal</td><td>Guarda <b>registro de acesso a aplicações</b> de internet</td></tr>
+  </table></div>
+  <p class="mini">📌 <b>Atenção normativa:</b> a entrega desses registros exige <b>ordem judicial</b>. Confira os prazos exatos de guarda nos arts. 13 e 15 da Lei 12.965/2014 no texto oficial.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">LGPD — CLASSIFICAÇÃO DOS DADOS</span>
+  <h2>Dado Pessoal × Sensível × Anonimizado</h2>
+  <svg viewBox="0 0 660 205" role="img" aria-label="Classificação de dados na LGPD: pessoal, sensível e anonimizado">
+    <rect class="accbox" x="20" y="22" width="195" height="156" rx="14"/>
+    <text x="117" y="52" text-anchor="middle">Dado Pessoal</text>
+    <text x="117" y="80" text-anchor="middle" class="small">Identifica ou torna</text>
+    <text x="117" y="98" text-anchor="middle" class="small">identificável pessoa natural</text>
+    <text x="117" y="132" text-anchor="middle" class="small">Ex.: Nome, CPF, e-mail,</text>
+    <text x="117" y="150" text-anchor="middle" class="small">IP associado à pessoa</text>
+    <rect class="badbox" x="232" y="22" width="195" height="156" rx="14"/>
+    <text x="329" y="52" text-anchor="middle">Dado Sensível</text>
+    <text x="329" y="80" text-anchor="middle" class="small">Risco maior de discriminação</text>
+    <text x="329" y="112" text-anchor="middle" class="small">Ex.: Saúde, biometria,</text>
+    <text x="329" y="130" text-anchor="middle" class="small">genética, religião, opinião</text>
+    <text x="329" y="148" text-anchor="middle" class="small">política, orientação sexual</text>
+    <rect class="okbox" x="444" y="22" width="195" height="156" rx="14"/>
+    <text x="541" y="52" text-anchor="middle">Anonimizado</text>
+    <text x="541" y="80" text-anchor="middle" class="small">Não permite identificar</text>
+    <text x="541" y="98" text-anchor="middle" class="small">com meios razoáveis</text>
+    <text x="541" y="132" text-anchor="middle" class="small" style="fill:#2ea043">Em regra, FORA da LGPD</text>
+    <text x="541" y="150" text-anchor="middle" class="small">(salvo se for reversível)</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">AGENTES DE TRATAMENTO</span>
+  <h2>Quem é quem na LGPD?</h2>
+  <svg viewBox="0 0 660 190" role="img" aria-label="Papéis na LGPD: Titular, Controlador, Operador, Encarregado e ANPD">
+    <defs><marker id="g4a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="box" x="20" y="56" width="130" height="72" rx="12"/><text x="85" y="88" text-anchor="middle">Titular</text><text x="85" y="108" text-anchor="middle" class="small">Dono do dado</text>
+    <rect class="keybox" x="210" y="22" width="175" height="66" rx="12"/><text class="kt" x="297" y="50" text-anchor="middle">Controlador</text><text class="kt small" x="297" y="70" text-anchor="middle">Decide o tratamento</text>
+    <rect class="accbox" x="455" y="22" width="185" height="66" rx="12"/><text x="547" y="50" text-anchor="middle">Operador</text><text x="547" y="70" text-anchor="middle" class="small">Executa pelo controlador</text>
+    <rect class="okbox" x="210" y="114" width="175" height="60" rx="12"/><text x="297" y="140" text-anchor="middle">Encarregado (DPO)</text><text x="297" y="158" text-anchor="middle" class="small">Canal: Titular ↔ ANPD</text>
+    <rect class="box" x="455" y="114" width="185" height="60" rx="12"/><text x="547" y="140" text-anchor="middle">ANPD</text><text x="547" y="158" text-anchor="middle" class="small">Autoridade fiscalizadora</text>
+    <line x1="387" y1="55" x2="451" y2="55" stroke="#6d4aff" stroke-width="3" marker-end="url(#g4a)"/>
+    <line x1="297" y1="90" x2="297" y2="110" stroke="#6d4aff" stroke-width="2.5"/>
+    <line x1="152" y1="92" x2="206" y2="138" stroke="#6d4aff" stroke-width="2.5"/>
+    <line x1="387" y1="144" x2="451" y2="144" stroke="#6d4aff" stroke-width="2.5"/>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">PRINCÍPIOS DA LGPD</span>
+  <h2>As regras de ouro antes de gravar uma coluna no banco</h2>
+  <div class="steps">
+    <div class="step"><b>Finalidade</b><span>Propósito legítimo, específico e informado ao titular.</span></div>
+    <div class="step"><b>Adequação</b><span>Uso compatível com o que foi informado.</span></div>
+    <div class="step"><b>Necessidade</b><span>Mínimo de dados estritamente necessário (minimização).</span></div>
+    <div class="step"><b>Segurança &amp; Prevenção</b><span>Medidas técnicas para evitar vazamento e dano.</span></div>
+  </div>
+  <div class="say law">Além da boa-fé, o tratamento deve observar <b>livre acesso, qualidade dos dados, transparência, não discriminação</b> e <b>responsabilização e prestação de contas</b>.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">BASES LEGAIS NO JUDICIÁRIO</span>
+  <h2>O tribunal precisa de consentimento para julgar?</h2>
+  <p><b>Não!</b> Consentimento é apenas <i>uma</i> das bases legais da LGPD — e raramente é a usada no setor público.</p>
+  <div class="two">
+    <div class="say good"><b>Bases típicas do Judiciário:</b><br>• Cumprimento de <b>obrigação legal ou regulatória</b><br>• <b>Exercício regular de direitos</b> em processo judicial<br>• Execução de <b>políticas públicas</b> pela Administração</div>
+    <div class="say"><b>E se houver vazamento?</b><br>O controlador deve comunicar à <b>ANPD</b> e ao <b>titular</b> em prazo razoável quando houver risco ou dano relevante.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PSEUDONIMIZAÇÃO × ANONIMIZAÇÃO</span>
+  <h2>Diferença técnica que cai em prova de TI</h2>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Técnica</th><th>Como funciona</th><th>Está dentro da LGPD?</th></tr>
+    <tr><td><b>Anonimização</b></td><td>Remove vínculo sem possibilidade razoável de reversão</td><td><span class="pill ok">Fora da LGPD</span> (salvo reversão razoável)</td></tr>
+    <tr><td><b>Pseudonimização</b></td><td>Troca identificador por código/token, mas há chave de volta</td><td><span class="pill ng">Continua dado pessoal</span> (dentro da LGPD)</td></tr>
+  </table></div>
+  <p class="mini">Trocar CPF por um hash simples sem sal (salt) ou guardar tabela de de-para continua permitindo reidentificação — logo, <b>não anonimiza de verdade</b>.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA FGV</span>
+  <h2>O que a banca tenta confundir na LGPD e Marco Civil</h2>
+  <div class="say trap"><b>Fique atento:</b> a FGV troca <b>Controlador</b> por <b>Operador</b>, diz que <b>dado pseudonimizado sai da LGPD</b>, ou afirma que <b>provedor de aplicação pode entregar logs sem ordem judicial</b>.</div>
+  <div class="scroll">
+  <table>
+    <tr><th class="ng">✗ Pegadinha</th><th class="ok">✓ Verdade da prova</th></tr>
+    <tr><td class="hl">Empresa de nuvem contratada é a Controladora</td><td class="hk">Tribunal que decide = Controlador; nuvem = Operador</td></tr>
+    <tr><td class="hl">Pseudonimização dispensa a LGPD</td><td class="hk">Só anonimização irreversível (esforço razoável) sai</td></tr>
+    <tr><td class="hl">Tribunal precisa de consentimento do réu para processar</td><td class="hk">Usa obrigação legal e exercício regular de direitos</td></tr>
+  </table></div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 4</span>
+  <h2>O que você precisa levar na memória</h2>
+  <div class="magic">
+    “Controlador decide · Operador executa · DPO faz a ponte · Neutralidade não discrimina pacotes.”
+    <small>LGPD (Lei 13.709/2018) · Marco Civil (Lei 12.965/2014).</small>
+  </div>
+  <ul class="checklist">
+    <li><b>Marco Civil:</b> neutralidade de rede + distinção entre provedor de conexão e de aplicação.</li>
+    <li><b>LGPD:</b> dado pessoal, sensível (maior proteção) e anonimizado (fora da lei se irreversível).</li>
+    <li><b>Agentes:</b> Controlador (decide) × Operador (executa) × Encarregado/DPO (canal).</li>
+    <li><b>Princípio da Necessidade:</b> coletar apenas o mínimo indispensável à finalidade.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 4</span>
+  <h2>4 questões para fixar (clique para ver)</h2>
+  <details><summary>1. Um tribunal usa IA na nuvem de um fornecedor seguindo instruções do tribunal. Quem é o Operador?</summary><p><b>Resposta:</b> O <b>fornecedor de nuvem</b>, pois realiza o tratamento em nome e sob as decisões do Controlador (o tribunal).</p></details>
+  <details><summary>2. Por que um dado pseudonimizado por tabela de-para continua sujeito à LGPD?</summary><p><b>Resposta:</b> Porque ainda permite associação indireta ao titular mediante informação adicional mantida pelo controlador.</p></details>
+  <details><summary>3. No Marco Civil, qual princípio impede a operadora de reduzir velocidade de videoconferência judicial para favorecer seu próprio app?</summary><p><b>Resposta:</b> <b>Neutralidade de rede</b>.</p></details>
+  <details><summary>4. Um formulário do tribunal pede tipo sanguíneo e religião para agendar atendimento comum no balcão. Qual princípio foi violado?</summary><p><b>Resposta:</b> <b>Necessidade</b> (e adequação/finalidade), pois coleta dados sensíveis excessivos e impertinentes ao propósito.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 5 ===================================================== -->
+<section class="chapter" data-title="Governança Algorítmica, IA e Normas CNJ de TIC">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 5</span>
+  <h1>Governança Algorítmica, IA e Normas CNJ de TIC</h1>
+  <span class="emoji">⚖️</span>
+  <div class="steps">
+    <div class="step"><b>1. Governança Algorítmica</b><span>Transparência, explicabilidade, viés e supervisão humana.</span></div>
+    <div class="step"><b>2. IA no Judiciário (CNJ)</b><span>Res. CNJ 332/2020 e Res. CNJ 615/2025.</span></div>
+    <div class="step"><b>3. Ecossistema CNJ + TJPB</b><span>Res. 370/2021, 396/2021, 468/2022 e PDTI TJPB.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🧑‍✈️</span><div><b>Analogia do piloto automático:</b> o avião tem piloto automático para ajudar na rota e alertar turbulência, mas quem responde pelo pouso e pode desligar o sistema a qualquer segundo é o <b>comandante humano</b> — nunca a máquina sozinha.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">GOVERNANÇA ALGORÍTMICA</span>
+  <h2>Por que algoritmos precisam de freios?</h2>
+  <p>Modelos de IA aprendem com dados do passado. Se o histórico contém desigualdades ou erros, o algoritmo pode amplificá-los em escala — criando uma "caixa-preta" injusta.</p>
+  <div class="steps">
+    <div class="step"><b>Supervisão Humana</b><span><i>Human-in-the-loop</i>: a decisão final cabe ao magistrado.</span></div>
+    <div class="step"><b>Explicabilidade</b><span>Entender e justificar por que o modelo sugeriu aquilo.</span></div>
+    <div class="step"><b>Não Discriminação</b><span>Auditoria contínua para detectar e mitigar vieses.</span></div>
+    <div class="step"><b>Auditabilidade</b><span>Logs de versões, dados de treino e desempenho.</span></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">NORMAS DO CNJ SOBRE IA</span>
+  <h2>Res. CNJ 332/2020 e Res. CNJ 615/2025</h2>
+  <p>O CNJ regula a produção e o uso de Inteligência Artificial no Poder Judiciário com foco em direitos fundamentais e governança de riscos:</p>
+  <div class="say law">A <b>Res. CNJ 332/2020</b> firmou ética, transparência e governança na IA judicial. A <b>Res. CNJ 615/2025</b> atualiza e aprofunda diretrizes de governança, gestão de riscos e uso responsável de IA (incluindo IA generativa) no Judiciário.</div>
+  <p class="mini">📌 <b>Atenção normativa:</b> como a Res. CNJ 615/2025 é recente, confira o texto oficial completo para verificar a classificação de níveis de risco e obrigações específicas de conformidade.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">FLUXO DE DECISÃO COM IA</span>
+  <h2>IA como apoio, nunca como juiz</h2>
+  <svg viewBox="0 0 660 175" role="img" aria-label="Fluxo de IA assistiva: dados entram, IA sugere, humano revisa e decide">
+    <defs><marker id="g5a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="box" x="14" y="34" width="140" height="74" rx="12"/><text x="84" y="64" text-anchor="middle" style="font-size:13px">1. Processo</text><text x="84" y="84" text-anchor="middle" style="font-size:13px">(dados validados)</text>
+    <rect class="accbox" x="178" y="34" width="148" height="74" rx="12"/><text x="252" y="64" text-anchor="middle" style="font-size:13px">2. Modelo de IA</text><text x="252" y="84" text-anchor="middle" style="font-size:13px">classifica / sugere</text>
+    <rect class="keybox" x="350" y="34" width="148" height="74" rx="12"/><text class="kt" x="424" y="64" text-anchor="middle" style="font-size:13px">3. Magistrado</text><text class="kt" x="424" y="84" text-anchor="middle" style="font-size:13px">revisa e fundamenta</text>
+    <rect class="okbox" x="522" y="34" width="124" height="74" rx="12"/><text x="584" y="64" text-anchor="middle" style="font-size:13px">4. Decisão</text><text x="584" y="84" text-anchor="middle" style="font-size:13px">auditável</text>
+    <line x1="156" y1="71" x2="174" y2="71" stroke="#6d4aff" stroke-width="3" marker-end="url(#g5a)"/>
+    <line x1="328" y1="71" x2="346" y2="71" stroke="#6d4aff" stroke-width="3" marker-end="url(#g5a)"/>
+    <line x1="500" y1="71" x2="518" y2="71" stroke="#6d4aff" stroke-width="3" marker-end="url(#g5a)"/>
+    <text x="330" y="142" text-anchor="middle" class="small">Se o modelo alucinar ou tiver viés, o controle humano barra antes do ato judicial.</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">MAPA DE RESOLUÇÕES CNJ</span>
+  <h2>As resoluções que você precisa ligar de olho fechado</h2>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Norma CNJ</th><th>Assunto principal no edital</th><th>Palavra-gatilho</th></tr>
+    <tr><td><b>Res. 91/2009</b></td><td>Interoperabilidade / modelos de sistemas</td><td>MNI (conferir texto)</td></tr>
+    <tr><td><b>Res. 332/2020 &amp; 615/2025</b></td><td>IA e Governança Algorítmica no Judiciário</td><td>Ética, risco e supervisão</td></tr>
+    <tr><td><b>Res. 335/2020</b></td><td>Plataforma Digital do Poder Judiciário</td><td>PDPJ-Br, Marketplace</td></tr>
+    <tr><td><b>Res. 370/2021</b></td><td>Estratégia Nacional de TIC (ENTIC-JUD)</td><td>Governança e metas de TIC</td></tr>
+    <tr><td><b>Res. 396/2021</b></td><td>Estratégia Nacional de Segurança Cibernética</td><td>Defesa cibernética, CSIRT</td></tr>
+    <tr><td><b>Res. 468/2022</b></td><td>Contratações de soluções de TIC</td><td>DOD, ETP, TR</td></tr>
+    <tr><td><b>Res. 522/2023</b></td><td>Gestão documental / preservação digital</td><td>MoReq-Jus, RDC-Arq</td></tr>
+  </table></div>
+</div>
+
+<div class="slide">
+  <span class="tag">ALINHAMENTO ESTRATÉGICO</span>
+  <h2>Do CNJ (ENTIC-JUD) ao PDTI do TJPB (2024–2026)</h2>
+  <svg viewBox="0 0 660 190" role="img" aria-label="Alinhamento entre ENTIC-JUD, Planejamento Estratégico do TJPB e PDTI 2024-2026">
+    <defs><marker id="g5b" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2ea043"/></marker></defs>
+    <rect class="accbox" x="140" y="14" width="380" height="44" rx="12"/><text x="330" y="41" text-anchor="middle">ENTIC-JUD (Res. CNJ 370/2021) — Diretriz Nacional</text>
+    <rect class="keybox" x="140" y="74" width="380" height="44" rx="12"/><text class="kt" x="330" y="101" text-anchor="middle">Planejamento Estratégico do TJPB</text>
+    <rect class="okbox" x="140" y="134" width="380" height="44" rx="12"/><text x="330" y="161" text-anchor="middle">PDTI do TJPB 2024–2026 (Projetos, Metas e Orçamento)</text>
+    <line x1="330" y1="59" x2="330" y2="71" stroke="#2ea043" stroke-width="3" marker-end="url(#g5b)"/>
+    <line x1="330" y1="119" x2="330" y2="131" stroke="#2ea043" stroke-width="3" marker-end="url(#g5b)"/>
+  </svg>
+  <p class="mini">📌 <b>Atenção normativa:</b> confira o documento oficial do <b>PDTI do TJPB 2024–2026</b> para conhecer os objetivos específicos, indicadores e ações locais do tribunal.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">SEGURANÇA CIBERNÉTICA (RES. 396/2021)</span>
+  <h2>Por que o CNJ criou uma estratégia própria de Ciber?</h2>
+  <p>Tribunais são alvos de <i>ransomware</i> e vazamentos. A <b>Res. CNJ 396/2021</b> organiza a defesa cibernética em rede no Judiciário:</p>
+  <div class="two">
+    <div class="say good"><b>O que promove:</b><br>• Equipes de resposta a incidentes (ETIR/CSIRT)<br>• Gestão de vulnerabilidades e continuidade<br>• Compartilhamento de inteligência de ameaças</div>
+    <div class="say"><b>Conexão com a LGPD:</b><br>Segurança cibernética protege os dados pessoais sob guarda do tribunal contra incidentes.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA FGV</span>
+  <h2>Armadilhas sobre IA e Resoluções CNJ</h2>
+  <div class="say trap"><b>Cuidado:</b> a banca adora dizer que a IA pode <b>julgar sozinha sem revisão humana</b> em causas simples, ou <b>trocar os números das resoluções</b> (ex.: chamar a 396/2021 de PDPJ-Br).</div>
+  <div class="scroll">
+  <table>
+    <tr><th class="ng">✗ Pegadinha</th><th class="ok">✓ Verdade da prova</th></tr>
+    <tr><td class="hl">IA profere sentença autônoma sem magistrado</td><td class="hk">Supervisão humana é obrigatória na decisão judicial</td></tr>
+    <tr><td class="hl">Res. 370/2021 trata de Segurança Cibernética</td><td class="hk">370 = ENTIC-JUD · 396 = Segurança Cibernética</td></tr>
+    <tr><td class="hl">Código fechado impede qualquer auditoria</td><td class="hk">Governança algorítmica exige auditabilidade e transparência</td></tr>
+  </table></div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 5</span>
+  <h2>O que você precisa levar na memória</h2>
+  <div class="magic">
+    “IA auxilia com transparência e auditoria; o humano decide; as Resoluções CNJ guiam o PDTI.”
+    <small>332 &amp; 615 (IA) · 370 (ENTIC-JUD) · 396 (Ciber) · 468 (Contratações) · 522 (Gestão Doc).</small>
+  </div>
+  <ul class="checklist">
+    <li><b>Governança algorítmica</b> exige supervisão humana, explicabilidade, auditabilidade e controle de vieses.</li>
+    <li><b>Res. CNJ 332/2020 e 615/2025</b> disciplinam IA no Judiciário (conferir texto oficial da 615/2025).</li>
+    <li><b>Res. CNJ 370/2021</b> = ENTIC-JUD; <b>Res. CNJ 396/2021</b> = Segurança Cibernética.</li>
+    <li><b>PDTI TJPB 2024–2026</b> alinha a TI do tribunal às metas estratégicas nacionais e locais.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 5</span>
+  <h2>4 questões para fixar (clique para ver)</h2>
+  <details><summary>1. Em um sistema de IA generativa que redige minutas no tribunal, quem responde pelo conteúdo final assinado?</summary><p><b>Resposta:</b> O <b>magistrado</b> (ou autoridade humana competente), por força do princípio da supervisão humana.</p></details>
+  <details><summary>2. Qual resolução do CNJ institui a ENTIC-JUD (Estratégia Nacional de TIC do Poder Judiciário)?</summary><p><b>Resposta:</b> <b>Resolução CNJ 370/2021</b>.</p></details>
+  <details><summary>3. Por que um modelo de IA usado na triagem de processos precisa de auditoria de vieses?</summary><p><b>Resposta:</b> Para evitar que padrões discriminatórios presentes nos dados históricos gerem injustiças ou tratamento desigual.</p></details>
+  <details><summary>4. Como o PDTI do TJPB (2024–2026) se relaciona com a ENTIC-JUD?</summary><p><b>Resposta:</b> O PDTI traduz e alinha os objetivos, projetos e orçamento de TIC do tribunal às diretrizes estratégicas do TJPB e da ENTIC-JUD.</p></details>
+</div>
+
+</section>
+
+<script src="aula.js"></script></body></html>

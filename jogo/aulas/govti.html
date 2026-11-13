@@ -1,0 +1,776 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Governança de TI — aulas visuais</title><link rel="stylesheet" href="aula.css">
+<style>
+.mini{font-size:15.5px}
+.cmp td,.cmp th{padding:7px 9px}
+</style>
+</head>
+<body data-subject="govti" data-title="Governança de TI">
+
+<!-- ===================================================== CAPÍTULO 1 ===================================================== -->
+<section class="chapter" data-title="Governança × Gestão e COBIT 2019">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 1</span>
+  <h1>Governança × Gestão e COBIT 2019</h1>
+  <span class="emoji">🧭</span>
+  <div class="steps">
+    <div class="step"><b>1. EDM × PBRM</b><span>A diferença entre decidir o rumo e tocar o barco.</span></div>
+    <div class="step"><b>2. Cascata de Metas</b><span>Como a necessidade do cidadão vira objetivo de TI.</span></div>
+    <div class="step"><b>3. 5 Domínios e 40 Objetivos</b><span>O mapa completo do COBIT 2019 sem decoreba cega.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">⛵</span><div><b>Analogia do navio:</b> os donos do navio decidem <b>para qual porto</b> ir e vigiam a rota — isso é <b>Governança</b>. O capitão e os marinheiros planejam o combustível, consertam o motor e conduzem o leme — isso é <b>Gestão</b>.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">A DIFERENÇA CENTRAL</span>
+  <h2>Governança (EDM) × Gestão (PBRM)</h2>
+  <svg viewBox="0 0 660 220" role="img" aria-label="Governança avalia, dirige e monitora; Gestão planeja, constrói, executa e monitora">
+    <defs>
+      <marker id="c1a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker>
+      <marker id="c1b" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2ea043"/></marker>
+    </defs>
+    <rect class="keybox" x="40" y="16" width="580" height="64" rx="14"/>
+    <text class="kt" x="330" y="42" text-anchor="middle">GOVERNANÇA · Domínio EDM (5 objetivos)</text>
+    <text class="kt small" x="330" y="64" text-anchor="middle">Avaliar necessidades · Dirigir prioridades · Monitorar desempenho</text>
+    <rect class="accbox" x="40" y="130" width="580" height="72" rx="14"/>
+    <text x="330" y="156" text-anchor="middle">GESTÃO · Domínios PBRM (35 objetivos)</text>
+    <text x="330" y="178" text-anchor="middle" class="small">APO (Planejar) · BAI (Construir) · DSS (Executar) · MEA (Monitorar)</text>
+    <line x1="220" y1="82" x2="220" y2="126" stroke="#6d4aff" stroke-width="3" marker-end="url(#c1a)"/>
+    <text x="155" y="110" class="small" style="fill:#6d4aff">dirige e prioriza</text>
+    <line x1="440" y1="128" x2="440" y2="84" stroke="#2ea043" stroke-width="3" marker-end="url(#c1b)"/>
+    <text x="515" y="110" class="small" style="fill:#2ea043">reporta resultados</text>
+  </svg>
+  <div class="say law">No COBIT 2019, <b>Governança</b> garante que as necessidades das partes interessadas sejam avaliadas, a direção seja definida e o desempenho seja monitorado (<b>EDM</b>). <b>Gestão</b> planeja, constrói, executa e monitora atividades alinhadas à direção definida pela governança (<b>PBRM</b>).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">OS 5 DOMÍNIOS</span>
+  <h2>40 objetivos: 1 domínio de Governança + 4 de Gestão</h2>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Domínio</th><th>Papel</th><th>O que faz na prática</th><th>Qtd.</th></tr>
+    <tr><td><span class="pill ok">EDM</span></td><td><b>Governança</b></td><td>Avaliar, Dirigir e Monitorar (garante benefícios, otimiza risco e recursos)</td><td><b>5</b></td></tr>
+    <tr><td><b>APO</b></td><td>Gestão (Plan)</td><td>Alinhar, Planejar e Organizar (estratégia, arquitetura, orçamento, RH, riscos)</td><td><b>14</b></td></tr>
+    <tr><td><b>BAI</b></td><td>Gestão (Build)</td><td>Construir, Adquirir e Implementar (projetos, requisitos, mudanças, código)</td><td><b>11</b></td></tr>
+    <tr><td><b>DSS</b></td><td>Gestão (Run)</td><td>Entregar, Servir e Suportar (operação diária, incidentes, segurança, continuidade)</td><td><b>6</b></td></tr>
+    <tr><td><b>MEA</b></td><td>Gestão (Monitor)</td><td>Monitorar, Avaliar e Analisar (conformidade, auditoria, desempenho, controle interno)</td><td><b>4</b></td></tr>
+  </table></div>
+  <p class="mini">Soma fácil de lembrar: <b>5 + 14 + 11 + 6 + 4 = 40 objetivos</b> de governança e gestão.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">CASCATA DE METAS</span>
+  <h2>Como o desejo do cidadão vira tarefa da TI</h2>
+  <p>A TI não escolhe projetos por gosto próprio. Tudo desce em degraus:</p>
+  <svg viewBox="0 0 660 150" role="img" aria-label="Cascata de metas do COBIT 2019 em 4 etapas">
+    <defs><marker id="c1c" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="box" x="10" y="30" width="142" height="72" rx="12"/><text x="81" y="60" text-anchor="middle" style="font-size:13px">1. Partes</text><text x="81" y="78" text-anchor="middle" style="font-size:13px">Interessadas</text>
+    <rect class="accbox" x="176" y="30" width="142" height="72" rx="12"/><text x="247" y="60" text-anchor="middle" style="font-size:13px">2. Metas</text><text x="247" y="78" text-anchor="middle" style="font-size:13px">Corporativas</text>
+    <rect class="accbox" x="342" y="30" width="142" height="72" rx="12"/><text x="413" y="60" text-anchor="middle" style="font-size:13px">3. Metas de</text><text x="413" y="78" text-anchor="middle" style="font-size:13px">Alinhamento</text>
+    <rect class="keybox" x="508" y="30" width="142" height="72" rx="12"/><text class="kt" x="579" y="60" text-anchor="middle" style="font-size:13px">4. Objetivos</text><text class="kt" x="579" y="78" text-anchor="middle" style="font-size:13px">Gov. e Gestão</text>
+    <line x1="154" y1="66" x2="172" y2="66" stroke="#6d4aff" stroke-width="3" marker-end="url(#c1c)"/>
+    <line x1="320" y1="66" x2="338" y2="66" stroke="#6d4aff" stroke-width="3" marker-end="url(#c1c)"/>
+    <line x1="486" y1="66" x2="504" y2="66" stroke="#6d4aff" stroke-width="3" marker-end="url(#c1c)"/>
+    <text x="330" y="132" text-anchor="middle" class="small">Exemplo: Cidadão quer processo rápido → Tribunal define meta de celeridade → TI prioriza disponibilidade do PJe → DSS01/BAI02</text>
+  </svg>
+  <div class="say good"><b>Note a novidade do COBIT 2019:</b> o que antes se chamava "Metas de TI" passou a se chamar <b>Metas de Alinhamento</b> (para reforçar que TI e negócio são um time só).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PRINCÍPIOS</span>
+  <h2>6 do Sistema de Governança + 3 do Framework</h2>
+  <div class="two">
+    <div class="card" style="margin:0">
+      <h3>Sistema de Governança (6)</h3>
+      <ul class="mini">
+        <li><b>Prover valor</b> às partes interessadas</li>
+        <li><b>Abordagem holística</b> (7 componentes)</li>
+        <li><b>Sistema dinâmico</b> (muda com o contexto)</li>
+        <li><b>Governança distinta</b> da gestão</li>
+        <li><b>Adaptado</b> às necessidades (Design Factors)</li>
+        <li><b>Fim a fim</b> (cobre toda a organização)</li>
+      </ul>
+    </div>
+    <div class="card" style="margin:0">
+      <h3>Framework de Governança (3)</h3>
+      <ul class="mini">
+        <li>Baseado em um <b>modelo conceitual</b></li>
+        <li><b>Aberto e flexível</b> (aceita novos focos)</li>
+        <li><b>Alinhado a outros padrões</b> (ITIL, ISO, PMBOK)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="say law">O COBIT 2019 separou os princípios em dois grupos: <b>6 princípios para o sistema de governança</b> (como governar) e <b>3 princípios para o framework</b> (como o guia é estruturado).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">7 COMPONENTES</span>
+  <h2>Governança não é só processo!</h2>
+  <p>Muita gente acha que COBIT é só fluxograma. Na verdade, ele funciona com <b>7 componentes</b> integrados:</p>
+  <div class="steps">
+    <div class="step"><b>1. Processos</b><span>Práticas e atividades organizadas.</span></div>
+    <div class="step"><b>2. Estruturas</b><span>Comitês, conselhos e papéis decisórios.</span></div>
+    <div class="step"><b>3. Princípios e Políticas</b><span>Regras escritas que orientam decisões.</span></div>
+    <div class="step"><b>4. Informação</b><span>Dados e relatórios que circulam.</span></div>
+    <div class="step"><b>5. Cultura e Ética</b><span>Comportamento real das pessoas.</span></div>
+    <div class="step"><b>6. Pessoas e Habilidades</b><span>Competências da equipe.</span></div>
+    <div class="step"><b>7. Serviços e Infra</b><span>Apps, nuvem e tecnologia de base.</span></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">CAPACIDADE × MATURIDADE</span>
+  <h2>Como o COBIT 2019 mede o nível da TI</h2>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Critério</th><th>Capacidade (0 a 5)</th><th>Maturidade (0 a 5)</th></tr>
+    <tr><td><b>O que mede?</b></td><td class="hk">Um <b>processo isolado</b> (ex.: BAI06)</td><td class="hk">Uma <b>área de foco</b> ou conjunto de processos</td></tr>
+    <tr><td><b>Base</b></td><td>Inspirado no modelo <b>CMMI</b></td><td>Agregação dos níveis de capacidade</td></tr>
+    <tr><td><b>Escala</b></td><td>0 (incompleto) até 5 (otimizado)</td><td>0 (incompleto) até 5 (otimizado)</td></tr>
+  </table></div>
+  <p class="mini">E para escolher <b>quais</b> objetivos importam mais no órgão, o COBIT 2019 usa os <b>Fatores de Desenho</b> (<i>Design Factors</i>): estratégia, porte, perfil de risco, ameaças, compliance, papel da TI etc.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA FGV</span>
+  <h2>Onde o candidato escorrega no COBIT 2019</h2>
+  <div class="say trap">
+    <p class="ex ng"><b>Errado:</b> "No COBIT 2019, o domínio MEA (Monitorar, Avaliar e Analisar) pertence à Governança porque tem 'Avaliar e Monitorar' no nome."</p>
+    <p class="ex ok"><b>Certo:</b> O único domínio de Governança é o <b>EDM</b>. O domínio <b>MEA</b> é de <b>Gestão</b> (monitora a conformidade e o desempenho operacional).</p>
+  </div>
+  <div class="say trap">
+    <p class="ex ng"><b>Errado:</b> "O COBIT 2019 é um padrão rígido que substitui a ITIL e a ISO 27001."</p>
+    <p class="ex ok"><b>Certo:</b> Ele é um <b>framework integrador</b> (guarda-chuva) alinhado a ITIL, ISO e PMBOK, dizendo <i>o quê</i> governar enquanto outros dizem <i>como</i> executar.</p>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO</span>
+  <h2>Mapa mental do COBIT 2019</h2>
+  <div class="magic">
+    EDM decide o destino. PBRM dirige o navio até lá.
+    <small>5 EDM (Gov) + 14 APO + 11 BAI + 6 DSS + 4 MEA = 40 objetivos.</small>
+  </div>
+  <ul class="checklist">
+    <li>Governança = Avaliar, Dirigir e Monitorar (EDM).</li>
+    <li>Gestão = Planejar (APO), Construir (BAI), Executar (DSS) e Monitorar (MEA).</li>
+    <li>Cascata: Partes Interessadas → Metas Corporativas → Metas de Alinhamento → Objetivos.</li>
+    <li>7 componentes + Fatores de Desenho adaptam o sistema ao tribunal.</li>
+    <li>Capacidade (0–5) mede 1 processo; Maturidade mede a área/organização.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>4 questões estilo FGV (clique para conferir)</h2>
+  <details><summary>1) Um comitê de TI aprova políticas de priorização de investimentos e acompanha se os benefícios prometidos estão sendo entregues. Qual domínio do COBIT 2019 atua?</summary>
+    <p><span class="pill ok">EDM (Governança)</span> Avaliar opções estratégicas, dirigir prioridades e monitorar a realização de benefícios é papel típico de Governança.</p></details>
+  <details><summary>2) Qual é a ordem correta na Cascata de Metas do COBIT 2019?</summary>
+    <p><span class="pill ok">Partes Interessadas → Metas Corporativas → Metas de Alinhamento → Objetivos</span> Lembre-se de que "Metas de TI" virou "Metas de Alinhamento".</p></details>
+  <details><summary>3) A equipe de suporte resolve chamados de usuários e mantém o sistema no ar diariamente. Esse trabalho está em qual domínio?</summary>
+    <p><span class="pill ok">DSS (Entregar, Servir e Suportar)</span> Operação diária, incidentes e suporte ficam no DSS (Gestão).</p></details>
+  <details><summary>4) "Capacidade de processo" e "maturidade" no COBIT 2019 medem a mesma coisa?</summary>
+    <p><span class="pill ng">Não!</span> Capacidade (0–5) avalia o desempenho de um <b>processo específico</b>; maturidade avalia uma <b>área de foco</b> ou a organização como um todo.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 2 ===================================================== -->
+<section class="chapter" data-title="ITIL 4 e Gerenciamento de Serviços">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 2</span>
+  <h1>ITIL 4 e Gerenciamento de Serviços</h1>
+  <span class="emoji">🛎️</span>
+  <div class="steps">
+    <div class="step"><b>1. Valor, Utilidade e Garantia</b><span>Por que serviço não é só "entregar um sistema".</span></div>
+    <div class="step"><b>2. SVS e 4 Dimensões</b><span>A engrenagem completa da ITIL 4.</span></div>
+    <div class="step"><b>3. Práticas de Prova</b><span>Incidente × Problema × Mudança × SLA.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🚕</span><div><b>Analogia do táxi:</b> você quer chegar ao aeroporto sem precisar comprar carro, pagar IPVA ou trocar pneu. O motorista fornece o carro e dirige, e você colabora informando o destino. Isso é um <b>serviço</b>: valor <b>co-criado</b> sem você assumir os riscos da mecânica.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONCEITO-CHAVE</span>
+  <h2>Utilidade × Garantia = Valor</h2>
+  <div class="two">
+    <div class="card" style="margin:0;border-color:var(--acc)">
+      <h3>🎯 Utilidade (<i>Fit for purpose</i>)</h3>
+      <p><b>O QUE</b> o serviço faz.</p>
+      <p class="mini">Ex.: O PJe permite protocolar petições e assinar despachos.</p>
+    </div>
+    <div class="card" style="margin:0;border-color:var(--ok)">
+      <h3>🛡️ Garantia (<i>Fit for use</i>)</h3>
+      <p><b>COMO</b> o serviço é entregue.</p>
+      <p class="mini">Ex.: Está disponível 99,9% do tempo, rápido, seguro e com backup.</p>
+    </div>
+  </div>
+  <div class="say law"><b>Serviço</b> é um meio de possibilitar a <b>co-criação de valor</b> facilitando os resultados que os clientes desejam alcançar, sem que o cliente tenha que gerenciar custos e riscos específicos.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ARQUITETURA ITIL 4</span>
+  <h2>Sistema de Valor de Serviço (SVS) e Cadeia (SVC)</h2>
+  <svg viewBox="0 0 660 210" role="img" aria-label="Oportunidade e Demanda entram no SVS e geram Valor através de 5 componentes">
+    <defs><marker id="c2a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="box" x="10" y="75" width="120" height="60" rx="12"/><text x="70" y="102" text-anchor="middle" style="font-size:13px">Oportunidade</text><text x="70" y="120" text-anchor="middle" style="font-size:13px">/ Demanda</text>
+    <rect class="accbox" x="165" y="16" width="330" height="180" rx="16"/>
+    <text x="330" y="40" text-anchor="middle">Sistema de Valor de Serviço (SVS)</text>
+    <rect class="box" x="185" y="52" width="290" height="28" rx="8"/><text x="330" y="71" text-anchor="middle" class="small">Princípios Orientadores (7)</text>
+    <rect class="box" x="185" y="86" width="290" height="28" rx="8"/><text x="330" y="105" text-anchor="middle" class="small">Governança</text>
+    <rect class="keybox" x="185" y="120" width="290" height="32" rx="8"/><text class="kt" x="330" y="141" text-anchor="middle" style="font-size:13px">Cadeia de Valor de Serviço (SVC · 6 ativ.)</text>
+    <rect class="box" x="185" y="158" width="140" height="26" rx="8"/><text x="255" y="176" text-anchor="middle" class="small">Práticas (34)</text>
+    <rect class="box" x="335" y="158" width="140" height="26" rx="8"/><text x="405" y="176" text-anchor="middle" class="small">Melhoria Contínua</text>
+    <rect class="okbox" x="530" y="75" width="120" height="60" rx="12"/><text x="590" y="110" text-anchor="middle">VALOR</text>
+    <line x1="132" y1="105" x2="161" y2="105" stroke="#6d4aff" stroke-width="3" marker-end="url(#c2a)"/>
+    <line x1="497" y1="105" x2="526" y2="105" stroke="#6d4aff" stroke-width="3" marker-end="url(#c2a)"/>
+  </svg>
+  <p class="mini">No centro do SVS está a <b>Cadeia de Valor de Serviço (SVC)</b> com <b>6 atividades</b>: Planejar, Melhorar, Engajar, Desenho e Transição, Obtenção/Construção, Entrega e Suporte.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">AS 4 DIMENSÕES</span>
+  <h2>O que precisa andar junto para o serviço funcionar</h2>
+  <div class="steps">
+    <div class="step"><b>1. Organizações e Pessoas</b><span>Papéis, cultura, competências e comunicação.</span></div>
+    <div class="step"><b>2. Informação e Tecnologia</b><span>Dados, sistemas, nuvem, IA e ferramentas.</span></div>
+    <div class="step"><b>3. Parceiros e Fornecedores</b><span>Contratos, terceirizadas, nuvem e cadeia externa.</span></div>
+    <div class="step"><b>4. Fluxos de Valor e Processos</b><span>Como as atividades se conectam para gerar valor.</span></div>
+  </div>
+  <div class="say"><b>Visão sistêmica:</b> todas as 4 dimensões sofrem influência de fatores externos (<b>PESTEL</b>: Político, Econômico, Social, Tecnológico, Ambiental e Legal).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">7 PRINCÍPIOS ORIENTADORES</span>
+  <h2>As regras de bolso da ITIL 4</h2>
+  <ol class="mini">
+    <li><b>Focar no valor:</b> tudo deve gerar valor para quem usa.</li>
+    <li><b>Começar onde você está:</b> não jogue fora o que já funciona; meça antes.</li>
+    <li><b>Progredir iterativamente com feedback:</b> passos curtos, valide cedo.</li>
+    <li><b>Colaborar e promover visibilidade:</b> trabalhe sem silos escondidos.</li>
+    <li><b>Pensar e trabalhar holisticamente:</b> veja o todo, não só uma peça.</li>
+    <li><b>Manter simples e prático:</b> corte etapas que não agregam valor.</li>
+    <li><b>Otimizar e automatizar:</b> primeiro simplifique, depois automatize.</li>
+  </ol>
+</div>
+
+<div class="slide">
+  <span class="tag">PRÁTICAS DE PROVA</span>
+  <h2>Incidente × Problema × Mudança</h2>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Prática</th><th>Objetivo principal</th><th>Exemplo no Tribunal</th></tr>
+    <tr><td><b>Incidente</b></td><td class="hk"><b>Restaurar a operação</b> o mais rápido possível (pode usar contorno/<i>workaround</i>).</td><td>PJe caiu: reinicia nó ou aplica contorno para voltar em 10 min.</td></tr>
+    <tr><td><b>Problema</b></td><td class="hk">Investigar a <b>causa raiz</b> de incidentes e registrar <b>Erro Conhecido</b> (KEDB).</td><td>Descobrir vazamento de memória no servidor e corrigir de vez.</td></tr>
+    <tr><td><b>Habilitação de Mudanças</b></td><td>Controlar alterações com segurança (Padrão, Normal ou Emergencial).</td><td>Atualizar versão do sistema em produção sem derrubar o serviço.</td></tr>
+    <tr><td><b>Solicitação de Serviço</b></td><td>Atender pedidos rotineiros pré-acordados do usuário.</td><td>Reset de senha, liberação de perfil, instalação padrão.</td></tr>
+  </table></div>
+</div>
+
+<div class="slide">
+  <span class="tag">TIPOS DE MUDANÇA</span>
+  <h2>Padrão × Normal × Emergencial</h2>
+  <svg viewBox="0 0 660 175" role="img" aria-label="Comparação dos 3 tipos de mudança na ITIL 4">
+    <rect class="okbox" x="10" y="20" width="200" height="135" rx="14"/>
+    <text x="110" y="48" text-anchor="middle">1. Padrão</text>
+    <text x="110" y="75" text-anchor="middle" class="small">Baixo risco e recorrente</text>
+    <text x="110" y="96" text-anchor="middle" class="small">Pré-autorizada</text>
+    <text x="110" y="122" text-anchor="middle" class="small">Ex.: criar conta padrão</text>
+
+    <rect class="accbox" x="230" y="20" width="200" height="135" rx="14"/>
+    <text x="330" y="48" text-anchor="middle">2. Normal</text>
+    <text x="330" y="75" text-anchor="middle" class="small">Precisa agendar e avaliar</text>
+    <text x="330" y="96" text-anchor="middle" class="small">Autoridade de mudança</text>
+    <text x="330" y="122" text-anchor="middle" class="small">Ex.: migrar banco de dados</text>
+
+    <rect class="badbox" x="450" y="20" width="200" height="135" rx="14"/>
+    <text x="550" y="48" text-anchor="middle">3. Emergencial</text>
+    <text x="550" y="75" text-anchor="middle" class="small">Urgente (incidente grave</text>
+    <text x="550" y="96" text-anchor="middle" class="small">ou falha crítica)</text>
+    <text x="550" y="122" text-anchor="middle" class="small">Ex.: patch de segurança zero-day</text>
+  </svg>
+  <p class="mini"><b>Service Desk (Central de Serviços)</b> é o ponto único de contato (SPOC) que recebe incidentes e solicitações.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA FGV</span>
+  <h2>O que a banca adora inverter na ITIL 4</h2>
+  <div class="say trap">
+    <p class="ex ng"><b>Errado:</b> "O Gerenciamento de Incidentes tem como foco principal eliminar definitivamente a causa raiz do erro."</p>
+    <p class="ex ok"><b>Certo:</b> Quem investiga e elimina a <b>causa raiz</b> é o <b>Gerenciamento de Problemas</b>. O Incidente foca em <b>restaurar o serviço rápido</b>.</p>
+  </div>
+  <div class="say trap">
+    <p class="ex ng"><b>Errado:</b> "Mudança Padrão é aquela que só acontece em emergências graves."</p>
+    <p class="ex ok"><b>Certo:</b> Mudança <b>Padrão</b> é rotineira, de baixo risco e <b>pré-autorizada</b>. A urgente é a <b>Emergencial</b>.</p>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO</span>
+  <h2>Checklist da ITIL 4</h2>
+  <div class="magic">
+    Utilidade = O QUÊ. Garantia = COMO. Incidente = apagar fogo. Problema = achar o fósforo.
+    <small>SVS tem 5 partes; SVC tem 6 atividades; 4 dimensões sustentam tudo.</small>
+  </div>
+  <ul class="checklist">
+    <li>Valor é sempre <b>co-criado</b> entre provedor e consumidor.</li>
+    <li>Sem Utilidade + Garantia, não existe entrega de valor.</li>
+    <li>7 Princípios Orientadores incluem "Começar onde você está" e "Otimizar e automatizar".</li>
+    <li>Incidente restaura rápido; Problema trata causa raiz e Erro Conhecido.</li>
+    <li>Mudança: Padrão (pré-autorizada), Normal (avaliada), Emergencial (urgente).</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>4 questões estilo FGV (clique para conferir)</h2>
+  <details><summary>1) Um sistema possui todas as funcionalidades pedidas pelos magistrados, mas cai toda tarde por falta de servidor. O que está falhando?</summary>
+    <p><span class="pill ok">Garantia (fit for use)</span> A Utilidade existe (o sistema faz o que precisa), mas falta disponibilidade/capacidade (Garantia).</p></details>
+  <details><summary>2) Na ITIL 4, qual é a diferença entre "Erro Conhecido" e "Incidente"?</summary>
+    <p><span class="pill ok">Causa analisada vs. interrupção</span> Erro Conhecido é um problema cuja causa raiz já foi analisada (mesmo sem correção definitiva ainda). Incidente é a interrupção não planejada do serviço.</p></details>
+  <details><summary>3) A equipe quer automatizar um processo bagunçado imediatamente. Qual princípio orientador recomenda simplificar antes?</summary>
+    <p><span class="pill ok">Otimizar e automatizar</span> Antes de automatizar, é preciso otimizar/simplificar o fluxo para não automatizar desperdício.</p></details>
+  <details><summary>4) Qual prática atua como ponto único de contato entre o provedor de serviços e os usuários?</summary>
+    <p><span class="pill ok">Central de Serviços (Service Desk)</span> Captura a demanda de incidentes e solicitações de serviço.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 3 ===================================================== -->
+<section class="chapter" data-title="Planejamento Estratégico e PDTI">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 3</span>
+  <h1>Planejamento Estratégico e PDTI</h1>
+  <span class="emoji">🗺️</span>
+  <div class="steps">
+    <div class="step"><b>1. Estratégico → Tático → Operacional</b><span>Como a estratégia desce até a equipe de TI.</span></div>
+    <div class="step"><b>2. SWOT e BSC</b><span>As duas ferramentas mais cobradas em planejamento.</span></div>
+    <div class="step"><b>3. PDTI no Judiciário (TJPB)</b><span>O papel do PDTI 2024–2026 e da ENTIC-JUD.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🏗️</span><div><b>Analogia da casa:</b> o <b>Planejamento Estratégico</b> é o sonho dos moradores ("queremos uma casa segura e iluminada"). O <b>PDTI</b> é a planta elétrica e hidráulica da tecnologia: diz quais cabos, prazos, orçamento e riscos precisam ser cuidados para o sonho sair do papel.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">NÍVEIS DE PLANEJAMENTO</span>
+  <h2>Da visão do Tribunal até a tarefa do dia</h2>
+  <svg viewBox="0 0 660 200" role="img" aria-label="Pirâmide de planejamento: Estratégico, Tático (PDTI) e Operacional">
+    <polygon points="330,15 205,72 455,72" class="keybox"/>
+    <text class="kt" x="330" y="55" text-anchor="middle" style="font-size:14px">Estratégico (Longo prazo)</text>
+    <polygon points="200,78 460,78 525,135 135,135" class="accbox"/>
+    <text x="330" y="106" text-anchor="middle">Tático · PDTI / PETI (Médio prazo)</text>
+    <text x="330" y="124" text-anchor="middle" class="small">Traduz estratégia em metas, projetos e orçamento de TIC</text>
+    <polygon points="130,141 530,141 595,192 65,192" class="box"/>
+    <text x="330" y="172" text-anchor="middle">Operacional (Curto prazo · sprints, rotinas, chamados)</text>
+  </svg>
+  <p class="mini">Sem o nível tático (<b>PDTI</b>), a TI vira "apagadora de incêndios" e compra tecnologia sem conexão com os objetivos do Tribunal.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">ALINHAMENTO NO JUDICIÁRIO</span>
+  <h2>De onde nasce o PDTI do TJPB (2024–2026)</h2>
+  <div class="flow">
+    <span>Estratégia Nacional do Judiciário</span><i>→</i>
+    <span>ENTIC-JUD (Res. CNJ 370/2021)</span><i>→</i>
+    <span>Planejamento Estratégico TJPB</span><i>→</i>
+    <span style="background:var(--key);color:var(--key-ink)">PDTI TJPB 2024–2026</span>
+  </div>
+  <div class="say law">O <b>PDTI (Plano Diretor de Tecnologia da Informação e Comunicação)</b> é o instrumento de diagnóstico, planejamento e gestão dos recursos e processos de TIC, alinhado à estratégia do órgão e às diretrizes do CNJ (confira metas e indicadores específicos no texto oficial do PDTI TJPB 2024–2026 e da Res. CNJ 370/2021).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ANÁLISE SWOT</span>
+  <h2>Olhar para dentro e olhar para fora</h2>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th></th><th>Ajuda a atingir a meta (+)</th><th>Atrapalha a atingir a meta (−)</th></tr>
+    <tr><td><b>Ambiente INTERNO</b><br><span class="mini">(sob controle da TI/órgão)</span></td><td class="hk"><b>Forças (Strengths)</b><br>Ex.: equipe experiente, código bem testado</td><td class="hl"><b>Fraquezas (Weaknesses)</b><br>Ex.: falta de documentação, déficit de pessoal</td></tr>
+    <tr><td><b>Ambiente EXTERNO</b><br><span class="mini">(fora do controle direto)</span></td><td class="hk"><b>Oportunidades (Opportunities)</b><br>Ex.: nova API nacional do CNJ, linha de crédito</td><td class="hl"><b>Ameaças (Threats)</b><br>Ex.: ataques cibernéticos, corte orçamentário</td></tr>
+  </table></div>
+  <p class="mini"><b>Macete:</b> se você pode mudar direto dentro de casa, é <b>Força ou Fraqueza</b>. Se vem do mercado, da lei ou do mundo lá fora, é <b>Oportunidade ou Ameaça</b>.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">BALANCED SCORECARD (BSC)</span>
+  <h2>As 4 perspectivas para não olhar só dinheiro</h2>
+  <p>No setor público, o lucro não é o fim — o fim é o <b>valor público para a sociedade</b>:</p>
+  <svg viewBox="0 0 660 190" role="img" aria-label="4 perspectivas do BSC no setor público">
+    <defs><marker id="c3a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="okbox" x="190" y="10" width="280" height="44" rx="12"/><text x="330" y="37" text-anchor="middle">1. Sociedade / Jurisdicionado (Valor Público)</text>
+    <rect class="accbox" x="30" y="76" width="270" height="44" rx="12"/><text x="165" y="103" text-anchor="middle">2. Processos Internos</text>
+    <rect class="accbox" x="360" y="76" width="270" height="44" rx="12"/><text x="495" y="103" text-anchor="middle">3. Orçamentária / Financeira</text>
+    <rect class="keybox" x="190" y="140" width="280" height="42" rx="12"/><text class="kt" x="330" y="166" text-anchor="middle">4. Aprendizado e Crescimento (Pessoas + TI)</text>
+    <line x1="330" y1="138" x2="330" y2="58" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c3a)"/>
+  </svg>
+  <p class="mini">Capacitar servidores e modernizar a TI (<b>Aprendizado e Crescimento</b>) melhora os <b>Processos Internos</b>, respeita o <b>Orçamento</b> e entrega justiça mais rápida à <b>Sociedade</b>.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">O QUE TEM NO PDTI</span>
+  <h2>Os blocos essenciais de um PDTI</h2>
+  <div class="steps">
+    <div class="step"><b>Inventário de Necessidades</b><span>O que as áreas do tribunal precisam de TI.</span></div>
+    <div class="step"><b>Plano de Metas e Ações</b><span>Projetos priorizados, prazos e responsáveis.</span></div>
+    <div class="step"><b>Plano Orçamentário</b><span>Quanto custa e de onde vem o recurso.</span></div>
+    <div class="step"><b>Gestão de Riscos e Pessoas</b><span>Capacitação, riscos de TIC e indicadores.</span></div>
+  </div>
+  <div class="say good"><b>Conexão com contratações:</b> uma contratação de solução de TIC no Judiciário precisa estar prevista e alinhada ao PDTI do órgão.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">IDENTIDADE ORGANIZACIONAL</span>
+  <h2>Missão × Visão × Valores</h2>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Elemento</th><th>Pergunta que responde</th><th>Exemplo simples</th></tr>
+    <tr><td><b>Missão</b></td><td><b>Por que existimos hoje?</b></td><td>Garantir tecnologia segura e ágil para a prestação jurisdicional.</td></tr>
+    <tr><td><b>Visão</b></td><td><b>Onde queremos chegar no futuro?</b></td><td>Ser referência em transformação digital até 2026.</td></tr>
+    <tr><td><b>Valores</b></td><td><b>Quais princípios não negociamos?</b></td><td>Ética, transparência, acessibilidade, foco no cidadão.</td></tr>
+  </table></div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA FGV</span>
+  <h2>Erros clássicos em Planejamento e PDTI</h2>
+  <div class="say trap">
+    <p class="ex ng"><b>Errado:</b> "A obsolescência dos servidores próprios do tribunal é uma Ameaça externa na matriz SWOT."</p>
+    <p class="ex ok"><b>Certo:</b> Servidores próprios pertencem ao órgão — logo é <b>Fraqueza (fator interno)</b>, não Ameaça externa.</p>
+  </div>
+  <div class="say trap">
+    <p class="ex ng"><b>Errado:</b> "O PDTI substitui o Planejamento Estratégico Institucional do Tribunal."</p>
+    <p class="ex ok"><b>Certo:</b> O PDTI <b>deriva e apoia</b> o Planejamento Estratégico Institucional, traduzindo-o para a área de TIC.</p>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO</span>
+  <h2>Checklist de Planejamento e PDTI</h2>
+  <div class="magic">
+    Estratégico define o norte. PDTI traduz em metas, orçamento e projetos de TIC.
+    <small>SWOT: interno (F/F) × externo (O/A). BSC: 4 perspectivas até a sociedade.</small>
+  </div>
+  <ul class="checklist">
+    <li>3 níveis: Estratégico (longo), Tático/PDTI (médio), Operacional (curto).</li>
+    <li>PDTI TJPB 2024–2026 alinha-se ao PE do TJPB e à ENTIC-JUD (Res. CNJ 370/2021).</li>
+    <li>SWOT: Forças/Fraquezas (internas) × Oportunidades/Ameaças (externas).</li>
+    <li>BSC no setor público coloca a <b>Sociedade/Jurisdicionado</b> no topo.</li>
+    <li>Toda contratação relevante de TIC deve se alinhar ao PDTI.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>4 questões estilo FGV (clique para conferir)</h2>
+  <details><summary>1) Na matriz SWOT da TI de um tribunal, o surgimento de uma nova lei que exige acessibilidade digital em 12 meses é classificado como:</summary>
+    <p><span class="pill ok">Fator externo (Oportunidade ou Ameaça)</span> Leis e resoluções externas não são controladas pela equipe de TI; nunca são Força ou Fraqueza.</p></details>
+  <details><summary>2) Qual perspectiva do BSC trata de capacitação dos servidores de TI e modernização da arquitetura de dados?</summary>
+    <p><span class="pill ok">Aprendizado e Crescimento</span> É a base da cadeia de causa e efeito do BSC.</p></details>
+  <details><summary>3) Qual instrumento conecta os objetivos estratégicos do tribunal às necessidades de sistemas, infraestrutura, orçamento e contratações de TIC?</summary>
+    <p><span class="pill ok">PDTI (Plano Diretor de TIC)</span> É o plano tático-estratégico que orienta investimentos e ações de TIC.</p></details>
+  <details><summary>4) "Ser reconhecido nacionalmente pela excelência digital até 2026" é exemplo de Missão, Visão ou Valor?</summary>
+    <p><span class="pill ok">Visão</span> Expressa o estado futuro desejado no horizonte temporal definido.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 4 ===================================================== -->
+<section class="chapter" data-title="Projetos, Processos, Serviços e Indicadores">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 4</span>
+  <h1>Projetos, Processos, Serviços e Indicadores</h1>
+  <span class="emoji">📊</span>
+  <div class="steps">
+    <div class="step"><b>1. Projeto × Processo × Serviço</b><span>Temporário × contínuo × entrega de valor.</span></div>
+    <div class="step"><b>2. Portfólio × Programa × Projeto</b><span>Fazer a coisa certa × fazer certo a coisa.</span></div>
+    <div class="step"><b>3. 3Es e Métricas de TI</b><span>Eficiência, Eficácia, Efetividade, MTBF e MTTR.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🥐</span><div><b>Analogia da padaria:</b> construir o forno novo é um <b>Projeto</b> (tem começo, meio e fim). Assar pão todo dia às 6h é um <b>Processo</b> (repetitivo). Entregar pão quentinho na mesa do cliente sem ele lidar com farinha é um <b>Serviço</b>.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">TRÍADE FUNDAMENTAL</span>
+  <h2>Projeto × Processo × Serviço</h2>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Conceito</th><th>Natureza</th><th>Resultado</th><th>Exemplo no TJPB</th></tr>
+    <tr><td><b>Projeto</b></td><td class="hk"><b>Temporário</b> (início e fim)</td><td>Produto ou serviço <b>único</b></td><td>Implantar novo módulo de IA no PJe</td></tr>
+    <tr><td><b>Processo</b></td><td class="hk"><b>Contínuo</b> e repetitivo</td><td>Entradas viram saídas padronizadas</td><td>Triagem diária de petições e protocolos</td></tr>
+    <tr><td><b>Serviço</b></td><td class="hk"><b>Entrega contínua de valor</b></td><td>Cliente atinge resultado sem gerir risco</td><td>Disponibilizar o PJe 24x7 para advogados</td></tr>
+  </table></div>
+  <div class="say law">Em <b>BPM (Gerenciamento de Processos de Negócio)</b>, primeiro mapeia-se o estado atual (<b>AS-IS</b>) para depois redesenhar o processo melhorado (<b>TO-BE</b>), automatizar e monitorar.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PORTFÓLIO, PROGRAMA E PROJETO</span>
+  <h2>A escada da gestão de iniciativas</h2>
+  <svg viewBox="0 0 660 190" role="img" aria-label="Portfólio contém Programas e Projetos alinhados à estratégia">
+    <rect class="keybox" x="20" y="15" width="620" height="52" rx="14"/>
+    <text class="kt" x="330" y="39" text-anchor="middle">PORTFÓLIO · "Fazer os projetos CERTOS"</text>
+    <text class="kt small" x="330" y="57" text-anchor="middle">Prioriza e alinha programas e projetos à estratégia do órgão</text>
+    <rect class="accbox" x="60" y="80" width="260" height="92" rx="14"/>
+    <text x="190" y="106" text-anchor="middle">PROGRAMA</text>
+    <text x="190" y="128" text-anchor="middle" class="small">Projetos relacionados gerenciados</text>
+    <text x="190" y="146" text-anchor="middle" class="small">juntos para ganhar sinergia</text>
+    <rect class="okbox" x="350" y="80" width="250" height="92" rx="14"/>
+    <text x="475" y="106" text-anchor="middle">PROJETO</text>
+    <text x="475" y="128" text-anchor="middle" class="small">"Fazer CERTO o projeto"</text>
+    <text x="475" y="146" text-anchor="middle" class="small">Escopo, prazo, custo e qualidade</text>
+  </svg>
+  <p class="mini">Ciclo de vida clássico de um projeto (PMBOK): <b>Iniciação → Planejamento → Execução → Monitoramento e Controle → Encerramento</b>.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">OS 3 Es DOS INDICADORES</span>
+  <h2>Eficiência × Eficácia × Efetividade</h2>
+  <svg viewBox="0 0 660 175" role="img" aria-label="Eficiência foca nos meios, Eficácia na meta, Efetividade no impacto social">
+    <defs><marker id="c4a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="box" x="15" y="30" width="185" height="100" rx="14"/>
+    <text x="107" y="60" text-anchor="middle">1. Eficiência</text>
+    <text x="107" y="84" text-anchor="middle" class="small">Como faz (meios)</text>
+    <text x="107" y="106" text-anchor="middle" class="small">Menor custo e tempo</text>
+
+    <rect class="accbox" x="237" y="30" width="185" height="100" rx="14"/>
+    <text x="329" y="60" text-anchor="middle">2. Eficácia</text>
+    <text x="329" y="84" text-anchor="middle" class="small">O que entrega (meta)</text>
+    <text x="329" y="106" text-anchor="middle" class="small">Atingir o objetivo</text>
+
+    <rect class="okbox" x="460" y="30" width="185" height="100" rx="14"/>
+    <text x="552" y="60" text-anchor="middle">3. Efetividade</text>
+    <text x="552" y="84" text-anchor="middle" class="small">Transformação (impacto)</text>
+    <text x="552" y="106" text-anchor="middle" class="small">Valor real ao cidadão</text>
+
+    <line x1="202" y1="80" x2="233" y2="80" stroke="#6d4aff" stroke-width="3" marker-end="url(#c4a)"/>
+    <line x1="424" y1="80" x2="456" y2="80" stroke="#6d4aff" stroke-width="3" marker-end="url(#c4a)"/>
+    <text x="330" y="158" text-anchor="middle" class="small">Exemplo: comprar vacina barato (eficiente) + aplicar em 100% da meta (eficaz) + reduzir doença (efetivo)</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">MÉTRICAS DE TI</span>
+  <h2>MTBF, MTTR, Disponibilidade e Acordos</h2>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Sigla</th><th>Significado</th><th>Bom para o serviço quando…</th></tr>
+    <tr><td><b>MTBF</b></td><td>Tempo Médio Entre Falhas (<i>Mean Time Between Failures</i>)</td><td class="hk">É <b>ALTO</b> (falha raramente = confiável)</td></tr>
+    <tr><td><b>MTTR</b></td><td>Tempo Médio de Reparo (<i>Mean Time to Repair</i>)</td><td class="hk">É <b>BAIXO</b> (volta ao ar rápido)</td></tr>
+    <tr><td><b>SLA</b></td><td>Acordo de Nível de Serviço (<i>Service Level Agreement</i>)</td><td>Meta formal entre provedor e cliente/usuário</td></tr>
+    <tr><td><b>OLA</b></td><td>Acordo de Nível Operacional</td><td>Meta interna entre equipes de TI para sustentar o SLA</td></tr>
+  </table></div>
+  <p class="mini"><b>OKR (Objectives and Key Results):</b> une um <b>Objetivo</b> qualitativo inspirador a <b>Resultados-Chave</b> mensuráveis.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">EXEMPLO RESOLVIDO</span>
+  <h2>Diagnosticando um sistema pelas métricas</h2>
+  <div class="card">
+    <p>O sistema de certidões teve <b>MTBF = 2.000 horas</b>, mas quando caiu levou <b>MTTR = 12 horas</b> para voltar, estourando o SLA de 2 horas.</p>
+    <p class="ex ok"><b>Diagnóstico:</b> alta confiabilidade (cai pouco), mas baixa recuperabilidade (demora para restaurar). Prioridade: melhorar automação de failover, runbooks e monitoramento.</p>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA FGV</span>
+  <h2>Confusões que derrubam na prova</h2>
+  <div class="say trap">
+    <p class="ex ng"><b>Errado:</b> "Se o projeto foi entregue no prazo e dentro do orçamento, ele automaticamente teve alta efetividade."</p>
+    <p class="ex ok"><b>Certo:</b> Prazo e orçamento mostram <b>eficiência</b> (e <b>eficácia</b> na entrega). <b>Efetividade</b> só existe se o sistema gerar impacto real para os usuários/sociedade.</p>
+  </div>
+  <div class="say trap">
+    <p class="ex ng"><b>Errado:</b> "Portfólio é apenas um sinônimo de Programa com mais projetos."</p>
+    <p class="ex ok"><b>Certo:</b> Projetos de um <b>Programa</b> são relacionados entre si. Os de um <b>Portfólio</b> podem ser independentes, unidos pelo alinhamento estratégico.</p>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO</span>
+  <h2>Checklist de Projetos, Processos e Indicadores</h2>
+  <div class="magic">
+    Eficiência = meios. Eficácia = meta. Efetividade = impacto real.
+    <small>Projeto é temporário; Processo é contínuo; MTBF alto + MTTR baixo = disponibilidade alta.</small>
+  </div>
+  <ul class="checklist">
+    <li>Projeto (temporário/único) × Processo (contínuo/AS-IS → TO-BE) × Serviço (valor sem risco ao cliente).</li>
+    <li>Portfólio (coisas certas) → Programa (sinergia) → Projeto (fazer certo).</li>
+    <li>3Es: Eficiência (recursos), Eficácia (meta), Efetividade (impacto).</li>
+    <li>MTBF mede confiabilidade (quanto maior, melhor); MTTR mede agilidade de reparo (quanto menor, melhor).</li>
+    <li>SLA é acordo com cliente; OLA é acordo interno entre equipes.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>4 questões estilo FGV (clique para conferir)</h2>
+  <details><summary>1) Uma equipe reduz em 30% o custo de nuvem mantendo o mesmo atendimento. Esse ganho é de:</summary>
+    <p><span class="pill ok">Eficiência</span> Reduziu recursos gastos (custo) mantendo a entrega.</p></details>
+  <details><summary>2) Em BPM, o levantamento de como o processo funciona hoje (com gargalos e retrabalhos) é chamado de:</summary>
+    <p><span class="pill ok">AS-IS</span> O modelo futuro redesenhado é o TO-BE.</p></details>
+  <details><summary>3) A equipe de banco de dados assina um compromisso interno com a equipe de suporte para responder chamados críticos em 15 minutos, garantindo o SLA do PJe. Esse compromisso interno é um:</summary>
+    <p><span class="pill ok">OLA (Acordo de Nível Operacional)</span> Compromisso entre equipes internas do mesmo provedor.</p></details>
+  <details><summary>4) Qual é a diferença prática entre Eficácia e Efetividade em uma política pública digital?</summary>
+    <p><span class="pill ok">Entrega vs. Impacto</span> Eficácia mede se a meta prevista foi cumprida (ex.: lançar o portal); efetividade mede se houve transformação real (ex.: redução efetiva do tempo de atendimento ao cidadão).</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 5 ===================================================== -->
+<section class="chapter" data-title="Contratações de TIC e Res. CNJ 468/2022">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 5</span>
+  <h1>Contratações de TIC e Res. CNJ 468/2022</h1>
+  <span class="emoji">📜</span>
+  <div class="steps">
+    <div class="step"><b>1. As 3 Fases</b><span>Planejamento → Seleção do Fornecedor → Gestão do Contrato.</span></div>
+    <div class="step"><b>2. Documentos na Ordem</b><span>DOD → Equipe → ETP → Termo de Referência (TR).</span></div>
+    <div class="step"><b>3. Fiscalização e Pagamento</b><span>Papéis da equipe e pagamento por resultado.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🏠</span><div><b>Analogia da reforma:</b> você não chama o pedreiro dizendo "faz um quarto aí e me cobra por hora". Primeiro você anota o que precisa (<b>DOD</b>), chama engenheiro e comprador para estudar opções e custos (<b>ETP</b>), escreve o projeto detalhado (<b>TR</b>), escolhe quem vai construir e só paga quando cada etapa passa na vistoria.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">VISÃO GERAL DA RES. CNJ 468/2022</span>
+  <h2>As 3 Fases da Contratação de Solução de TIC</h2>
+  <svg viewBox="0 0 660 165" role="img" aria-label="Três fases da contratação de TIC: Planejamento, Seleção do Fornecedor e Gestão do Contrato">
+    <defs><marker id="c5a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="keybox" x="15" y="25" width="195" height="95" rx="14"/>
+    <text class="kt" x="112" y="55" text-anchor="middle">1. Planejamento</text>
+    <text class="kt small" x="112" y="78" text-anchor="middle">DOD → Equipe → ETP</text>
+    <text class="kt small" x="112" y="96" text-anchor="middle">→ Termo de Referência</text>
+
+    <rect class="accbox" x="235" y="25" width="190" height="95" rx="14"/>
+    <text x="330" y="55" text-anchor="middle">2. Seleção</text>
+    <text x="330" y="78" text-anchor="middle" class="small">Edital, disputa,</text>
+    <text x="330" y="96" text-anchor="middle" class="small">habilitação e contrato</text>
+
+    <rect class="okbox" x="450" y="25" width="195" height="95" rx="14"/>
+    <text x="547" y="55" text-anchor="middle">3. Gestão</text>
+    <text x="547" y="78" text-anchor="middle" class="small">OS, fiscalização,</text>
+    <text x="547" y="96" text-anchor="middle" class="small">recebimento e pagamento</text>
+
+    <line x1="212" y1="72" x2="231" y2="72" stroke="#6d4aff" stroke-width="3" marker-end="url(#c5a)"/>
+    <line x1="427" y1="72" x2="446" y2="72" stroke="#6d4aff" stroke-width="3" marker-end="url(#c5a)"/>
+    <text x="330" y="148" text-anchor="middle" class="small">Tudo alinhado ao PDTI, ao Planejamento Estratégico e à Lei 14.133/2021 (confira prazos e artigos no texto oficial).</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">FASE 1 · PLANEJAMENTO</span>
+  <h2>A ordem sagrada dos documentos</h2>
+  <svg viewBox="0 0 660 115" role="img" aria-label="Sequência do planejamento: DOD, Equipe de Planejamento, ETP e Termo de Referência">
+    <defs><marker id="c5b" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="box" x="10" y="20" width="135" height="64" rx="12"/><text x="77" y="48" text-anchor="middle">1. DOD</text><text x="77" y="68" text-anchor="middle" class="small">Oficializa demanda</text>
+    <rect class="accbox" x="175" y="20" width="145" height="64" rx="12"/><text x="247" y="48" text-anchor="middle">2. Equipe</text><text x="247" y="68" text-anchor="middle" class="small">Req + Téc + Adm</text>
+    <rect class="accbox" x="350" y="20" width="135" height="64" rx="12"/><text x="417" y="48" text-anchor="middle">3. ETP</text><text x="417" y="68" text-anchor="middle" class="small">Viabilidade e TCO</text>
+    <rect class="keybox" x="515" y="20" width="135" height="64" rx="12"/><text class="kt" x="582" y="48" text-anchor="middle">4. TR</text><text class="kt small" x="582" y="68" text-anchor="middle">Especifica e mede</text>
+    <line x1="147" y1="52" x2="171" y2="52" stroke="#6d4aff" stroke-width="3" marker-end="url(#c5b)"/>
+    <line x1="322" y1="52" x2="346" y2="52" stroke="#6d4aff" stroke-width="3" marker-end="url(#c5b)"/>
+    <line x1="487" y1="52" x2="511" y2="52" stroke="#6d4aff" stroke-width="3" marker-end="url(#c5b)"/>
+  </svg>
+  <ul class="mini">
+    <li><b>DOD (Documento de Oficialização da Demanda):</b> a área requisitante explica a necessidade e o alinhamento estratégico/PDTI.</li>
+    <li><b>ETP (Estudo Técnico Preliminar):</b> analisa viabilidade, compara soluções de mercado, avalia <b>TCO (Custo Total de Propriedade)</b> e riscos.</li>
+    <li><b>TR (Termo de Referência):</b> especifica o objeto escolhido, métricas, níveis de serviço (ANS/SLA), obrigações e critérios de pagamento.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">QUEM PLANEJA</span>
+  <h2>A Equipe de Planejamento da Contratação</h2>
+  <div class="steps">
+    <div class="step"><b>Integrante Requisitante</b><span>Representa a área de negócio/demandante. Sabe <i>por que</i> precisa.</span></div>
+    <div class="step"><b>Integrante Técnico</b><span>Da área de TIC. Define requisitos técnicos, arquitetura e métricas.</span></div>
+    <div class="step"><b>Integrante Administrativo</b><span>Da área de compras/licitações. Garante conformidade legal e edital.</span></div>
+  </div>
+  <div class="say law">A contratação de Solução de TIC exige atuação conjunta das visões de <b>negócio</b>, <b>técnica</b> e <b>administrativa</b>, evitando especificações direcionadas ou desconectadas da necessidade real.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">FASE 3 · GESTÃO E FISCALIZAÇÃO</span>
+  <h2>Quem fiscaliza o contrato depois de assinado</h2>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Papel</th><th>Responsabilidade principal</th></tr>
+    <tr><td><b>Gestor do Contrato</b></td><td>Coordena as atividades, acompanha prazos, aditivos, sanções e autoriza pagamentos.</td></tr>
+    <tr><td><b>Fiscal Técnico</b></td><td>Verifica qualidade técnica, código/infraestrutura, métricas e cumprimento do SLA/ANS.</td></tr>
+    <tr><td><b>Fiscal Demandante (Requisitante)</b></td><td>Confere se a entrega atende à necessidade funcional da área usuária.</td></tr>
+    <tr><td><b>Fiscal Administrativo</b></td><td>Confere certidões, obrigações trabalhistas/fiscais e documentação de pagamento.</td></tr>
+  </table></div>
+  <p class="mini">Na execução, a demanda é aberta por <b>Ordem de Serviço (OS)</b> ou fornecimento de bens, seguida de <b>recebimento provisório</b> e <b>definitivo</b>.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">PAGAMENTO POR RESULTADO</span>
+  <h2>Por que a regra proíbe "pagar só por presença"</h2>
+  <div class="two">
+    <div class="say bad" style="margin:0">
+      <b>✗ Modelo reprovado:</b><br>
+      "Pagar por hora trabalhada / posto de trabalho sem medir entregas ou qualidade."<br>
+      <span class="mini">Risco: quanto mais lento o fornecedor, mais ele ganha.</span>
+    </div>
+    <div class="say good" style="margin:0">
+      <b>✓ Modelo de governança:</b><br>
+      "Pagar por <b>resultados, entregas e níveis de serviço (ANS/SLA)</b> verificados."<br>
+      <span class="mini">Se descumprir o nível de serviço, aplica-se ajuste/glosa prevista no contrato.</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PRECAUÇÃO NORMATIVA</span>
+  <h2>O que conferir no texto oficial da Res. CNJ 468/2022</h2>
+  <div class="say law">
+    <p>Em prova discursiva ou objetiva da FGV, nunca chute número de artigo ou prazo se não tiver certeza absoluta:</p>
+    <ul class="mini">
+      <li>Confira no texto oficial da <b>Res. CNJ 468/2022</b> os artigos exatos sobre vedações, dispensa de ETP em casos específicos, prazos de transição e modelos de contratação em nuvem/software.</li>
+      <li>Confira também a relação com a <b>Lei 14.133/2021</b> (Nova Lei de Licitações) e o <b>Guia de Contratações de STIC do Poder Judiciário</b>.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA FGV</span>
+  <h2>Armadilhas clássicas em Contratações de TIC</h2>
+  <div class="say trap">
+    <p class="ex ng"><b>Errado:</b> "O Termo de Referência (TR) é elaborado antes do Estudo Técnico Preliminar (ETP) para acelerar a licitação."</p>
+    <p class="ex ok"><b>Certo:</b> O <b>ETP vem antes do TR</b>! Primeiro estuda-se a viabilidade e as alternativas de mercado (ETP); só depois detalha-se a solução escolhida (TR).</p>
+  </div>
+  <div class="say trap">
+    <p class="ex ng"><b>Errado:</b> "O Fiscal Técnico é o único responsável por conferir certidões fiscais e trabalhistas da contratada."</p>
+    <p class="ex ok"><b>Certo:</b> Conferir aspectos fiscais, trabalhistas e documentais é papel do <b>Fiscal Administrativo</b>.</p>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO</span>
+  <h2>Checklist da Res. CNJ 468/2022</h2>
+  <div class="magic">
+    DOD abre. Equipe estuda no ETP. TR especifica. Fiscalização paga por resultado.
+    <small>3 Fases: Planejamento → Seleção → Gestão. Sempre alinhado ao PDTI.</small>
+  </div>
+  <ul class="checklist">
+    <li>Fases: Planejamento da Contratação → Seleção do Fornecedor → Gestão do Contrato.</li>
+    <li>Ordem no Planejamento: DOD → Equipe (Requisitante, Técnico, Administrativo) → ETP → TR.</li>
+    <li>ETP avalia viabilidade, alternativas de mercado, riscos e TCO.</li>
+    <li>Gestão usa OS, recebimento provisório/definitivo e pagamento vinculado a resultados/ANS.</li>
+    <li>Fiscalização divide papéis: Gestor + Fiscal Técnico + Demandante + Administrativo.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>4 questões estilo FGV (clique para conferir)</h2>
+  <details><summary>1) Uma unidade do tribunal precisa de um novo sistema e envia a solicitação inicial justificando o alinhamento ao PDTI. Que documento é esse?</summary>
+    <p><span class="pill ok">DOD (Documento de Oficialização da Demanda)</span> É o documento inaugural da fase de Planejamento da Contratação.</p></details>
+  <details><summary>2) Em qual artefato a equipe compara comprar licença perpétua versus contratar SaaS em nuvem, avaliando custos totais e riscos?</summary>
+    <p><span class="pill ok">ETP (Estudo Técnico Preliminar)</span> O ETP analisa a viabilidade técnica e econômica das alternativas de mercado antes do TR.</p></details>
+  <details><summary>3) Durante a execução contratual, quem verifica se o software entregue atende às regras de negócio da área usuária?</summary>
+    <p><span class="pill ok">Fiscal Demandante (Requisitante)</span> O Técnico valida aspectos tecnológicos/métricas; o Demandante valida o atendimento à necessidade do negócio.</p></details>
+  <details><summary>4) Qual é a regra de ouro sobre remuneração em contratos de serviços de TIC no setor público?</summary>
+    <p><span class="pill ok">Pagamento por resultados e níveis de serviço</span> Deve-se vincular o pagamento a entregas medidas e ANS/SLA, evitando mera alocação de postos por hora sem entrega.</p></details>
+</div>
+
+</section>
+
+<script src="aula.js"></script>
+</body></html>

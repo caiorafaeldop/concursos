@@ -1,0 +1,720 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Inteligência Artificial · TJPB Quest</title>
+<link rel="stylesheet" href="aula.css">
+</head>
+<body data-subject="ia" data-title="Inteligência Artificial">
+
+<!-- =================================================================== -->
+<!-- CAPÍTULO 1: Fundamentos de IA e Machine Learning                    -->
+<!-- =================================================================== -->
+<section class="chapter" data-title="Fundamentos de IA e Machine Learning">
+
+  <div class="slide">
+    <span class="tag">CAPÍTULO 1</span>
+    <span class="emoji">🤖</span>
+    <h1>Fundamentos de IA e Machine Learning</h1>
+    <p class="lead">Como o computador deixou de seguir só receitas prontas (<code>if/else</code>) e passou a aprender padrões pelos dados.</p>
+    <div class="analogy">
+      <span class="emoji">🚲</span>
+      <div><b>Analogia da bicicleta:</b> programação clássica é dar um manual com 500 regras de equilíbrio. <b>Machine Learning</b> é deixar a criança tentar pedalar, cair, ajustar e aprender sozinha com a experiência.</div>
+    </div>
+    <p><b>O que você vai aprender:</b> hierarquia IA → ML → DL → GenAI, tipos de aprendizado, overfitting × underfitting e discriminativa × generativa.</p>
+  </div>
+
+  <div class="slide">
+    <span class="tag">HIERARQUIA</span>
+    <h2>As 4 bonecas russas da IA</h2>
+    <p>Na prova, a banca adora misturar os níveis. Pense em círculos um dentro do outro:</p>
+    <svg viewBox="0 0 640 240" role="img" aria-label="Camadas concêntricas: IA contém Machine Learning, que contém Deep Learning, que contém IA Generativa">
+      <rect class="box" x="20" y="14" width="600" height="212" rx="22"/>
+      <text x="40" y="42">1. Inteligência Artificial (IA) — qualquer sistema que simula decisão humana</text>
+      <rect class="accbox" x="45" y="56" width="550" height="156" rx="18"/>
+      <text x="65" y="84">2. Machine Learning (ML) — aprende padrões a partir de dados</text>
+      <rect class="okbox" x="70" y="98" width="500" height="100" rx="15"/>
+      <text x="90" y="126">3. Deep Learning (DL) — redes neurais com várias camadas</text>
+      <rect class="keybox" x="100" y="140" width="440" height="44" rx="12"/>
+      <text class="kt" x="320" y="168" text-anchor="middle">4. IA Generativa (LLMs, difusão) — cria conteúdo novo</text>
+    </svg>
+    <div class="say law">Todo modelo de <b>IA Generativa</b> moderna usa Deep Learning (que é ML, que é IA), mas nem toda IA usa Machine Learning (ex.: sistemas especialistas de regras).</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">PROGRAMAÇÃO × ML</span>
+    <h2>Qual a diferença na prática?</h2>
+    <p>Na programação tradicional, você escreve as <b>regras</b>. No Machine Learning, você entrega os <b>dados + respostas</b> e a máquina descobre as regras.</p>
+    <div class="two">
+      <div class="card">
+        <h3>📜 Programação Clássica</h3>
+        <div class="flow"><span>Dados</span><i>+</i><span>Regras (if/else)</span><i>→</i><span>Resposta</span></div>
+        <p>Bom quando a regra é fixa (ex.: calcular imposto).</p>
+      </div>
+      <div class="card">
+        <h3>🧠 Machine Learning</h3>
+        <div class="flow"><span>Dados</span><i>+</i><span>Gabarito</span><i>→</i><span>Modelo (Regras)</span></div>
+        <p>Essencial quando há milhões de casos (ex.: detectar fraude ou ler texto).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">OS 3 TIPOS DE APRENDIZADO</span>
+    <h2>Como a máquina estuda?</h2>
+    <div class="scroll">
+    <table class="cmp">
+      <tr><th>Tipo</th><th>Tem gabarito (rótulo)?</th><th>Objetivo</th><th>Exemplo no Tribunal</th></tr>
+      <tr><td><b>Supervisionado</b></td><td><span class="pill ok">Sim</span></td><td>Prever classe ou número</td><td>Prever se recurso será deferido</td></tr>
+      <tr><td><b>Não supervisionado</b></td><td><span class="pill ng">Não</span></td><td>Agrupar ou resumir dados</td><td>Agrupar processos por tema parecido</td></tr>
+      <tr><td><b>Por reforço</b></td><td>Recompensa / punição</td><td>Aprender sequência de ações</td><td>Agente que escolhe melhor rota</td></tr>
+    </table>
+    </div>
+    <div class="say law"><b>Supervisionado</b> divide-se em: <b>Classificação</b> (categoria discreta: spam/não-spam) e <b>Regressão</b> (valor contínuo: preço, dias de tramitação).</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">TREINO, VALIDAÇÃO E TESTE</span>
+    <h2>Não vale colar na prova!</h2>
+    <p>Se você só testar o modelo nos mesmos dados que ele estudou, não dá para saber se ele aprendeu de verdade ou se <b>decorou</b>.</p>
+    <svg viewBox="0 0 640 130" role="img" aria-label="Divisão do conjunto de dados em Treino, Validação e Teste">
+      <rect class="accbox" x="20" y="25" width="360" height="58" rx="12"/>
+      <text x="200" y="59" text-anchor="middle">Treino (~70%) — aprende os pesos</text>
+      <rect class="keybox" x="390" y="25" width="110" height="58" rx="12"/>
+      <text class="kt" x="445" y="59" text-anchor="middle">Validação</text>
+      <rect class="okbox" x="510" y="25" width="110" height="58" rx="12"/>
+      <text x="565" y="59" text-anchor="middle">Teste</text>
+      <text x="445" y="106" text-anchor="middle" class="small">ajusta hiperparâmetros</text>
+      <text x="565" y="106" text-anchor="middle" class="small">nota final inédita</text>
+    </svg>
+    <p>O conjunto de <b>teste</b> fica trancado no cofre até o final: mede a capacidade real de <b>generalização</b>.</p>
+  </div>
+
+  <div class="slide">
+    <span class="tag">O GRANDE DRAMA DO ML</span>
+    <h2>Underfitting × Ideal × Overfitting</h2>
+    <p>Imagine um aluno estudando para a prova da FGV:</p>
+    <div class="steps">
+      <div class="step"><b>😴 Underfitting</b><span>Nem estudou a matéria. Erra no simulado (treino) <b>e</b> erra na prova (teste). Viés alto.</span></div>
+      <div class="step"><b>🎯 Ideal</b><span>Entendeu os conceitos. Vai bem no treino e vai bem na prova inédita.</span></div>
+      <div class="step"><b>🦜 Overfitting</b><span>Decorou o gabarito do simulado! Tira 99% no treino e 55% na prova. Variância alta.</span></div>
+    </div>
+    <div class="say bad"><b>Sinal clássico de Overfitting:</b> erro muito baixo no treino + erro alto na validação/teste. Solução: mais dados, menos complexidade ou regularização.</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">DISCRIMINATIVA × GENERATIVA</span>
+    <h2>Julgar vs. Criar</h2>
+    <div class="two">
+      <div class="card">
+        <h3>⚖️ IA Discriminativa</h3>
+        <p>Olha um dado e traça uma fronteira para <b>classificar</b> ou prever.</p>
+        <p class="ex ok">“Essa petição é urgente ou comum?”</p>
+      </div>
+      <div class="card">
+        <h3>🎨 IA Generativa</h3>
+        <p>Aprende como os dados são feitos e <b>gera um exemplo novo</b>.</p>
+        <p class="ex ok">“Escreva um resumo desta petição.”</p>
+      </div>
+    </div>
+    <div class="say law"><b>Modelos discriminativos</b> estimam <code>P(y|x)</code> (qual classe dada a entrada). <b>Modelos generativos</b> aprendem a distribuição dos dados para sintetizar novos textos, imagens ou áudios.</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">CUIDADO NA PROVA</span>
+    <h2>Pegadinhas clássicas da FGV</h2>
+    <div class="say trap">
+      <b>Pegadinha 1:</b> “O modelo atingiu 98% no treino e 60% no teste, logo sofreu underfitting.”<br>
+      <span class="pill ng">Errado!</span> Se acertou muito no treino e caiu no teste, decorou ruído: é <b>overfitting</b>.
+    </div>
+    <div class="say trap">
+      <b>Pegadinha 2:</b> “Regressão logística é usada para prever valores contínuos porque tem 'regressão' no nome.”<br>
+      <span class="pill ng">Errado!</span> Regressão logística é algoritmo de <b>classificação</b> (probabilidade entre 0 e 1).
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">RESUMO DO CAPÍTULO 1</span>
+    <h2>Para nunca mais esquecer</h2>
+    <div class="magic">
+      “ML aprende com dados; Overfitting decora; Generativa cria.”
+      <small>IA &gt; ML &gt; DL &gt; IA Generativa · Classificação = categoria · Regressão = número</small>
+    </div>
+    <ul class="checklist">
+      <li>Sei distinguir supervisionado (com rótulo), não supervisionado (sem rótulo) e reforço (recompensa).</li>
+      <li>Sei identificar overfitting (bom no treino, ruim no teste) e underfitting (ruim nos dois).</li>
+      <li>Sei diferenciar modelo discriminativo (classifica) de generativo (produz novo conteúdo).</li>
+    </ul>
+  </div>
+
+  <div class="slide">
+    <span class="tag">TESTE RÁPIDO · CAPÍTULO 1</span>
+    <h2>4 questões estilo FGV</h2>
+    <details><summary>1) Um modelo prevê o tempo exato em dias que um processo levará até a sentença. Que tipo de aprendizado e tarefa é essa?</summary>
+      <p><span class="pill ok">Supervisionado — Regressão</span> Como há histórico com gabarito (dias reais) e a saída é um número contínuo, trata-se de regressão supervisionada.</p></details>
+    <details><summary>2) Um algoritmo agrupa milhares de processos sem etiqueta prévia para descobrir temas ocultos. Qual paradigma foi usado?</summary>
+      <p><span class="pill ok">Não supervisionado (Clustering)</span> Não existem rótulos prévios; o modelo agrupa por similaridade.</p></details>
+    <details><summary>3) Acurácia de 99% no conjunto de treino e 61% no conjunto de teste indica o quê?</summary>
+      <p><span class="pill ng">Overfitting</span> O modelo memorizou particularidades e ruídos do treino e falhou em generalizar para dados inéditos.</p></details>
+    <details><summary>4) Todo algoritmo de Machine Learning é necessariamente uma rede neural profunda (Deep Learning)?</summary>
+      <p><span class="pill ng">Falso</span> Árvores de decisão, Random Forest, SVM e regressão linear são Machine Learning clássico, sem redes profundas.</p></details>
+  </div>
+
+</section>
+
+<!-- =================================================================== -->
+<!-- CAPÍTULO 2: PLN: Tokenização, Stemming, Lematização e Stop Words    -->
+<!-- =================================================================== -->
+<section class="chapter" data-title="PLN: Tokenização, Stemming, Lematização e Stop Words">
+
+  <div class="slide">
+    <span class="tag">CAPÍTULO 2</span>
+    <span class="emoji">✂️</span>
+    <h1>PLN: Tokenização, Stemming, Lematização e Stop Words</h1>
+    <p class="lead">Computadores só fazem conta com números. Antes da IA entender português, ela precisa picotar e limpar o texto.</p>
+    <div class="analogy">
+      <span class="emoji">🥗</span>
+      <div><b>Analogia da cozinha:</b> você não joga uma melancia inteira no liquidificador. Primeiro fatia em pedaços (<b>tokenização</b>), tira as sementes inúteis (<b>stop words</b>) e descasca até chegar à polpa (<b>stemming / lematização</b>).</div>
+    </div>
+    <p><b>O que você vai aprender:</b> o pipeline clássico de pré-processamento em Processamento de Linguagem Natural (PLN) e como LLMs tokenizam.</p>
+  </div>
+
+  <div class="slide">
+    <span class="tag">PIPELINE DE PLN</span>
+    <h2>Da frase bruta ao dado limpo</h2>
+    <svg viewBox="0 0 640 150" role="img" aria-label="Fluxo de PLN: Texto bruto, Tokenização, Remoção de Stop Words, Stemming ou Lematização">
+      <defs><marker id="arr2" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+      <rect class="box" x="10" y="40" width="130" height="60" rx="12"/><text x="75" y="75" text-anchor="middle">Texto bruto</text>
+      <rect class="accbox" x="170" y="40" width="130" height="60" rx="12"/><text x="235" y="75" text-anchor="middle">Tokenização</text>
+      <rect class="keybox" x="330" y="40" width="135" height="60" rx="12"/><text class="kt" x="397" y="75" text-anchor="middle">Stop words</text>
+      <rect class="okbox" x="495" y="40" width="135" height="60" rx="12"/><text x="562" y="67" text-anchor="middle">Stemming /</text><text x="562" y="85" text-anchor="middle">Lematização</text>
+      <line x1="142" y1="70" x2="166" y2="70" stroke="#6d4aff" stroke-width="3" marker-end="url(#arr2)"/>
+      <line x1="302" y1="70" x2="326" y2="70" stroke="#6d4aff" stroke-width="3" marker-end="url(#arr2)"/>
+      <line x1="467" y1="70" x2="491" y2="70" stroke="#6d4aff" stroke-width="3" marker-end="url(#arr2)"/>
+    </svg>
+    <div class="say">Esse é o fluxo clássico de busca e classificação (ex.: com TF-IDF). Nos <b>LLMs modernos</b>, pula-se a remoção de stop words e stemming: vai direto da <b>tokenização por subpalavras</b> para os embeddings!</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">TOKENIZAÇÃO</span>
+    <h2>O que é um token?</h2>
+    <p><b>Tokenizar</b> é quebrar um texto em unidades menores (tokens). Não precisa ser sempre uma palavra inteira!</p>
+    <pre><code>Texto: <mark>"Desembargador julgou rapidamente."</mark>
+
+Por palavra:    ["Desembargador", "julgou", "rapidamente", "."]
+Por subpalavra: ["Des", "embarg", "ador", "julg", "ou", "rapida", "mente", "."]</code></pre>
+    <div class="say law">LLMs usam <b>subword tokenization</b> (como <b>BPE</b> — Byte Pair Encoding — e <b>WordPiece</b>). Vantagem: vocabulário compacto e capacidade de ler palavras raras ou novas sem erro de palavra desconhecida.</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">STOP WORDS</span>
+    <h2>Palavras de enchimento: tirar ou deixar?</h2>
+    <p><b>Stop words</b> são palavras muito frequentes que carregam pouco tema sozinhas: <i>"o", "a", "de", "para", "em", "que"</i>.</p>
+    <div class="two">
+      <div class="say good"><b>Quando REMOVER:</b> motores de busca por palavra-chave e TF-IDF, para economizar memória e evitar que "de" domine o índice.</div>
+      <div class="say bad"><b>Quando NÃO REMOVER:</b> análise de sentimentos ("<b>não</b> gostei" → "gostei"!), tradução e LLMs — pois negações e preposições mudam o sentido.</div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">STEMMING</span>
+    <h2>O facão rápido (corte de sufixos)</h2>
+    <p><b>Stemming</b> usa regras fixas para arrancar prefixos e sufixos e ficar só com o radical (<i>stem</i>). Ele <b>não consulta dicionário</b>.</p>
+    <div class="scroll">
+    <table>
+      <tr><th>Palavra original</th><th>Resultado do Stemming</th><th>Observação</th></tr>
+      <tr><td>computação</td><td class="hl">comput</td><td>Não é uma palavra válida!</td></tr>
+      <tr><td>computador</td><td class="hl">comput</td><td>Juntou tudo no mesmo radical</td></tr>
+      <tr><td>correndo</td><td>corr</td><td>Rápido e barato em CPU</td></tr>
+    </table>
+    </div>
+    <div class="say">Algoritmos famosos: <b>Porter</b> (inglês) e <b>RSLP</b> (português). É muito rápido, mas pode gerar <i>overstemming</i> (juntar palavras diferentes) ou radicais truncados.</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">LEMATIZAÇÃO</span>
+    <h2>O especialista com dicionário</h2>
+    <p><b>Lematização</b> descobre a classe gramatical da palavra e devolve o <b>lema</b> — a forma canônica que existe no dicionário (infinitivo do verbo, masculino singular).</p>
+    <div class="scroll">
+    <table>
+      <tr><th>Palavra original</th><th>Stemming</th><th>Lematização</th></tr>
+      <tr><td>melhores</td><td>melhor</td><td class="hk">bom</td></tr>
+      <tr><td>fomos</td><td class="hl">fom</td><td class="hk">ir</td></tr>
+      <tr><td>processos</td><td>process</td><td class="hk">processo</td></tr>
+    </table>
+    </div>
+    <div class="say law">A lematização produz sempre uma <b>palavra válida do idioma</b> e considera o contexto morfológico, mas é computacionalmente <b>mais lenta</b> que o stemming.</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">COMPARAÇÃO DIRETA</span>
+    <h2>Stemming × Lematização</h2>
+    <div class="scroll">
+    <table class="cmp">
+      <tr><th>Critério</th><th>Stemming</th><th>Lematização</th></tr>
+      <tr><td><b>Como funciona</b></td><td>Regras heurísticas de corte</td><td>Dicionário + análise morfológica</td></tr>
+      <tr><td><b>Saída é palavra real?</b></td><td>Nem sempre (ex.: <code>comput</code>)</td><td><span class="pill ok">Sim, sempre</span> (lema válido)</td></tr>
+      <tr><td><b>Verbos irregulares</b></td><td>Erra (<code>fomos</code> ≠ <code>ir</code>)</td><td>Acerta (<code>fomos</code> → <code>ir</code>)</td></tr>
+      <tr><td><b>Velocidade</b></td><td>Mais rápido</td><td>Mais lento</td></tr>
+    </table>
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">CUIDADO NA PROVA</span>
+    <h2>Pegadinhas de PLN na FGV</h2>
+    <div class="say trap">
+      <b>Pegadinha 1:</b> “A lematização é mais simples e rápida que o stemming porque apenas corta os últimos caracteres.”<br>
+      <span class="pill ng">Invertido!</span> Quem corta na marra é o <b>stemming</b>. Lematização consulta morfologia/dicionário e é mais custosa.
+    </div>
+    <div class="say trap">
+      <b>Pegadinha 2:</b> “Tokenizar significa obrigatoriamente separar o texto nos espaços em branco.”<br>
+      <span class="pill ng">Falso!</span> Pontuação, contrações e especialmente <b>subpalavras (BPE/WordPiece)</b> quebram palavras em vários tokens.
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">RESUMO DO CAPÍTULO 2</span>
+    <h2>Para nunca mais esquecer</h2>
+    <div class="magic">
+      “Token fatia; Stop word filtra; Stemming corta; Lema dicionariza.”
+      <small>BPE = subpalavras nos LLMs · Cuidado ao remover "não" das stop words!</small>
+    </div>
+    <ul class="checklist">
+      <li>Sei que LLMs usam tokenização em subpalavras (BPE/WordPiece), não apenas palavras inteiras.</li>
+      <li>Sei quando stop words atrapalham (busca TF-IDF) e quando são vitais (negação/sentimento/LLM).</li>
+      <li>Sei diferenciar stemming (corte heurístico, rápido, pode truncar) de lematização (lema válido).</li>
+    </ul>
+  </div>
+
+  <div class="slide">
+    <span class="tag">TESTE RÁPIDO · CAPÍTULO 2</span>
+    <h2>4 questões estilo FGV</h2>
+    <details><summary>1) Qual técnica reduz "estudando", "estudou" e "estudarão" ao verbo no infinitivo "estudar"?</summary>
+      <p><span class="pill ok">Lematização</span> O resultado é a forma canônica válida no dicionário (lema).</p></details>
+    <details><summary>2) Por que modelos como GPT não travam quando encontram uma palavra técnica inventada ontem?</summary>
+      <p><span class="pill ok">Tokenização por subpalavras (BPE)</span> A palavra rara é quebrada em pedaços menores conhecidos do vocabulário.</p></details>
+    <details><summary>3) Em um classificador de reclamações ("O atendimento não foi bom"), remover "não" como stop word causa que efeito?</summary>
+      <p><span class="pill ng">Inversão de polaridade</span> A frase vira "atendimento foi bom", gerando erro grave de sentimento.</p></details>
+    <details><summary>4) Qual das duas técnicas pode produzir "jornal" e "jorn" e gerar tokens que não existem no dicionário?</summary>
+      <p><span class="pill ok">Stemming</span> Por usar regras mecânicas de remoção de sufixos sem consultar dicionário.</p></details>
+  </div>
+
+</section>
+
+<!-- =================================================================== -->
+<!-- CAPÍTULO 3: TF-IDF, Embeddings e Busca Vetorial                     -->
+<!-- =================================================================== -->
+<section class="chapter" data-title="TF-IDF, Embeddings e Busca Vetorial">
+
+  <div class="slide">
+    <span class="tag">CAPÍTULO 3</span>
+    <span class="emoji">🧭</span>
+    <h1>TF-IDF, Embeddings e Busca Vetorial</h1>
+    <p class="lead">Como transformar palavras e frases em números para medir se dois textos falam da mesma coisa.</p>
+    <div class="analogy">
+      <span class="emoji">🗺️</span>
+      <div><b>Analogia do mapa da biblioteca:</b> <b>TF-IDF</b> é contar quantas vezes cada etiqueta aparece no livro. <b>Embedding</b> é dar coordenadas GPS para cada ideia: livros sobre o mesmo assunto ficam na mesma prateleira, mesmo usando palavras diferentes.</div>
+    </div>
+    <p><b>O que você vai aprender:</b> Bag of Words, fórmula intuitiva do TF-IDF, vetores esparsos × densos, similaridade de cosseno e bancos vetoriais.</p>
+  </div>
+
+  <div class="slide">
+    <span class="tag">TF-IDF</span>
+    <h2>Nem toda palavra repetida vale ouro</h2>
+    <p>Se você só contar palavras (<i>Bag of Words</i>), termos como <code>processo</code> aparecem em todos os textos do tribunal e não diferenciam nada. O <b>TF-IDF</b> resolve isso multiplicando dois fatores:</p>
+    <div class="two">
+      <div class="card">
+        <h3>📈 TF (Term Frequency)</h3>
+        <p>Quantas vezes o termo aparece <b>neste documento</b>. Quanto mais aparece aqui, maior o TF.</p>
+      </div>
+      <div class="card">
+        <h3>💎 IDF (Inverse Document Frequency)</h3>
+        <p>Mede a <b>raridade na coleção</b> inteira: <code>log(N / df)</code>. Termo comum em todo lugar tem IDF perto de 0; termo raro ganha peso alto!</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">EXEMPLO DE TF-IDF</span>
+    <h2>Quem ganha mais peso?</h2>
+    <div class="scroll">
+    <table>
+      <tr><th>Termo na petição</th><th>Frequência neste texto (TF)</th><th>Docs que têm o termo (df / 1000)</th><th>Peso TF-IDF</th></tr>
+      <tr><td>"processo"</td><td>12 vezes</td><td>990 de 1000</td><td class="hl">Quase zero (IDF minúsculo)</td></tr>
+      <tr><td>"usucapião"</td><td>5 vezes</td><td>8 de 1000</td><td class="hk">Muito alto! (define o tema)</td></tr>
+    </table>
+    </div>
+    <div class="say bad"><b>Limitação fatal do TF-IDF:</b> ele gera vetores <b>esparsos</b> (uma coluna por palavra do dicionário, quase tudo zero) e <b>não entende sinônimos</b>. Para o TF-IDF, <i>"advogado"</i> e <i>"causídico"</i> têm distância máxima!</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">EMBEDDINGS</span>
+    <h2>O GPS do significado (vetores densos)</h2>
+    <p>Um <b>embedding</b> converte texto em um vetor compacto de números reais (ex.: 384 ou 1536 dimensões), onde <b>significados parecidos ficam próximos</b>.</p>
+    <svg viewBox="0 0 640 210" role="img" aria-label="Plano vetorial mostrando sinônimos próximos e tema diferente distante">
+      <line x1="50" y1="185" x2="600" y2="185" stroke="#5b6475" stroke-width="2"/>
+      <line x1="50" y1="185" x2="50" y2="20" stroke="#5b6475" stroke-width="2"/>
+      <circle cx="190" cy="70" r="8" fill="#2ea043"/>
+      <text x="206" y="75">“decisão liminar” [0.21, 0.84, ...]</text>
+      <circle cx="215" cy="95" r="8" fill="#2ea043"/>
+      <text x="231" y="100">“tutela de urgência” [0.24, 0.80, ...]</text>
+      <circle cx="490" cy="145" r="8" fill="#e5484d"/>
+      <text x="410" y="132">“receita de bolo”</text>
+      <text x="320" y="205" text-anchor="middle" class="small">Proximidade no espaço = proximidade semântica (mesmo sem palavras iguais!)</text>
+    </svg>
+  </div>
+
+  <div class="slide">
+    <span class="tag">COMPARAÇÃO</span>
+    <h2>TF-IDF (Esparso) × Embedding (Denso)</h2>
+    <div class="scroll">
+    <table class="cmp">
+      <tr><th>Característica</th><th>TF-IDF</th><th>Embedding</th></tr>
+      <tr><td><b>Formato do vetor</b></td><td>Esparso (milhares de zeros)</td><td>Denso (tamanho fixo, ex.: 1536 floats)</td></tr>
+      <tr><td><b>Captura sinônimos?</b></td><td><span class="pill ng">Não</span> (só palavra exata)</td><td><span class="pill ok">Sim</span> (captura semântica e contexto)</td></tr>
+      <tr><td><b>Ordem das palavras</b></td><td>Ignora (Bag of Words)</td><td>Considera (modelos contextuais)</td></tr>
+      <tr><td><b>Uso ideal</b></td><td>Busca exata por termo/código</td><td>Busca semântica e RAG</td></tr>
+    </table>
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">SIMILARIDADE DE COSSENO</span>
+    <h2>Como medir se dois vetores combinam?</h2>
+    <p>Em busca semântica, não olhamos o tamanho da seta, e sim o <b>ângulo</b> entre os vetores usando a <b>similaridade de cosseno</b> (de <code>-1</code> a <code>+1</code>):</p>
+    <div class="steps">
+      <div class="step"><b>cos ≈ +1</b><span>Ângulo ~0°: mesma direção → <b>muito parecidos</b>.</span></div>
+      <div class="step"><b>cos = 0</b><span>Ângulo 90°: ortogonais → <b>sem relação</b>.</span></div>
+      <div class="step"><b>cos ≈ -1</b><span>Ângulo 180°: opostos → <b>sentidos contrários</b>.</span></div>
+    </div>
+    <div class="say law">A similaridade de cosseno normaliza o comprimento dos vetores: um texto de 2 linhas e um de 20 linhas sobre o mesmo assunto continuam com alta similaridade.</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">BANCOS VETORIAIS</span>
+    <h2>Onde guardar milhões de embeddings?</h2>
+    <p>Fazer <code>SELECT</code> com distância de cosseno em 10 milhões de linhas uma por uma é lento. <b>Bancos vetoriais</b> (como <i>pgvector, Qdrant, Milvus, Pinecone</i>) usam índices aproximados (<b>ANN</b>, ex.: <b>HNSW</b>):</p>
+    <div class="flow"><span>Texto</span><i>→</i><span>Modelo de Embedding</span><i>→</i><span>Vetor [0.12, -0.45...]</span><i>→</i><span>Índice HNSW</span><i>→</i><span>Top-K vizinhos em ms</span></div>
+    <p><b>ANN</b> = <i>Approximate Nearest Neighbors</i> (vizinhos mais próximos aproximados): troca 1% de exatidão por 100× mais velocidade.</p>
+  </div>
+
+  <div class="slide">
+    <span class="tag">CUIDADO NA PROVA</span>
+    <h2>Pegadinhas de TF-IDF e Vetores</h2>
+    <div class="say trap">
+      <b>Pegadinha 1:</b> “No TF-IDF, palavras que aparecem em todos os documentos recebem o maior peso IDF.”<br>
+      <span class="pill ng">Falso!</span> É o inverso: quanto mais documentos contêm o termo, <b>menor</b> o IDF (<code>log(N/df)</code>).
+    </div>
+    <div class="say trap">
+      <b>Pegadinha 2:</b> “Embeddings exigem que a consulta contenha exatamente a mesma palavra do documento para encontrá-lo.”<br>
+      <span class="pill ng">Falso!</span> Isso é busca lexical (LIKE / TF-IDF). Embeddings encontram por <b>significado</b>.
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">RESUMO DO CAPÍTULO 3</span>
+    <h2>Para nunca mais esquecer</h2>
+    <div class="magic">
+      “TF-IDF conta palavra rara; Embedding mapeia significado; Cosseno mede o ângulo.”
+      <small>Esparso = TF-IDF · Denso = Embedding · Banco Vetorial = índice HNSW/ANN</small>
+    </div>
+    <ul class="checklist">
+      <li>Sei que TF dá peso local no documento e IDF penaliza palavras onipresentes na coleção.</li>
+      <li>Sei que embeddings são vetores densos capazes de aproximar sinônimos e paráfrases.</li>
+      <li>Sei que similaridade de cosseno perto de 1 indica alta proximidade semântica.</li>
+    </ul>
+  </div>
+
+  <div class="slide">
+    <span class="tag">TESTE RÁPIDO · CAPÍTULO 3</span>
+    <h2>4 questões estilo FGV</h2>
+    <details><summary>1) Um termo aparece em 100% dos documentos da base. Qual será seu IDF aproximado?</summary>
+      <p><span class="pill ok">Zero (log(N/N) = log(1) = 0)</span> Termos presentes em todos os documentos não ajudam a distinguir um texto do outro.</p></details>
+    <details><summary>2) Qual métrica retorna +1 quando dois vetores apontam exatamente na mesma direção?</summary>
+      <p><span class="pill ok">Similaridade de cosseno</span> cos(0°) = 1.</p></details>
+    <details><summary>3) Por que bancos vetoriais usam índices ANN como HNSW em vez de força bruta?</summary>
+      <p><span class="pill ok">Velocidade em alta dimensão</span> Busca exata (varrer todos os vetores) não escala para milhões de embeddings em tempo real.</p></details>
+    <details><summary>4) Para buscar um número exato de processo ("0001234-55.2025") é melhor busca vetorial pura ou busca lexical?</summary>
+      <p><span class="pill ok">Busca lexical / híbrida</span> Embeddings capturam sentido, não códigos exatos; por isso sistemas reais combinam busca lexical (BM25/TF-IDF) + vetorial.</p></details>
+  </div>
+
+</section>
+
+<!-- =================================================================== -->
+<!-- CAPÍTULO 4: Transformer, LLMs e Engenharia de Prompt                -->
+<!-- =================================================================== -->
+<section class="chapter" data-title="Transformer, LLMs e Engenharia de Prompt">
+
+  <div class="slide">
+    <span class="tag">CAPÍTULO 4</span>
+    <span class="emoji">⚡</span>
+    <h1>Transformer, LLMs e Engenharia de Prompt</h1>
+    <p class="lead">A arquitetura que mudou a IA ao trocar a leitura em fila pela atenção em paralelo — e como falar com ela do jeito certo.</p>
+    <div class="analogy">
+      <span class="emoji">👀</span>
+      <div><b>Analogia da leitura:</b> uma rede antiga (RNN) lia pelo buraco da fechadura, uma palavra por vez, e esquecia o começo. O <b>Transformer</b> abre a página inteira na mesa e liga setas entre todas as palavras ao mesmo tempo!</div>
+    </div>
+    <p><b>O que você vai aprender:</b> Self-Attention, Encoder × Decoder, parâmetros de geração (temperatura/top-p), alucinação e técnicas de prompt.</p>
+  </div>
+
+  <div class="slide">
+    <span class="tag">SELF-ATTENTION</span>
+    <h2>Como o Transformer entende contexto?</h2>
+    <p>Na frase: <i>“O juiz leu a sentença porque <b>ela</b> estava longa”</i>, a quem <b>“ela”</b> se refere?</p>
+    <svg viewBox="0 0 640 160" role="img" aria-label="Self-Attention ligando o pronome ela fortemente a sentença e fracamente a juiz">
+      <rect class="box" x="20" y="75" width="75" height="44" rx="10"/><text x="57" y="102" text-anchor="middle">O juiz</text>
+      <rect class="box" x="110" y="75" width="60" height="44" rx="10"/><text x="140" y="102" text-anchor="middle">leu</text>
+      <rect class="okbox" x="185" y="75" width="115" height="44" rx="10"/><text x="242" y="102" text-anchor="middle">a sentença</text>
+      <rect class="box" x="315" y="75" width="80" height="44" rx="10"/><text x="355" y="102" text-anchor="middle">porque</text>
+      <rect class="keybox" x="410" y="75" width="65" height="44" rx="10"/><text class="kt" x="442" y="102" text-anchor="middle">ela</text>
+      <rect class="box" x="490" y="75" width="130" height="44" rx="10"/><text x="555" y="102" text-anchor="middle">estava longa</text>
+      <path d="M 442 74 C 442 15, 242 15, 242 72" fill="none" stroke="#2ea043" stroke-width="4"/>
+      <text x="342" y="25" text-anchor="middle" class="small" style="fill:#2ea043">peso alto (0.88)</text>
+      <path d="M 442 120 C 442 150, 57 150, 57 122" fill="none" stroke="#5b6475" stroke-width="1.5" stroke-dasharray="5 5"/>
+      <text x="250" y="152" text-anchor="middle" class="small">peso baixo (0.04)</text>
+    </svg>
+    <div class="say law"><b>Self-Attention</b> processa todos os tokens em <b>paralelo</b>, calculando pesos de relevância entre cada par. O <b>Positional Encoding</b> injeta a ordem das palavras.</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">ARQUITETURAS TRANSFORMER</span>
+    <h2>Encoder, Decoder ou os dois?</h2>
+    <div class="steps">
+      <div class="step"><b>🔍 Encoder-only</b><span>Lê a frase nos dois sentidos.<br>Uso: classificação, NER, embeddings (ex.: <b>BERT</b>).</span></div>
+      <div class="step"><b>✍️ Decoder-only</b><span>Prevê o próximo token da esquerda para a direita.<br>Uso: chatbots e geração (ex.: <b>GPT, Llama, Claude</b>).</span></div>
+      <div class="step"><b>🔄 Encoder-Decoder</b><span>Entende a entrada e gera outra sequência.<br>Uso: tradução e resumo (ex.: <b>T5</b>).</span></div>
+    </div>
+    <p>Quase todo <b>LLM</b> (<i>Large Language Model</i>) conversacional moderno é <b>Decoder-only</b> treinado para prever o próximo token.</p>
+  </div>
+
+  <div class="slide">
+    <span class="tag">COMO O LLM GERA TEXTO</span>
+    <h2>Temperatura, Top-p e Contexto</h2>
+    <p>A cada passo, o LLM calcula uma lista de probabilidades para o próximo token. Você controla a escolha:</p>
+    <div class="scroll">
+    <table class="cmp">
+      <tr><th>Parâmetro</th><th>Valor baixo (ex.: 0 ou 0.1)</th><th>Valor alto (ex.: 0.9 ou 1.2)</th></tr>
+      <tr><td><b>Temperature</b></td><td>Foca no token mais provável (<b>determinístico / factual</b>)</td><td>Dá chance a tokens menos prováveis (<b>criativo / aleatório</b>)</td></tr>
+      <tr><td><b>Top-p</b></td><td>Corta rápido a cauda de opções</td><td>Mantém mais opções no sorteio (<i>nucleus sampling</i>)</td></tr>
+    </table>
+    </div>
+    <div class="say bad"><b>Janela de contexto</b> é o limite total (entrada + saída) em tokens. <b>Alucinação</b> acontece porque o LLM prevê texto plausível estatisticamente — ele pode inventar leis ou julgados com total confiança!</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">ENGENHARIA DE PROMPT</span>
+    <h2>Papéis e estrutura do prompt</h2>
+    <p>Escrever bom prompt é especificar bem a tarefa. Os papéis principais são:</p>
+    <pre><code><mark>[SYSTEM]</mark> Você é um assistente jurídico do TJPB. Responda só em JSON.
+<mark>[USER]</mark>   Extraia autor e réu do texto delimitado por ###:
+         ### Maria Silva moveu ação contra Banco X. ###</code></pre>
+    <ul>
+      <li><b>System Prompt:</b> define persona, regras, tom e restrições globais.</li>
+      <li><b>Delimitadores</b> (<code>###</code>, <code>"""</code>, tags XML): separam a <b>instrução</b> dos <b>dados</b>, reduzindo risco de <i>prompt injection</i>.</li>
+    </ul>
+  </div>
+
+  <div class="slide">
+    <span class="tag">TÉCNICAS DE PROMPT</span>
+    <h2>Zero-shot, Few-shot e Chain-of-Thought</h2>
+    <div class="steps">
+      <div class="step"><b>0️⃣ Zero-shot</b><span>Pede direto, <b>sem exemplos</b>.<br>Ex.: “Classifique: positivo ou negativo.”</span></div>
+      <div class="step"><b>🎯 Few-shot</b><span>Dá <b>alguns exemplos</b> (entrada → saída) antes de perguntar. Fixa formato e critério.</span></div>
+      <div class="step"><b>🪜 Chain-of-Thought</b><span>Pede <b>raciocínio passo a passo</b> antes da resposta final. Reduz erros de lógica e cálculo.</span></div>
+    </div>
+    <div class="say good"><b>Dica prática:</b> para extrair JSON rígido em produção, combine <code>temperature = 0</code> + <b>Few-shot</b> + esquema explícito (<i>Structured Outputs</i>).</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">CUIDADO NA PROVA</span>
+    <h2>Pegadinhas de Transformer e Prompt</h2>
+    <div class="say trap">
+      <b>Pegadinha 1:</b> “Transformers substituíram RNNs por processarem cada token rigorosamente um após o outro em fila.”<br>
+      <span class="pill ng">Falso!</span> Quem é sequencial na entrada é a RNN. O Transformer processa a entrada <b>em paralelo</b> via Self-Attention.
+    </div>
+    <div class="say trap">
+      <b>Pegadinha 2:</b> “Aumentar a temperatura para 1.5 garante respostas mais fiéis aos fatos e menos alucinação.”<br>
+      <span class="pill ng">Falso!</span> Temperatura alta aumenta a aleatoriedade. Para tarefas factuais/extração, usa-se temperatura baixa (0–0.2).
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">RESUMO DO CAPÍTULO 4</span>
+    <h2>Para nunca mais esquecer</h2>
+    <div class="magic">
+      “Transformer = paralelo + Self-Attention; Temp 0 = precisão; CoT = passo a passo.”
+      <small>BERT = Encoder · GPT = Decoder · Delimitadores separam instrução de dado</small>
+    </div>
+    <ul class="checklist">
+      <li>Sei que Self-Attention relaciona todos os tokens em paralelo e Positional Encoding dá a ordem.</li>
+      <li>Sei diferenciar Encoder-only (entendimento) de Decoder-only (geração autorregressiva).</li>
+      <li>Sei aplicar Zero-shot, Few-shot, Chain-of-Thought, System prompt e temperatura baixa.</li>
+    </ul>
+  </div>
+
+  <div class="slide">
+    <span class="tag">TESTE RÁPIDO · CAPÍTULO 4</span>
+    <h2>4 questões estilo FGV</h2>
+    <details><summary>1) Por que o Transformer precisa de Positional Encoding se já usa Self-Attention?</summary>
+      <p><span class="pill ok">Para saber a ordem das palavras</span> Como o Self-Attention olha tudo em paralelo, sem codificação posicional "cão mordeu homem" e "homem mordeu cão" pareceriam iguais.</p></details>
+    <details><summary>2) Você quer extrair CPF e data de um contrato em JSON sem criatividade. Qual temperatura escolher?</summary>
+      <p><span class="pill ok">Próxima de 0 (ex.: 0.0)</span> Torna a geração mais determinística e focada nos tokens mais prováveis.</p></details>
+    <details><summary>3) Incluir 3 pares de pergunta e resposta modelo no prompt antes da pergunta real é qual técnica?</summary>
+      <p><span class="pill ok">Few-shot prompting</span> O modelo aprende o padrão de saída pelos exemplos no próprio contexto.</p></details>
+    <details><summary>4) O que é alucinação em um LLM?</summary>
+      <p><span class="pill ng">Geração plausível, mas falsa</span> O modelo produz afirmações inventadas com tom confiante por prever tokens estatisticamente prováveis sem base factual.</p></details>
+  </div>
+
+</section>
+
+<!-- =================================================================== -->
+<!-- CAPÍTULO 5: APIs de IA, LangChain e RAG                             -->
+<!-- =================================================================== -->
+<section class="chapter" data-title="APIs de IA, LangChain e RAG">
+
+  <div class="slide">
+    <span class="tag">CAPÍTULO 5</span>
+    <span class="emoji">🔌</span>
+    <h1>APIs de IA, LangChain e RAG</h1>
+    <p class="lead">Como tirar o modelo do chat e plugar no sistema real do tribunal — com documentos atualizados e sem vazar dados.</p>
+    <div class="analogy">
+      <span class="emoji">📖</span>
+      <div><b>Analogia da prova com consulta:</b> <b>Fine-tuning</b> é passar meses estudando até gravar tudo na memória. <b>RAG</b> é deixar o candidato consultar o Vade Mecum aberto na hora da resposta — sempre atualizado e citando o artigo!</div>
+    </div>
+    <p><b>O que você vai aprender:</b> APIs OpenAI × Hugging Face, LangChain (chains, tools, agentes), fluxo completo de RAG e RAG × Fine-tuning.</p>
+  </div>
+
+  <div class="slide">
+    <span class="tag">APIs DE IA</span>
+    <h2>OpenAI × Hugging Face</h2>
+    <div class="scroll">
+    <table class="cmp">
+      <tr><th>Aspecto</th><th>OpenAI API (SaaS)</th><th>Hugging Face (Ecossistema Aberto)</th></tr>
+      <tr><td><b>Onde roda</b></td><td>Nuvem gerenciada (HTTPS/REST)</td><td>Local (on-premises), nuvem própria ou Inference API</td></tr>
+      <tr><td><b>Modelos</b></td><td>Proprietários (pesos fechados)</td><td>Open-weight / open-source (Hub + lib <code>transformers</code>)</td></tr>
+      <tr><td><b>Custo / Privacidade</b></td><td>Paga por token (entrada + saída); dados vão à API</td><td>Controle total dos dados (ótimo p/ LGPD); paga infra/GPU</td></tr>
+    </table>
+    </div>
+    <div class="say law"><b>Regra de ouro de APIs REST de chat:</b> o endpoint de <i>Chat Completions</i> é <b>stateless</b>. Para ter conversa contínua, sua aplicação precisa enviar o histórico em <code>messages</code> a cada chamada.</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">CHAMADA DE API NA PRÁTICA</span>
+    <h2>Estrutura típica de Chat Completions</h2>
+    <pre><code>POST /v1/chat/completions
+{
+  "model": "gpt-4o-mini",
+  "<mark>temperature</mark>": 0.1,
+  "<mark>messages</mark>": [
+    {"role": "system", "content": "Resuma em 3 tópicos."},
+    {"role": "user",   "content": "Texto do acórdão..."}
+  ]
+}</code></pre>
+    <p>A resposta traz o texto gerado e o uso de tokens (<code>prompt_tokens</code> + <code>completion_tokens</code>), que define o custo e o limite da janela de contexto.</p>
+  </div>
+
+  <div class="slide">
+    <span class="tag">ORQUESTRAÇÃO</span>
+    <h2>Para que serve o LangChain?</h2>
+    <p>Em produção, você não faz só uma pergunta solta: precisa montar prompt, chamar o LLM, validar JSON, consultar banco e chamar APIs. O <b>LangChain</b> conecta essas peças:</p>
+    <div class="steps">
+      <div class="step"><b>⛓️ Chains (LCEL)</b><span>Encadeia passos: <code>prompt | llm | parser</code>.</span></div>
+      <div class="step"><b>🛠️ Tools &amp; Agentes</b><span>O LLM decide chamar funções (ex.: consultar processo no PJe).</span></div>
+      <div class="step"><b>🧠 Memory &amp; Retrievers</b><span>Gerencia histórico de chat e conecta ao banco vetorial.</span></div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">RAG · FASE 1 (INGESTÃO)</span>
+    <h2>Preparando a base de conhecimento</h2>
+    <p><b>RAG</b> (<i>Retrieval-Augmented Generation</i>) tem duas fases. A primeira roda offline ou quando entra documento novo:</p>
+    <svg viewBox="0 0 640 140" role="img" aria-label="Ingestão RAG: Documentos, Chunking, Embeddings, Banco Vetorial">
+      <defs><marker id="arr5" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2ea043"/></marker></defs>
+      <rect class="box" x="15" y="40" width="125" height="58" rx="12"/><text x="77" y="74" text-anchor="middle">PDFs / Normas</text>
+      <rect class="keybox" x="170" y="40" width="130" height="58" rx="12"/><text class="kt" x="235" y="68" text-anchor="middle">Chunking</text><text class="kt small" x="235" y="86" text-anchor="middle">(fatiar c/ overlap)</text>
+      <rect class="accbox" x="330" y="40" width="130" height="58" rx="12"/><text x="395" y="74" text-anchor="middle">Embeddings</text>
+      <rect class="okbox" x="490" y="40" width="135" height="58" rx="12"/><text x="557" y="74" text-anchor="middle">Banco Vetorial</text>
+      <line x1="142" y1="69" x2="166" y2="69" stroke="#2ea043" stroke-width="3" marker-end="url(#arr5)"/>
+      <line x1="302" y1="69" x2="326" y2="69" stroke="#2ea043" stroke-width="3" marker-end="url(#arr5)"/>
+      <line x1="462" y1="69" x2="486" y2="69" stroke="#2ea043" stroke-width="3" marker-end="url(#arr5)"/>
+    </svg>
+    <p><b>Chunking</b> divide textos longos em blocos menores (com sobreposição/<i>overlap</i> para não cortar uma ideia no meio).</p>
+  </div>
+
+  <div class="slide">
+    <span class="tag">RAG · FASE 2 (CONSULTA)</span>
+    <h2>Respondendo com base na fonte</h2>
+    <svg viewBox="0 0 640 165" role="img" aria-label="Consulta RAG: Pergunta vira embedding, busca top-k no banco vetorial, injeta no prompt e LLM responde">
+      <defs><marker id="arr5b" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+      <rect class="box" x="15" y="50" width="115" height="55" rx="12"/><text x="72" y="82" text-anchor="middle">Pergunta</text>
+      <rect class="accbox" x="155" y="50" width="135" height="55" rx="12"/><text x="222" y="75" text-anchor="middle">Busca Vetorial</text><text x="222" y="93" class="small" text-anchor="middle">Top-K chunks</text>
+      <rect class="keybox" x="315" y="50" width="155" height="55" rx="12"/><text class="kt" x="392" y="75" text-anchor="middle">Prompt Aumentado</text><text class="kt small" x="392" y="93" text-anchor="middle">pergunta + trechos</text>
+      <rect class="okbox" x="495" y="50" width="130" height="55" rx="12"/><text x="560" y="75" text-anchor="middle">LLM gera</text><text x="560" y="93" class="small" text-anchor="middle">resposta + fonte</text>
+      <line x1="132" y1="77" x2="151" y2="77" stroke="#6d4aff" stroke-width="3" marker-end="url(#arr5b)"/>
+      <line x1="292" y1="77" x2="311" y2="77" stroke="#6d4aff" stroke-width="3" marker-end="url(#arr5b)"/>
+      <line x1="472" y1="77" x2="491" y2="77" stroke="#6d4aff" stroke-width="3" marker-end="url(#arr5b)"/>
+    </svg>
+    <div class="say good"><b>Resultado:</b> o LLM não precisa "lembrar" da portaria de cabeça — ele lê os trechos recuperados na hora e reduz drasticamente alucinações.</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">DECISÃO DE ARQUITETURA</span>
+    <h2>RAG × Fine-Tuning</h2>
+    <div class="scroll">
+    <table class="cmp">
+      <tr><th>Critério</th><th>RAG</th><th>Fine-Tuning</th></tr>
+      <tr><td><b>Altera os pesos do LLM?</b></td><td><span class="pill ok">Não</span> (só injeta contexto no prompt)</td><td><span class="pill ng">Sim</span> (retreina parâmetros)</td></tr>
+      <tr><td><b>Dados mudam todo dia?</b></td><td>Ótimo: basta reindexar o chunk</td><td>Ruim: exige retreinar o modelo</td></tr>
+      <tr><td><b>Cita a fonte exata?</b></td><td><span class="pill ok">Sim</span> (metadados do chunk)</td><td>Difícil rastrear origem</td></tr>
+      <tr><td><b>Quando usar?</b></td><td>Conhecimento novo/privado/auditável</td><td>Ensinar estilo, tom ou tarefa específica</td></tr>
+    </table>
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">CUIDADO NA PROVA</span>
+    <h2>Pegadinhas de APIs, LangChain e RAG</h2>
+    <div class="say trap">
+      <b>Pegadinha 1:</b> “O RAG realiza fine-tuning automático nos pesos do LLM a cada nova consulta.”<br>
+      <span class="pill ng">Falso!</span> RAG <b>não altera pesos</b> da rede neural; ele recupera trechos e os coloca no prompt.
+    </div>
+    <div class="say trap">
+      <b>Pegadinha 2:</b> “APIs REST de LLM guardam sozinhas todo o histórico do usuário entre requisições.”<br>
+      <span class="pill ng">Falso!</span> A chamada HTTP é <b>stateless</b>; quem reenvia o histórico (ou usa memória no LangChain) é a aplicação cliente.
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">RESUMO DO CAPÍTULO 5</span>
+    <h2>Para nunca mais esquecer</h2>
+    <div class="magic">
+      “RAG = buscar trechos + injetar no prompt, sem mexer nos pesos.”
+      <small>API é stateless · Hugging Face = modelos abertos · LangChain = orquestração</small>
+    </div>
+    <ul class="checklist">
+      <li>Sei que OpenAI é SaaS stateless cobrado por token e Hugging Face permite modelos open-weight locais.</li>
+      <li>Sei o papel do LangChain para encadear prompts, parsers, memória, retrievers e tools.</li>
+      <li>Sei as 2 fases do RAG (ingestão com chunking/embeddings e consulta com top-k) e quando preferir RAG a fine-tuning.</li>
+    </ul>
+  </div>
+
+  <div class="slide">
+    <span class="tag">TESTE RÁPIDO · CAPÍTULO 5</span>
+    <h2>4 questões estilo FGV</h2>
+    <details><summary>1) Para responder sobre resoluções publicadas ontem citando a página do PDF, você escolhe RAG ou Fine-tuning?</summary>
+      <p><span class="pill ok">RAG</span> Atualiza conhecimento por indexação imediata e permite citar os metadados do chunk recuperado.</p></details>
+    <details><summary>2) Por que fazemos chunking com sobreposição (overlap) na ingestão do RAG?</summary>
+      <p><span class="pill ok">Para preservar contexto nas fronteiras</span> Evita cortar uma frase ou regra ao meio entre dois blocos vizinhos.</p></details>
+    <details><summary>3) Em um chatbot via API Chat Completions, por que o bot "esqueceu" o nome do usuário na 2ª chamada?</summary>
+      <p><span class="pill ok">API stateless</span> A aplicação não reenviou a mensagem anterior dentro do array <code>messages</code>.</p></details>
+    <details><summary>4) Qual componente do LangChain permite que o LLM consulte uma API externa ou banco de dados dinamicamente?</summary>
+      <p><span class="pill ok">Tools / Agentes</span> O modelo escolhe qual ferramenta acionar com os argumentos certos e usa o retorno para responder.</p></details>
+  </div>
+
+</section>
+
+<script src="aula.js"></script>
+</body>
+</html>

@@ -1,0 +1,815 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Desenvolvimento Mobile — aulas visuais</title>
+<link rel="stylesheet" href="aula.css">
+<style>
+pre{background:#1e2230;color:#e8eaf2;border-radius:12px;padding:10px 14px;font:14px/1.45 ui-monospace,Consolas,monospace;overflow-x:auto;margin:8px 0;white-space:pre}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+pre mark{background:#ffd84d;color:#2a2100}
+pre .c{color:#8fd19e}
+.mini{font-size:15px}
+.mini td,.mini th{font-size:15px}
+svg .mono{font:500 13px ui-monospace,Consolas,monospace;fill:var(--ink)}
+svg line,svg path.l{stroke:var(--muted);stroke-width:2;fill:none}
+svg .dash{stroke-dasharray:6 4}
+svg .acc{stroke:var(--acc)}
+svg .okl{stroke:var(--ok)}
+svg .badl{stroke:var(--bad)}
+</style>
+</head>
+<body data-subject="mobile" data-title="Desenvolvimento Mobile">
+
+<svg width="0" height="0" style="position:absolute;width:0;height:0;margin:0;overflow:hidden" aria-hidden="true">
+  <defs>
+    <marker id="ar" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker>
+    <marker id="arg" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8a93a6"/></marker>
+    <marker id="arok" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2ea043"/></marker>
+    <marker id="arbad" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e5484d"/></marker>
+  </defs>
+</svg>
+
+<!-- ===================================================== CAPÍTULO 1 ===================================================== -->
+<section class="chapter" data-title="Ciclo de Vida Android e iOS">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 1</span>
+  <h1>Ciclo de Vida Android e iOS</h1>
+  <span class="emoji">📱</span>
+  <div class="steps">
+    <div class="step"><b>1. Activity Android</b><span>Os 7 callbacks do nascimento ao fim.</span></div>
+    <div class="step"><b>2. Rotação &amp; RAM</b><span>Por que a tela reinicia e quem morre primeiro.</span></div>
+    <div class="step"><b>3. iOS UIViewController</b><span>viewDidLoad até viewDidDisappear.</span></div>
+    <div class="step"><b>4. Android × iOS</b><span>Tabela de equivalência que a FGV ama.</span></div>
+  </div>
+  <div class="analogy">
+    <span class="emoji">🎭</span>
+    <div><b>Pense num palco de teatro:</b> montar o cenário acontece 1 vez (<code>onCreate</code> / <code>viewDidLoad</code>); abrir a cortina para o público acontece toda vez que o ator entra em cena (<code>onResume</code> / <code>viewDidAppear</code>).</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">ANDROID · ACTIVITY</span>
+  <h2>Os 7 passos da Activity Android</h2>
+  <p>Uma <b>Activity</b> representa uma tela. O sistema operacional chama métodos (callbacks) conforme você abre, alterna ou fecha o app:</p>
+  <svg viewBox="0 0 820 215" role="img" aria-label="Ciclo de vida da Activity Android">
+    <rect x="10" y="75" width="95" height="48" rx="10" class="accbox"/>
+    <text x="57" y="104" text-anchor="middle" class="mono">onCreate()</text>
+    <line x1="105" y1="99" x2="132" y2="99" class="acc" marker-end="url(#ar)"/>
+    <rect x="135" y="75" width="90" height="48" rx="10" class="box"/>
+    <text x="180" y="104" text-anchor="middle" class="mono">onStart()</text>
+    <line x1="225" y1="99" x2="252" y2="99" class="acc" marker-end="url(#ar)"/>
+    <rect x="255" y="75" width="105" height="48" rx="10" class="okbox"/>
+    <text x="307" y="97" text-anchor="middle" class="mono">onResume()</text>
+    <text x="307" y="114" text-anchor="middle" class="small">Em foco!</text>
+    <line x1="360" y1="99" x2="392" y2="99" class="acc" marker-end="url(#ar)"/>
+    <rect x="395" y="75" width="95" height="48" rx="10" class="box"/>
+    <text x="442" y="104" text-anchor="middle" class="mono">onPause()</text>
+    <line x1="490" y1="99" x2="522" y2="99" class="acc" marker-end="url(#ar)"/>
+    <rect x="525" y="75" width="90" height="48" rx="10" class="box"/>
+    <text x="570" y="104" text-anchor="middle" class="mono">onStop()</text>
+    <line x1="615" y1="99" x2="647" y2="99" class="badl" marker-end="url(#arbad)"/>
+    <rect x="650" y="75" width="110" height="48" rx="10" class="badbox"/>
+    <text x="705" y="104" text-anchor="middle" class="mono">onDestroy()</text>
+    <path d="M570,75 L570,25 L180,25 L180,72" class="l dash" marker-end="url(#arg)"/>
+    <rect x="315" y="8" width="120" height="30" rx="8" class="keybox"/>
+    <text x="375" y="28" text-anchor="middle" class="mono kt">onRestart()</text>
+    <path d="M442,123 L442,165 L307,165 L307,126" class="l okl" marker-end="url(#arok)"/>
+    <text x="375" y="185" text-anchor="middle" class="small">Volta de diálogo/pop-up parcial direto para onResume()</text>
+  </svg>
+  <div class="say law">
+    <b>Visível ≠ Em foco:</b> em <code>onStart()</code> a tela já aparece, mas só em <code>onResume()</code> ela recebe toques do usuário.
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">ANDROID · CENÁRIOS REAIS</span>
+  <h2>O que dispara cada pausa?</h2>
+  <table class="cmp">
+    <tr><th>Situação do usuário</th><th>Callbacks disparados</th><th>Estado da Activity</th></tr>
+    <tr><td>Abre um <b>diálogo transparente</b> por cima</td><td><code>onPause()</code></td><td>Ainda visível, mas sem foco</td></tr>
+    <tr><td>Aperta <b>Home</b> ou recebe ligação em tela cheia</td><td><code>onPause()</code> → <code>onStop()</code></td><td>Oculta em segundo plano</td></tr>
+    <tr><td>Volta para o app depois do Home</td><td><code>onRestart()</code> → <code>onStart()</code> → <code>onResume()</code></td><td>Visível e em foco de novo</td></tr>
+    <tr><td>Aperta <b>Voltar</b> ou chama <code>finish()</code></td><td><code>onPause()</code> → <code>onStop()</code> → <code>onDestroy()</code></td><td>Encerrada e removida</td></tr>
+  </table>
+  <div class="say good">
+    <b>Regra prática:</b> libere câmera/GPS em <code>onPause()</code> ou <code>onStop()</code>; nunca espere <code>onDestroy()</code> para salvar dados importantes!
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA CLÁSSICA</span>
+  <h2>Virou o celular? A tela morre e renasce!</h2>
+  <p>Por padrão, girar o aparelho é uma <b>mudança de configuração</b>. O Android destrói a Activity antiga e cria uma nova do zero para carregar o layout horizontal:</p>
+  <div class="flow">
+    <span>onPause()</span><i>→</i>
+    <span>onStop()</span><i>→</i>
+    <span>onDestroy()</span><i>→</i>
+    <span>onCreate()</span><i>→</i>
+    <span>onStart()</span><i>→</i>
+    <span>onResume()</span>
+  </div>
+  <div class="say trap">
+    Variáveis comuns na Activity somem na rotação! Para sobreviver, use <b>ViewModel</b> (mantém estado em memória na rotação) ou <b>onSaveInstanceState()</b> (Bundle leve se o SO matar o processo).
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">GERÊNCIA DE MEMÓRIA</span>
+  <h2>Quem o Android mata quando falta RAM?</h2>
+  <p>O Android ordena os processos em 5 níveis de prioridade. Se faltar memória, ele mata de baixo para cima:</p>
+  <table class="mini">
+    <tr><th>Prioridade</th><th>Tipo de processo</th><th>Risco de morrer</th></tr>
+    <tr><td>1 (Maior)</td><td><b>Foreground</b> (Activity em <code>onResume</code>)</td><td class="hk">Quase zero (só último caso)</td></tr>
+    <tr><td>2</td><td><b>Visible</b> (Activity visível atrás de diálogo)</td><td class="hk">Muito baixo</td></tr>
+    <tr><td>3</td><td><b>Service</b> (música tocando em segundo plano)</td><td>Baixo</td></tr>
+    <tr><td>4</td><td><b>Background</b> (app em <code>onStop</code>)</td><td>Médio/Alto</td></tr>
+    <tr><td>5 (Menor)</td><td><b>Empty / Cached</b> (sem componente ativo)</td><td class="hl">Primeiro a ser morto!</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">IOS · UIVIEWCONTROLLER</span>
+  <h2>Ciclo de vida de uma tela no iOS</h2>
+  <p>No UIKit (iOS), a tela é gerenciada por uma <code>UIViewController</code>. Os nomes mudam, mas a lógica é irmã gêmea do Android:</p>
+  <svg viewBox="0 0 820 150" role="img" aria-label="Ciclo de vida UIViewController iOS">
+    <rect x="10" y="45" width="135" height="52" rx="10" class="accbox"/>
+    <text x="77" y="68" text-anchor="middle" class="mono">viewDidLoad()</text>
+    <text x="77" y="86" text-anchor="middle" class="small">1x na memória</text>
+    <line x1="145" y1="71" x2="175" y2="71" class="acc" marker-end="url(#ar)"/>
+    <rect x="178" y="45" width="145" height="52" rx="10" class="box"/>
+    <text x="250" y="68" text-anchor="middle" class="mono">viewWillAppear()</text>
+    <text x="250" y="86" text-anchor="middle" class="small">Antes de mostrar</text>
+    <line x1="323" y1="71" x2="353" y2="71" class="acc" marker-end="url(#ar)"/>
+    <rect x="356" y="45" width="140" height="52" rx="10" class="okbox"/>
+    <text x="426" y="68" text-anchor="middle" class="mono">viewDidAppear()</text>
+    <text x="426" y="86" text-anchor="middle" class="small">Visível e interativa</text>
+    <line x1="496" y1="71" x2="526" y2="71" class="acc" marker-end="url(#ar)"/>
+    <rect x="529" y="45" width="140" height="52" rx="10" class="box"/>
+    <text x="599" y="68" text-anchor="middle" class="mono">viewWillDisappear</text>
+    <text x="599" y="86" text-anchor="middle" class="small">Vai sair</text>
+    <line x1="669" y1="71" x2="695" y2="71" class="badl" marker-end="url(#arbad)"/>
+    <rect x="698" y="45" width="115" height="52" rx="10" class="badbox"/>
+    <text x="755" y="68" text-anchor="middle" class="mono">viewDidDisappear</text>
+    <text x="755" y="86" text-anchor="middle" class="small">Saiu da tela</text>
+  </svg>
+  <div class="say trap">
+    <code>viewDidLoad()</code> roda <b>uma única vez</b> quando a view sobe para a memória. Se você precisa atualizar um saldo toda vez que o usuário volta para a tela, use <code>viewWillAppear()</code>!
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">IOS · ESTADOS DO APP</span>
+  <h2>Os 5 estados do aplicativo iOS</h2>
+  <p>Além da tela individual, o próprio app iOS (<code>UIApplication</code> / <code>SceneDelegate</code>) transita entre 5 estados:</p>
+  <div class="steps">
+    <div class="step"><b>Not Running</b><span>App fechado ou morto pelo sistema.</span></div>
+    <div class="step"><b>Inactive</b><span>Em transição (ex.: ligação ou Control Center aberto).</span></div>
+    <div class="step"><b>Active</b><span>Em primeiro plano recebendo eventos.</span></div>
+    <div class="step"><b>Background</b><span>Oculto, mas ainda executando código curto.</span></div>
+    <div class="step"><b>Suspended</b><span>Congelado na RAM; pode ser morto sem aviso.</span></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">DE OLHO NA PROVA</span>
+  <h2>Mapa de equivalência: Android × iOS</h2>
+  <table class="cmp">
+    <tr><th>Momento</th><th>Android (Activity)</th><th>iOS (UIViewController)</th></tr>
+    <tr><td>Criação inicial (1 vez)</td><td><code>onCreate()</code></td><td><code>viewDidLoad()</code></td></tr>
+    <tr><td>Prestes a aparecer</td><td><code>onStart()</code></td><td><code>viewWillAppear()</code></td></tr>
+    <tr><td>Visível e em foco</td><td><code>onResume()</code></td><td><code>viewDidAppear()</code></td></tr>
+    <tr><td>Perdendo foco / saindo</td><td><code>onPause()</code></td><td><code>viewWillDisappear()</code></td></tr>
+    <tr><td>Totalmente oculta</td><td><code>onStop()</code></td><td><code>viewDidDisappear()</code></td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 1</span>
+  <h2>Para não errar nunca mais</h2>
+  <div class="magic">
+    “Criar é 1 vez (<code>onCreate</code> / <code>viewDidLoad</code>); aparecer e pausar acontecem toda hora.”
+    <small>E lembre: girar o Android destrói e recria a Activity — use <b>ViewModel</b> para preservar estado!</small>
+  </div>
+  <ul class="checklist">
+    <li>Activity Android: <code>onCreate → onStart → onResume → onPause → onStop → onDestroy</code>.</li>
+    <li>Volta de <code>onStop</code> passa por <code>onRestart()</code> antes de <code>onStart()</code>.</li>
+    <li>Processos <b>Cached/Empty</b> são os primeiros mortos pelo Android; <b>Suspended</b> no iOS também pode ser descartado sem aviso.</li>
+    <li><code>viewDidLoad</code> = montagem inicial; <code>viewWillAppear</code> = antes de exibir novamente.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 1</span>
+  <h2>4 questões no estilo FGV</h2>
+  <details><summary>1. Um pop-up parcial cobre parte da Activity Android sem tirá-la totalmente de vista. Qual callback roda?</summary><p><b>Resposta:</b> apenas <code>onPause()</code>. Como a Activity ainda está parcialmente visível, <code>onStop()</code> não é chamado.</p></details>
+  <details><summary>2. Ao girar a tela do Android, os dados de um campo sem ViewModel sumiram. Por quê?</summary><p><b>Resposta:</b> a rotação altera a configuração e força <code>onDestroy()</code> seguido de novo <code>onCreate()</code>, criando nova instância da Activity.</p></details>
+  <details><summary>3. No iOS, onde colocar uma chamada que precisa recarregar dados sempre que o usuário retorna à tela?</summary><p><b>Resposta:</b> em <code>viewWillAppear()</code> (ou <code>viewDidAppear()</code>), nunca em <code>viewDidLoad()</code>, que só executa na primeira carga.</p></details>
+  <details><summary>4. Qual estado de processo Android tem maior risco de ser encerrado pelo sistema por falta de memória?</summary><p><b>Resposta:</b> processos em <b>Cached / Empty</b> (sem componentes ativos), seguidos de Background, enquanto Foreground tem prioridade máxima.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 2 ===================================================== -->
+<section class="chapter" data-title="Persistência Local e Bancos no Celular">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 2</span>
+  <h1>Persistência Local e Bancos no Celular</h1>
+  <span class="emoji">💾</span>
+  <div class="steps">
+    <div class="step"><b>1. Chave-Valor</b><span>SharedPreferences e UserDefaults.</span></div>
+    <div class="step"><b>2. SQLite &amp; Room</b><span>Relacional puro vs ORM do Jetpack.</span></div>
+    <div class="step"><b>3. Hive &amp; Isar</b><span>Bancos NoSQL locais no Flutter.</span></div>
+    <div class="step"><b>4. Escolha certa</b><span>Quando usar cada um na prova.</span></div>
+  </div>
+  <div class="analogy">
+    <span class="emoji">🗂️</span>
+    <div><b>Pense em guardar coisas em casa:</b> um post-it na geladeira (<code>SharedPreferences</code>) serve para "modo escuro = sim", mas um arquivo de processos precisa de fichário com gavetas e índice (<code>SQLite/Room</code> ou <code>Isar</code>).</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">CHAVE-VALOR LEVE</span>
+  <h2>SharedPreferences (Android) e UserDefaults (iOS)</h2>
+  <p>São armazéns simples de pares <b>chave → valor</b> salvos em arquivo XML (Android) ou plist (iOS) dentro da pasta privada do app.</p>
+  <div class="two">
+    <div class="say good"><b>Use para:</b> tema (claro/escuro), idioma escolhido, flag "já viu tutorial", último filtro simples.</div>
+    <div class="say bad"><b>NÃO use para:</b> listas grandes, buscas com filtro/JOIN, arquivos binários ou <b>senhas/tokens sem criptografia</b>.</div>
+  </div>
+  <div class="say trap">
+    <b>Pegadinha FGV:</b> <code>SharedPreferences</code> não é banco relacional e seus dados ficam em texto claro no XML (acessível em aparelhos com root).
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RELACIONAL EMBUTIDO</span>
+  <h2>SQLite puro: poderoso, porém trabalhoso</h2>
+  <p>O <b>SQLite</b> já vem embutido no Android e no iOS. É um banco relacional completo em um único arquivo <code>.db</code>, com suporte a SQL e transações <b>ACID</b>.</p>
+  <pre><code><span class="c">// SQLite puro no Android exige SQL manual e Cursor:</span>
+Cursor c = db.rawQuery(<mark class="ng">"SELECT * FROM procesoss WHERE id = ?"</mark>, args);
+<span class="c">// Erro de digitação ("procesoss") só explode em RUNTIME!</span></code></pre>
+  <div class="say law">
+    Com SQLite puro (<code>SQLiteOpenHelper</code>), erros de sintaxe SQL ou nomes de coluna errados só são descobertos quando o app roda e quebra.
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">ANDROID JETPACK</span>
+  <h2>Room: o escudo em cima do SQLite</h2>
+  <p>O <b>Room</b> não substitui o SQLite — ele é uma camada de abstração (ORM) sobre o SQLite com <b>3 peças obrigatórias</b>:</p>
+  <svg viewBox="0 0 820 180" role="img" aria-label="Arquitetura do Room sobre o SQLite">
+    <rect x="20" y="30" width="210" height="110" rx="14" class="accbox"/>
+    <text x="125" y="65" text-anchor="middle" class="mono">@Entity</text>
+    <text x="125" y="90" text-anchor="middle" class="small">Define a tabela e colunas</text>
+    <text x="125" y="112" text-anchor="middle" class="small">(ex.: ProcessoEntity)</text>
+    <line x1="230" y1="85" x2="290" y2="85" class="acc" marker-end="url(#ar)"/>
+    <rect x="295" y="30" width="220" height="110" rx="14" class="okbox"/>
+    <text x="405" y="65" text-anchor="middle" class="mono">@Dao</text>
+    <text x="405" y="90" text-anchor="middle" class="small">Métodos @Query, @Insert</text>
+    <text x="405" y="112" text-anchor="middle" class="small">SQL validado na COMPILAÇÃO</text>
+    <line x1="515" y1="85" x2="575" y2="85" class="acc" marker-end="url(#ar)"/>
+    <rect x="580" y="30" width="220" height="110" rx="14" class="keybox"/>
+    <text x="690" y="65" text-anchor="middle" class="mono kt">@Database</text>
+    <text x="690" y="90" text-anchor="middle" class="small kt">Liga tudo ao arquivo</text>
+    <text x="690" y="112" text-anchor="middle" class="small kt">SQLite + Migrations</text>
+  </svg>
+  <div class="say good">
+    <b>Trunfo do Room:</b> verifica suas queries SQL em <b>tempo de compilação</b>, gera boilerplate automático e bloqueia queries na Main Thread por padrão.
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">ROOM NA PRÁTICA</span>
+  <h2>Exemplo mínimo de @Entity e @Dao</h2>
+  <pre><code>@Entity(tableName = "processos")
+data class Processo(@PrimaryKey val numero: String, val classe: String)
+
+@Dao
+interface ProcessoDao {
+  <mark>@Query("SELECT * FROM processos WHERE numero = :n")</mark>
+  suspend fun buscar(n: String): Processo?  <span class="c">// Coroutine: fora da UI Thread!</span>
+}</code></pre>
+  <p>Se você errar o nome da tabela dentro de <code>@Query</code>, o projeto <b>nem compila</b>. E o <code>suspend</code> garante execução assíncrona sem travar a tela.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">FLUTTER / DART · NOSQL</span>
+  <h2>Hive e Isar: velocidade sem SQL</h2>
+  <p>No ecossistema Flutter, dois bancos NoSQL locais muito cobrados são o <b>Hive</b> e o <b>Isar</b> (criados pelo mesmo autor):</p>
+  <div class="two">
+    <div class="card">
+      <h3>📦 Hive</h3>
+      <ul>
+        <li>Armazena em <b>Boxes</b> (caixas chave-valor binárias).</li>
+        <li>Muito leve e rápido para cache e objetos simples (via <code>TypeAdapter</code>).</li>
+        <li><b>Limite:</b> não possui índices secundários nem motor de consultas complexas nativo.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>⚡ Isar</h3>
+      <ul>
+        <li>Banco NoSQL de objetos embutido (motor em Rust/C++).</li>
+        <li>Suporta <b>índices compostos</b>, filtros, ordenação e busca textual.</li>
+        <li>Suporta <b>transações ACID</b>, links entre coleções e consultas assíncronas.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">COMPARATIVO GERAL</span>
+  <h2>Qual persistência escolher?</h2>
+  <table class="mini">
+    <tr><th>Tecnologia</th><th>Modelo</th><th>Melhor uso</th><th>Ponto de atenção</th></tr>
+    <tr><td><b>SharedPreferences / UserDefaults</b></td><td>Chave-Valor (XML/plist)</td><td>Configurações simples e flags</td><td class="hl">Sem criptografia padrão; não escalável</td></tr>
+    <tr><td><b>SQLite</b></td><td>Relacional (SQL)</td><td>Dados estruturados, JOINs, ACID</td><td class="hl">SQL manual sem checagem em compilação</td></tr>
+    <tr><td><b>Room</b></td><td>ORM sobre SQLite</td><td>Apps Android modernos com SQL</td><td class="hk">Valida SQL na compilação + Coroutines</td></tr>
+    <tr><td><b>Hive</b></td><td>NoSQL (Boxes)</td><td>Cache rápido e simples em Flutter</td><td>Sem queries complexas/índices nativos</td></tr>
+    <tr><td><b>Isar</b></td><td>NoSQL (Coleções)</td><td>Flutter com filtros, índices e ACID</td><td class="hk">Alta performance + queries tipadas</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA DE PROVA</span>
+  <h2>Migrations e perda de dados</h2>
+  <p>Quando o app atualiza e você adiciona uma coluna nova no banco local (Room/SQLite), o que acontece se não criar uma <b>Migration</b>?</p>
+  <div class="say trap">
+    Se você usar <code>fallbackToDestructiveMigration()</code> em produção, o Room <b>apaga todas as tabelas e recria do zero</b> — o usuário perde todos os dados offline! Em produção, escreva a <code>Migration(1, 2)</code> com <code>ALTER TABLE</code>.
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 2</span>
+  <h2>Mapa mental da persistência</h2>
+  <div class="magic">
+    “Preferência é SharedPreferences; SQL seguro é Room; Flutter rápido com busca é Isar.”
+    <small>Nenhum deles substitui armazenamento criptografado quando o dado é senha ou token!</small>
+  </div>
+  <ul class="checklist">
+    <li><code>SharedPreferences</code> (Android) e <code>UserDefaults</code> (iOS): chave-valor leve, nunca segredos.</li>
+    <li><b>Room</b> = <code>@Entity</code> + <code>@Dao</code> + <code>@Database</code> sobre SQLite, com validação em compilação.</li>
+    <li><b>Hive</b> = caixas chave-valor binárias; <b>Isar</b> = NoSQL com índices, filtros e ACID.</li>
+    <li>Atualizou esquema do banco em produção? Crie <b>Migration</b> explícita.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 2</span>
+  <h2>4 questões no estilo FGV</h2>
+  <details><summary>1. Onde salvar a preferência "exibir notificações = false" no Android sem criar banco SQL?</summary><p><b>Resposta:</b> <code>SharedPreferences</code> (ou DataStore), pois é um par chave-valor simples.</p></details>
+  <details><summary>2. Qual a vantagem imediata do Room sobre o uso direto de SQLiteOpenHelper?</summary><p><b>Resposta:</b> o Room valida as consultas <code>@Query</code> em tempo de compilação e reduz código repetitivo de mapeamento.</p></details>
+  <details><summary>3. Em um app Flutter que precisa filtrar milhares de registros locais por múltiplos campos indexados com ACID, escolhe-se Hive ou Isar?</summary><p><b>Resposta:</b> <b>Isar</b>, pois oferece índices secundários, motor de consulta rico e transações ACID.</p></details>
+  <details><summary>4. É seguro gravar um token de autenticação JWT no SharedPreferences padrão?</summary><p><b>Resposta:</b> Não! O arquivo XML fica em texto legível para usuários com acesso root ou backup desprotegido.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 3 ===================================================== -->
+<section class="chapter" data-title="Armazenamento Seguro e Engenharia Reversa">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 3</span>
+  <h1>Armazenamento Seguro e Engenharia Reversa</h1>
+  <span class="emoji">🔐</span>
+  <div class="steps">
+    <div class="step"><b>1. Ameaça local</b><span>Por que arquivos do app vazam no aparelho.</span></div>
+    <div class="step"><b>2. Cofres nativos</b><span>Android Keystore &amp; iOS Keychain.</span></div>
+    <div class="step"><b>3. Engenharia Reversa</b><span>Descompilando APK/AAB e IPA.</span></div>
+    <div class="step"><b>4. Defesas reais</b><span>R8/ProGuard, integridade e sem segredo hardcoded.</span></div>
+  </div>
+  <div class="analogy">
+    <span class="emoji">🗝️</span>
+    <div><b>Pense num celular perdido ou com root:</b> o app mora dentro da casa do atacante. Deixar uma senha anotada no código ou num XML é esconder a chave embaixo do tapete.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">POR QUE PROTEGER?</span>
+  <h2>O risco do Root, Jailbreak e Backup</h2>
+  <p>Em condições normais, o sistema operacional isola cada app numa <b>Sandbox</b>. Mas esse muro cai quando:</p>
+  <ul>
+    <li>O aparelho tem <b>Root</b> (Android) ou <b>Jailbreak</b> (iOS): o atacante lê qualquer arquivo em <code>/data/data/</code>.</li>
+    <li>O manifesto Android deixa <code>android:allowBackup="true"</code>: cópias via USB (ADB) podem extrair bancos e preferências.</li>
+    <li>O app foi compilado com <code>android:debuggable="true"</code> em produção: permite acoplar depurador e inspecionar memória.</li>
+  </ul>
+  <div class="say trap">
+    Nunca confie só na sandbox do SO para guardar tokens de sessão, chaves privadas ou dados pessoais sensíveis!
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">COFRES OFICIAIS</span>
+  <h2>Android Keystore e iOS Keychain</h2>
+  <svg viewBox="0 0 820 175" role="img" aria-label="Cofres de hardware Android Keystore e iOS Keychain">
+    <rect x="20" y="25" width="370" height="125" rx="14" class="okbox"/>
+    <text x="205" y="55" text-anchor="middle" class="mono">Android Keystore + Jetpack Security</text>
+    <text x="205" y="82" text-anchor="middle" class="small">Chave mestre fica no hardware (TEE / StrongBox)</text>
+    <text x="205" y="106" text-anchor="middle" class="small">EncryptedSharedPreferences cifra chaves e valores</text>
+    <text x="205" y="130" text-anchor="middle" class="small">SQLCipher cifra o arquivo .db inteiro do SQLite</text>
+
+    <rect x="430" y="25" width="370" height="125" rx="14" class="accbox"/>
+    <text x="615" y="55" text-anchor="middle" class="mono">iOS Keychain Services</text>
+    <text x="615" y="82" text-anchor="middle" class="small">Banco cifrado do sistema apoiado pelo Secure Enclave</text>
+    <text x="615" y="106" text-anchor="middle" class="small">Guarda tokens, senhas e chaves privadas</text>
+    <text x="615" y="130" text-anchor="middle" class="small">Pode exigir FaceID/TouchID para liberar acesso</text>
+  </svg>
+  <div class="say law">
+    O <b>Android Keystore</b> impede que a chave criptográfica seja exportada do dispositivo, mesmo que o processo do app seja comprometido.
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">CHAVE-VALOR SEGURO</span>
+  <h2>SharedPreferences comum × Encrypted</h2>
+  <table class="cmp">
+    <tr><th class="ng">✗ SharedPreferences comum</th><th class="ok">✓ EncryptedSharedPreferences / Keychain</th></tr>
+    <tr><td class="hl">Salva <code>token=eyJhbGci...</code> em texto puro no XML</td><td class="hk">Cifra chave (AES-SIV) e valor (AES-GCM)</td></tr>
+    <tr><td class="hl">Qualquer root lê em segundos</td><td class="hk">Chave protegida pelo Android Keystore (hardware)</td></tr>
+    <tr><td>Bom só para tema escuro e idioma</td><td>Obrigatório para tokens, PINs e dados sensíveis</td></tr>
+  </table>
+  <p>Para bancos SQLite inteiros que precisam de sigilo em repouso, usa-se <b>SQLCipher</b> (extensão que cifra páginas do SQLite com AES-256).</p>
+</div>
+
+<div class="slide">
+  <span class="tag">ENGENHARIA REVERSA</span>
+  <h2>Como um atacante abre seu app?</h2>
+  <p>Um arquivo <code>.apk</code> ou <code>.ipa</code> é basicamente um pacote ZIP. Qualquer pessoa baixa da loja e analisa em minutos:</p>
+  <div class="flow">
+    <span>APK / AAB</span><i>→</i>
+    <span>Descompacta (classes.dex)</span><i>→</i>
+    <span>jadx / apktool</span><i>→</i>
+    <span>Código Java/Kotlin legível!</span>
+  </div>
+  <div class="flow">
+    <span>IPA (iOS)</span><i>→</i>
+    <span>Binário Mach-O</span><i>→</i>
+    <span>Ghidra / Hopper / class-dump</span><i>→</i>
+    <span>Strings e fluxo expostos!</span>
+  </div>
+  <div class="say bad">
+    <b>Erro fatal:</b> colocar <code>const API_SECRET = "sk_live_998877"</code> no código. Ferramentas como <code>strings</code> ou <code>jadx</code> acham isso em 5 segundos!
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">DEFESA EM CAMADAS</span>
+  <h2>O que o R8 / ProGuard faz (e o que NÃO faz)</h2>
+  <pre><code><span class="c">// Antes do R8 (código original):</span>
+class ValidadorAssinatura { fun verificarToken(cpf: String) { ... } }
+
+<span class="c">// Depois do R8 (minificado e ofuscado):</span>
+class a { fun a(b: String) { ... } }</code></pre>
+  <div class="two">
+    <div class="say good"><b>O que o R8 faz:</b> renomeia classes/métodos, remove código não usado (shrinking) e dificulta leitura humana.</div>
+    <div class="say trap"><b>O que o R8 NÃO faz:</b> não criptografa segredos! Strings constantes como chaves de API continuam visíveis no bytecode.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">BOAS PRÁTICAS DE BLINDAGEM</span>
+  <h2>Checklist de hardening no manifesto e runtime</h2>
+  <table class="mini">
+    <tr><th>Controle</th><th>O que resolve</th></tr>
+    <tr><td><code>android:allowBackup="false"</code></td><td>Impede extração de dados locais via backup ADB.</td></tr>
+    <tr><td><code>android:debuggable="false"</code></td><td>Bloqueia attach de depurador em builds de produção.</td></tr>
+    <tr><td>Detecção de <b>Root / Jailbreak</b></td><td>Alerta ou bloqueia funções críticas em aparelho comprometido.</td></tr>
+    <tr><td><b>Play Integrity API</b> / <b>App Attest</b></td><td>Prova ao backend que a requisição veio do app oficial não adulterado.</td></tr>
+    <tr><td>Segredos no <b>Backend (BFF)</b></td><td>App usa token temporário do usuário, nunca chave mestre da API.</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">CASO RESOLVIDO</span>
+  <h2>Onde guardar a chave da API de pagamentos?</h2>
+  <div class="ex ng">Errado: guardar a chave privada da gateway dentro de um arquivo <code>.env</code> empacotado no Flutter ou no <code>BuildConfig</code> do Android.</div>
+  <div class="ex ok">Certo: o app mobile envia o pedido autenticado para o <b>seu próprio backend</b>; o backend guarda a chave privada no servidor e chama a gateway.</div>
+  <p>Lembre da regra: <b>tudo que vai para o aparelho do usuário está em território não confiável</b>.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 3</span>
+  <h2>Blindagem mobile em 1 frase</h2>
+  <div class="magic">
+    “Segredo de verdade fica no servidor; segredo do usuário vai pro Keystore/Keychain.”
+    <small>R8/ProGuard atrasa o atacante, mas não transforma o celular em cofre impenetrável.</small>
+  </div>
+  <ul class="checklist">
+    <li>Use <b>Android Keystore</b> (+ <code>EncryptedSharedPreferences</code> / <b>SQLCipher</b>) e <b>iOS Keychain</b>.</li>
+    <li>Desative <code>allowBackup</code> e <code>debuggable</code> no build de produção.</li>
+    <li><b>R8/ProGuard</b> ofusca nomes e reduz APK, mas nunca protege chaves hardcoded.</li>
+    <li>Valide integridade do app e do dispositivo (Play Integrity / App Attest).</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 3</span>
+  <h2>4 questões no estilo FGV</h2>
+  <details><summary>1. Qual a contrapartida do EncryptedSharedPreferences no ecossistema iOS?</summary><p><b>Resposta:</b> <b>iOS Keychain Services</b>, que armazena credenciais cifradas com suporte do Secure Enclave.</p></details>
+  <details><summary>2. Se um desenvolvedor ativar R8/ProGuard, ele já pode deixar a senha do banco no código do app?</summary><p><b>Resposta:</b> Não! O R8 ofusca nomes de classes e métodos, mas literais de string ainda são facilmente extraídos por engenharia reversa.</p></details>
+  <details><summary>3. Para cifrar um banco SQLite local inteiro no Android ou iOS, qual biblioteca é referência?</summary><p><b>Resposta:</b> <b>SQLCipher</b>, que aplica criptografia AES-256 transparente nas páginas do banco SQLite.</p></details>
+  <details><summary>4. Qual flag no AndroidManifest.xml evita que os dados do app sejam copiados via backup ADB?</summary><p><b>Resposta:</b> <code>android:allowBackup="false"</code>.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 4 ===================================================== -->
+<section class="chapter" data-title="TLS/SSL e SSL Pinning na Rede">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 4</span>
+  <h1>TLS/SSL e SSL Pinning na Rede</h1>
+  <span class="emoji">🛡️</span>
+  <div class="steps">
+    <div class="step"><b>1. TLS/SSL (HTTPS)</b><span>Como o cadeado funciona na prática.</span></div>
+    <div class="step"><b>2. A brecha das CAs</b><span>Por que um proxy MitM ainda espiona.</span></div>
+    <div class="step"><b>3. SSL Pinning</b><span>Fixando certificado ou chave pública.</span></div>
+    <div class="step"><b>4. SPKI &amp; Backup</b><span>Como não travar o app na renovação.</span></div>
+  </div>
+  <div class="analogy">
+    <span class="emoji">🪪</span>
+    <div><b>TLS padrão</b> é aceitar qualquer pessoa que tenha um crachá assinado por um dos 100 cartórios do celular. <b>SSL Pinning</b> é dizer: "Eu só abro a porta para quem tiver <u>exatamente esta digital</u>!"</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">TRANSPORTE SEGURO</span>
+  <h2>O que o TLS/SSL garante?</h2>
+  <p>O <b>TLS</b> (sucessor moderno do SSL) protege a comunicação entre o app e a API contra escuta e adulteração na rede (Wi-Fi público, 4G, roteadores):</p>
+  <ul>
+    <li><b>Confidencialidade:</b> ninguém no meio lê o payload JSON (criptografia simétrica de sessão).</li>
+    <li><b>Integridade:</b> qualquer byte alterado no caminho quebra a verificação (MAC/AEAD).</li>
+    <li><b>Autenticidade do servidor:</b> o servidor apresenta um <b>Certificado Digital X.509</b> assinado por uma CA confiável.</li>
+  </ul>
+  <div class="say law">
+    No handshake TLS, a criptografia <b>assimétrica</b> autentica e negocia a chave; depois a troca de dados usa criptografia <b>simétrica</b> por ser muito mais rápida.
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">O PROBLEMA</span>
+  <h2>Por que o TLS padrão não basta contra MitM?</h2>
+  <p>O celular confia em dezenas de <b>Autoridades Certificadoras (CAs)</b> pré-instaladas. Se o usuário ou um malware instalar uma CA extra (como um proxy <b>Burp Suite / Charles</b>), o ataque Man-in-the-Middle passa sem erro!</p>
+  <svg viewBox="0 0 820 155" role="img" aria-label="Ataque Man-in-the-Middle com CA instalada">
+    <rect x="20" y="45" width="160" height="60" rx="12" class="box"/>
+    <text x="100" y="72" text-anchor="middle" class="mono">App Mobile</text>
+    <text x="100" y="92" text-anchor="middle" class="small">Confia nas CAs do SO</text>
+    <line x1="180" y1="75" x2="295" y2="75" class="badl" marker-end="url(#arbad)"/>
+    <rect x="300" y="35" width="215" height="80" rx="12" class="badbox"/>
+    <text x="407" y="64" text-anchor="middle" class="mono">Proxy MitM (Atacante)</text>
+    <text x="407" y="84" text-anchor="middle" class="small">Emite cert falso com CA</text>
+    <text x="407" y="102" text-anchor="middle" class="small">instalada no aparelho!</text>
+    <line x1="515" y1="75" x2="625" y2="75" class="badl" marker-end="url(#arbad)"/>
+    <rect x="630" y="45" width="170" height="60" rx="12" class="box"/>
+    <text x="715" y="72" text-anchor="middle" class="mono">Servidor API</text>
+    <text x="715" y="92" text-anchor="middle" class="small">Tráfego todo lido!</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">A SOLUÇÃO</span>
+  <h2>SSL Pinning (Certificate Pinning)</h2>
+  <p>Com <b>SSL Pinning</b>, o aplicativo carrega dentro dele a "impressão digital" esperada do servidor. Mesmo que o aparelho tenha uma CA maliciosa instalada, a conexão é <b>recusada na hora</b>!</p>
+  <svg viewBox="0 0 820 140" role="img" aria-label="SSL Pinning bloqueando proxy MitM">
+    <rect x="20" y="40" width="210" height="64" rx="12" class="okbox"/>
+    <text x="125" y="66" text-anchor="middle" class="mono">App com Pinning</text>
+    <text x="125" y="86" text-anchor="middle" class="small">Compara hash SPKI</text>
+    <line x1="230" y1="72" x2="345" y2="72" class="badl" marker-end="url(#arbad)"/>
+    <rect x="350" y="40" width="200" height="64" rx="12" class="badbox"/>
+    <text x="450" y="66" text-anchor="middle" class="mono">Proxy MitM</text>
+    <text x="450" y="86" text-anchor="middle" class="small">Hash ≠ esperado → BLOQUEIA</text>
+    <rect x="595" y="40" width="205" height="64" rx="12" class="accbox"/>
+    <text x="697" y="66" text-anchor="middle" class="mono">Servidor Real</text>
+    <text x="697" y="86" text-anchor="middle" class="small">Hash igual → CONECTA ✓</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">QUAL PIN ESCOLHER?</span>
+  <h2>Certificado inteiro × Chave Pública (SPKI)</h2>
+  <table class="cmp">
+    <tr><th>Tipo de Pin</th><th>Como funciona</th><th>Impacto na renovação</th></tr>
+    <tr><td><b>Certificado X.509 inteiro</b></td><td>Fixa o arquivo/hash do certificado exato.</td><td class="hl">Quando o certificado vence (ex.: 1 ano), o app antigo <b>para de funcionar</b> até atualizar!</td></tr>
+    <tr><td><b>Chave Pública (SPKI)</b></td><td>Fixa o hash SHA-256 da chave pública do servidor.</td><td class="hk">Você renova o certificado mantendo o mesmo par de chaves e o app <b>continua funcionando</b>!</td></tr>
+  </table>
+  <div class="say good">
+    <b>Recomendação oficial:</b> prefira fixar o <b>hash SHA-256 da chave pública (SPKI)</b> e sempre configure pelo menos <b>1 pin de backup</b> (chave reserva).
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">IMPLEMENTAÇÃO ANDROID</span>
+  <h2>Configuração declarativa no Android</h2>
+  <p>Desde o Android 7 (API 24), não é preciso escrever código complexo de socket: basta usar <code>network_security_config.xml</code>:</p>
+  <pre><code>&lt;network-security-config&gt;
+  &lt;domain-config <mark class="ng">cleartextTrafficPermitted="false"</mark>&gt;
+    &lt;domain includeSubdomains="true"&gt;api.tjpb.jus.br&lt;/domain&gt;
+    &lt;pin-set expiration="2027-01-01"&gt;
+      &lt;pin digest="SHA-256"&gt;<mark>7HIpactkIAq2Y49orFOOQKurWxmmSFZhBCoQYcRhJ3Y=</mark>&lt;/pin&gt;
+      &lt;pin digest="SHA-256"&gt;backupPinReservaHashAqui1234567890abcdef=&lt;/pin&gt;
+    &lt;/pin-set&gt;
+  &lt;/domain-config&gt;
+&lt;/network-security-config&gt;</code></pre>
+  <p>No iOS, implementa-se via <code>URLSessionDelegate</code> (verificando a chave pública no <code>didReceive challenge</code>) ou bibliotecas como TrustKit.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA DA BANCA</span>
+  <h2>O risco de "brickar" (travar) o app</h2>
+  <div class="say trap">
+    Se o servidor trocar o certificado e a chave privada sem que o app tenha um <b>pin de backup</b> (ou sem atualização prévia nas lojas), 100% dos usuários ficarão sem conexão!
+  </div>
+  <p>Outro ponto: em builds de produção, <code>cleartextTrafficPermitted</code> deve ser <code>false</code> para impedir fallback acidental para HTTP sem criptografia.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">AVISO IMPORTANTE</span>
+  <h2>Pinning substitui TLS? Não!</h2>
+  <div class="ex ng">Errado: "Como uso SSL Pinning, não preciso de HTTPS/TLS."</div>
+  <div class="ex ok">Certo: SSL Pinning é uma <b>camada extra de validação</b> em cima do handshake TLS para restringir em quem o app confia.</div>
+  <p>E lembre: no celular com root, um atacante pode tentar remover o pinning em memória (ex.: Frida), por isso segurança mobile é sempre em camadas.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 4</span>
+  <h2>Checklist de rede segura</h2>
+  <div class="magic">
+    “TLS fecha o túnel; SSL Pinning escolhe quem tem a chave da porta.”
+    <small>Fixe o hash SHA-256 da chave pública (SPKI) + 1 pin de backup + bloqueie HTTP em texto claro.</small>
+  </div>
+  <ul class="checklist">
+    <li>TLS garante confidencialidade, integridade e autenticidade via CA.</li>
+    <li><b>SSL Pinning</b> barra ataques MitM mesmo com CA de proxy instalada no aparelho.</li>
+    <li>Pinning de <b>SPKI</b> sobrevive à renovação do certificado (se mantiver a chave).</li>
+    <li>No Android, use <code>network_security_config.xml</code> com <code>cleartextTrafficPermitted="false"</code>.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 4</span>
+  <h2>4 questões no estilo FGV</h2>
+  <details><summary>1. Por que um proxy como Charles ou Burp consegue ler HTTPS se o usuário instalar o certificado do proxy no celular?</summary><p><b>Resposta:</b> porque o TLS padrão confia em qualquer CA presente no repositório de confiança do sistema operacional.</p></details>
+  <details><summary>2. Qual a vantagem de fixar o hash SPKI (chave pública) no lugar do certificado X.509 completo?</summary><p><b>Resposta:</b> permite renovar o certificado no servidor sem quebrar versões antigas do app, desde que o par de chaves seja mantido.</p></details>
+  <details><summary>3. Para que serve incluir um segundo &lt;pin&gt; no pin-set do Android?</summary><p><b>Resposta:</b> funciona como <b>pin de backup</b> caso a chave principal precise ser substituída de emergência, evitando travar o app.</p></details>
+  <details><summary>4. O que significa cleartextTrafficPermitted="false"?</summary><p><b>Resposta:</b> proíbe o aplicativo de fazer requisições HTTP puras (sem TLS/criptografia).</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 5 ===================================================== -->
+<section class="chapter" data-title="Consumo de APIs REST/JSON e Push (FCM)">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 5</span>
+  <h1>Consumo de APIs REST/JSON e Push (FCM)</h1>
+  <span class="emoji">🚀</span>
+  <div class="steps">
+    <div class="step"><b>1. REST &amp; JSON</b><span>Verbos HTTP, status codes e serialização.</span></div>
+    <div class="step"><b>2. Main Thread &amp; ANR</b><span>Por que rede sempre roda assíncrona.</span></div>
+    <div class="step"><b>3. Arquitetura FCM</b><span>Como o Push chega até o celular.</span></div>
+    <div class="step"><b>4. Notification × Data</b><span>Quem trata a mensagem em background.</span></div>
+  </div>
+  <div class="analogy">
+    <span class="emoji">🍕</span>
+    <div><b>REST</b> é você ligar na pizzaria e pedir (o app puxa dados quando quer). <b>Push (FCM)</b> é a campainha tocar quando o entregador chega (o servidor avisa o app sem você ficar perguntando).</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">APIS REST NO MOBILE</span>
+  <h2>Verbos HTTP e Status Codes essenciais</h2>
+  <table class="mini">
+    <tr><th>Código</th><th>Significado</th><th>Ação típica do app mobile</th></tr>
+    <tr><td><b>200 / 201</b></td><td>OK / Created</td><td>Desserializa JSON e atualiza a tela.</td></tr>
+    <tr><td><b>400</b></td><td>Bad Request</td><td>Exibe erro de validação do formulário.</td></tr>
+    <tr><td><b>401</b></td><td>Unauthorized</td><td class="hk">Token ausente/expirado → tenta <b>refresh token</b> ou login.</td></tr>
+    <tr><td><b>403</b></td><td>Forbidden</td><td class="hl">Autenticado, mas sem permissão → não adianta renovar token!</td></tr>
+    <tr><td><b>429</b></td><td>Too Many Requests</td><td>Respeitar limite e aplicar <b>backoff exponencial</b>.</td></tr>
+    <tr><td><b>500 / 503</b></td><td>Erro no Servidor</td><td>Mostrar mensagem amigável e retry limitado.</td></tr>
+  </table>
+  <div class="say law">
+    <b>PUT</b> substitui o recurso inteiro; <b>PATCH</b> atualiza apenas os campos enviados (economiza dados móveis 4G/5G!).
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">DESEMPENHO &amp; RESILIÊNCIA</span>
+  <h2>Nunca bloqueie a Main Thread (UI Thread)!</h2>
+  <p>A <b>Main Thread</b> desenha os quadros da tela (60/120 fps) e responde aos toques. Fazer rede ou parse pesado de JSON nela congela o aplicativo:</p>
+  <div class="two">
+    <div class="say bad">
+      <b>Na Main Thread:</b> tela congela; após ~5 segundos sem resposta, o Android dispara o erro fatal <b>ANR (Application Not Responding)</b>.
+    </div>
+    <div class="say good">
+      <b>Assíncrono:</b> use <b>Coroutines / Flow</b> (Kotlin), <b>async/await</b> (Swift) ou <b>Future / Isolate</b> (Flutter) + timeouts curtos e cache local.
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PUSH NOTIFICATIONS</span>
+  <h2>Como funciona o FCM por dentro?</h2>
+  <p>O app não fica com uma conexão HTTP aberta o tempo todo (acabaria com a bateria). Ele usa o canal único do sistema via <b>Firebase Cloud Messaging (FCM)</b>:</p>
+  <svg viewBox="0 0 820 150" role="img" aria-label="Arquitetura Firebase Cloud Messaging FCM">
+    <rect x="10" y="42" width="175" height="60" rx="12" class="accbox"/>
+    <text x="97" y="68" text-anchor="middle" class="mono">Seu Backend</text>
+    <text x="97" y="88" text-anchor="middle" class="small">Envia via API FCM + Token</text>
+    <line x1="185" y1="72" x2="225" y2="72" class="acc" marker-end="url(#ar)"/>
+    <rect x="230" y="42" width="165" height="60" rx="12" class="keybox"/>
+    <text x="312" y="68" text-anchor="middle" class="mono kt">FCM Backend</text>
+    <text x="312" y="88" text-anchor="middle" class="small kt">Roteia a mensagem</text>
+    <line x1="395" y1="72" x2="435" y2="72" class="acc" marker-end="url(#ar)"/>
+    <rect x="440" y="42" width="180" height="60" rx="12" class="box"/>
+    <text x="530" y="68" text-anchor="middle" class="mono">Transporte do SO</text>
+    <text x="530" y="88" text-anchor="middle" class="small">Play Services / APNs (iOS)</text>
+    <line x1="620" y1="72" x2="660" y2="72" class="okl" marker-end="url(#arok)"/>
+    <rect x="665" y="42" width="145" height="60" rx="12" class="okbox"/>
+    <text x="737" y="68" text-anchor="middle" class="mono">App no Celular</text>
+    <text x="737" y="88" text-anchor="middle" class="small">Exibe ou processa</text>
+  </svg>
+  <p><b>Registration Token:</b> identifica a instalação do app. Pode mudar (reinstalação, limpeza de dados) — por isso implemente <code>onNewToken()</code> para atualizar no backend.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">O CORAÇÃO DO FCM</span>
+  <h2>Notification Message × Data Message</h2>
+  <p>Essa é a diferença mais cobrada em provas sobre Push Notification no Android:</p>
+  <table class="cmp">
+    <tr><th>Tipo de Mensagem</th><th>App em Foreground (aberto)</th><th>App em Background / Fechado</th></tr>
+    <tr><td><b>Notification Message</b><br><small>(campo <code>notification</code>)</small></td><td>Chama <code>onMessageReceived()</code> do app.</td><td class="hl"><b>O Sistema Operacional</b> exibe direto na bandeja! Seu código <code>onMessageReceived</code> NÃO roda.</td></tr>
+    <tr><td><b>Data Message</b><br><small>(apenas campo <code>data</code>)</small></td><td>Chama <code>onMessageReceived()</code> do app.</td><td class="hk"><b>Sempre chama <code>onMessageReceived()</code></b> do seu app (ideal para sync silencioso ou alerta customizado).</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">EXEMPLO DE PAYLOAD FCM</span>
+  <h2>Olhando o JSON enviado ao FCM</h2>
+  <div class="two">
+    <div>
+      <pre><code><span class="c">// Notification Message (SO exibe em bg):</span>
+{
+  "token": "fcm_token_abc...",
+  "<mark>notification</mark>": {
+    "title": "Intimação",
+    "body": "Novo despacho no PJe"
+  }
+}</code></pre>
+    </div>
+    <div>
+      <pre><code><span class="c">// Data Message (App sempre trata):</span>
+{
+  "token": "fcm_token_abc...",
+  "<mark>data</mark>": {
+    "tipo": "sync_processo",
+    "id": "0801234-55"
+  }
+}</code></pre>
+    </div>
+  </div>
+  <div class="say trap">
+    Se você mandar os dois blocos juntos (<code>notification</code> + <code>data</code>) e o app estiver em background, o SO exibe a notificação e os dados extras só chegam nos extras da <code>Intent</code> quando o usuário <b>clicar</b> nela!
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">BOAS PRÁTICAS DE REDE</span>
+  <h2>Paginação, Cache e Backoff Exponencial</h2>
+  <ul>
+    <li><b>Paginação:</b> nunca baixe 10.000 processos num único JSON; use cursor ou <code>page/size</code>.</li>
+    <li><b>Timeout &amp; Retry:</b> defina timeout explícito; ao tentar de novo após erro 503/429, use <b>backoff exponencial</b> (1s → 2s → 4s) para não derrubar o servidor.</li>
+    <li><b>Offline-first:</b> mostre primeiro o cache local (Room/Isar) e atualize em segundo plano quando a API responder.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TÓPICOS NO FCM</span>
+  <h2>Enviando para 1 usuário × 1 milhão</h2>
+  <div class="ex ok"><b>Por Token:</b> mensagens privadas ("Seu processo mudou de status").</div>
+  <div class="ex ok"><b>Por Tópico (Topic):</b> broadcast para grupos inscritos (ex.: <code>/topics/plantao-tjpb</code>) sem gerenciar lista de tokens no seu servidor.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 5</span>
+  <h2>APIs e Push sem mistério</h2>
+  <div class="magic">
+    “Rede fora da Main Thread (sem ANR); FCM Data Message sempre aciona o código do app.”
+    <small>401 = falta autenticação (renovar token); 403 = sem permissão.</small>
+  </div>
+  <ul class="checklist">
+    <li>Operações HTTP e JSON rodam assíncronas (Coroutines/async-await) para evitar <b>ANR</b>.</li>
+    <li>Use <code>PATCH</code> para atualizações parciais e paginação para listas grandes.</li>
+    <li>Atualize o <b>FCM Token</b> no backend via <code>onNewToken()</code>.</li>
+    <li><b>Notification</b> = SO exibe em background; <b>Data</b> = <code>onMessageReceived()</code> sempre roda.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 5</span>
+  <h2>4 questões no estilo FGV</h2>
+  <details><summary>1. O que acontece se um app Android fizer uma requisição HTTP síncrona demorada na Main Thread?</summary><p><b>Resposta:</b> a interface trava e o sistema dispara um erro de <b>ANR (Application Not Responding)</b> após cerca de 5 segundos.</p></details>
+  <details><summary>2. Qual a diferença prática entre os status HTTP 401 e 403 ao consumir uma API REST?</summary><p><b>Resposta:</b> <b>401 (Unauthorized)</b> significa que o usuário não está autenticado ou o token expirou; <b>403 (Forbidden)</b> significa que está autenticado, mas não tem permissão para aquele recurso.</p></details>
+  <details><summary>3. No FCM, qual tipo de mensagem garante que onMessageReceived() execute mesmo com o app em segundo plano?</summary><p><b>Resposta:</b> <b>Data Message</b> (payload enviado apenas no campo <code>data</code>, sem o bloco <code>notification</code>).</p></details>
+  <details><summary>4. Por que o app deve enviar o token FCM ao servidor dentro de onNewToken()?</summary><p><b>Resposta:</b> porque o token de registro pode ser rotacionado ou gerado novamente pelo Firebase/SO ao longo do ciclo de vida da instalação.</p></details>
+</div>
+
+</section>
+
+<script src="aula.js"></script></body></html>

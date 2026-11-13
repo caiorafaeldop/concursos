@@ -1,0 +1,967 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Engenharia de Software e Ágil — aulas visuais</title><link rel="stylesheet" href="aula.css">
+<style>
+.mini{font-size:15px}
+.calc{font-family:ui-monospace,Consolas,monospace;font-size:17px;background:var(--cell);border-radius:12px;padding:10px 14px;margin:8px 0;line-height:1.7}
+pre{background:var(--cell);border-radius:12px;padding:10px 14px;margin:8px 0;overflow-x:auto;font-size:15px;line-height:1.5}
+pre code{background:none;padding:0}
+.ctr td,.ctr th{text-align:center}
+td.L{background:var(--ok-bg)} td.M{background:var(--orange-bg)} td.H{background:var(--bad-bg)}
+</style></head>
+<body data-subject="engsoft" data-title="Engenharia de Software e Ágil">
+
+<!-- ===================================================== CAPÍTULO 1 ===================================================== -->
+<section class="chapter" data-title="Ciclo de vida: cascata, iterativo e ágil">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 1</span>
+  <h1>Ciclo de vida: cascata, iterativo e ágil</h1>
+  <span class="emoji">🔄</span>
+  <div class="steps">
+    <div class="step"><b>1. Cascata</b><span>Fases em fila, uma depois da outra.</span></div>
+    <div class="step"><b>2. Incremental e iterativo</b><span>Fatias, voltas, espiral, RUP e modelo V.</span></div>
+    <div class="step"><b>3. Ágil</b><span>Manifesto, valores, princípios e XP.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🏠</span><div><b>Analogia do dia:</b> construir software é como construir uma casa. Dá para desenhar <b>tudo</b> antes e só depois erguer (cascata) ou construir <b>um cômodo por vez</b>, morando nele e ajustando o resto (iterativo/ágil).</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONCEITO</span>
+  <h2>O que é um “ciclo de vida” (processo de software)?</h2>
+  <p>É a <b>receita</b> que diz em que ordem a equipe faz as coisas. Toda receita, seja qual for, tem as mesmas quatro atividades básicas:</p>
+  <div class="flow"><span>📝 Especificação</span><i>→</i><span>🛠️ Projeto e implementação</span><i>→</i><span>✅ Validação</span><i>→</i><span>🔧 Evolução</span></div>
+  <p>O que muda de um modelo para outro é <b>como</b> essas atividades se encaixam: em fila única, em fatias ou em voltas repetidas.</p>
+  <div class="magic">Pergunta mágica: “O cliente vê software funcionando só no final ou várias vezes no caminho?”<small>Só no final → sequencial (cascata). Várias vezes → incremental/iterativo/ágil.</small></div>
+  <div class="say law">Modelo de processo (ciclo de vida) é uma representação simplificada de como as atividades de especificação, desenvolvimento, validação e evolução são organizadas.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">MODELO 1</span>
+  <h2>Cascata: a escada que só desce</h2>
+  <svg viewBox="0 0 680 260" role="img" aria-label="Cascata: requisitos, projeto, implementação, testes, implantação em escada">
+    <defs><marker id="c1a" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="accbox" x="10" y="10" width="150" height="40" rx="10"/><text x="85" y="36" text-anchor="middle">Requisitos</text>
+    <rect class="accbox" x="140" y="60" width="150" height="40" rx="10"/><text x="215" y="86" text-anchor="middle">Projeto</text>
+    <rect class="accbox" x="270" y="110" width="150" height="40" rx="10"/><text x="345" y="136" text-anchor="middle">Implementação</text>
+    <rect class="accbox" x="400" y="160" width="150" height="40" rx="10"/><text x="475" y="186" text-anchor="middle">Testes</text>
+    <rect class="okbox" x="520" y="210" width="150" height="40" rx="10"/><text x="595" y="236" text-anchor="middle">Implantação</text>
+    <path d="M160,30 Q200,30 200,58" fill="none" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c1a)"/>
+    <path d="M290,80 Q330,80 330,108" fill="none" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c1a)"/>
+    <path d="M420,130 Q460,130 460,158" fill="none" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c1a)"/>
+    <path d="M550,180 Q585,180 585,208" fill="none" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c1a)"/>
+    <text x="20" y="150" class="small">cada degrau termina com</text>
+    <text x="20" y="170" class="small">documento aprovado</text>
+    <text x="20" y="190" class="small">(marco / “portão”)</text>
+  </svg>
+  <p>Como um <b>escorregador</b>: você só passa para o próximo degrau quando o anterior está aprovado. Voltar para cima é possível, mas <b>caro</b>.</p>
+  <div class="say law">No modelo em cascata as fases são sequenciais e cada uma produz artefatos que servem de entrada para a seguinte. É indicado quando os requisitos são estáveis e bem compreendidos.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">MODELO 1</span>
+  <h2>Cascata: quando serve e quando dói</h2>
+  <div class="two">
+    <div class="card"><b style="color:var(--ok)">👍 Combina com…</b><ul class="mini">
+      <li>requisitos estáveis e bem conhecidos;</li>
+      <li>contratos com escopo fechado e muita documentação;</li>
+      <li>sistemas críticos com certificação por fases.</li></ul></div>
+    <div class="card"><b style="color:var(--bad)">👎 Sofre com…</b><ul class="mini">
+      <li>o cliente só vê software no fim;</li>
+      <li>erro de requisito descoberto nos testes custa muito caro;</li>
+      <li>mudanças no meio do caminho.</li></ul></div>
+  </div>
+  <svg viewBox="0 0 640 150" role="img" aria-label="custo de corrigir um erro cresce a cada fase">
+    <rect class="okbox" x="20" y="110" width="90" height="30" rx="6"/><text x="65" y="130" text-anchor="middle">requisitos</text>
+    <rect class="box" x="140" y="90" width="90" height="50" rx="6"/><text x="185" y="120" text-anchor="middle">projeto</text>
+    <rect class="box" x="260" y="65" width="90" height="75" rx="6"/><text x="305" y="108" text-anchor="middle">código</text>
+    <rect class="box" x="380" y="35" width="90" height="105" rx="6"/><text x="425" y="95" text-anchor="middle">testes</text>
+    <rect class="badbox" x="500" y="5" width="110" height="135" rx="6"/><text x="555" y="80" text-anchor="middle">produção</text>
+  </svg>
+  <p class="mini" style="text-align:center">Custo para corrigir um mesmo erro de requisito: quanto mais tarde, mais caro.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">MODELO 2</span>
+  <h2>Incremental × Iterativo (não são a mesma coisa!)</h2>
+  <div class="analogy"><span class="emoji">🎨</span><div><b>Incremental</b> é pintar um quadro <b>pedaço por pedaço</b>: primeiro o canto esquerdo pronto, depois o meio… <b>Iterativo</b> é fazer um <b>rascunho do quadro todo</b> e depois ir melhorando em várias passadas.</div></div>
+  <svg viewBox="0 0 680 150" role="img" aria-label="incremental soma fatias; iterativo refina o todo">
+    <text x="10" y="20">Incremental</text>
+    <rect class="okbox" x="10" y="30" width="90" height="40" rx="8"/><text x="55" y="56" text-anchor="middle">A</text>
+    <rect class="okbox" x="110" y="30" width="90" height="40" rx="8"/><text x="155" y="56" text-anchor="middle">A+B</text>
+    <rect class="okbox" x="210" y="30" width="110" height="40" rx="8"/><text x="265" y="56" text-anchor="middle">A+B+C</text>
+    <text x="360" y="20">Iterativo</text>
+    <rect class="box" x="360" y="30" width="90" height="40" rx="8"/><text x="405" y="56" text-anchor="middle">esboço</text>
+    <rect class="accbox" x="460" y="30" width="90" height="40" rx="8"/><text x="505" y="56" text-anchor="middle">melhor</text>
+    <rect class="okbox" x="560" y="30" width="110" height="40" rx="8"/><text x="615" y="56" text-anchor="middle">refinado</text>
+    <text x="10" y="100" class="small">cada entrega acrescenta funcionalidade nova e utilizável</text>
+    <text x="360" y="100" class="small">cada volta repete o ciclo e aprimora o que existe</text>
+  </svg>
+  <div class="say law">Desenvolvimento incremental entrega o sistema em partes que se somam; o iterativo repete ciclos para refinar o produto. Métodos ágeis combinam os dois: iterativos e incrementais.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">MODELO 3</span>
+  <h2>Espiral de Boehm: o modelo do risco</h2>
+  <svg viewBox="0 0 640 260" role="img" aria-label="espiral com quatro quadrantes">
+    <line x1="320" y1="10" x2="320" y2="250" stroke="var(--line)" stroke-width="2"/>
+    <line x1="60" y1="130" x2="580" y2="130" stroke="var(--line)" stroke-width="2"/>
+    <path d="M320,130 m0,-25 a25,25 0 1,1 -1,0 M320,130 m0,-60 a60,60 0 1,1 -1,0 M320,130 m0,-100 a100,100 0 1,1 -1,0" fill="none" stroke="#6d4aff" stroke-width="2.5"/>
+    <text x="80" y="35">1. Objetivos e</text><text x="80" y="55">alternativas</text>
+    <text x="440" y="35" font-weight="800" style="fill:var(--bad)">2. Avaliar e</text><text x="440" y="55" style="fill:var(--bad)">reduzir RISCOS</text>
+    <text x="440" y="215">3. Desenvolver</text><text x="440" y="235">e testar</text>
+    <text x="80" y="215">4. Planejar a</text><text x="80" y="235">próxima volta</text>
+  </svg>
+  <p>Cada volta da espiral passa pelos 4 quadrantes. Quanto mais longe do centro, mais o projeto avançou (e mais custou).</p>
+  <div class="say law">O modelo espiral (Boehm) é orientado a riscos: cada ciclo identifica e trata os riscos antes de avançar. Pode incorporar prototipação e até trechos em cascata.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">MODELO 4</span>
+  <h2>RUP e Modelo V</h2>
+  <div class="two">
+    <div><b>RUP (Processo Unificado)</b>: 4 <b>fases</b> em sequência, cada uma com <b>iterações</b> em que várias disciplinas acontecem ao mesmo tempo.
+      <table class="cmp mini"><tr><th>Fase</th><th>Foco</th></tr>
+        <tr><td>Concepção</td><td>escopo e viabilidade</td></tr>
+        <tr><td>Elaboração</td><td>arquitetura e riscos</td></tr>
+        <tr><td>Construção</td><td>implementar o sistema</td></tr>
+        <tr><td>Transição</td><td>entregar ao usuário</td></tr></table></div>
+    <div><b>Modelo V</b>: cascata “dobrado”; cada fase da descida tem um nível de teste na subida.
+      <svg viewBox="-2 0 326 190" role="img" aria-label="modelo V">
+        <rect class="accbox" x="0" y="10" width="105" height="30" rx="6"/><text x="52" y="30" text-anchor="middle" style="font-size:13px">Requisitos</text>
+        <rect class="accbox" x="20" y="60" width="105" height="30" rx="6"/><text x="72" y="80" text-anchor="middle" style="font-size:13px">Arquitetura</text>
+        <rect class="accbox" x="40" y="110" width="105" height="30" rx="6"/><text x="92" y="130" text-anchor="middle" style="font-size:13px">Projeto det.</text>
+        <rect class="keybox" x="115" y="155" width="90" height="30" rx="6"/><text x="160" y="175" text-anchor="middle" class="kt" style="font-size:13px">Código</text>
+        <rect class="okbox" x="215" y="10" width="105" height="30" rx="6"/><text x="267" y="30" text-anchor="middle" style="font-size:13px">Aceitação</text>
+        <rect class="okbox" x="195" y="60" width="105" height="30" rx="6"/><text x="247" y="80" text-anchor="middle" style="font-size:13px">Sistema/Integr.</text>
+        <rect class="okbox" x="175" y="110" width="105" height="30" rx="6"/><text x="227" y="130" text-anchor="middle" style="font-size:13px">Unidade</text>
+        <line x1="105" y1="25" x2="215" y2="25" stroke="var(--muted)" stroke-dasharray="4"/>
+        <line x1="125" y1="75" x2="195" y2="75" stroke="var(--muted)" stroke-dasharray="4"/><line x1="145" y1="125" x2="175" y2="125" stroke="var(--muted)" stroke-dasharray="4"/>
+      </svg></div>
+  </div>
+  <div class="say law">No RUP, fases não são disciplinas: requisitos, análise, implementação e testes ocorrem em todas as fases, com intensidades diferentes.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ÁGIL</span>
+  <h2>O Manifesto Ágil (2001): 4 valores</h2>
+  <table class="mini">
+    <tr><th class="ok">Valorizamos mais…</th><th>…do que</th></tr>
+    <tr><td class="hk">Indivíduos e interações</td><td>processos e ferramentas</td></tr>
+    <tr><td class="hk">Software em funcionamento</td><td>documentação abrangente</td></tr>
+    <tr><td class="hk">Colaboração com o cliente</td><td>negociação de contratos</td></tr>
+    <tr><td class="hk">Responder a mudanças</td><td>seguir um plano</td></tr>
+  </table>
+  <p>Frase final do manifesto, a mais cobrada: “<b>embora haja valor nos itens à direita, valorizamos mais os itens à esquerda</b>”.</p>
+  <p class="mini">Além dos 4 valores há <b>12 princípios</b>, como entregar software funcionando com frequência, aceitar mudanças mesmo tarde, ritmo sustentável e reflexão regular do time.</p>
+  <div class="say law">O Manifesto Ágil não elimina documentação, plano, contrato nem processo: ele estabelece uma ordem de preferência.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>Certo × errado sobre ciclos de vida</h2>
+  <table class="mini">
+    <tr><th class="ng">Afirmação errada</th><th class="ok">Versão correta</th></tr>
+    <tr><td class="hl">“Ágil não documenta nada.”</td><td class="hk">Documenta o necessário; valoriza mais software funcionando.</td></tr>
+    <tr><td class="hl">“Incremental e iterativo são sinônimos.”</td><td class="hk">Incremental soma partes; iterativo refina em voltas.</td></tr>
+    <tr><td class="hl">“O espiral é guiado por prazos.”</td><td class="hk">É guiado por <b>riscos</b>.</td></tr>
+    <tr><td class="hl">“No RUP, cada fase faz só uma disciplina.”</td><td class="hk">Todas as disciplinas aparecem nas iterações de todas as fases.</td></tr>
+  </table>
+  <div class="say trap">A FGV gosta de trocar “valorizamos mais” por “substitui” ou “elimina”. Se a alternativa disser que o ágil <b>abole</b> documentação, contratos ou planejamento, está errada.</div>
+  <p class="mini"><b>XP (Extreme Programming)</b>, outro método ágil, aparece junto: TDD, programação em par, integração contínua, refatoração, pequenas entregas, propriedade coletiva do código e ritmo sustentável.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Resumo do capítulo</h2>
+  <div class="magic">Cascata = fila. Incremental = fatias. Iterativo = voltas. Espiral = risco. Ágil = fatias + voltas curtas com o cliente perto.</div>
+  <ul class="checklist">
+    <li>Sei as 4 atividades de qualquer processo (especificação, desenvolvimento, validação, evolução).</li>
+    <li>Sei quando a cascata é adequada (requisitos estáveis) e seu ponto fraco (feedback tardio).</li>
+    <li>Diferencio incremental de iterativo.</li>
+    <li>Sei que espiral é orientado a riscos e as 4 fases do RUP.</li>
+    <li>Recito os 4 valores do Manifesto e a frase “valorizamos mais os itens à esquerda”.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Teste rápido (estilo FGV)</h2>
+  <details><summary>1. Um projeto tem requisitos estáveis, contrato fechado e exige aprovação formal de cada etapa. O modelo mais aderente é: (A) espiral (B) cascata (C) Scrum (D) Kanban (E) XP</summary><p><b>B.</b> Requisitos estáveis + marcos formais por fase são o cenário clássico da cascata. Os ágeis supõem mudança frequente; espiral é para projetos de alto risco.</p></details>
+  <details><summary>2. No RUP, a fase cujo foco é estabilizar a arquitetura e eliminar os maiores riscos é: (A) Concepção (B) Elaboração (C) Construção (D) Transição (E) Implantação</summary><p><b>B.</b> Elaboração = arquitetura e riscos. Concepção define escopo/viabilidade; Construção implementa; Transição entrega. “Implantação” não é fase do RUP.</p></details>
+  <details><summary>3. “Responder a mudanças mais que seguir um plano” significa que planos são inúteis. Certo ou errado?</summary><p><b>Errado.</b> O manifesto reconhece valor no plano; apenas prioriza a capacidade de adaptação.</p></details>
+  <details><summary>4. Entregar primeiro o módulo de login pronto, depois o de cadastro pronto, depois o de relatórios é exemplo de abordagem: (A) iterativa pura (B) incremental (C) cascata (D) espiral (E) codifica-corrige</summary><p><b>B.</b> Cada entrega soma uma parte nova e utilizável: incremental. Iterativo puro refinaria o todo a cada volta.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 2 ===================================================== -->
+<section class="chapter" data-title="Scrum, Kanban, Lean e SAFe">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 2</span>
+  <h1>Scrum, Kanban, Lean e SAFe</h1>
+  <span class="emoji">🏉</span>
+  <div class="steps">
+    <div class="step"><b>1. Scrum</b><span>Responsabilidades, eventos, artefatos e compromissos (Guia 2020).</span></div>
+    <div class="step"><b>2. Kanban e Lean</b><span>Fluxo, WIP, Lei de Little e desperdícios.</span></div>
+    <div class="step"><b>3. SAFe</b><span>Ágil em escala: ART e PI Planning.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🍕</span><div><b>Analogia do dia:</b> Scrum é uma pizzaria que planeja o cardápio <b>a cada mês</b> e prova a pizza junto com o cliente. Kanban é a esteira da cozinha: <b>só entra pedido novo quando sai um pronto</b>. SAFe é uma rede com várias pizzarias que precisam abrir juntas.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">SCRUM · BASE</span>
+  <h2>Scrum é empirismo: olhar, conferir, ajustar</h2>
+  <svg viewBox="0 0 640 140" role="img" aria-label="ciclo transparência inspeção adaptação">
+    <defs><marker id="c2a" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="accbox" x="20" y="40" width="160" height="50" rx="12"/><text x="100" y="70" text-anchor="middle">👀 Transparência</text>
+    <rect class="accbox" x="240" y="40" width="160" height="50" rx="12"/><text x="320" y="70" text-anchor="middle">🔍 Inspeção</text>
+    <rect class="accbox" x="460" y="40" width="160" height="50" rx="12"/><text x="540" y="70" text-anchor="middle">🔧 Adaptação</text>
+    <line x1="180" y1="65" x2="236" y2="65" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c2a)"/>
+    <line x1="400" y1="65" x2="456" y2="65" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c2a)"/>
+    <path d="M540,90 Q540,130 320,130 Q100,130 100,94" fill="none" stroke="#6d4aff" stroke-width="2" marker-end="url(#c2a)"/>
+  </svg>
+  <p>Como um GPS: mostra onde você está (transparência), compara com o destino (inspeção) e recalcula a rota (adaptação).</p>
+  <p><b>Valores:</b> compromisso, foco, abertura, respeito e coragem. Scrum também se apoia no pensamento <b>Lean</b>.</p>
+  <div class="say law">O Scrum fundamenta-se no empirismo (conhecimento vem da experiência) e no pensamento enxuto. Seus três pilares são transparência, inspeção e adaptação.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">SCRUM · TIME</span>
+  <h2>O Time Scrum: 3 responsabilidades</h2>
+  <table class="cmp mini">
+    <tr><th>Responsabilidade</th><th>Responde por…</th></tr>
+    <tr><td><b>Product Owner</b> (1 pessoa, não um comitê)</td><td>maximizar o <b>valor</b> do produto; gerenciar o Product Backlog (Meta do Produto, itens claros, <b>ordenação</b>). Pode delegar o trabalho, mas continua responsável.</td></tr>
+    <tr><td><b>Scrum Master</b></td><td>estabelecer o Scrum e a <b>eficácia</b> do time; serve ao time, ao PO e à organização. É um “líder que serve”, não chefe.</td></tr>
+    <tr><td><b>Developers</b></td><td>criar o plano da Sprint (Sprint Backlog), garantir qualidade seguindo a Definição de Pronto, adaptar o plano todo dia.</td></tr>
+  </table>
+  <p class="mini">Time pequeno (em geral <b>10 pessoas ou menos</b>), multifuncional e <b>autogerenciável</b> (decide quem faz o quê, como e quando). <b>Sem subtimes e sem hierarquia.</b></p>
+  <div class="say law">O Guia 2020 usa “responsabilidades” (accountabilities): Product Owner, Scrum Master e Developers. O termo “Time de Desenvolvimento” deixou de existir.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">SCRUM · EVENTOS</span>
+  <h2>A Sprint é a caixa que contém todos os eventos</h2>
+  <svg viewBox="0 0 680 140" role="img" aria-label="linha do tempo da sprint">
+    <defs><marker id="c2b" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect x="5" y="20" width="670" height="110" rx="16" fill="none" stroke="#6d4aff" stroke-width="2.5" stroke-dasharray="8 5"/>
+    <text x="20" y="42">SPRINT (≤ 1 mês)</text>
+    <rect class="accbox" x="20" y="60" width="120" height="50" rx="10"/><text x="80" y="82" text-anchor="middle">Planning</text><text x="80" y="100" text-anchor="middle" class="small">≤ 8 h</text>
+    <rect class="keybox" x="175" y="60" width="200" height="50" rx="10"/><text x="275" y="82" text-anchor="middle" class="kt">Daily Scrum (todo dia)</text><text x="275" y="100" text-anchor="middle" class="small">15 min · Developers</text>
+    <rect class="okbox" x="410" y="60" width="115" height="50" rx="10"/><text x="467" y="82" text-anchor="middle">Review</text><text x="467" y="100" text-anchor="middle" class="small">≤ 4 h</text>
+    <rect class="okbox" x="545" y="60" width="115" height="50" rx="10"/><text x="602" y="82" text-anchor="middle">Retro</text><text x="602" y="100" text-anchor="middle" class="small">≤ 3 h</text>
+    <line x1="140" y1="85" x2="171" y2="85" stroke="#6d4aff" stroke-width="2" marker-end="url(#c2b)"/>
+    <line x1="375" y1="85" x2="406" y2="85" stroke="#6d4aff" stroke-width="2" marker-end="url(#c2b)"/>
+    <line x1="525" y1="85" x2="541" y2="85" stroke="#6d4aff" stroke-width="2" marker-end="url(#c2b)"/>
+    </svg>
+  <p class="mini">Limites máximos para Sprint de 1 mês; Sprints menores costumam ter eventos mais curtos. A próxima Sprint começa logo após o fim da anterior.</p>
+  <ul class="mini">
+    <li><b>Planning</b>: por que a Sprint é valiosa (Meta da Sprint), o que entra e como fazer.</li>
+    <li><b>Review</b>: sessão de trabalho com stakeholders para inspecionar o resultado (não é só “apresentação”).</li>
+    <li><b>Retrospectiva</b>: melhorar qualidade e eficácia; encerra a Sprint.</li>
+  </ul>
+  <div class="say law">Só o Product Owner pode cancelar a Sprint, quando a Meta da Sprint se torna obsoleta. Refinamento do backlog é atividade contínua, não evento.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">SCRUM · ARTEFATOS</span>
+  <h2>Cada artefato tem um compromisso</h2>
+  <svg viewBox="0 0 660 190" role="img" aria-label="artefatos e compromissos">
+    <defs><marker id="c2c" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2ea043"/></marker></defs>
+    <rect class="accbox" x="20" y="10" width="220" height="44" rx="10"/><text x="130" y="38" text-anchor="middle">Product Backlog</text>
+    <rect class="accbox" x="20" y="72" width="220" height="44" rx="10"/><text x="130" y="100" text-anchor="middle">Sprint Backlog</text>
+    <rect class="accbox" x="20" y="134" width="220" height="44" rx="10"/><text x="130" y="162" text-anchor="middle">Incremento</text>
+    <rect class="okbox" x="400" y="10" width="240" height="44" rx="10"/><text x="520" y="38" text-anchor="middle">🎯 Meta do Produto</text>
+    <rect class="okbox" x="400" y="72" width="240" height="44" rx="10"/><text x="520" y="100" text-anchor="middle">🏁 Meta da Sprint</text>
+    <rect class="okbox" x="400" y="134" width="240" height="44" rx="10"/><text x="520" y="162" text-anchor="middle">✅ Definição de Pronto</text>
+    <line x1="240" y1="32" x2="396" y2="32" stroke="#2ea043" stroke-width="2.5" marker-end="url(#c2c)"/>
+    <line x1="240" y1="94" x2="396" y2="94" stroke="#2ea043" stroke-width="2.5" marker-end="url(#c2c)"/>
+    <line x1="240" y1="156" x2="396" y2="156" stroke="#2ea043" stroke-width="2.5" marker-end="url(#c2c)"/>
+  </svg>
+  <ul class="mini">
+    <li><b>Sprint Backlog</b> = Meta da Sprint (por quê) + itens escolhidos (o quê) + plano (como). É dos Developers.</li>
+    <li><b>Incremento</b>: só conta se atender à Definição de Pronto. Pode haver vários por Sprint e eles podem ser entregues antes da Review.</li>
+  </ul>
+  <div class="say law">Os compromissos existem para reforçar o empirismo e os valores: Product Backlog → Meta do Produto; Sprint Backlog → Meta da Sprint; Incremento → Definição de Pronto.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>Scrum: o que o Guia 2020 NÃO diz</h2>
+  <table class="mini">
+    <tr><th class="ng">Errado</th><th class="ok">Certo (Guia 2020)</th></tr>
+    <tr><td class="hl">Daily com 3 perguntas obrigatórias.</td><td class="hk">Os Developers escolhem a estrutura, desde que foquem na Meta da Sprint.</td></tr>
+    <tr><td class="hl">Scrum Master distribui tarefas.</td><td class="hk">Developers se autogerenciam.</td></tr>
+    <tr><td class="hl">Refinamento é o 5º evento.</td><td class="hk">É atividade contínua.</td></tr>
+    <tr><td class="hl">A Review é o “portão” para liberar.</td><td class="hk">Incrementos podem ir aos usuários antes da Review.</td></tr>
+    <tr><td class="hl">O PO é um comitê de áreas.</td><td class="hk">É uma pessoa (pode representar muitos stakeholders).</td></tr>
+    <tr><td class="hl">Time “auto-organizado”.</td><td class="hk">O termo de 2020 é “autogerenciável”.</td></tr>
+  </table>
+  <div class="say trap">Questões copiam trechos de versões antigas do guia (2017: “Time de Desenvolvimento”, “auto-organizado”). Se a banca disser “segundo o Guia 2020”, use o vocabulário novo.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">KANBAN</span>
+  <h2>Kanban: puxar trabalho com limite</h2>
+  <svg viewBox="0 0 680 210" role="img" aria-label="quadro kanban com limites de WIP">
+    <rect class="box" x="10" y="10" width="150" height="190" rx="10"/><text x="85" y="34" text-anchor="middle">A fazer</text>
+    <rect class="keybox" x="180" y="10" width="150" height="190" rx="10"/><text x="255" y="34" text-anchor="middle" class="kt">Fazendo (WIP 3)</text>
+    <rect class="accbox" x="350" y="10" width="150" height="190" rx="10"/><text x="425" y="34" text-anchor="middle">Teste (WIP 2)</text>
+    <rect class="okbox" x="520" y="10" width="150" height="190" rx="10"/><text x="595" y="34" text-anchor="middle">Pronto</text>
+    <rect x="25" y="50" width="120" height="28" rx="6" fill="var(--card)" stroke="var(--line)"/><rect x="25" y="86" width="120" height="28" rx="6" fill="var(--card)" stroke="var(--line)"/><rect x="25" y="122" width="120" height="28" rx="6" fill="var(--card)" stroke="var(--line)"/>
+    <rect x="195" y="50" width="120" height="28" rx="6" fill="var(--card)" stroke="var(--line)"/><rect x="195" y="86" width="120" height="28" rx="6" fill="var(--card)" stroke="var(--line)"/><rect x="195" y="122" width="120" height="28" rx="6" fill="var(--card)" stroke="var(--line)"/>
+    <rect x="365" y="50" width="120" height="28" rx="6" fill="var(--card)" stroke="var(--line)"/>
+    <rect x="535" y="50" width="120" height="28" rx="6" fill="var(--card)" stroke="var(--line)"/><rect x="535" y="86" width="120" height="28" rx="6" fill="var(--card)" stroke="var(--line)"/>
+    <text x="255" y="180" text-anchor="middle" class="small">cheia: não puxa</text>
+    <text x="425" y="180" text-anchor="middle" class="small">tem vaga: puxa 1</text>
+  </svg>
+  <p>Não se “empurra” tarefa: quando sobra vaga na coluna, alguém <b>puxa</b> o próximo item. Isso expõe gargalos.</p>
+  <div class="say law">Práticas do Método Kanban: visualizar o fluxo, limitar o trabalho em progresso (WIP), gerenciar o fluxo, tornar as políticas explícitas, implementar ciclos de feedback e melhorar colaborativamente. Não prescreve Sprints nem papéis.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">KANBAN · MÉTRICAS</span>
+  <h2>Lei de Little: a conta do fluxo</h2>
+  <div class="analogy"><span class="emoji">🏦</span><div>Fila do banco: se há <b>12 pessoas</b> na agência e o caixa atende <b>4 por minuto</b>, cada pessoa fica em média <b>3 minutos</b> lá dentro.</div></div>
+  <div class="calc">Tempo de ciclo médio = WIP médio ÷ Vazão (throughput)<br>= 12 itens ÷ 4 itens/semana = <mark>3 semanas</mark></div>
+  <table class="cmp mini">
+    <tr><th>Métrica</th><th>O que mede (definição usual)</th></tr>
+    <tr><td>Lead time</td><td>do pedido aceito até a entrega (visão do cliente)</td></tr>
+    <tr><td>Cycle time</td><td>do início do trabalho até terminar (visão do time)</td></tr>
+    <tr><td>Throughput</td><td>itens entregues por período</td></tr>
+    <tr><td>CFD</td><td>diagrama de fluxo cumulativo: faixas largas = acúmulo</td></tr>
+  </table>
+  <div class="say trap">“Aumentar o WIP reduz o tempo de ciclo” é <b>falso</b>: com a mesma vazão, mais WIP = mais tempo de espera.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">LEAN</span>
+  <h2>Lean: enxergar e cortar desperdício</h2>
+  <p>Veio do Sistema Toyota de Produção. Mary e Tom Poppendieck adaptaram para software com <b>7 princípios</b>: eliminar desperdício, construir qualidade, criar conhecimento, adiar compromissos (decidir o mais tarde responsável), entregar rápido, respeitar as pessoas e otimizar o todo.</p>
+  <table class="mini">
+    <tr><th class="k">Desperdício na fábrica</th><th class="k">Equivalente em software</th></tr>
+    <tr><td>Estoque</td><td>trabalho parcialmente pronto</td></tr>
+    <tr><td>Superprodução</td><td>funcionalidades extras que ninguém usa</td></tr>
+    <tr><td>Transporte</td><td>passagens de bastão (handoffs)</td></tr>
+    <tr><td>Movimentação</td><td>troca de tarefas (multitarefa)</td></tr>
+    <tr><td>Espera</td><td>atrasos (aprovação, ambiente)</td></tr>
+    <tr><td>Defeitos</td><td>defeitos</td></tr>
+  </table>
+  <div class="say law">Lean busca entregar valor ao cliente com o mínimo de desperdício, otimizando o fluxo de ponta a ponta, e não cada etapa isolada.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">SAFe</span>
+  <h2>SAFe: ágil para dezenas de times</h2>
+  <svg viewBox="0 0 680 210" role="img" aria-label="níveis do SAFe">
+    <rect class="accbox" x="10" y="10" width="660" height="40" rx="10"/><text x="340" y="36" text-anchor="middle">Portfólio: Lean Portfolio Management, épicos</text>
+    <rect class="keybox" x="40" y="62" width="600" height="60" rx="10"/><text x="340" y="88" text-anchor="middle" class="kt">Agile Release Train (ART): time de times</text><text x="340" y="110" text-anchor="middle" class="kt" style="font-size:13px">RTE · Product Management · System Architect · Business Owners</text>
+    <rect class="okbox" x="60" y="135" width="130" height="40" rx="10"/><text x="125" y="160" text-anchor="middle">Time ágil</text>
+    <rect class="okbox" x="210" y="135" width="130" height="40" rx="10"/><text x="275" y="160" text-anchor="middle">Time ágil</text>
+    <rect class="okbox" x="360" y="135" width="130" height="40" rx="10"/><text x="425" y="160" text-anchor="middle">Time ágil</text>
+    <rect class="okbox" x="510" y="135" width="110" height="40" rx="10"/><text x="565" y="160" text-anchor="middle">…</text>
+    <text x="340" y="200" text-anchor="middle" class="small">todos sincronizados na mesma cadência de PI</text>
+  </svg>
+  <ul class="mini">
+    <li><b>PI</b> (Program Increment; no SAFe 6.0, “Planning Interval”): em geral 8 a 12 semanas, com várias iterações.</li>
+    <li><b>PI Planning</b>: todo o ART planeja junto, alinha objetivos e dependências.</li>
+    <li><b>RTE</b> (Release Train Engineer): facilita o trem, como um “Scrum Master do ART”.</li>
+    <li><b>WSJF</b> = custo do atraso ÷ tamanho (duração) do trabalho: prioriza o que dá mais valor por esforço.</li>
+  </ul>
+  <div class="say law">O SAFe organiza times ágeis em Agile Release Trains que planejam e entregam em cadência comum (PI). Números e nomes mudam entre versões: confira a versão citada na questão.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Resumo do capítulo</h2>
+  <div class="magic">Scrum = 3 responsabilidades, 5 eventos, 3 artefatos com 3 compromissos. Kanban = puxar com limite de WIP. Lean = cortar desperdício. SAFe = trem de times com PI Planning.</div>
+  <ul class="checklist">
+    <li>PO (valor/backlog), SM (eficácia), Developers (Incremento com qualidade).</li>
+    <li>Sprint ≤ 1 mês; Planning 8 h, Daily 15 min, Review 4 h, Retro 3 h (Sprint de 1 mês).</li>
+    <li>PB→Meta do Produto; SB→Meta da Sprint; Incremento→DoD.</li>
+    <li>Lei de Little: ciclo = WIP ÷ vazão.</li>
+    <li>SAFe: ART, PI, PI Planning, RTE e WSJF.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Teste rápido (estilo FGV)</h2>
+  <details><summary>1. A Meta da Sprint é o compromisso do(a): (A) Product Backlog (B) Incremento (C) Sprint Backlog (D) Sprint Review (E) Definição de Pronto</summary><p><b>C.</b> Sprint Backlog → Meta da Sprint. Product Backlog → Meta do Produto; Incremento → DoD. Review é evento, DoD é compromisso.</p></details>
+  <details><summary>2. Durante a Sprint, o PO percebe que a Meta da Sprint perdeu o sentido por mudança na lei. Quem pode cancelar a Sprint?</summary><p><b>Somente o Product Owner.</b> Scrum Master, Developers ou stakeholders podem influenciar, mas a autoridade de cancelar é do PO.</p></details>
+  <details><summary>3. Um time com WIP médio 20 e vazão 5 itens/semana quer reduzir o tempo de ciclo sem mudar a vazão. Deve: (A) aumentar o WIP (B) reduzir o WIP (C) criar Sprints (D) eliminar o quadro (E) aumentar as colunas</summary><p><b>B.</b> Ciclo = 20 ÷ 5 = 4 semanas. Com WIP 10 → 2 semanas. Mais WIP só aumenta a espera.</p></details>
+  <details><summary>4. No SAFe, quem facilita o Agile Release Train e o PI Planning? (A) Product Owner (B) Business Owner (C) RTE (D) System Architect (E) Scrum Master de cada time</summary><p><b>C.</b> O Release Train Engineer é o líder-servidor do trem. Business Owners têm responsabilidade de negócio; o System Architect cuida da visão técnica.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 3 ===================================================== -->
+<section class="chapter" data-title="Engenharia de requisitos e histórias de usuário">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 3</span>
+  <h1>Engenharia de requisitos e histórias de usuário</h1>
+  <span class="emoji">📋</span>
+  <div class="steps">
+    <div class="step"><b>1. Processo</b><span>Elicitar, analisar, especificar, validar, gerenciar.</span></div>
+    <div class="step"><b>2. Tipos</b><span>Funcional, não funcional, regra de negócio.</span></div>
+    <div class="step"><b>3. Ágil</b><span>Histórias, INVEST, critérios de aceite, backlog.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🎂</span><div><b>Analogia do dia:</b> encomendar um bolo. “Quero um bolo de chocolate com 3 andares” é o <b>que</b> ele é (funcional). “Que aguente 4 horas fora da geladeira” é <b>como</b> ele deve se comportar (não funcional). “Sem amendoim, a festa tem alérgicos” é <b>regra</b> do negócio.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONCEITO</span>
+  <h2>Requisito: a promessa do que o sistema fará</h2>
+  <p>Requisito descreve um <b>serviço</b> que o sistema deve oferecer ou uma <b>restrição</b> sobre ele. Há dois níveis de detalhe:</p>
+  <div class="two">
+    <div class="card"><b>Requisito de usuário</b><p class="mini">Linguagem natural, para o cliente entender. Ex.: “O sistema deve permitir emitir certidão negativa.”</p></div>
+    <div class="card"><b>Requisito de sistema</b><p class="mini">Detalhado, para quem vai construir. Ex.: “A certidão é gerada em PDF, com código de verificação e validade de 30 dias.”</p></div>
+  </div>
+  <p>Um bom requisito é <b>claro</b> (uma interpretação), <b>completo</b>, <b>consistente</b> (não contradiz outro), <b>verificável</b> (dá para testar) e <b>rastreável</b> (sabemos de onde veio e onde foi implementado).</p>
+  <div class="say law">Engenharia de requisitos é o processo de descobrir, analisar, documentar e validar os serviços e restrições de um sistema.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PROCESSO</span>
+  <h2>O processo de engenharia de requisitos</h2>
+  <svg viewBox="0 0 680 190" role="img" aria-label="elicitação, análise, especificação, validação, com gerenciamento por baixo">
+    <defs><marker id="c3a" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="accbox" x="5" y="20" width="150" height="56" rx="12"/><text x="80" y="44" text-anchor="middle">1. Elicitação</text><text x="80" y="64" text-anchor="middle" class="small">descobrir</text>
+    <rect class="accbox" x="180" y="20" width="150" height="56" rx="12"/><text x="255" y="44" text-anchor="middle">2. Análise</text><text x="255" y="64" text-anchor="middle" class="small">organizar, negociar</text>
+    <rect class="accbox" x="355" y="20" width="150" height="56" rx="12"/><text x="430" y="44" text-anchor="middle">3. Especificação</text><text x="430" y="64" text-anchor="middle" class="small">escrever</text>
+    <rect class="okbox" x="530" y="20" width="145" height="56" rx="12"/><text x="602" y="44" text-anchor="middle">4. Validação</text><text x="602" y="64" text-anchor="middle" class="small">conferir com o cliente</text>
+    <line x1="155" y1="48" x2="176" y2="48" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c3a)"/>
+    <line x1="330" y1="48" x2="351" y2="48" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c3a)"/>
+    <line x1="505" y1="48" x2="526" y2="48" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c3a)"/>
+    <path d="M602,76 Q602,110 340,110 Q80,110 80,80" fill="none" stroke="#6d4aff" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#c3a)"/>
+    <text x="340" y="104" text-anchor="middle" class="small">na prática é cíclico: volta e repete</text>
+    <rect class="keybox" x="5" y="130" width="670" height="44" rx="12"/><text x="340" y="157" text-anchor="middle" class="kt">Gerenciamento de requisitos: rastreabilidade e controle de mudanças (o tempo todo)</text>
+  </svg>
+  <div class="say law">As atividades centrais são elicitação e análise, especificação e validação, acompanhadas do gerenciamento de requisitos ao longo de todo o ciclo.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ELICITAÇÃO</span>
+  <h2>Como descobrir o que o usuário precisa</h2>
+  <table class="cmp mini">
+    <tr><th>Técnica</th><th>Como funciona</th><th>Bom para…</th></tr>
+    <tr><td>Entrevista</td><td>conversa estruturada ou aberta</td><td>entender o ponto de vista de cada um</td></tr>
+    <tr><td>Workshop / JAD</td><td>sessão em grupo com facilitador</td><td>resolver conflitos e decidir junto</td></tr>
+    <tr><td>Observação (etnografia)</td><td>acompanhar o trabalho real</td><td>achar o que o usuário nem sabe dizer</td></tr>
+    <tr><td>Prototipação</td><td>tela de mentira para testar ideias</td><td>validar interface cedo</td></tr>
+    <tr><td>Questionário</td><td>perguntas a muita gente</td><td>público grande e espalhado</td></tr>
+    <tr><td>Análise de documentos</td><td>leis, normas, manuais, sistemas antigos</td><td>regras de negócio e legado</td></tr>
+  </table>
+  <div class="say good"><b>Dica:</b> a observação é a resposta clássica quando a questão diz que os usuários “têm dificuldade de explicar” o próprio trabalho (conhecimento tácito).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">TIPOS</span>
+  <h2>Funcional × não funcional × regra de negócio</h2>
+  <div class="magic">Pergunta mágica: é uma <u>ação</u> que o sistema faz, uma <u>qualidade</u> de como ele faz, ou uma <u>política</u> do negócio?</div>
+  <table class="mini">
+    <tr><th>Frase</th><th>Tipo</th></tr>
+    <tr><td>O sistema deve permitir protocolar petição.</td><td class="hk">Funcional</td></tr>
+    <tr><td>A consulta deve responder em até 2 segundos.</td><td class="hk">Não funcional (desempenho)</td></tr>
+    <tr><td>O portal deve atender às diretrizes de acessibilidade.</td><td class="hk">Não funcional (usabilidade/externo)</td></tr>
+    <tr><td>Senhas armazenadas com hash e sal.</td><td class="hk">Não funcional (segurança)</td></tr>
+    <tr><td>Recurso só pode ser protocolado dentro do prazo legal.</td><td class="hk">Regra de negócio</td></tr>
+  </table>
+  <div class="say law">Requisitos funcionais descrevem serviços e comportamentos; não funcionais, restrições e atributos de qualidade (produto, organizacionais ou externos); regras de negócio, políticas e condições do domínio.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>Verificação × Validação</h2>
+  <div class="two">
+    <div class="card"><b>✅ Verificação</b><p class="mini">“Estamos construindo o produto <b>corretamente</b>?” Confere contra a especificação. Ex.: revisão do documento, teste se o PDF tem código de verificação.</p></div>
+    <div class="card"><b>🎯 Validação</b><p class="mini">“Estamos construindo o produto <b>correto</b>?” Confere com a necessidade real do usuário. Ex.: o servidor usa o protótipo e diz se resolve o problema.</p></div>
+  </div>
+  <table class="mini">
+    <tr><th class="ng">Errado</th><th class="ok">Certo</th></tr>
+    <tr><td class="hl">Validação de requisitos = testar o código pronto.</td><td class="hk">Validar requisitos é conferir, antes de construir, se eles expressam o que o cliente quer (revisões, protótipos, casos de teste).</td></tr>
+  </table>
+  <div class="say trap">A banca inverte as frases de Boehm. Memorize: <b>V</b>alidação = produto certo para o <b>V</b>ivente (usuário); verificação = feito certo conforme a especificação.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ÁGIL</span>
+  <h2>História de usuário: um bilhete com promessa de conversa</h2>
+  <div class="card" style="font-size:20px">Como <mark>advogado</mark>, quero <mark>receber aviso quando houver nova intimação</mark>, para <mark>não perder prazos</mark>.</div>
+  <p class="mini">Papel (quem) · objetivo (o quê) · benefício (por quê).</p>
+  <div class="steps">
+    <div class="step"><b>🃏 Cartão</b><span>texto curto, cabe num post-it</span></div>
+    <div class="step"><b>💬 Conversa</b><span>os detalhes surgem conversando com o PO e usuários</span></div>
+    <div class="step"><b>✔️ Confirmação</b><span>critérios de aceite dizem quando está pronta</span></div>
+  </div>
+  <div class="say law">A história de usuário descreve uma funcionalidade sob a ótica de quem obtém valor. Os “3 Cs” (Cartão, Conversa, Confirmação) lembram que ela não é a especificação completa.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ÁGIL</span>
+  <h2>INVEST: o teste de qualidade da história</h2>
+  <table class="mini">
+    <tr><th class="k">Letra</th><th>Significa</th><th>História ruim</th></tr>
+    <tr><td><b>I</b>ndependente</td><td>não depende de outra para ser feita</td><td class="hl">“parte 2 do cadastro”</td></tr>
+    <tr><td><b>N</b>egociável</td><td>é convite à conversa, não contrato</td><td class="hl">especificação fechada de 20 páginas</td></tr>
+    <tr><td><b>V</b>aliosa</td><td>gera valor para usuário/cliente</td><td class="hl">“migrar para o banco X” sem benefício dito</td></tr>
+    <tr><td><b>E</b>stimável</td><td>o time consegue estimar</td><td class="hl">escopo nebuloso</td></tr>
+    <tr><td><b>S</b>mall (pequena)</td><td>cabe numa Sprint</td><td class="hl">“todo o módulo financeiro” (épico)</td></tr>
+    <tr><td><b>T</b>estável</td><td>dá para provar que está pronta</td><td class="hl">“sistema mais rápido”</td></tr>
+  </table>
+  <div class="say good">História grande demais é um <b>épico</b>: deve ser quebrada (por fluxo, regra, tipo de usuário, operação CRUD…) até ficar INVEST.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ACEITE</span>
+  <h2>Critérios de aceite e Definição de Pronto</h2>
+  <pre><code><b>Cenário:</b> intimação nova gera aviso
+  <mark>Dado</mark> que o advogado tem e-mail cadastrado
+  <mark>Quando</mark> uma intimação for publicada no processo dele
+  <mark>Então</mark> ele recebe um e-mail em até 1 hora</code></pre>
+  <p class="mini">Formato Dado/Quando/Então (Gherkin, usado no BDD): vira teste automatizado facilmente.</p>
+  <table class="cmp mini">
+    <tr><th></th><th>Critérios de aceite</th><th>Definição de Pronto (DoD)</th></tr>
+    <tr><td>Vale para</td><td><b>um</b> item</td><td><b>todos</b> os itens / o Incremento</td></tr>
+    <tr><td>Exemplo</td><td>“e-mail em até 1 hora”</td><td>“código revisado, testes passando, documentado”</td></tr>
+    <tr><td>Quem define</td><td>PO com o time</td><td>organização ou Time Scrum</td></tr>
+  </table>
+  <div class="say law">Pelo Guia do Scrum, a Definição de Pronto é a descrição formal do estado do Incremento quando ele atende às medidas de qualidade exigidas para o produto.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">BACKLOG</span>
+  <h2>Backlog: do grande ao pequeno, do mais valioso ao menos</h2>
+  <svg viewBox="0 0 660 200" role="img" aria-label="épico quebrado em histórias e backlog como iceberg">
+    <defs><marker id="c3b" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <polygon points="330,10 600,190 60,190" class="box"/>
+    <rect class="okbox" x="250" y="40" width="160" height="34" rx="8"/><text x="330" y="62" text-anchor="middle">pequeno e detalhado</text>
+    <rect class="accbox" x="190" y="90" width="280" height="34" rx="8"/><text x="330" y="112" text-anchor="middle">histórias médias</text>
+    <rect class="badbox" x="120" y="140" width="420" height="34" rx="8"/><text x="330" y="162" text-anchor="middle">épicos grandes e vagos (futuro)</text>
+    <line x1="620" y1="180" x2="620" y2="30" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c3b)"/>
+    <text x="560" y="20" class="small">prioridade ↑</text>
+  </svg>
+  <ul class="mini">
+    <li><b>DEEP</b>: Detalhado na medida certa, Emergente (muda), Estimado, Priorizado.</li>
+    <li><b>MoSCoW</b>: Must, Should, Could, Won’t (desta vez).</li>
+    <li><b>Refinamento</b>: quebrar, detalhar e estimar itens continuamente.</li>
+  </ul>
+  <div class="say law">No Scrum, o Product Backlog é uma lista emergente e ordenada do que é necessário para melhorar o produto; é a única fonte de trabalho do Time Scrum.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Resumo do capítulo</h2>
+  <div class="magic">Elicitar → analisar → especificar → validar (e gerenciar sempre). Funcional = ação; não funcional = qualidade; regra = política. História boa é INVEST e tem critério de aceite.</div>
+  <ul class="checklist">
+    <li>Conheço técnicas de elicitação e quando usar cada uma.</li>
+    <li>Classifico requisitos funcionais, não funcionais e regras de negócio.</li>
+    <li>Não confundo verificação com validação.</li>
+    <li>Sei o formato da história, os 3 Cs e o INVEST.</li>
+    <li>Sei a diferença entre critério de aceite e Definição de Pronto.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Teste rápido (estilo FGV)</h2>
+  <details><summary>1. Os servidores do cartório não conseguem descrever como fazem a triagem, pois agem “no automático”. A técnica mais indicada é: (A) questionário (B) observação (C) análise de pontos de função (D) entrevista fechada (E) votação</summary><p><b>B.</b> Conhecimento tácito aparece observando o trabalho real. Questionário e entrevista dependem de o usuário saber explicar.</p></details>
+  <details><summary>2. “O sistema deve calcular as custas processuais” e “o cálculo deve terminar em menos de 1 segundo” são, respectivamente, requisitos: (A) não funcional e funcional (B) funcionais (C) funcional e não funcional (D) regras de negócio (E) não funcionais</summary><p><b>C.</b> Calcular é uma <b>ação</b> (funcional); o tempo de resposta é <b>qualidade</b> de desempenho (não funcional).</p></details>
+  <details><summary>3. A letra “S” do INVEST significa: (A) Segura (B) Simples (C) Small/pequena (D) Sustentável (E) Sequencial</summary><p><b>C.</b> Small: cabe numa iteração. “Simples” é a confusão mais comum.</p></details>
+  <details><summary>4. Revisar o documento de requisitos com o cliente e usar protótipos para conferir se as necessidades foram entendidas é atividade de: (A) elicitação (B) validação (C) implementação (D) implantação (E) codificação</summary><p><b>B.</b> Validação de requisitos confere se eles expressam o que o cliente quer, antes da construção.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 4 ===================================================== -->
+<section class="chapter" data-title="Análise de Pontos de Função e estimativas">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 4</span>
+  <h1>Análise de Pontos de Função e estimativas</h1>
+  <span class="emoji">📏</span>
+  <div class="steps">
+    <div class="step"><b>1. O que contar</b><span>Fronteira, ALI, AIE, EE, SE, CE.</span></div>
+    <div class="step"><b>2. Como pesar</b><span>TD, TR, ALR, tabelas de complexidade e pesos.</span></div>
+    <div class="step"><b>3. Estimar</b><span>Contagem resolvida, esforço, story points.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🏢</span><div><b>Analogia do dia:</b> o preço de um apartamento se calcula pelo <b>metro quadrado</b>, não pelo tipo de tijolo. Ponto de função é o “metro quadrado” do software: mede o que o usuário recebe, não a linguagem usada.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONCEITO</span>
+  <h2>Para que serve a APF?</h2>
+  <p>Linhas de código enganam: o mesmo sistema tem 5 mil linhas em uma linguagem e 20 mil em outra. A APF olha só para as <b>funções que o usuário enxerga</b>: que dados o sistema guarda e que entradas, saídas e consultas oferece.</p>
+  <div class="flow"><span>Requisitos do usuário</span><i>→</i><span>funções identificadas</span><i>→</i><span>complexidade</span><i>→</i><span>PF</span><i>→</i><span>esforço, prazo, custo</span></div>
+  <p class="mini">Usos: contratar e pagar fábricas de software (comum na administração pública), comparar produtividade, estimar projetos. O manual de referência é o <b>CPM</b> do IFPUG; a norma ISO/IEC 20926 descreve o método IFPUG.</p>
+  <div class="say law">A Análise de Pontos de Função mede o tamanho funcional do software sob o ponto de vista do usuário, independentemente da tecnologia. PF mede tamanho; esforço e custo são derivados dele.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">FRONTEIRA</span>
+  <h2>A fronteira e os 5 tipos de função</h2>
+  <svg viewBox="0 0 680 250" role="img" aria-label="fronteira da aplicação com EE, SE, CE, ALI e AIE">
+    <defs><marker id="c4a" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="box" x="10" y="80" width="100" height="70" rx="12"/><text x="60" y="112" text-anchor="middle">👤 Usuário</text><text x="60" y="132" text-anchor="middle" class="small">ou sistema</text>
+    <rect x="200" y="15" width="300" height="220" rx="18" fill="none" stroke="#6d4aff" stroke-width="3" stroke-dasharray="10 6"/>
+    <text x="350" y="38" text-anchor="middle" style="fill:#6d4aff">fronteira da aplicação</text>
+    <line x1="110" y1="95" x2="236" y2="70" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c4a)"/><text x="125" y="70">EE</text>
+    <line x1="236" y1="125" x2="114" y2="125" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c4a)"/><text x="140" y="118">SE</text>
+    <line x1="236" y1="170" x2="114" y2="145" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c4a)"/><text x="140" y="180">CE</text>
+    <rect class="okbox" x="250" y="60" width="200" height="50" rx="10"/><text x="350" y="90" text-anchor="middle">ALI (mantido aqui)</text>
+    <rect class="box" x="250" y="150" width="200" height="50" rx="10"/><text x="350" y="180" text-anchor="middle">lógica / transações</text>
+    <rect class="badbox" x="550" y="90" width="120" height="70" rx="10"/><text x="610" y="120" text-anchor="middle">AIE</text><text x="610" y="140" text-anchor="middle" class="small">mantido lá fora</text>
+    <line x1="546" y1="125" x2="454" y2="170" stroke="#6d4aff" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#c4a)"/><text x="560" y="185" class="small">só leitura</text>
+  </svg>
+  <div class="say law">Funções de dados: ALI (Arquivo Lógico Interno) e AIE (Arquivo de Interface Externa). Funções de transação: EE (Entrada Externa), SE (Saída Externa) e CE (Consulta Externa).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">DADOS</span>
+  <h2>ALI × AIE: quem cuida da gaveta?</h2>
+  <div class="analogy"><span class="emoji">🗄️</span><div>Seu armário é seu <b>ALI</b>: você guarda, troca e joga fora. A lista telefônica do prédio é um <b>AIE</b>: você consulta, mas quem atualiza é o síndico.</div></div>
+  <table class="mini">
+    <tr><th></th><th class="ok">ALI</th><th class="k">AIE</th></tr>
+    <tr><td>O que é</td><td>grupo lógico de dados reconhecido pelo usuário</td><td>grupo lógico de dados reconhecido pelo usuário</td></tr>
+    <tr><td>Mantido por</td><td class="hk">pela própria aplicação (inclui, altera, exclui)</td><td class="hk">por <b>outra</b> aplicação</td></tr>
+    <tr><td>Na contada</td><td>lido e mantido</td><td>apenas referenciado (lido)</td></tr>
+  </table>
+  <div class="say trap">Tabela física ≠ ALI. Uma tabela técnica de log ou de índice que o usuário não reconhece não é contada; e duas tabelas físicas podem formar <b>um</b> só ALI (com dois tipos de registro). O AIE contado em uma aplicação é ALI em alguma outra.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">TRANSAÇÕES</span>
+  <h2>EE, SE ou CE? A árvore de decisão</h2>
+  <svg viewBox="0 0 680 230" role="img" aria-label="árvore de decisão EE SE CE">
+    <defs><marker id="c4b" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="keybox" x="10" y="20" width="270" height="56" rx="12"/><text x="145" y="44" text-anchor="middle" class="kt">Dados entram para manter ALI</text><text x="145" y="64" text-anchor="middle" class="kt">ou mudar o comportamento?</text>
+    <rect class="okbox" x="360" y="20" width="160" height="56" rx="12"/><text x="440" y="54" text-anchor="middle">EE</text>
+    <line x1="280" y1="48" x2="356" y2="48" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c4b)"/><text x="300" y="40" class="small">sim</text>
+    <line x1="145" y1="76" x2="145" y2="116" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c4b)"/><text x="155" y="100" class="small">não (intenção é mostrar)</text>
+    <rect class="keybox" x="10" y="120" width="270" height="76" rx="12"/><text x="145" y="144" text-anchor="middle" class="kt">Tem cálculo, dado derivado,</text><text x="145" y="164" text-anchor="middle" class="kt">atualiza ALI ou altera</text><text x="145" y="184" text-anchor="middle" class="kt">comportamento?</text>
+    <rect class="accbox" x="360" y="110" width="160" height="44" rx="12"/><text x="440" y="138" text-anchor="middle">SE</text>
+    <rect class="box" x="360" y="170" width="160" height="44" rx="12"/><text x="440" y="198" text-anchor="middle">CE</text>
+    <line x1="280" y1="145" x2="356" y2="133" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c4b)"/><text x="300" y="132" class="small">sim</text>
+    <line x1="280" y1="180" x2="356" y2="190" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c4b)"/><text x="300" y="200" class="small">não</text>
+    <text x="540" y="138" class="small">relatório com total</text>
+    <text x="540" y="198" class="small">consulta simples</text>
+  </svg>
+  <div class="say law">EE: processa dados ou controle vindos de fora da fronteira, com intenção primária de manter ALI ou alterar o comportamento. SE: envia dados para fora com lógica além da recuperação. CE: envia dados para fora apenas por recuperação.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">COMPLEXIDADE</span>
+  <h2>TD, TR e ALR: o que se conta dentro de cada função</h2>
+  <ul class="mini">
+    <li><b>TD</b> (tipo de dado, DER): campo único, reconhecido pelo usuário, não repetido. Em transações, botões de ação e mensagens também podem contar.</li>
+    <li><b>TR</b> (tipo de registro, RLR): subgrupo de dados dentro de um ALI/AIE (ex.: Servidor e seus Dependentes).</li>
+    <li><b>ALR</b> (arquivo referenciado, FTR): ALI ou AIE lido ou mantido pela transação.</li>
+  </ul>
+  <div class="tables">
+    <div class="tbox"><h4>ALI / AIE (linhas = TR, colunas = TD)</h4>
+      <table class="ctr mini"><tr><th>TR \ TD</th><th>1–19</th><th>20–50</th><th>51+</th></tr>
+        <tr><th>1</th><td class="L">Baixa</td><td class="L">Baixa</td><td class="M">Média</td></tr>
+        <tr><th>2–5</th><td class="L">Baixa</td><td class="M">Média</td><td class="H">Alta</td></tr>
+        <tr><th>6+</th><td class="M">Média</td><td class="H">Alta</td><td class="H">Alta</td></tr></table></div>
+    <div class="tbox"><h4>EE (linhas = ALR, colunas = TD)</h4>
+      <table class="ctr mini"><tr><th>ALR \ TD</th><th>1–4</th><th>5–15</th><th>16+</th></tr>
+        <tr><th>0–1</th><td class="L">Baixa</td><td class="L">Baixa</td><td class="M">Média</td></tr>
+        <tr><th>2</th><td class="L">Baixa</td><td class="M">Média</td><td class="H">Alta</td></tr>
+        <tr><th>3+</th><td class="M">Média</td><td class="H">Alta</td><td class="H">Alta</td></tr></table></div>
+    <div class="tbox"><h4>SE e CE (linhas = ALR, colunas = TD)</h4>
+      <table class="ctr mini"><tr><th>ALR \ TD</th><th>1–5</th><th>6–19</th><th>20+</th></tr>
+        <tr><th>0–1</th><td class="L">Baixa</td><td class="L">Baixa</td><td class="M">Média</td></tr>
+        <tr><th>2–3</th><td class="L">Baixa</td><td class="M">Média</td><td class="H">Alta</td></tr>
+        <tr><th>4+</th><td class="M">Média</td><td class="H">Alta</td><td class="H">Alta</td></tr></table></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PESOS</span>
+  <h2>A tabela de pesos (decore!)</h2>
+  <table class="ctr" style="max-width:560px">
+    <tr><th>Função</th><th class="ok">Baixa</th><th class="k">Média</th><th class="ng">Alta</th></tr>
+    <tr><th>ALI</th><td>7</td><td>10</td><td>15</td></tr>
+    <tr><th>AIE</th><td>5</td><td>7</td><td>10</td></tr>
+    <tr><th>EE</th><td>3</td><td>4</td><td>6</td></tr>
+    <tr><th>SE</th><td>4</td><td>5</td><td>7</td></tr>
+    <tr><th>CE</th><td>3</td><td>4</td><td>6</td></tr>
+  </table>
+  <div class="magic">Macete: coluna “baixa” = 7-5-3-4-3. EE e CE têm os mesmos pesos; SE vale 1 a mais na baixa e média.</div>
+  <div class="say law">A soma dos pesos de todas as funções dá os pontos de função não ajustados. Funções de dados pesam mais que transações porque concentram o que o sistema guarda.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">EXEMPLO RESOLVIDO</span>
+  <h2>Contando a “Biblioteca do Fórum” passo a passo</h2>
+  <p class="mini">O sistema cadastra livros, registra empréstimos e lê os dados dos servidores do sistema de RH.</p>
+  <table class="mini">
+    <tr><th>Função</th><th>Tipo</th><th>Contagem</th><th>Complex.</th><th>PF</th></tr>
+    <tr><td>Livro</td><td>ALI</td><td>1 TR, 6 TD</td><td class="L">Baixa</td><td>7</td></tr>
+    <tr><td>Empréstimo</td><td>ALI</td><td>1 TR, 5 TD</td><td class="L">Baixa</td><td>7</td></tr>
+    <tr><td>Servidor (do RH)</td><td>AIE</td><td>1 TR, 4 TD</td><td class="L">Baixa</td><td>5</td></tr>
+    <tr><td>Incluir livro</td><td>EE</td><td>1 ALR, 7 TD</td><td class="L">Baixa</td><td>3</td></tr>
+    <tr><td>Registrar empréstimo</td><td>EE</td><td>2 ALR, 5 TD</td><td class="M">Média</td><td>4</td></tr>
+    <tr><td>Consultar livro</td><td>CE</td><td>1 ALR, 6 TD</td><td class="L">Baixa</td><td>3</td></tr>
+    <tr><td>Relatório de atrasos com multa calculada</td><td>SE</td><td>2 ALR, 7 TD</td><td class="M">Média</td><td>5</td></tr>
+    <tr><th colspan="4">Total de PF não ajustados</th><th class="k">34</th></tr>
+  </table>
+  <div class="calc">7 + 7 + 5 + 3 + 4 + 3 + 5 = <mark>34 PF</mark></div>
+  <p class="mini">Por que o relatório é SE e não CE? Porque <b>calcula</b> a multa (dado derivado).</p>
+</div>
+
+<div class="slide">
+  <span class="tag">ESTIMATIVA</span>
+  <h2>Do tamanho ao esforço</h2>
+  <div class="calc">Esforço = Tamanho × Produtividade<br>34 PF × 10 h/PF (exemplo hipotético) = <mark>340 horas</mark></div>
+  <p class="mini">A produtividade (h/PF) vem do histórico da organização ou de contrato; varia com tecnologia e equipe.</p>
+  <table class="cmp mini">
+    <tr><th>Tema</th><th>O que saber</th></tr>
+    <tr><td>Fator de ajuste</td><td>14 características gerais (VAF = 0,65 + 0,01 × soma das notas). Nas versões recentes do CPM é <b>opcional</b>; a ISO considera o tamanho não ajustado.</td></tr>
+    <tr><td>Contagem indicativa (NESMA)</td><td>só dados: 35 PF por ALI e 15 PF por AIE.</td></tr>
+    <tr><td>Contagem estimativa (NESMA)</td><td>identifica todas as funções; dados como baixa e transações como média.</td></tr>
+    <tr><td>Tipos de contagem</td><td>projeto de desenvolvimento, projeto de melhoria e aplicação (baseline).</td></tr>
+  </table>
+  <div class="say trap">“APF mede esforço” é <b>errado</b>: mede tamanho funcional. O esforço é derivado com uma produtividade. Confira no CPM e no roteiro de métricas do contrato as regras exatas usadas.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ÁGIL</span>
+  <h2>Estimativa ágil: tamanho relativo</h2>
+  <div class="analogy"><span class="emoji">🐶</span><div>É difícil dizer quantos quilos tem um cachorro, mas é fácil dizer que um <b>são-bernardo é uns 5 vezes um poodle</b>. Story points comparam itens entre si.</div></div>
+  <ul class="mini">
+    <li><b>Story points</b>: tamanho relativo (esforço + complexidade + incerteza). Não são horas e não se comparam entre times.</li>
+    <li><b>Planning Poker</b>: cada Developer mostra sua carta ao mesmo tempo (sequência tipo Fibonacci: 1, 2, 3, 5, 8, 13…); quem deu o maior e o menor explicam; vota-se de novo até convergir.</li>
+    <li><b>Velocidade</b>: pontos <b>concluídos</b> por Sprint (média das últimas) → previsão de quantas Sprints faltam.</li>
+    <li><b>T-shirt</b> (P, M, G) para estimativas grossas de épicos.</li>
+    <li><b>Cone da incerteza</b>: no início a estimativa pode errar muito; o erro diminui conforme o projeto avança.</li>
+  </ul>
+  <div class="calc">Backlog restante 120 pontos ÷ velocidade 30 pontos/Sprint = <mark>4 Sprints</mark></div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Resumo do capítulo</h2>
+  <div class="magic">Dados: ALI (mantém) e AIE (só lê). Transações: EE (entra e mantém), SE (sai com cálculo), CE (sai sem cálculo). Pesos baixa: 7-5-3-4-3.</div>
+  <ul class="checklist">
+    <li>Sei desenhar a fronteira e classificar as 5 funções.</li>
+    <li>Sei que dados usam TD × TR e transações usam TD × ALR.</li>
+    <li>Sei a tabela de pesos e somo os PF não ajustados.</li>
+    <li>Calculo esforço = PF × h/PF.</li>
+    <li>Sei story points, Planning Poker e velocidade.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Teste rápido (estilo FGV)</h2>
+  <details><summary>1. Um relatório exibe os processos de cada vara e o total por vara, calculado na hora. Classifica-se como: (A) CE (B) EE (C) SE (D) ALI (E) AIE</summary><p><b>C.</b> O total é calculado (dado derivado), então é SE. Sem o total, seria CE.</p></details>
+  <details><summary>2. Uma EE referencia 2 ALR e tem 16 TD. Sua complexidade e peso são: (A) baixa, 3 (B) média, 4 (C) alta, 6 (D) média, 5 (E) alta, 7</summary><p><b>C.</b> Na matriz da EE, 2 ALR com 16+ TD = alta → 6. Peso 7 é SE alta.</p></details>
+  <details><summary>3. Uma aplicação tem 2 ALI médios e 1 AIE baixo. Quantos PF de dados?</summary><p><b>25.</b> 2 × 10 + 5 = 25.</p></details>
+  <details><summary>4. Velocidade média de 25 pontos e 150 pontos no backlog: quantas Sprints, no mínimo?</summary><p><b>6 Sprints</b> (150 ÷ 25). Lembre que é previsão, não promessa.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 5 ===================================================== -->
+<section class="chapter" data-title="Qualidade, testes, SDD e engenharia assistida por IA">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 5</span>
+  <h1>Qualidade, testes, SDD e engenharia assistida por IA</h1>
+  <span class="emoji">🧪</span>
+  <div class="steps">
+    <div class="step"><b>1. Qualidade</b><span>Erro, defeito, falha; ISO/IEC 25010.</span></div>
+    <div class="step"><b>2. Testes</b><span>Níveis, técnicas, pirâmide, TDD.</span></div>
+    <div class="step"><b>3. SDD e IA</b><span>Especificação primeiro; IA com guardrails.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🚗</span><div><b>Analogia do dia:</b> um carro passa pelo <b>controle de qualidade</b> antes de sair da fábrica: cada peça é testada, depois o motor montado, depois o carro inteiro na pista. Software é igual. E se um robô montou o carro, <b>alguém ainda precisa inspecionar</b>.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONCEITO</span>
+  <h2>Erro → defeito → falha</h2>
+  <svg viewBox="0 0 680 130" role="img" aria-label="erro humano gera defeito no código que gera falha na execução">
+    <defs><marker id="c5a" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e5484d"/></marker></defs>
+    <rect class="box" x="10" y="20" width="190" height="70" rx="12"/><text x="105" y="50" text-anchor="middle">🧠 Erro (engano)</text><text x="105" y="72" text-anchor="middle" class="small">ação humana</text>
+    <rect class="accbox" x="245" y="20" width="190" height="70" rx="12"/><text x="340" y="50" text-anchor="middle">🐛 Defeito (bug)</text><text x="340" y="72" text-anchor="middle" class="small">no código/artefato</text>
+    <rect class="badbox" x="480" y="20" width="190" height="70" rx="12"/><text x="575" y="50" text-anchor="middle">💥 Falha</text><text x="575" y="72" text-anchor="middle" class="small">erro ao executar</text>
+    <line x1="200" y1="55" x2="241" y2="55" stroke="#e5484d" stroke-width="2.5" marker-end="url(#c5a)"/>
+    <line x1="435" y1="55" x2="476" y2="55" stroke="#e5484d" stroke-width="2.5" marker-end="url(#c5a)"/>
+    <text x="340" y="120" text-anchor="middle" class="small">um defeito pode existir sem nunca causar falha, se o trecho não for executado naquela condição</text>
+  </svg>
+  <p class="mini">Exemplo: o programador <b>se engana</b> e escreve <code>&lt;</code> no lugar de <code>&lt;=</code> (erro); o código fica com <b>defeito</b>; quando alguém digita exatamente o valor-limite, o sistema <b>falha</b>.</p>
+  <div class="say law">Testes mostram a presença de defeitos, não a sua ausência. Teste exaustivo é impossível na prática; por isso escolhem-se casos de teste por técnicas e por risco.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">QUALIDADE</span>
+  <h2>ISO/IEC 25010: o “checklist” de qualidade do produto</h2>
+  <table class="mini">
+    <tr><th class="k">Característica (versão 2011)</th><th>Pergunta</th></tr>
+    <tr><td>Adequação funcional</td><td>faz o que precisa, corretamente?</td></tr>
+    <tr><td>Eficiência de desempenho</td><td>tempo, recursos, capacidade</td></tr>
+    <tr><td>Compatibilidade</td><td>convive e troca dados com outros?</td></tr>
+    <tr><td>Usabilidade</td><td>fácil de aprender e usar, acessível?</td></tr>
+    <tr><td>Confiabilidade</td><td>disponível, tolerante a falhas, recuperável?</td></tr>
+    <tr><td>Segurança</td><td>confidencialidade, integridade, autenticidade…</td></tr>
+    <tr><td>Manutenibilidade</td><td>modular, analisável, modificável, testável</td></tr>
+    <tr><td>Portabilidade</td><td>adaptável, instalável, substituível</td></tr>
+  </table>
+  <div class="say law">A ISO/IEC 25010:2011 define 8 características de qualidade do produto. A revisão de 2023 reorganizou e renomeou algumas (ex.: incluiu “safety”): confira o texto oficial e a versão citada no enunciado.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTES</span>
+  <h2>Níveis de teste e a pirâmide</h2>
+  <div class="two">
+    <svg viewBox="0 0 320 230" role="img" aria-label="pirâmide de testes">
+      <polygon points="160,10 300,220 20,220" class="box"/>
+      <polygon points="160,10 207,80 113,80" class="badbox"/><text x="160" y="68" text-anchor="middle" style="font-size:13px">E2E/UI</text>
+      <polygon points="113,80 207,80 253,150 67,150" class="accbox"/><text x="160" y="122" text-anchor="middle">Integração</text>
+      <polygon points="67,150 253,150 300,220 20,220" class="okbox"/><text x="160" y="192" text-anchor="middle">Unidade (muitos, rápidos)</text>
+    </svg>
+    <table class="cmp mini">
+      <tr><th>Nível</th><th>Testa…</th></tr>
+      <tr><td>Unidade</td><td>uma função/classe isolada</td></tr>
+      <tr><td>Integração</td><td>a conversa entre módulos/serviços</td></tr>
+      <tr><td>Sistema</td><td>o sistema inteiro contra os requisitos</td></tr>
+      <tr><td>Aceitação</td><td>se o usuário aceita (alfa: no fornecedor; beta: no ambiente do usuário)</td></tr>
+    </table>
+  </div>
+  <div class="say law">A pirâmide de testes recomenda muitos testes de unidade (baratos e rápidos), menos de integração e poucos de ponta a ponta (lentos e frágeis).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">TÉCNICAS</span>
+  <h2>Caixa-preta: partição de equivalência e valor-limite</h2>
+  <p class="mini">Regra: o campo idade aceita <b>de 18 a 65</b>.</p>
+  <svg viewBox="0 0 680 120" role="img" aria-label="reta numérica com partições e limites">
+    <rect class="badbox" x="10" y="30" width="190" height="36" rx="8"/><text x="105" y="54" text-anchor="middle">inválida: &lt; 18</text>
+    <rect class="okbox" x="200" y="30" width="280" height="36" rx="8"/><text x="340" y="54" text-anchor="middle">válida: 18 a 65</text>
+    <rect class="badbox" x="480" y="30" width="190" height="36" rx="8"/><text x="575" y="54" text-anchor="middle">inválida: &gt; 65</text>
+    <text x="180" y="96" text-anchor="middle" style="fill:var(--bad)">17</text><text x="215" y="96" text-anchor="middle" style="fill:var(--ok)">18</text>
+    <text x="465" y="96" text-anchor="middle" style="fill:var(--ok)">65</text><text x="500" y="96" text-anchor="middle" style="fill:var(--bad)">66</text>
+    <text x="340" y="112" text-anchor="middle" class="small">valores-limite: bem nas bordas</text>
+  </svg>
+  <ul class="mini">
+    <li><b>Partição de equivalência</b>: 1 valor de cada classe basta (ex.: 10, 40, 70), pois todos da classe “se comportam igual”.</li>
+    <li><b>Valor-limite</b>: bugs moram nas bordas → 17, 18, 65, 66.</li>
+    <li><b>Caixa-branca</b> (olha o código): cobertura de comandos e de decisões (cada <code>if</code> verdadeiro e falso).</li>
+  </ul>
+  <div class="say law">Caixa-preta deriva testes da especificação; caixa-branca, da estrutura interna. 100% de cobertura de decisão implica 100% de comandos, mas o contrário não vale.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>Tipos de teste que a banca confunde</h2>
+  <table class="mini">
+    <tr><th class="ng">Errado</th><th class="ok">Certo</th></tr>
+    <tr><td class="hl">Regressão testa só a função nova.</td><td class="hk">Reexecuta testes para ver se a mudança quebrou o que já funcionava.</td></tr>
+    <tr><td class="hl">Teste de carga e de estresse são iguais.</td><td class="hk">Carga: volume esperado. Estresse: além do limite, para ver como quebra.</td></tr>
+    <tr><td class="hl">Teste beta é feito pela equipe no laboratório.</td><td class="hk">Alfa: no ambiente do fornecedor. Beta: usuários reais, no ambiente deles.</td></tr>
+    <tr><td class="hl">Cobertura de 100% garante zero bugs.</td><td class="hk">Cobertura mede o que foi executado, não se os testes verificam bem.</td></tr>
+    <tr><td class="hl">Teste de fumaça é exaustivo.</td><td class="hk">Smoke é rápido e raso: “liga e não pega fogo?”</td></tr>
+  </table>
+  <div class="say trap">Teste de mutação avalia a <b>qualidade dos testes</b>: altera o código de propósito (mutantes) e vê se algum teste falha. Mutante que sobrevive = teste fraco.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">TDD</span>
+  <h2>TDD: o teste nasce antes do código</h2>
+  <svg viewBox="0 0 640 120" role="img" aria-label="ciclo vermelho verde refatorar">
+    <defs><marker id="c5b" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="badbox" x="20" y="20" width="170" height="56" rx="14"/><text x="105" y="44" text-anchor="middle">🔴 Vermelho</text><text x="105" y="64" text-anchor="middle" class="small">teste que falha</text>
+    <rect class="okbox" x="235" y="20" width="170" height="56" rx="14"/><text x="320" y="44" text-anchor="middle">🟢 Verde</text><text x="320" y="64" text-anchor="middle" class="small">código mínimo passa</text>
+    <rect class="accbox" x="450" y="20" width="170" height="56" rx="14"/><text x="535" y="44" text-anchor="middle">🔵 Refatorar</text><text x="535" y="64" text-anchor="middle" class="small">melhora sem quebrar</text>
+    <line x1="190" y1="48" x2="231" y2="48" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c5b)"/>
+    <line x1="405" y1="48" x2="446" y2="48" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c5b)"/>
+    <path d="M535,76 Q535,112 320,112 Q105,112 105,80" fill="none" stroke="#6d4aff" stroke-width="2" marker-end="url(#c5b)"/>
+  </svg>
+<pre><code><mark>// 1. vermelho: o teste vem primeiro</mark>
+test('maior de idade a partir de 18', () =&gt; {
+  expect(ehMaiorDeIdade(18)).toBe(true);
+});
+<mark>// 2. verde: o mínimo para passar</mark>
+const ehMaiorDeIdade = idade =&gt; idade &gt;= 18;</code></pre>
+  <div class="say law">No TDD escreve-se um teste automatizado que falha, depois o código mínimo para passar e então se refatora, em ciclos curtos. BDD estende a ideia com cenários em linguagem de negócio (Dado/Quando/Então).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">SDD</span>
+  <h2>SDD: desenvolvimento orientado a especificações</h2>
+  <div class="analogy"><span class="emoji">📐</span><div>Antes de chamar o pedreiro (ou o robô pedreiro), o arquiteto entrega a <b>planta</b>. Se a casa sair diferente, quem manda é a planta. No SDD, a <b>especificação</b> é a planta.</div></div>
+  <svg viewBox="0 0 680 100" role="img" aria-label="fluxo do SDD">
+    <defs><marker id="c5c" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="keybox" x="5" y="20" width="120" height="50" rx="10"/><text x="65" y="50" text-anchor="middle" class="kt">Especificar</text>
+    <rect class="accbox" x="145" y="20" width="120" height="50" rx="10"/><text x="205" y="50" text-anchor="middle">Planejar</text>
+    <rect class="accbox" x="285" y="20" width="120" height="50" rx="10"/><text x="345" y="50" text-anchor="middle">Tarefas</text>
+    <rect class="accbox" x="425" y="20" width="120" height="50" rx="10"/><text x="485" y="50" text-anchor="middle">Implementar</text>
+    <rect class="okbox" x="565" y="20" width="110" height="50" rx="10"/><text x="620" y="50" text-anchor="middle">Verificar</text>
+    <line x1="125" y1="45" x2="141" y2="45" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c5c)"/>
+    <line x1="265" y1="45" x2="281" y2="45" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c5c)"/>
+    <line x1="405" y1="45" x2="421" y2="45" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c5c)"/>
+    <line x1="545" y1="45" x2="561" y2="45" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c5c)"/>
+    <text x="340" y="92" text-anchor="middle" class="small">se algo muda, muda-se primeiro a especificação e regenera-se o resto</text>
+  </svg>
+  <ul class="mini">
+    <li>A spec descreve <b>o quê e por quê</b> (histórias, critérios de aceite, restrições); o plano diz <b>como</b> (arquitetura, tecnologias).</li>
+    <li>Combina muito com agentes de IA: a spec vira o contexto que guia a geração de código e testes. Ferramentas como o GitHub Spec Kit seguem esse fluxo.</li>
+  </ul>
+  <div class="say law">No SDD a especificação é o artefato central e a fonte da verdade: plano, tarefas, código e testes derivam dela e são verificados contra ela.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">IA</span>
+  <h2>Engenharia de software assistida por IA</h2>
+  <table class="cmp mini">
+    <tr><th>Nível de ajuda</th><th>Exemplo</th><th>Quem decide</th></tr>
+    <tr><td>Autocompletar</td><td>sugere a próxima linha</td><td>o dev aceita ou não, linha a linha</td></tr>
+    <tr><td>Chat / assistente</td><td>explica código, gera função, escreve testes</td><td>o dev revisa e integra</td></tr>
+    <tr><td>Agente</td><td>lê o repositório, edita vários arquivos, roda testes</td><td>o dev define o objetivo, limites e revisa o resultado</td></tr>
+  </table>
+  <div class="two">
+    <div class="say bad"><b>Riscos:</b> alucinação (API que não existe), código inseguro, vazamento de dados/segredos no prompt, prompt injection em conteúdos lidos pelo agente, licenças de código.</div>
+    <div class="say good"><b>Guardrails:</b> especificação clara, testes automatizados, revisão humana, SAST/SCA no pipeline, menor privilégio para agentes, nada de segredos no contexto.</div>
+  </div>
+  <div class="say law">A IA aumenta a produtividade, mas não transfere a responsabilidade: o código gerado deve passar pelos mesmos controles de qualidade e segurança que o código humano.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>IA no código: certo × errado</h2>
+  <table class="mini">
+    <tr><th class="ng">Errado</th><th class="ok">Certo</th></tr>
+    <tr><td class="hl">“Se compilou, o código da IA está correto.”</td><td class="hk">Compilar não prova comportamento: testes e revisão provam.</td></tr>
+    <tr><td class="hl">“LLM sempre dá a mesma resposta ao mesmo prompt.”</td><td class="hk">A saída pode variar (amostragem); por isso a spec e os testes fixam o esperado.</td></tr>
+    <tr><td class="hl">“Com IA, não precisa mais de requisitos.”</td><td class="hk">Precisa mais ainda: spec ruim gera código ruim mais rápido.</td></tr>
+    <tr><td class="hl">“Pode colar a senha do banco no prompt para testar.”</td><td class="hk">Segredos nunca vão para o contexto do modelo.</td></tr>
+  </table>
+  <div class="say trap">Se a alternativa disser que a IA <b>dispensa</b> testes, revisão ou especificação, ou que a responsabilidade passa para o fornecedor do modelo, está errada.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Resumo do capítulo</h2>
+  <div class="magic">Erro → defeito → falha. Pirâmide: muito teste de unidade. Bordas: valor-limite. TDD: vermelho, verde, refatorar. SDD: a spec manda. IA: acelera, mas o humano responde.</div>
+  <ul class="checklist">
+    <li>Diferencio verificação de validação e erro/defeito/falha.</li>
+    <li>Cito as 8 características da ISO/IEC 25010:2011.</li>
+    <li>Sei níveis de teste, caixa-preta × caixa-branca e valor-limite.</li>
+    <li>Sei o ciclo do TDD e para que serve o teste de mutação.</li>
+    <li>Explico o fluxo do SDD e os guardrails do uso de IA.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Teste rápido (estilo FGV)</h2>
+  <details><summary>1. Um campo aceita de 1 a 100 itens. Pela análise de valor-limite, os valores a testar são: (A) 1 e 100 (B) 0, 1, 100, 101 (C) 50 (D) −1, 50, 200 (E) 2 e 99</summary><p><b>B.</b> Cada borda e o vizinho de fora: 0/1 e 100/101.</p></details>
+  <details><summary>2. Após corrigir um bug, a equipe reexecuta a suíte para ver se algo que funcionava quebrou. Esse é o teste de: (A) estresse (B) aceitação (C) regressão (D) mutação (E) usabilidade</summary><p><b>C.</b> Regressão. Mutação avalia a qualidade dos testes; estresse leva o sistema além do limite.</p></details>
+  <details><summary>3. No TDD, a primeira coisa a fazer em cada ciclo é: (A) refatorar (B) escrever o código (C) escrever um teste que falha (D) fazer deploy (E) medir cobertura</summary><p><b>C.</b> Vermelho primeiro: o teste falha porque a funcionalidade ainda não existe.</p></details>
+  <details><summary>4. No SDD com agente de IA, o código gerado diverge da especificação aprovada. O correto é: (A) atualizar a spec para refletir o código (B) tratar a spec como fonte da verdade e corrigir/regenerar o código (C) ignorar, se compila (D) remover os testes que falham (E) aceitar, pois a IA otimiza</summary><p><b>B.</b> A especificação manda; se o requisito mudou de verdade, muda-se primeiro a spec (com aprovação) e depois o código.</p></details>
+</div>
+
+</section>
+
+<script src="aula.js"></script></body></html>

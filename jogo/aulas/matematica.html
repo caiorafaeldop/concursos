@@ -1,0 +1,926 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Matemática e Estatística — TJPB Quest</title>
+<link rel="stylesheet" href="aula.css">
+</head>
+<body data-subject="matematica" data-title="Matemática e Estatística">
+
+<!-- ==================== CAPÍTULO 1 ==================== -->
+<section class="chapter" data-title="Conjuntos Numéricos, Razão e Proporção">
+  <div class="slide">
+    <span class="tag">CAPÍTULO 1</span>
+    <span class="emoji">🧺</span>
+    <h1>Conjuntos Numéricos, Razão e Proporção</h1>
+    <p class="lead">O que você vai aprender: como os números se organizam em caixas, como não errar Diagrama de Venn e como montar qualquer regra de três composta sem decorar truque furado.</p>
+    <div class="analogy">
+      <span class="emoji">📦</span>
+      <div><b>Analogia da matrioska:</b> os conjuntos numéricos são bonecas russas: os Naturais cabem nos Inteiros, que cabem nos Racionais. Já os Irracionais ficam numa caixa separada, e juntos formam os Reais.</div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">CONJUNTOS NUMÉRICOS</span>
+    <h2>As 5 caixas dos números</h2>
+    <svg viewBox="0 0 760 260" aria-label="Diagrama dos conjuntos numéricos">
+      <rect x="20" y="15" width="720" height="230" rx="18" class="box"/>
+      <text x="40" y="42">ℝ — Reais (ℚ ∪ 𝕀)</text>
+      <rect x="40" y="55" width="450" height="170" rx="14" class="accbox"/>
+      <text x="60" y="80">ℚ — Racionais (frações p/q, decimais exatos, dízimas)</text>
+      <rect x="65" y="92" width="320" height="118" rx="12" class="okbox"/>
+      <text x="85" y="116">ℤ — Inteiros (..., −2, −1, 0, 1, 2...)</text>
+      <rect x="90" y="128" width="210" height="68" rx="10" class="keybox"/>
+      <text x="108" y="155" class="kt">ℕ — Naturais {0, 1, 2...}</text>
+      <text x="108" y="178" class="small kt">Ex: 0, 7, 42</text>
+      <text x="310" y="160" class="small">−5, −100</text>
+      <text x="398" y="135" class="small">1/2, −0,75</text>
+      <text x="398" y="158" class="small">0,333...</text>
+      <rect x="515" y="55" width="205" height="170" rx="14" class="badbox"/>
+      <text x="535" y="85">𝕀 — Irracionais</text>
+      <text x="535" y="115" class="small">Infinitos SEM</text>
+      <text x="535" y="135" class="small">repetição periódica</text>
+      <text x="535" y="170">√2 ≈ 1,4142...</text>
+      <text x="535" y="195">π ≈ 3,1415...</text>
+    </svg>
+    <div class="say law">Todo número natural é inteiro, todo inteiro é racional, mas <b>ℚ ∩ 𝕀 = ∅</b> (ninguém é racional e irracional ao mesmo tempo).</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">DÍZIMA PERIÓDICA</span>
+    <h2>Por que 0,333... é Racional?</h2>
+    <p>Se dá para escrever como fração <code>p/q</code> (com <code>q ≠ 0</code>), é <b>Racional (ℚ)</b>. Dízima periódica tem padrão que se repete para sempre — por isso vira fração geratriz!</p>
+    <div class="two">
+      <div class="card">
+        <h3>Dízima simples</h3>
+        <p><code>0,444...</code> → 1 algarismo repete → coloca um <b>9</b> embaixo:</p>
+        <p class="big">4 / 9</p>
+        <p><code>0,2727...</code> → 2 algarismos → <b>27 / 99 = 3 / 11</b></p>
+      </div>
+      <div class="card">
+        <h3>Dízima composta</h3>
+        <p><code>0,1666...</code> → 1 repete (um <b>9</b>) e 1 intruso (um <b>0</b>):</p>
+        <p class="big">(16 − 1) / 90 = 15 / 90 = 1 / 6</p>
+      </div>
+    </div>
+    <div class="say trap"><code>0,999...</code> é igual a <b>9/9 = 1</b>. Não é "quase 1": em Matemática, é exatamente 1!</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">INTERVALOS REAIS</span>
+    <h2>Bolinha aberta vs. Bolinha fechada</h2>
+    <p>Na reta real, representar um intervalo errado muda a inclusão das pontas. Em prova, um colchete virado decide a questão.</p>
+    <svg viewBox="0 0 760 190" aria-label="Intervalos reais aberto e fechado">
+      <line x1="60" y1="60" x2="700" y2="60" stroke="#5b6475" stroke-width="3"/>
+      <line x1="200" y1="60" x2="520" y2="60" stroke="#6d4aff" stroke-width="8"/>
+      <circle cx="200" cy="60" r="9" fill="#ffffff" stroke="#6d4aff" stroke-width="3"/>
+      <circle cx="520" cy="60" r="9" fill="#6d4aff"/>
+      <text x="192" y="38">2</text>
+      <text x="512" y="38">7</text>
+      <text x="560" y="65">]2, 7] ou (2, 7] → 2 &lt; x ≤ 7</text>
+      <text x="120" y="95" class="small">2 NÃO entra (aberta)</text>
+      <text x="450" y="95" class="small">7 ENTRA (fechada)</text>
+
+      <line x1="60" y1="145" x2="700" y2="145" stroke="#5b6475" stroke-width="3"/>
+      <line x1="200" y1="145" x2="520" y2="145" stroke="#2ea043" stroke-width="8"/>
+      <circle cx="200" cy="145" r="9" fill="#2ea043"/>
+      <circle cx="520" cy="145" r="9" fill="#ffffff" stroke="#2ea043" stroke-width="3"/>
+      <text x="192" y="128">2</text>
+      <text x="512" y="128">7</text>
+      <text x="560" y="150">[2, 7) → 2 ≤ x &lt; 7</text>
+    </svg>
+    <div class="say good"><b>Regra visual:</b> colchete abraçando o número <code>[2</code> = bolinha fechada (entra). Colchete de costas <code>]2</code> ou parêntese <code>(2</code> = bolinha aberta (não entra). Infinito sempre fica aberto!</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">DIAGRAMA DE VENN</span>
+    <h2>Como nunca contar ninguém duas vezes</h2>
+    <p>Em um tribunal com <b>80</b> servidores, <b>48</b> usam PJe, <b>36</b> usam SEI e <b>12</b> não usam nenhum. Quantos usam <b>apenas</b> PJe?</p>
+    <svg viewBox="0 0 760 240" aria-label="Diagrama de Venn com 80 servidores">
+      <rect x="30" y="15" width="700" height="210" rx="16" class="box"/>
+      <text x="50" y="42" class="small">Universo = 80 servidores</text>
+      <circle cx="290" cy="125" r="82" fill="rgba(109,74,255,0.18)" stroke="#6d4aff" stroke-width="3"/>
+      <circle cx="430" cy="125" r="82" fill="rgba(47,111,223,0.18)" stroke="#2f6fdf" stroke-width="3"/>
+      <text x="215" y="120" class="big">32</text>
+      <text x="192" y="142" class="small">só PJe</text>
+      <text x="348" y="120" class="big">16</text>
+      <text x="333" y="142" class="small">ambos</text>
+      <text x="470" y="120" class="big">20</text>
+      <text x="455" y="142" class="small">só SEI</text>
+      <text x="600" y="195">Fora: 12</text>
+    </svg>
+    <div class="say law"><b>Passo a passo:</b> (1) Tire quem está fora: <code>80 − 12 = 68</code> usam ao menos um. (2) Ache a interseção: <code>48 + 36 − 68 = 16</code>. (3) Subtraia para fora: só PJe = <code>48 − 16 = 32</code>.</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">PEGADINHA CLÁSSICA</span>
+    <h2>"PJe" não é "Apenas PJe"</h2>
+    <p>A FGV adora trocar uma palavra no enunciado para derrubar quem lê correndo.</p>
+    <div class="two">
+      <div class="say bad">
+        <b>Erro comum:</b><br>
+        Somar direto <code>48 + 36 = 84</code> e achar que sobraram 4, esquecendo os 12 de fora. Ou responder <b>48</b> quando a pergunta pede "apenas PJe".
+      </div>
+      <div class="say good">
+        <b>Leitura cirúrgica:</b><br>
+        • "Usam PJe" = círculo inteiro (32 + 16 = 48).<br>
+        • "Usam <b>apenas</b> PJe" = só a lua esquerda (32).<br>
+        • "Usam <b>pelo menos um</b>" = união (32 + 16 + 20 = 68).
+      </div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">RAZÃO E PROPORÇÃO</span>
+    <h2>Divisão em partes proporcionais</h2>
+    <p>Dividir <b>R$ 18.000</b> diretamente proporcional a <b>2, 3 e 4</b> significa cortar o bolo em <code>2 + 3 + 4 = 9</code> fatias iguais!</p>
+    <table class="cmp">
+      <tr><th>Tipo</th><th>Como montar</th><th>Exemplo (total 18.000 para 2, 3, 4)</th></tr>
+      <tr><td><b>Diretamente</b> proporcional</td><td><code>A = 2k, B = 3k, C = 4k</code></td><td><code>9k = 18.000 → k = 2.000</code><br>Partes: <mark class="ok">4.000, 6.000 e 8.000</mark></td></tr>
+      <tr><td><b>Inversamente</b> proporcional</td><td>Use os inversos: <code>1/2, 1/3, 1/4</code> (MMC = 12 → <code>6, 4, 3</code>)</td><td><code>6k + 4k + 3k = 13k</code><br>Quem tem menor índice ganha mais!</td></tr>
+    </table>
+    <div class="say trap">Inversamente proporcional a <code>2, 3, 4</code> NÃO é dividir direto por 2, 3, 4! Multiplique os inversos pelo MMC para virar números inteiros (6, 4 e 3) e só então divida.</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">REGRA DE TRÊS COMPOSTA</span>
+    <h2>Método da seta sem decorar tabela</h2>
+    <p>4 analistas revisam 120 processos em 5 dias (6h/dia). Quantos dias 6 analistas levam para 216 processos (4h/dia)?</p>
+    <div class="flow">
+      <span>1. Isole a coluna do x (dias): <code>5 / d</code></span>
+      <i>→</i>
+      <span>2. Compare cada coluna só com "dias"</span>
+      <i>→</i>
+      <span>3. Direta mantém; Inversa vira</span>
+    </div>
+    <table class="cmp">
+      <tr><th>Grandeza</th><th>Cenário 1 → Cenário 2</th><th>Relação com DIAS</th><th>Fração</th></tr>
+      <tr><td>Analistas</td><td>4 → 6 (mais gente)</td><td>Menos dias (<b>Inversa</b>)</td><td><code>6 / 4</code></td></tr>
+      <tr><td>Processos</td><td>120 → 216 (mais trabalho)</td><td>Mais dias (<b>Direta</b>)</td><td><code>120 / 216</code></td></tr>
+      <tr><td>Horas/dia</td><td>6 → 4 (menos horas/dia)</td><td>Mais dias (<b>Inversa</b>)</td><td><code>4 / 6</code></td></tr>
+    </table>
+    <p><code>5 / d = (6/4) · (120/216) · (4/6) = 120 / 216 = 5 / 9</code> → <b>d = 9 dias</b>!</p>
+  </div>
+
+  <div class="slide">
+    <span class="tag">RESUMO DO CAPÍTULO</span>
+    <h2>Guarde antes de ir para a prova</h2>
+    <div class="magic">
+      "Em Venn, comece pelo meio. Na regra de três, compare tudo com a coluna do X."
+      <small>E na dízima periódica: cada algarismo que repete põe um 9 no denominador.</small>
+    </div>
+    <ul class="checklist">
+      <li><code>ℚ ∩ 𝕀 = ∅</code>: dízima periódica é racional; raiz não exata e π são irracionais.</li>
+      <li>Colchete fechado <code>[</code> inclui o número; aberto <code>]</code> ou <code>(</code> exclui.</li>
+      <li>Em Venn: <code>n(A ∪ B) = n(A) + n(B) − n(A ∩ B)</code>.</li>
+      <li>Divisão inversamente proporcional usa os inversos (ou produto constante).</li>
+    </ul>
+  </div>
+
+  <div class="slide">
+    <span class="tag">TESTE RÁPIDO · FGV</span>
+    <h2>4 questões para treinar agora</h2>
+    <details>
+      <summary>1. Qual número é irracional: (A) 0,25 (B) 0,777... (C) √16 (D) √7 (E) −5/2?</summary>
+      <p><b>Gabarito: D (√7).</b> 0,25 = 1/4; 0,777... = 7/9; √16 = 4; −5/2 é fração. Só √7 é decimal infinito não periódico.</p>
+    </details>
+    <details>
+      <summary>2. Em 50 alunos, 30 gostam de Java, 25 de Python e 5 de nenhum. Quantos gostam de ambos?</summary>
+      <p><b>Gabarito: 10.</b> Gostam de ao menos um: 50 − 5 = 45. Interseção = 30 + 25 − 45 = 10.</p>
+    </details>
+    <details>
+      <summary>3. A fração geratriz de 0,2333... é qual?</summary>
+      <p><b>Gabarito: 7/30.</b> (23 − 2) / 90 = 21 / 90 = 7 / 30.</p>
+    </details>
+    <details>
+      <summary>4. Dividindo 130 inversamente proporcional a 2, 3 e 4, qual é a maior parte?</summary>
+      <p><b>Gabarito: 60.</b> Inversos 1/2, 1/3, 1/4 → multiplicando por 12 ficam 6, 4, 3. Soma = 13 → k = 130/13 = 10. Maior parte = 6·10 = 60.</p>
+    </details>
+  </div>
+</section>
+
+<!-- ==================== CAPÍTULO 2 ==================== -->
+<section class="chapter" data-title="Equações, Inequações e Sistemas Lineares">
+  <div class="slide">
+    <span class="tag">CAPÍTULO 2</span>
+    <span class="emoji">⚖️</span>
+    <h1>Equações, Inequações e Sistemas Lineares</h1>
+    <p class="lead">O que você vai aprender: equilibrar equações do 1º e 2º graus, dominar o estudo do sinal nas inequações e classificar sistemas lineares sem errar o sinal.</p>
+    <div class="analogy">
+      <span class="emoji">🎢</span>
+      <div><b>Analogia da balança e da gangorra:</b> equação é uma balança equilibrada (=). Inequação é uma gangorra (&lt; ou &gt;): se você multiplica os dois lados por −1, a gangorra vira de cabeça para baixo!</div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">INEQUAÇÃO DO 1º GRAU</span>
+    <h2>Por que o sinal vira quando multiplica por negativo?</h2>
+    <p>Pense com números reais: <code>2 &lt; 5</code> é verdade. Multiplique os dois lados por <code>−1</code>: <code>−2</code> fica <b>maior</b> que <code>−5</code>!</p>
+    <svg viewBox="0 0 760 155" aria-label="Reta numérica mostrando inversão de sinal">
+      <line x1="60" y1="70" x2="700" y2="70" stroke="#5b6475" stroke-width="3"/>
+      <circle cx="380" cy="70" r="6" fill="#5b6475"/><text x="375" y="100">0</text>
+      <circle cx="480" cy="70" r="8" fill="#2ea043"/><text x="475" y="45">2</text>
+      <circle cx="620" cy="70" r="8" fill="#2ea043"/><text x="615" y="45">5</text>
+      <text x="515" y="130" class="small">2 está à esquerda de 5 (2 &lt; 5)</text>
+      <circle cx="280" cy="70" r="8" fill="#e5484d"/><text x="268" y="45">−2</text>
+      <circle cx="140" cy="70" r="8" fill="#e5484d"/><text x="128" y="45">−5</text>
+      <text x="145" y="130" class="small">−2 está à DIREITA de −5 (−2 &gt; −5)</text>
+    </svg>
+    <div class="say trap">Exemplo fatal: <code>−3x + 12 ≤ 0</code> → <code>−3x ≤ −12</code> → dividindo por <code>−3</code>, o sinal vira: <b>x ≥ 4</b> (não <code>x ≤ 4</code>!).</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">EQUAÇÃO DO 2º GRAU</span>
+    <h2>Bhaskara, Discriminante (Δ) e Soma/Produto</h2>
+    <p>Toda equação <code>ax² + bx + c = 0</code> (com <code>a ≠ 0</code>) tem um "termômetro" de raízes chamado <b>delta (Δ)</b>:</p>
+    <div class="steps">
+      <div class="step"><b>Δ &gt; 0</b><span><b>2 raízes</b> reais e distintas</span></div>
+      <div class="step"><b>Δ = 0</b><span><b>1 raiz</b> real (duas iguais)</span></div>
+      <div class="step"><b>Δ &lt; 0</b><span><b>Nenhuma</b> raiz real</span></div>
+    </div>
+    <div class="say law">
+      <b>Fórmulas:</b> <code>Δ = b² − 4ac</code> · <code>x = (−b ± √Δ) / (2a)</code><br>
+      <b>Atalho Soma e Produto:</b> <code>S = x₁ + x₂ = −b / a</code> · <code>P = x₁ · x₂ = c / a</code>
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">ATALHO DE PROVA</span>
+    <h2>Resolvendo em 5 segundos por Soma e Produto</h2>
+    <p>Para <code>x² − 7x + 12 = 0</code> (onde <code>a = 1</code>):</p>
+    <div class="flow">
+      <span>Produto P = 12</span>
+      <i>→</i>
+      <span>Soma S = −(−7) = 7</span>
+      <i>→</i>
+      <span>Quais números multiplicam 12 e somam 7?</span>
+      <i>→</i>
+      <span><b>3 e 4</b>!</span>
+    </div>
+    <div class="say good">A FGV ama perguntar diretamente: <i>"Qual a soma dos quadrados das raízes?"</i><br>
+    Use <code>x₁² + x₂² = (x₁ + x₂)² − 2x₁x₂ = S² − 2P</code> sem nem precisar achar as raízes!</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">INEQUAÇÃO DO 2º GRAU</span>
+    <h2>Estudo do sinal na parábola</h2>
+    <p>Resolva <code>x² − 5x + 4 &lt; 0</code>. Raízes: <code>1</code> e <code>4</code>. Como <code>a = 1 &gt; 0</code>, a boca da parábola abre para <b>cima</b>:</p>
+    <svg viewBox="0 0 760 210" aria-label="Estudo do sinal da parábola">
+      <line x1="80" y1="120" x2="680" y2="120" stroke="#5b6475" stroke-width="3"/>
+      <path d="M 160 30 Q 380 260 600 30" fill="none" stroke="#6d4aff" stroke-width="5"/>
+      <circle cx="245" cy="120" r="8" fill="#ffffff" stroke="#6d4aff" stroke-width="3"/>
+      <circle cx="515" cy="120" r="8" fill="#ffffff" stroke="#6d4aff" stroke-width="3"/>
+      <text x="240" y="102">1</text>
+      <text x="510" y="102">4</text>
+      <text x="165" y="95" class="big" fill="#2ea043">+</text>
+      <text x="372" y="165" class="big" fill="#e5484d">−</text>
+      <text x="580" y="95" class="big" fill="#2ea043">+</text>
+      <text x="260" y="198" class="small">Entre 1 e 4 a curva fica ABAIXO do eixo x (&lt; 0)</text>
+    </svg>
+    <div class="say trap">Para <code>x² − 5x + 4 &lt; 0</code>, a resposta é o miolo: <b>1 &lt; x &lt; 4</b>. Se fosse <code>&gt; 0</code>, seriam as duas pontas: <code>x &lt; 1 ou x &gt; 4</code>!</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">SISTEMAS LINEARES 2×2</span>
+    <h2>Adição vs. Substituição</h2>
+    <p>Um servidor processou 50 requisições (normais = 2 ms, prioritárias = 5 ms) em 145 ms.</p>
+    <div class="two">
+      <div class="card">
+        <h3>Por Substituição</h3>
+        <p>1) <code>n + p = 50 → n = 50 − p</code></p>
+        <p>2) Troque na 2ª: <code>2(50 − p) + 5p = 145</code></p>
+        <p>3) <code>100 + 3p = 145 → 3p = 45 →</code> <mark class="ok">p = 15</mark></p>
+      </div>
+      <div class="card">
+        <h3>Por Adição (mais rápido!)</h3>
+        <p>1) Multiplique a 1ª por <code>−2</code>: <code>−2n − 2p = −100</code></p>
+        <p>2) Some com <code>2n + 5p = 145</code></p>
+        <p>3) <code>n</code> corta! Sobra <code>3p = 45 →</code> <mark class="ok">p = 15</mark></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">CLASSIFICAÇÃO DE SISTEMAS</span>
+    <h2>Quantas soluções tem um sistema?</h2>
+    <p>Cada equação <code>ax + by = c</code> é uma reta no plano. Duas retas só podem se comportar de 3 jeitos:</p>
+    <svg viewBox="0 0 760 200" aria-label="Classificação SPD SPI SI">
+      <rect x="20" y="15" width="225" height="170" rx="14" class="okbox"/>
+      <line x1="55" y1="145" x2="210" y2="55" stroke="#2ea043" stroke-width="4"/>
+      <line x1="55" y1="60" x2="210" y2="145" stroke="#6d4aff" stroke-width="4"/>
+      <circle cx="132" cy="101" r="6" fill="#1f2430"/>
+      <text x="38" y="42">SPD — 1 solução</text>
+      <text x="38" y="172" class="small">Concorrentes (a₁/a₂ ≠ b₁/b₂)</text>
+
+      <rect x="267" y="15" width="225" height="170" rx="14" class="accbox"/>
+      <line x1="305" y1="140" x2="455" y2="65" stroke="#6d4aff" stroke-width="7"/>
+      <line x1="305" y1="140" x2="455" y2="65" stroke="#ffd84d" stroke-width="3" stroke-dasharray="6,4"/>
+      <text x="285" y="42">SPI — Infinitas</text>
+      <text x="285" y="172" class="small">Coincidentes (tudo igual)</text>
+
+      <rect x="515" y="15" width="225" height="170" rx="14" class="badbox"/>
+      <line x1="550" y1="120" x2="705" y2="55" stroke="#e5484d" stroke-width="4"/>
+      <line x1="550" y1="150" x2="705" y2="85" stroke="#e5484d" stroke-width="4"/>
+      <text x="533" y="42">SI — Nenhuma</text>
+      <text x="533" y="172" class="small">Paralelas (0 = número ≠ 0)</text>
+    </svg>
+    <div class="say law"><b>Regra da proporção:</b> <code>a₁/a₂ = b₁/b₂ = c₁/c₂</code> dá <b>SPI</b> (mesma reta). Se <code>a₁/a₂ = b₁/b₂ ≠ c₁/c₂</code>, dá <b>SI</b> (impossível).</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">SISTEMAS 3×3 NA PRÁTICA</span>
+    <h2>Escalonamento sem pânico</h2>
+    <p>Quando o sistema tem 3 variáveis (<code>x, y, z</code>), não tente chutar: elimine uma letra aos pares ou use o truque da soma quando for simétrico.</p>
+    <table class="cmp">
+      <tr><th>Cenário</th><th>Estratégia rápida</th></tr>
+      <tr><td>Sistema comum 3×3</td><td>Use a 1ª equação para zerar o <code>x</code> da 2ª e da 3ª; vira um sistema 2×2 em <code>y</code> e <code>z</code>.</td></tr>
+      <tr><td>Sistema cíclico (<code>x+y=10, y+z=14, x+z=12</code>)</td><td>Some as 3 equações: <code>2(x+y+z) = 36 → x+y+z = 18</code>. Depois subtraia cada equação!</td></tr>
+    </table>
+    <div class="say good">No exemplo cíclico: se <code>x+y+z = 18</code> e <code>x+y = 10</code>, então <code>z = 8</code> na hora!</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">RESUMO DO CAPÍTULO</span>
+    <h2>Guarde antes de ir para a prova</h2>
+    <div class="magic">
+      "Negativo na inequação vira o sinal. Parábola &lt; 0 é o miolo entre as raízes (se a &gt; 0)."
+      <small>No sistema 2×2: coeficientes proporcionais e resultado diferente = Sistema Impossível (SI).</small>
+    </div>
+    <ul class="checklist">
+      <li><code>Δ &gt; 0</code> (2 raízes), <code>Δ = 0</code> (1 raiz), <code>Δ &lt; 0</code> (sem raiz real).</li>
+      <li><code>S = −b/a</code> e <code>P = c/a</code> resolvem raízes e expressões simétricas rápido.</li>
+      <li>Inequação do 2º grau pede esboço rápido da parábola antes de marcar o intervalo.</li>
+      <li>Sistema SPD (1 sol.), SPI (∞ sol.), SI (0 sol.).</li>
+    </ul>
+  </div>
+
+  <div class="slide">
+    <span class="tag">TESTE RÁPIDO · FGV</span>
+    <h2>4 questões para treinar agora</h2>
+    <details>
+      <summary>1. Quantas soluções reais tem 2x² − 4x + 5 = 0?</summary>
+      <p><b>Gabarito: Nenhuma (0).</b> Δ = (−4)² − 4·2·5 = 16 − 40 = −24 &lt; 0.</p>
+    </details>
+    <details>
+      <summary>2. Qual o menor inteiro que satisfaz −5x + 15 &lt; 0?</summary>
+      <p><b>Gabarito: 4.</b> −5x &lt; −15 → x &gt; 3. Como x é estritamente maior que 3, o menor inteiro é 4.</p>
+    </details>
+    <details>
+      <summary>3. Para quais valores reais vale x² − 9 ≤ 0?</summary>
+      <p><b>Gabarito: −3 ≤ x ≤ 3.</b> Raízes −3 e 3; a &gt; 0 → parte negativa/nula fica entre −3 e 3 (inclusive).</p>
+    </details>
+    <details>
+      <summary>4. Para que { 3x − y = 4 ; 6x − 2y = k } seja SPI, qual deve ser o valor de k?</summary>
+      <p><b>Gabarito: k = 8.</b> A 2ª equação é o dobro da 1ª: 6x − 2y = 2·4 = 8. Se k ≠ 8, seria SI.</p>
+    </details>
+  </div>
+</section>
+
+<!-- ==================== CAPÍTULO 3 ==================== -->
+<section class="chapter" data-title="Funções e Sequências (PA e PG)">
+  <div class="slide">
+    <span class="tag">CAPÍTULO 3</span>
+    <span class="emoji">📈</span>
+    <h1>Funções e Sequências (PA e PG)</h1>
+    <p class="lead">O que você vai aprender: ler retas e parábolas no gráfico, achar o ponto de máximo ou mínimo sem derivadas e diferenciar Progressão Aritmética de Geométrica.</p>
+    <div class="analogy">
+      <span class="emoji">🏭</span>
+      <div><b>Analogia da máquina de suco:</b> função é uma máquina que recebe uma fruta <code>x</code> (domínio) e devolve <b>exatamente um</b> copo de suco <code>y = f(x)</code> (imagem). Se apertar um botão e saírem dois copos diferentes, não é função!</div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">CONCEITO DE FUNÇÃO</span>
+    <h2>Domínio, Contradomínio e Imagem</h2>
+    <p>Numa função <code>f: A → B</code>:</p>
+    <div class="steps">
+      <div class="step"><b>Domínio (A)</b><span>Valores permitidos para entrar no <code>x</code></span></div>
+      <div class="step"><b>Contradomínio (B)</b><span>Conjunto alvo onde os resultados moram</span></div>
+      <div class="step"><b>Imagem (Im)</b><span>Apenas os valores de B que realmente saíram</span></div>
+    </div>
+    <div class="say trap"><b>Restrições clássicas de Domínio em ℝ:</b><br>
+    1) Denominador <b>não pode ser zero</b>: em <code>1 / (x − 3)</code>, temos <code>x ≠ 3</code>.<br>
+    2) Raiz de índice par <b>não aceita negativo</b>: em <code>√(x − 2)</code>, temos <code>x ≥ 2</code>.</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">FUNÇÃO AFIM (1º GRAU)</span>
+    <h2>f(x) = ax + b no gráfico</h2>
+    <p>Vamos olhar a reta <code>f(x) = 2x − 4</code>. Cada letra tem um papel visível no desenho:</p>
+    <svg viewBox="0 0 760 230" aria-label="Gráfico da função afim f(x) = 2x - 4">
+      <line x1="80" y1="130" x2="680" y2="130" stroke="#5b6475" stroke-width="2"/>
+      <line x1="280" y1="20" x2="280" y2="215" stroke="#5b6475" stroke-width="2"/>
+      <line x1="170" y1="210" x2="490" y2="25" stroke="#6d4aff" stroke-width="5"/>
+      <circle cx="280" cy="175" r="7" fill="#e8871a"/>
+      <circle cx="360" cy="130" r="7" fill="#2ea043"/>
+      <text x="292" y="182">(0, −4) → b = −4</text>
+      <text x="372" y="118">(2, 0) → raiz x = 2</text>
+      <text x="485" y="45" fill="#6d4aff">a = 2 &gt; 0 (crescente)</text>
+      <text x="660" y="148" class="small">x</text>
+      <text x="265" y="30" class="small">y</text>
+    </svg>
+    <div class="say law"><code>a</code> é o <b>coeficiente angular</b> (taxa de variação: quanto <code>y</code> muda a cada 1 passo de <code>x</code>). <code>b</code> é o <b>coeficiente linear</b> (onde corta o eixo <code>y</code>).</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">FUNÇÃO QUADRÁTICA (2º GRAU)</span>
+    <h2>f(x) = ax² + bx + c e o Vértice</h2>
+    <p>Exemplo: <code>f(x) = x² − 4x + 3</code>. Raízes <code>1</code> e <code>3</code>. Corte no eixo <code>y</code>: <code>c = 3</code>. Vértice: <code>xᵥ = 2</code> e <code>yᵥ = −1</code>.</p>
+    <svg viewBox="0 0 760 230" aria-label="Gráfico da função quadrática f(x) = x^2 - 4x + 3">
+      <line x1="80" y1="140" x2="680" y2="140" stroke="#5b6475" stroke-width="2"/>
+      <line x1="200" y1="20" x2="200" y2="215" stroke="#5b6475" stroke-width="2"/>
+      <path d="M 150 30 Q 340 290 530 30" fill="none" stroke="#6d4aff" stroke-width="5"/>
+      <circle cx="200" cy="70" r="7" fill="#e8871a"/>
+      <circle cx="268" cy="140" r="7" fill="#2ea043"/>
+      <circle cx="412" cy="140" r="7" fill="#2ea043"/>
+      <circle cx="340" cy="160" r="8" fill="#e5484d"/>
+      <text x="212" y="68">c = 3 (corte y)</text>
+      <text x="242" y="128">1</text>
+      <text x="415" y="128">3</text>
+      <text x="355" y="175" fill="#e5484d">Vértice (2, −1) = MÍNIMO</text>
+    </svg>
+    <div class="say law"><b>Fórmulas do vértice:</b> <code>xᵥ = −b / (2a)</code> (média das raízes!) e <code>yᵥ = −Δ / (4a) = f(xᵥ)</code>. Se <code>a &gt; 0</code> tem mínimo; se <code>a &lt; 0</code> tem máximo!</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">PEGADINHA DO VÉRTICE</span>
+    <h2>xᵥ ou yᵥ: o que a questão está pedindo?</h2>
+    <p>Em problemas de custo, lucro ou altura máxima, a banca oferece os dois valores nas alternativas.</p>
+    <div class="two">
+      <div class="say good">
+        <b>Pede xᵥ (o "onde" ou "quantos"):</b><br>
+        "Quantas unidades devem ser vendidas para o lucro ser máximo?"<br>
+        → Calcule <code>xᵥ = −b / (2a)</code>.
+      </div>
+      <div class="say bad">
+        <b>Pede yᵥ (o "quanto vale"):</b><br>
+        "Qual é o lucro máximo obtido?"<br>
+        → Pegue o <code>xᵥ</code> e jogue dentro da função: <code>f(xᵥ)</code>!
+      </div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">PROGRESSÃO ARITMÉTICA (PA)</span>
+    <h2>Subindo a escada de degraus iguais</h2>
+    <p>Na PA, cada termo nasce <b>somando</b> uma constante chamada razão <code>r</code>: <code>(3, 7, 11, 15, ...)</code> tem <code>r = +4</code>.</p>
+    <svg viewBox="0 0 760 180" aria-label="Escadinha da PA">
+      <rect x="60" y="130" width="90" height="30" rx="6" class="accbox"/><text x="85" y="150">a₁ = 3</text>
+      <rect x="190" y="100" width="90" height="60" rx="6" class="accbox"/><text x="210" y="135">a₂ = 7</text>
+      <rect x="320" y="70" width="90" height="90" rx="6" class="accbox"/><text x="338" y="120">a₃ = 11</text>
+      <rect x="450" y="40" width="90" height="120" rx="6" class="accbox"/><text x="468" y="105">a₄ = 15</text>
+      <text x="155" y="110" class="small">+4</text>
+      <text x="285" y="80" class="small">+4</text>
+      <text x="415" y="50" class="small">+4</text>
+      <text x="565" y="95">aₙ = a₁ + (n − 1)·r</text>
+      <text x="565" y="125">Sₙ = (a₁ + aₙ)·n / 2</text>
+    </svg>
+    <div class="say good"><b>Propriedade de ouro:</b> em 3 termos seguidos da PA, o do meio é a <b>média aritmética</b> dos vizinhos: <code>7 = (3 + 11) / 2</code>.</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">PROGRESSÃO GEOMÉTRICA (PG)</span>
+    <h2>Multiplicando a cada passo</h2>
+    <p>Na PG, cada termo nasce <b>multiplicando</b> pela razão <code>q</code>: <code>(2, 6, 18, 54, ...)</code> tem <code>q = 3</code>.</p>
+    <svg viewBox="0 0 760 185" aria-label="Crescimento da PG">
+      <rect x="60" y="140" width="80" height="25" rx="6" class="okbox"/><text x="78" y="158">2</text>
+      <rect x="180" y="118" width="80" height="47" rx="6" class="okbox"/><text x="198" y="148">6</text>
+      <rect x="300" y="80" width="80" height="85" rx="6" class="okbox"/><text x="315" y="130">18</text>
+      <rect x="420" y="20" width="80" height="145" rx="6" class="okbox"/><text x="435" y="100">54</text>
+      <text x="145" y="128" class="small">×3</text>
+      <text x="265" y="95" class="small">×3</text>
+      <text x="385" y="50" class="small">×3</text>
+      <text x="530" y="75">aₙ = a₁ · qⁿ⁻¹</text>
+      <text x="530" y="108">Sₙ = a₁(qⁿ − 1) / (q − 1)</text>
+      <text x="530" y="141">Se |q| &lt; 1: S∞ = a₁ / (1 − q)</text>
+    </svg>
+    <div class="say trap"><b>PG infinita:</b> só existe soma infinita convergente quando <code>−1 &lt; q &lt; 1</code> (ex.: <code>q = 1/2</code>). Se <code>|q| ≥ 1</code>, a soma explode para o infinito!</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">COMPARAÇÃO DIRETA</span>
+    <h2>PA vs. PG na hora da prova</h2>
+    <table class="cmp">
+      <tr><th>Critério</th><th>PA (Aritmética)</th><th>PG (Geométrica)</th></tr>
+      <tr><td>Operação</td><td>Soma constante: <code>r = a₂ − a₁</code></td><td>Multiplicação constante: <code>q = a₂ / a₁</code></td></tr>
+      <tr><td>Termo geral</td><td><code>aₙ = a₁ + (n − 1)r</code></td><td><code>aₙ = a₁ · qⁿ⁻¹</code></td></tr>
+      <tr><td>Termo central</td><td>Média aritmética: <code>(a + c)/2</code></td><td>Média geométrica: <code>b² = a · c</code></td></tr>
+      <tr><td>Soma finita</td><td><code>(a₁ + aₙ)·n / 2</code></td><td><code>a₁(qⁿ − 1) / (q − 1)</code></td></tr>
+    </table>
+    <div class="say good"><b>Truque:</b> para ir de <code>a₃</code> até <code>a₇</code> na PA, some <code>4r</code> (pois 7 − 3 = 4). Na PG, multiplique por <code>q⁴</code>!</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">APLICAÇÃO FGV</span>
+    <h2>Questão clássica: PA disfarçada de problema</h2>
+    <p>Um analista resolve 12 chamados no 1º dia e aumenta 3 chamados por dia. Quantos chamados resolveu nos 10 primeiros dias?</p>
+    <div class="flow">
+      <span>a₁ = 12, r = 3, n = 10</span>
+      <i>→</i>
+      <span>a₁₀ = 12 + 9·3 = 39</span>
+      <i>→</i>
+      <span>S₁₀ = (12 + 39)·10 / 2 = 255</span>
+    </div>
+    <p>Se a questão perguntasse apenas quantos resolveu <b>no 10º dia</b>, a resposta seria <b>39</b> (termo geral <code>a₁₀</code>), e não <b>255</b> (soma <code>S₁₀</code>). Leia o comando final duas vezes!</p>
+  </div>
+
+  <div class="slide">
+    <span class="tag">RESUMO DO CAPÍTULO</span>
+    <h2>Guarde antes de ir para a prova</h2>
+    <div class="magic">
+      "Afim é reta (a inclina, b corta y). Quadrática é parábola (vértice dá máx/mín). PA soma r; PG multiplica q."
+      <small>Na soma infinita da PG (|q| &lt; 1): S∞ = a₁ / (1 − q).</small>
+    </div>
+    <ul class="checklist">
+      <li>Domínio: proibido dividir por zero e tirar raiz par de número negativo em ℝ.</li>
+      <li>Vértice: <code>xᵥ = −b/(2a)</code> e <code>yᵥ = f(xᵥ)</code>.</li>
+      <li>PA: <code>aₙ = a₁ + (n−1)r</code> e <code>Sₙ = (a₁+aₙ)n/2</code>.</li>
+      <li>PG: <code>aₙ = a₁·qⁿ⁻¹</code> e <code>S∞ = a₁/(1−q)</code> para <code>|q| &lt; 1</code>.</li>
+    </ul>
+  </div>
+
+  <div class="slide">
+    <span class="tag">TESTE RÁPIDO · FGV</span>
+    <h2>4 questões para treinar agora</h2>
+    <details>
+      <summary>1. Qual o domínio real de f(x) = √(x − 5) / (x − 8)?</summary>
+      <p><b>Gabarito: x ≥ 5 e x ≠ 8.</b> O numerador exige x − 5 ≥ 0 (x ≥ 5) e o denominador proíbe x − 8 = 0 (x ≠ 8).</p>
+    </details>
+    <details>
+      <summary>2. A função f(x) = −x² + 6x − 5 atinge valor máximo igual a quanto?</summary>
+      <p><b>Gabarito: 4.</b> xᵥ = −6/(2·(−1)) = 3. Valor máximo yᵥ = f(3) = −9 + 18 − 5 = 4.</p>
+    </details>
+    <details>
+      <summary>3. Em uma PA, a₂ = 10 e a₆ = 30. Quanto vale a₁?</summary>
+      <p><b>Gabarito: 5.</b> a₆ − a₂ = 4r = 20 → r = 5. Logo a₁ = 10 − 5 = 5.</p>
+    </details>
+    <details>
+      <summary>4. Calcule a soma infinita 12 + 4 + 4/3 + 4/9 + ...</summary>
+      <p><b>Gabarito: 18.</b> PG com a₁ = 12 e q = 1/3. S∞ = 12 / (1 − 1/3) = 12 / (2/3) = 18.</p>
+    </details>
+  </div>
+</section>
+
+<!-- ==================== CAPÍTULO 4 ==================== -->
+<section class="chapter" data-title="Matrizes, Determinantes e Combinatória">
+  <div class="slide">
+    <span class="tag">CAPÍTULO 4</span>
+    <span class="emoji">🔢</span>
+    <h1>Matrizes, Determinantes e Combinatória</h1>
+    <p class="lead">O que você vai aprender: multiplicar matrizes sem se perder, calcular determinantes 2×2 e 3×3 (Sarrus) e decidir na hora entre Arranjo, Permutação e Combinação.</p>
+    <div class="analogy">
+      <span class="emoji">🪑</span>
+      <div><b>Analogia da planilha e do pódio:</b> matriz é uma tabela organizada em linhas e colunas. Já na combinatória, pódio (ouro, prata, bronze) importa a ordem (<b>Arranjo</b>); comissão de amigos sem cargos é tudo igual (<b>Combinação</b>).</div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">MATRIZES</span>
+    <h2>Ordem m × n e Transposta</h2>
+    <p>Uma matriz <code>A</code> de ordem <code>2 × 3</code> tem <b>2 linhas</b> e <b>3 colunas</b> (sempre Linha × Coluna, lembre de "LiCo").</p>
+    <div class="two">
+      <div class="tbox">
+        <h4>Matriz A (2×3)</h4>
+        <table>
+          <tr><td>1</td><td>2</td><td>3</td></tr>
+          <tr><td>4</td><td>5</td><td>6</td></tr>
+        </table>
+      </div>
+      <div class="tbox">
+        <h4>Transposta Aᵀ (3×2) — linhas viram colunas</h4>
+        <table>
+          <tr><td class="hk">1</td><td class="hk">4</td></tr>
+          <tr><td class="hk">2</td><td class="hk">5</td></tr>
+          <tr><td class="hk">3</td><td class="hk">6</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="say law"><b>Matriz Identidade (Iₙ):</b> matriz quadrada com <code>1</code> na diagonal principal e <code>0</code> no resto. É o "número 1" das matrizes: <code>A · I = I · A = A</code>.</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">PRODUTO DE MATRIZES</span>
+    <h2>Linha da primeira × Coluna da segunda</h2>
+    <p>Só dá para multiplicar <code>A(m × <mark>p</mark>) · B(<mark>p</mark> × n)</code> se o número de <b>colunas de A</b> for igual ao de <b>linhas de B</b>. O resultado tem ordem <code>m × n</code>.</p>
+    <svg viewBox="0 0 760 200" aria-label="Multiplicação de matrizes linha por coluna">
+      <rect x="40" y="45" width="160" height="100" rx="12" class="box"/>
+      <rect x="48" y="53" width="144" height="36" rx="8" class="keybox"/>
+      <text x="68" y="77" class="kt">1   2   0</text>
+      <text x="68" y="122">3   1   4</text>
+      <text x="90" y="172" class="small">A (2×3)</text>
+
+      <text x="220" y="102" class="big">·</text>
+
+      <rect x="250" y="30" width="120" height="130" rx="12" class="box"/>
+      <rect x="258" y="38" width="48" height="114" rx="8" class="accbox"/>
+      <text x="276" y="65">5</text><text x="326" y="65">1</text>
+      <text x="276" y="102">2</text><text x="326" y="102">0</text>
+      <text x="276" y="138">1</text><text x="326" y="138">2</text>
+      <text x="280" y="182" class="small">B (3×2)</text>
+
+      <text x="392" y="102" class="big">=</text>
+
+      <rect x="430" y="45" width="290" height="100" rx="12" class="okbox"/>
+      <text x="448" y="77">1·5 + 2·2 + 0·1 = 9   |   1</text>
+      <text x="448" y="122">3·5 + 1·2 + 4·1 = 21 |  11</text>
+      <text x="530" y="172" class="small">C (2×2)</text>
+    </svg>
+    <div class="say trap">Na multiplicação de matrizes, a ordem importa: em regra, <b>A · B ≠ B · A</b>!</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">DETERMINANTES</span>
+    <h2>Ordem 2×2 e Regra de Sarrus (3×3)</h2>
+    <p>Determinante transforma uma matriz quadrada em um único número. Em <b>2×2</b>: diagonal principal menos secundária (<code>a·d − b·c</code>). Em <b>3×3</b>, repita as 2 primeiras colunas (Sarrus):</p>
+    <svg viewBox="0 0 760 200" aria-label="Regra de Sarrus 3x3">
+      <rect x="60" y="25" width="290" height="150" rx="12" class="box"/>
+      <line x1="95" y1="45" x2="215" y2="155" stroke="#2ea043" stroke-width="5" opacity="0.45"/>
+      <line x1="155" y1="45" x2="275" y2="155" stroke="#2ea043" stroke-width="5" opacity="0.45"/>
+      <line x1="215" y1="45" x2="330" y2="155" stroke="#2ea043" stroke-width="5" opacity="0.45"/>
+      <line x1="215" y1="45" x2="95" y2="155" stroke="#e5484d" stroke-width="4" stroke-dasharray="6,4"/>
+      <text x="90" y="60">a₁₁   a₁₂   a₁₃ | a₁₁   a₁₂</text>
+      <text x="90" y="105">a₂₁   a₂₂   a₂₃ | a₂₁   a₂₂</text>
+      <text x="90" y="150">a₃₁   a₃₂   a₃₃ | a₃₁   a₃₂</text>
+      <text x="385" y="75" fill="#2ea043"><b>(+) Soma</b> das 3 descendo para a direita</text>
+      <text x="385" y="115" fill="#e5484d"><b>(−) Subtrai</b> as 3 descendo para a esquerda</text>
+      <text x="385" y="155" class="small">Se det(A) = 0, a matriz NÃO tem inversa!</text>
+    </svg>
+    <div class="say trap"><b>Propriedade campeã na FGV:</b> se <code>A</code> é matriz quadrada de ordem <code>n</code>, então <code>det(k · A) = kⁿ · det(A)</code>. Multiplicar uma <code>3×3</code> por 2 multiplica o determinante por <code>2³ = 8</code>!</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">PRINCÍPIO FUNDAMENTAL DA CONTAGEM</span>
+    <h2>Multiplicar decisões independentes</h2>
+    <p>Se uma senha tem <b>1 letra</b> (entre 5 vogais) seguida de <b>2 algarismos distintos</b> (entre 10 dígitos):</p>
+    <div class="flow">
+      <span>Vogal: <b>5</b> opções</span>
+      <i>×</i>
+      <span>1º dígito: <b>10</b> opções</span>
+      <i>×</i>
+      <span>2º dígito: <b>9</b> opções</span>
+      <i>=</i>
+      <span><b>450</b> senhas</span>
+    </div>
+    <div class="say good"><b>Regra de ouro:</b> preencha primeiro as posições com <b>restrição</b> (ex.: "termina em número par", "começa com vogal"). Só depois preencha o resto!</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">ÁRVORE DA COMBINATÓRIA</span>
+    <h2>Qual fórmula usar?</h2>
+    <svg viewBox="0 0 760 220" aria-label="Árvore de decisão da combinatória">
+      <rect x="240" y="15" width="280" height="44" rx="10" class="keybox"/>
+      <text x="275" y="42" class="kt">A ORDEM IMPORTA?</text>
+      <line x1="310" y1="59" x2="180" y2="105" stroke="#6d4aff" stroke-width="3"/>
+      <line x1="450" y1="59" x2="580" y2="105" stroke="#2ea043" stroke-width="3"/>
+      <text x="210" y="82">SIM</text>
+      <text x="530" y="82">NÃO</text>
+
+      <rect x="40" y="105" width="310" height="95" rx="12" class="accbox"/>
+      <text x="60" y="132">Usa todos? → Permutação: n!</text>
+      <text x="60" y="158" class="small">Com repetição: n! / (a! b! ...)</text>
+      <text x="60" y="182">Usa parte (p &lt; n)? → Arranjo: n!/(n−p)!</text>
+
+      <rect x="420" y="105" width="300" height="95" rx="12" class="okbox"/>
+      <text x="445" y="140">Combinação Simples</text>
+      <text x="445" y="170">C(n, p) = n! / [ p! · (n − p)! ]</text>
+    </svg>
+  </div>
+
+  <div class="slide">
+    <span class="tag">PERMUTAÇÃO E ANAGRAMAS</span>
+    <h2>Letras repetidas dividem o fatorial</h2>
+    <p>Quantos anagramas tem a palavra <b>BANANA</b>?</p>
+    <p>São <b>6 letras</b> no total, mas o <b>A</b> repete 3 vezes e o <b>N</b> repete 2 vezes:</p>
+    <div class="card">
+      <p class="big">P₆³˒² = 6! / (3! · 2!) = 720 / (6 · 2) = 60 anagramas</p>
+    </div>
+    <div class="say trap"><b>Anagrams com letras juntas:</b> "quantos anagramas de PROVA têm P e R juntas?" Amarre <code>[PR]</code> num bloco só (4 blocos → <code>4! = 24</code>) e multiplique pela troca interna do bloco (<code>2! = 2</code>): <b>48</b>!</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">COMBINAÇÃO NA PRÁTICA</span>
+    <h2>Comissões e restrições ("não podem juntos")</h2>
+    <p>De 6 analistas, quantas comissões de 3 podemos formar se <b>Ana e Bruno NÃO podem estar juntos</b>?</p>
+    <div class="two">
+      <div class="card">
+        <h3>Jeito lento (por casos)</h3>
+        <p>• Só Ana (escolhe 2 de 4): <code>C(4,2) = 6</code></p>
+        <p>• Só Bruno (escolhe 2 de 4): <code>C(4,2) = 6</code></p>
+        <p>• Nenhum dos dois (3 de 4): <code>C(4,3) = 4</code></p>
+        <p>Total = <code>6 + 6 + 4 =</code> <mark class="ok">16</mark></p>
+      </div>
+      <div class="card">
+        <h3>Jeito esperto (Total − Proibido)</h3>
+        <p>• Total sem regra: <code>C(6,3) = 20</code></p>
+        <p>• Comissões proibidas (Ana e Bruno juntos → falta 1 de 4): <code>C(4,1) = 4</code></p>
+        <p>Total = <code>20 − 4 =</code> <mark class="ok">16</mark></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">RESUMO DO CAPÍTULO</span>
+    <h2>Guarde antes de ir para a prova</h2>
+    <div class="magic">
+      "Linha × Coluna nas matrizes. det(kA) = kⁿ·det(A). Trocou a ordem e mudou o grupo? Arranjo. Ficou igual? Combinação."
+      <small>E na contagem com restrição: Total − Proibido quase sempre economiza metade da conta.</small>
+    </div>
+    <ul class="checklist">
+      <li><code>A(m×p) · B(p×n) = C(m×n)</code>; em geral, <code>A·B ≠ B·A</code>.</li>
+      <li>Determinante 2×2 (<code>ad − bc</code>) e 3×3 (Sarrus); fila nula ou proporcional zera o det.</li>
+      <li>Permutação com repetição divide pelos fatoriais das repetições.</li>
+      <li>Combinação <code>C(n,p)</code> divide por <code>p!</code> porque a ordem não importa.</li>
+    </ul>
+  </div>
+
+  <div class="slide">
+    <span class="tag">TESTE RÁPIDO · FGV</span>
+    <h2>4 questões para treinar agora</h2>
+    <details>
+      <summary>1. Se A é 3×4 e B é 4×2, qual a ordem de A·B e de B·A?</summary>
+      <p><b>Gabarito: A·B é 3×2 e B·A não existe.</b> Para B·A, colunas de B (2) ≠ linhas de A (3).</p>
+    </details>
+    <details>
+      <summary>2. Se A é 2×2 com det(A) = 7, quanto vale det(3A)?</summary>
+      <p><b>Gabarito: 63.</b> det(3A) = 3² · det(A) = 9 · 7 = 63.</p>
+    </details>
+    <details>
+      <summary>3. Quantos pódios (1º, 2º e 3º lugar) podem ser formados com 8 atletas?</summary>
+      <p><b>Gabarito: 336.</b> Ordem importa (1º ≠ 2º): 8 × 7 × 6 = 336 (Arranjo A(8,3)).</p>
+    </details>
+    <details>
+      <summary>4. Quantos anagramas tem a palavra ARARA?</summary>
+      <p><b>Gabarito: 10.</b> 5 letras com 3 "A" e 2 "R": 5! / (3! · 2!) = 120 / 12 = 10.</p>
+    </details>
+  </div>
+</section>
+
+<!-- ==================== CAPÍTULO 5 ==================== -->
+<section class="chapter" data-title="Probabilidade e Estatística Descritiva">
+  <div class="slide">
+    <span class="tag">CAPÍTULO 5</span>
+    <span class="emoji">📊</span>
+    <h1>Probabilidade e Estatística Descritiva</h1>
+    <p class="lead">O que você vai aprender: calcular chances sem cair na armadilha do "e" vs "ou", usar o evento complementar e ler média, mediana, moda, variância e desvio padrão em gráficos.</p>
+    <div class="analogy">
+      <span class="emoji">🎲</span>
+      <div><b>Analogia da pizza e do termômetro:</b> probabilidade é a fatia dos casos bons sobre o total da pizza. Já a estatística usa a média/mediana para achar o "centro" dos dados e o desvio padrão para medir se os dados estão calmos ou bagunçados.</div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">PROBABILIDADE CLÁSSICA E UNIÃO</span>
+    <h2>"OU" soma (e tira a interseção); "E" multiplica</h2>
+    <p>Ao sortear 1 número de <b>1 a 10</b>, qual a chance de ser <b>par OU maior que 7</b>?</p>
+    <div class="two">
+      <div class="card">
+        <h3>Eventos</h3>
+        <p>• Pares (A): <code>{2, 4, 6, 8, 10}</code> → <code>5/10</code></p>
+        <p>• Maiores que 7 (B): <code>{8, 9, 10}</code> → <code>3/10</code></p>
+        <p>• Ambos (A ∩ B): <code>{8, 10}</code> → <code>2/10</code></p>
+      </div>
+      <div class="card">
+        <h3>Fórmula da União</h3>
+        <p><code>P(A ∪ B) = P(A) + P(B) − P(A ∩ B)</code></p>
+        <p><code>5/10 + 3/10 − 2/10 =</code> <mark class="ok">6/10 = 60%</mark></p>
+        <p class="small">Se forem mutuamente exclusivos (A ∩ B = ∅), basta somar!</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">COMPLEMENTAR E CONDICIONAL</span>
+    <h2>O segredo do "pelo menos um"</h2>
+    <p>Se um servidor faz 3 tentativas de login e a chance de erro em cada uma é <code>0,2</code> (independentes), qual a chance de <b>acertar pelo menos uma</b>?</p>
+    <svg viewBox="0 0 760 150" aria-label="Probabilidade complementar pelo menos um">
+      <rect x="40" y="30" width="680" height="54" rx="12" class="okbox"/>
+      <rect x="40" y="30" width="75" height="54" rx="12" class="badbox"/>
+      <text x="52" y="62" class="small">0,008</text>
+      <text x="275" y="63">Pelo menos 1 acerto = 1 − 0,008 = 0,992 (99,2%)</text>
+      <text x="40" y="115" class="small">Errar todas: 0,2 × 0,2 × 0,2 = 0,008</text>
+    </svg>
+    <div class="say law"><b>Probabilidade Condicional:</b> <code>P(A | B) = P(A ∩ B) / P(B)</code>. "Dado que B já aconteceu", o espaço amostral encolhe para virar apenas <b>B</b>!</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">MEDIDAS DE POSIÇÃO</span>
+    <h2>Média, Mediana e Moda</h2>
+    <p>Notas de 5 candidatos: <b>4, 6, 6, 8, 11</b> (já em ordem crescente, o <b>rol</b>).</p>
+    <div class="steps">
+      <div class="step"><b>Média (x̄) = 7</b><span>Soma ÷ 5 = 35 ÷ 5</span></div>
+      <div class="step"><b>Mediana (Md) = 6</b><span>Termo exatamente do meio</span></div>
+      <div class="step"><b>Moda (Mo) = 6</b><span>Valor que mais repete</span></div>
+    </div>
+    <div class="say trap"><b>2 erros clássicos na Mediana:</b><br>
+    1) Esquecer de <b>ordenar</b> os dados antes de pegar o meio!<br>
+    2) Com quantidade <b>par</b> de dados (ex.: 4, 6, 8, 10), a mediana é a <b>média dos dois do meio</b>: <code>(6 + 8)/2 = 7</code>.</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">HISTOGRAMA E ASSIMETRIA</span>
+    <h2>Como o outlier puxa a Média</h2>
+    <p>Imagine salários em um setor: quatro pessoas ganham R$ 3 mil e o diretor ganha R$ 30 mil.</p>
+    <svg viewBox="0 0 760 200" aria-label="Histograma mostrando média puxada por outlier">
+      <line x1="60" y1="160" x2="700" y2="160" stroke="#5b6475" stroke-width="2"/>
+      <rect x="100" y="45" width="90" height="115" rx="6" class="accbox"/>
+      <rect x="200" y="110" width="90" height="50" rx="6" class="box"/>
+      <rect x="300" y="135" width="90" height="25" rx="6" class="box"/>
+      <rect x="570" y="135" width="80" height="25" rx="6" class="badbox"/>
+      <line x1="145" y1="25" x2="145" y2="165" stroke="#2ea043" stroke-width="4" stroke-dasharray="5,4"/>
+      <line x1="340" y1="25" x2="340" y2="165" stroke="#e5484d" stroke-width="4"/>
+      <text x="115" y="20" fill="#2ea043">Mediana</text>
+      <text x="318" y="20" fill="#e5484d">Média (puxada!)</text>
+      <text x="572" y="125" class="small" fill="#e5484d">Outlier (30k)</text>
+    </svg>
+    <div class="say good">A <b>Média</b> é sensível a valores extremos (outliers). A <b>Mediana</b> é robusta: não se abala com um valor gigante isolado!</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">MEDIDAS DE DISPERSÃO</span>
+    <h2>Mesma média, espalhamento diferente</h2>
+    <p>Duas turmas têm <b>média 7,0</b>. Mas olhe como as notas estão espalhadas:</p>
+    <svg viewBox="0 0 760 190" aria-label="Comparação de desvio padrão pequeno e grande">
+      <rect x="30" y="20" width="335" height="150" rx="14" class="okbox"/>
+      <text x="50" y="48">Turma A: {6, 7, 7, 8} → Média = 7</text>
+      <circle cx="140" cy="110" r="9" fill="#2ea043"/>
+      <circle cx="195" cy="100" r="9" fill="#2ea043"/>
+      <circle cx="195" cy="122" r="9" fill="#2ea043"/>
+      <circle cx="250" cy="110" r="9" fill="#2ea043"/>
+      <text x="50" y="154" class="small">Dados juntinhos → Desvio padrão PEQUENO</text>
+
+      <rect x="395" y="20" width="335" height="150" rx="14" class="badbox"/>
+      <text x="415" y="48">Turma B: {1, 4, 10, 13} → Média = 7</text>
+      <circle cx="430" cy="110" r="9" fill="#e5484d"/>
+      <circle cx="490" cy="110" r="9" fill="#e5484d"/>
+      <circle cx="620" cy="110" r="9" fill="#e5484d"/>
+      <circle cx="690" cy="110" r="9" fill="#e5484d"/>
+      <text x="415" y="154" class="small">Dados espalhados → Desvio padrão GRANDE</text>
+    </svg>
+  </div>
+
+  <div class="slide">
+    <span class="tag">VARIÂNCIA E DESVIO PADRÃO</span>
+    <h2>Calculando passo a passo sem errar</h2>
+    <p>Dados: <b>4, 6, 6, 8, 11</b> (Média = <b>7</b>).</p>
+    <table class="cmp">
+      <tr><th>Passo</th><th>Conta</th><th>Resultado</th></tr>
+      <tr><td>1. Desvios (<code>xᵢ − média</code>)</td><td><code>4−7, 6−7, 6−7, 8−7, 11−7</code></td><td><code>−3, −1, −1, +1, +4</code></td></tr>
+      <tr><td>2. Eleve ao quadrado</td><td><code>9 + 1 + 1 + 1 + 16</code></td><td><code>28</code></td></tr>
+      <tr><td>3. Variância populacional (<code>÷ n</code>)</td><td><code>28 ÷ 5</code></td><td><mark class="ok">σ² = 5,6</mark></td></tr>
+      <tr><td>4. Desvio padrão (<code>√Var</code>)</td><td><code>√5,6</code></td><td><code>σ ≈ 2,37</code></td></tr>
+    </table>
+    <div class="say trap"><b>Populacional (÷ n) vs. Amostral (÷ n−1):</b> se a questão falar em <b>amostra</b>, divida por <code>n − 1</code> (aqui seria 28 ÷ 4 = 7). Leia se o enunciado diz "população" ou "amostra"!</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">COEFICIENTE DE VARIAÇÃO</span>
+    <h2>Como comparar coisas com unidades diferentes?</h2>
+    <p>O <b>Coeficiente de Variação (CV)</b> mede a dispersão relativa em porcentagem:</p>
+    <div class="card">
+      <p class="big">CV = (Desvio Padrão / Média) × 100%</p>
+      <p>Exemplo: Média = 20, Variância = 16 → Desvio Padrão = <code>√16 = 4</code> → <code>CV = 4 / 20 =</code> <mark class="ok">20%</mark>.</p>
+    </div>
+    <div class="say law"><b>Propriedade linear:</b> somar uma constante <code>+k</code> a todos os dados soma <code>+k</code> na média/mediana, mas <b>NÃO muda</b> variância nem desvio padrão! Multiplicar por <code>k</code> multiplica o desvio padrão por <code>|k|</code> e a variância por <code>k²</code>.</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">RESUMO DO CAPÍTULO</span>
+    <h2>Guarde antes de ir para a prova</h2>
+    <div class="magic">
+      "Pelo menos um = 1 − Nenhum. Mediana exige rol ordenado. Variância é a média dos desvios ao quadrado."
+      <small>Somar constante não muda a dispersão; multiplicar por k multiplica o desvio por |k| e a variância por k².</small>
+    </div>
+    <ul class="checklist">
+      <li><code>P(A ∪ B) = P(A) + P(B) − P(A ∩ B)</code>; condicional reduz o denominador para <code>P(B)</code>.</li>
+      <li>Média sofre com outliers; Mediana resiste.</li>
+      <li>Desvio padrão = <code>√(Variância)</code>.</li>
+      <li>Coeficiente de Variação: <code>CV = σ / x̄</code>.</li>
+    </ul>
+  </div>
+
+  <div class="slide">
+    <span class="tag">TESTE RÁPIDO · FGV</span>
+    <h2>4 questões para treinar agora</h2>
+    <details>
+      <summary>1. Lançando um dado honesto, qual a probabilidade de sair número par dado que saiu maior que 2?</summary>
+      <p><b>Gabarito: 2/4 = 1/2 (50%).</b> Condicional: o universo encolheu para {3, 4, 5, 6} (4 casos). Desses, os pares são {4, 6} (2 casos).</p>
+    </details>
+    <details>
+      <summary>2. Qual a mediana de {12, 3, 9, 15, 7, 10}?</summary>
+      <p><b>Gabarito: 9,5.</b> Primeiro ordene (rol): {3, 7, 9, 10, 12, 15}. Média dos dois centrais: (9 + 10)/2 = 9,5.</p>
+    </details>
+    <details>
+      <summary>3. Se a variância de um conjunto é 9 e somarmos 10 a todos os elementos, qual será o novo desvio padrão?</summary>
+      <p><b>Gabarito: 3.</b> Desvio padrão inicial = √9 = 3. Somar constante desloca todos os pontos juntos e não altera o espalhamento.</p>
+    </details>
+    <details>
+      <summary>4. Uma máquina tem média 50 e desvio padrão 5. Qual seu coeficiente de variação?</summary>
+      <p><b>Gabarito: 10%.</b> CV = 5 / 50 = 0,10 = 10%.</p>
+    </details>
+  </div>
+</section>
+
+<script src="aula.js"></script>
+</body>
+</html>

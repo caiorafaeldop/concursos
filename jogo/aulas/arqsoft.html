@@ -1,0 +1,1158 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Arquitetura de Software e Padrões — aulas visuais</title><link rel="stylesheet" href="aula.css">
+<style>
+pre{background:#1e2230;color:#e8eaf2;border-radius:12px;padding:10px 14px;font:14px/1.45 ui-monospace,Consolas,monospace;overflow-x:auto;margin:8px 0;white-space:pre}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+pre mark{background:#ffd84d;color:#2a2100}
+pre .c{color:#8fd19e}
+.mini{font-size:15px}
+.mini td,.mini th{font-size:15px}
+.two.code{grid-template-columns:repeat(auto-fit,minmax(300px,1fr));align-items:start}
+.two.code svg{margin:0}
+svg .ital{font-style:italic}
+svg .mono{font:500 13px ui-monospace,Consolas,monospace;fill:var(--ink)}
+svg line,svg path.l{stroke:var(--muted);stroke-width:2;fill:none}
+svg .dash{stroke-dasharray:6 4}
+svg .acc{stroke:var(--acc)}
+svg .okl{stroke:var(--ok)}
+svg .badl{stroke:var(--bad)}
+.calc{font-family:ui-monospace,Consolas,monospace;font-size:17px;background:var(--cell);border-radius:12px;padding:10px 14px;margin:8px 0;line-height:1.7}
+</style></head>
+<body data-subject="arqsoft" data-title="Arquitetura de Software e Padrões">
+<svg width="0" height="0" style="position:absolute;width:0;height:0;margin:0;overflow:hidden" aria-hidden="true">
+  <defs>
+    <marker id="ar" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker>
+    <marker id="arg" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8a93a6"/></marker>
+    <marker id="arok" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2ea043"/></marker>
+    <marker id="arbad" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e5484d"/></marker>
+    <marker id="tri" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto"><path d="M1,1 L13,7 L1,13 z" fill="#ffffff" stroke="#8a93a6" stroke-width="1.6"/></marker>
+  </defs>
+</svg>
+
+<!-- ===================================================== CAPÍTULO 1 ===================================================== -->
+<section class="chapter" data-title="Padrões GoF criacionais">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 1</span>
+  <h1>Padrões GoF criacionais</h1>
+  <span class="emoji">🏭</span>
+  <div class="steps">
+    <div class="step"><b>1. O que é GoF</b><span>Os 23 padrões e como a banca os classifica.</span></div>
+    <div class="step"><b>2. Os 5 criacionais</b><span>Factory Method, Abstract Factory, Builder, Prototype, Singleton.</span></div>
+    <div class="step"><b>3. Diferenciar</b><span>A pista do enunciado que entrega cada padrão.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🍕</span><div><b>Analogia do dia:</b> você não vai à cozinha da pizzaria montar a pizza; você <b>pede</b> no balcão. Padrões criacionais são o “balcão”: o código pede um objeto e não precisa saber <b>como</b> nem <b>qual classe</b> o fabrica.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONCEITO</span>
+  <h2>GoF: a “Gangue dos Quatro” e seus 23 padrões</h2>
+  <p>Livro <i>Design Patterns</i> (1994), de Gamma, Helm, Johnson e Vlissides. Padrão = <b>solução reutilizável para um problema recorrente de projeto</b>, com nome, problema, solução e consequências.</p>
+  <table class="cmp mini">
+    <tr><th>Propósito</th><th>Qtde</th><th>Pergunta que responde</th><th>Membros</th></tr>
+    <tr><td><b>Criacional</b></td><td>5</td><td>Como o objeto <b>nasce</b>?</td><td>Abstract Factory, Builder, Factory Method, Prototype, Singleton</td></tr>
+    <tr><td><b>Estrutural</b></td><td>7</td><td>Como as peças se <b>encaixam</b>?</td><td>Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy</td></tr>
+    <tr><td><b>Comportamental</b></td><td>11</td><td>Quem faz o quê e como <b>conversam</b>?</td><td>Chain of Resp., Command, Interpreter, Iterator, Mediator, Memento, Observer, State, Strategy, Template Method, Visitor</td></tr>
+  </table>
+  <div class="say law">O GoF classifica por <b>propósito</b> (criacional, estrutural, comportamental) e por <b>escopo</b>: de <b>classe</b> (relações por herança, fixas em compilação — ex.: Factory Method, Template Method) ou de <b>objeto</b> (composição, mutáveis em execução — a maioria).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">O PROBLEMA</span>
+  <h2>Por que não usar <code>new</code> em todo lugar?</h2>
+  <div class="two">
+    <div><div class="ex ng">Cliente amarrado à classe concreta</div>
+<pre><code>class Aviso {
+  void avisar(String t) {
+    <mark>Email m = new Email();</mark> <span class="c">// preso ao e-mail</span>
+    m.enviar(t);
+  }
+}</code></pre>
+    <p class="mini">Amanhã vem SMS e WhatsApp: você <b>abre e altera</b> a classe Aviso a cada canal novo.</p></div>
+    <div><div class="ex ok">Cliente depende de abstração</div>
+<pre><code>class Aviso {
+  private final <mark>Mensageiro</mark> m;
+  Aviso(Mensageiro m) { this.m = m; }
+  void avisar(String t) { m.enviar(t); }
+}</code></pre>
+    <p class="mini">Quem <b>cria</b> o objeto concreto fica em outro lugar (uma fábrica). Aviso fica fechado para modificação.</p></div>
+  </div>
+  <div class="magic">Pergunta mágica: “Quem decide <u>qual classe</u> será instanciada?”<small>Se a resposta for “alguém diferente do cliente”, há um padrão criacional por perto.</small></div>
+</div>
+
+<div class="slide">
+  <span class="tag">FACTORY METHOD</span>
+  <h2>Factory Method: a subclasse escolhe o produto</h2>
+  <div class="two code">
+    <svg viewBox="0 0 360 250" role="img" aria-label="Diagrama de classes do Factory Method">
+      <rect class="box" x="10" y="10" width="200" height="78" rx="8"/><text x="110" y="30" text-anchor="middle" class="ital">Notificador</text>
+      <line x1="10" y1="38" x2="210" y2="38"/><text x="20" y="58" class="small">+ enviar(txt)</text><text x="20" y="78" class="small">+ criarMensagem() abstrato</text>
+      <rect class="box" x="10" y="170" width="200" height="60" rx="8"/><text x="110" y="190" text-anchor="middle">NotificadorEmail</text>
+      <line x1="10" y1="198" x2="210" y2="198"/><text x="20" y="218" class="small">+ criarMensagem()</text>
+      <line x1="110" y1="170" x2="110" y2="90" marker-end="url(#tri)"/>
+      <rect class="accbox" x="240" y="10" width="110" height="50" rx="8"/><text x="295" y="30" text-anchor="middle" class="small">«interface»</text><text x="295" y="50" text-anchor="middle">Mensagem</text>
+      <rect class="box" x="240" y="176" width="110" height="44" rx="8"/><text x="295" y="203" text-anchor="middle">Email</text>
+      <line class="dash" x1="295" y1="176" x2="295" y2="62" marker-end="url(#tri)"/>
+      <line class="dash acc" x1="210" y1="200" x2="237" y2="200" marker-end="url(#ar)"/><text x="222" y="245" text-anchor="middle" class="small">«cria»</text>
+    </svg>
+<pre><code><span class="c">// Criador: usa o produto, não sabe qual</span>
+abstract class Notificador {
+  abstract Mensagem <mark>criarMensagem()</mark>;
+  void enviar(String txt) {
+    Mensagem m = criarMensagem();
+    m.despachar(txt);
+  }
+}
+class NotificadorEmail extends Notificador {
+  Mensagem criarMensagem() {
+    return new Email();
+  }
+}</code></pre>
+  </div>
+  <div class="say law">Factory Method define uma interface para criar um objeto, mas deixa as <b>subclasses</b> decidirem qual classe instanciar (escopo de <b>classe</b>, via herança).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ABSTRACT FACTORY</span>
+  <h2>Abstract Factory: uma fábrica de <u>famílias</u></h2>
+  <div class="analogy"><span class="emoji">🛋️</span><div>Loja de móveis com coleções “Clássica” e “Moderna”: se você escolhe a coleção, cadeira, mesa e sofá vêm <b>combinando</b>. Ninguém mistura sofá clássico com mesa moderna por engano.</div></div>
+  <div class="two code">
+    <svg viewBox="0 0 360 230" role="img" aria-label="Abstract Factory com duas fábricas concretas e dois produtos cada">
+      <rect class="accbox" x="95" y="6" width="170" height="70" rx="8"/><text x="180" y="24" text-anchor="middle" class="small">«interface» TemaFactory</text>
+      <text x="180" y="46" text-anchor="middle" class="small">criarBotao(): Botao</text><text x="180" y="66" text-anchor="middle" class="small">criarJanela(): Janela</text>
+      <rect class="box" x="10" y="130" width="150" height="44" rx="8"/><text x="85" y="157" text-anchor="middle">TemaClaroFactory</text>
+      <rect class="box" x="200" y="130" width="150" height="44" rx="8"/><text x="275" y="157" text-anchor="middle">TemaEscuroFactory</text>
+      <line class="dash" x1="85" y1="130" x2="150" y2="78" marker-end="url(#tri)"/>
+      <line class="dash" x1="275" y1="130" x2="210" y2="78" marker-end="url(#tri)"/>
+      <rect class="okbox" x="10" y="190" width="70" height="34" rx="8"/><text x="45" y="212" text-anchor="middle" class="small">BotãoClaro</text>
+      <rect class="okbox" x="88" y="190" width="72" height="34" rx="8"/><text x="124" y="212" text-anchor="middle" class="small">JanelaClara</text>
+      <rect class="badbox" x="200" y="190" width="72" height="34" rx="8"/><text x="236" y="212" text-anchor="middle" class="small">BotãoEsc.</text>
+      <rect class="badbox" x="278" y="190" width="72" height="34" rx="8"/><text x="314" y="212" text-anchor="middle" class="small">JanelaEsc.</text>
+    </svg>
+<pre><code>interface TemaFactory {
+  Botao criarBotao();
+  Janela criarJanela();
+}
+class TemaEscuroFactory implements TemaFactory {
+  public Botao criarBotao()   { return new BotaoEscuro(); }
+  public Janela criarJanela() { return new JanelaEscura(); }
+}
+<span class="c">// cliente recebe a fábrica e nunca dá new</span>
+Tela(<mark>TemaFactory f</mark>) {
+  botao = f.criarBotao(); janela = f.criarJanela();
+}</code></pre>
+  </div>
+  <div class="say law">Abstract Factory fornece uma interface para criar <b>famílias de objetos relacionados ou dependentes</b> sem especificar suas classes concretas.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">BUILDER</span>
+  <h2>Builder: montar passo a passo</h2>
+  <p>Problema: um objeto com muitos campos opcionais gera “construtores telescópicos” — <code>new Processo(n, null, null, true, false, null)</code>. Quem lê não sabe o que é cada <code>null</code>.</p>
+<pre><code>class Processo {
+  private final String numero, classe; private final boolean segredo;
+  private Processo(Builder b) { numero = b.numero; classe = b.classe; segredo = b.segredo; }
+
+  static class Builder {
+    private final String numero; private String classe; private boolean segredo;
+    Builder(String numero)        { this.numero = numero; }
+    Builder classe(String c)      { this.classe = c; <mark>return this;</mark> }
+    Builder segredo(boolean s)    { this.segredo = s; <mark>return this;</mark> }
+    Processo <mark>build()</mark>              { return new Processo(this); }
+  }
+}
+Processo p = new Processo.Builder("0801234-56.2026.8.15.0001")
+                 .classe("Procedimento Comum").segredo(true).build();</code></pre>
+  <div class="say law">Builder separa a <b>construção</b> de um objeto complexo da sua <b>representação</b>, de modo que o mesmo processo de construção possa criar representações diferentes. No GoF original há ainda um <b>Diretor</b> que comanda os passos; a versão “fluente” acima é a variante popular em Java.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PROTOTYPE</span>
+  <h2>Prototype: criar copiando</h2>
+  <div class="analogy"><span class="emoji">📄</span><div>Em vez de redigir do zero cada mandado, o cartório tem um <b>modelo pronto</b> e tira cópias, mudando só nome e data.</div></div>
+  <div class="two code">
+<pre><code>class Modelo implements <mark>Cloneable</mark> {
+  String titulo; List&lt;String&gt; clausulas;
+  @Override public Modelo <mark>clone()</mark> {
+    try {
+      Modelo c = (Modelo) super.clone();
+      c.clausulas = new ArrayList&lt;&gt;(clausulas); <span class="c">// cópia profunda</span>
+      return c;
+    } catch (CloneNotSupportedException e) {
+      throw new AssertionError(e);
+    }
+  }
+}</code></pre>
+    <div>
+      <div class="say good"><b>Quando usar:</b> criar do zero é caro (consulta, cálculo) ou as classes só são conhecidas em execução.</div>
+      <div class="say bad"><b>Cuidado:</b> <code>Object.clone()</code> faz cópia <b>rasa</b>: a lista seria compartilhada entre original e clone. Por isso copiamos a lista à mão.</div>
+    </div>
+  </div>
+  <div class="say law">Prototype especifica os tipos de objetos a criar usando uma <b>instância protótipo</b> e cria novos objetos <b>copiando</b> esse protótipo.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">SINGLETON</span>
+  <h2>Singleton: só existe um</h2>
+  <div class="two code">
+<pre><code>public final class Config {
+  <span class="c">// criado na carga da classe: thread-safe</span>
+  private static final Config INSTANCIA = new Config();
+  <mark>private Config() {}</mark>           <span class="c">// ninguém dá new</span>
+  public static Config <mark>getInstance()</mark> {
+    return INSTANCIA;
+  }
+}
+<span class="c">// Alternativa recomendada por Joshua Bloch:</span>
+public enum Registro { INSTANCIA; }</code></pre>
+    <div>
+      <div class="flow"><span>construtor privado</span><i>+</i><span>campo estático</span><i>+</i><span>acesso global</span></div>
+      <div class="say bad"><b>Críticas:</b> é estado global disfarçado, esconde dependências, atrapalha testes (difícil trocar por mock) e, na versão “preguiçosa” sem sincronização, duas threads podem criar duas instâncias.</div>
+    </div>
+  </div>
+  <div class="say law">Singleton garante que uma classe tenha <b>uma única instância</b> e fornece um <b>ponto global de acesso</b> a ela.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">COMPARE</span>
+  <h2>Os 5 lado a lado: qual pista o enunciado dá?</h2>
+  <table class="mini">
+    <tr><th class="k">Pista no enunciado</th><th class="k">Padrão</th><th class="k">Mecanismo</th></tr>
+    <tr><td>“subclasses decidem qual objeto criar”</td><td class="hk"><b>Factory Method</b></td><td>herança</td></tr>
+    <tr><td>“famílias de produtos relacionados”, “temas”, “kits”</td><td class="hk"><b>Abstract Factory</b></td><td>composição (objeto-fábrica)</td></tr>
+    <tr><td>“objeto complexo”, “passo a passo”, “muitos parâmetros opcionais”</td><td class="hk"><b>Builder</b></td><td>etapas + build()</td></tr>
+    <tr><td>“clonar”, “copiar instância existente”</td><td class="hk"><b>Prototype</b></td><td>clone()</td></tr>
+    <tr><td>“instância única”, “ponto global de acesso”</td><td class="hk"><b>Singleton</b></td><td>construtor privado</td></tr>
+  </table>
+  <div class="say trap">
+    <div class="ex ng">“Singleton é um padrão estrutural, pois define a estrutura da classe.”</div>
+    <div class="ex ok">Singleton é <b>criacional</b>: controla a criação (quantas instâncias nascem).</div>
+    <div class="ex ng">“Abstract Factory cria um único produto, delegando a escolha às subclasses.”</div>
+    <div class="ex ok">Isso é Factory Method. Abstract Factory cria <b>famílias</b> (vários produtos que combinam).</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Resumo do capítulo</h2>
+  <div class="magic">GoF = 23 padrões: 5 criacionais · 7 estruturais · 11 comportamentais.<small>Criacionais: ABFPS — Abstract Factory, Builder, Factory Method, Prototype, Singleton.</small></div>
+  <ul class="checklist">
+    <li>Criacionais escondem <b>qual classe</b> é instanciada e <b>como</b>.</li>
+    <li>Factory Method: subclasse decide (escopo de classe).</li>
+    <li>Abstract Factory: famílias de produtos compatíveis.</li>
+    <li>Builder: construção em etapas; evita construtor telescópico.</li>
+    <li>Prototype: clona; atenção à cópia rasa × profunda.</li>
+    <li>Singleton: instância única + acesso global; cuidado com threads e testes.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Teste rápido (estilo FGV)</h2>
+  <details><summary>1) Um framework de documentos define <code>abstract Documento criar()</code> e cada aplicação concreta sobrescreve esse método. Qual padrão?</summary><p><span class="pill ok">Factory Method</span> A criação é delegada às subclasses via herança. Não é Abstract Factory, que cria famílias de produtos.</p></details>
+  <details><summary>2) Um sistema precisa gerar componentes visuais compatíveis para os temas claro e escuro sem que o cliente conheça as classes concretas. Qual padrão?</summary><p><span class="pill ok">Abstract Factory</span> “Família de objetos relacionados” é a pista.</p></details>
+  <details><summary>3) “O Builder é indicado quando é preciso garantir que uma classe tenha uma única instância.” Certo ou errado?</summary><p><span class="pill ng">Errado</span> Isso é Singleton. Builder serve para montar objetos complexos em etapas.</p></details>
+  <details><summary>4) Por que <code>super.clone()</code> pode causar bug no Prototype quando o objeto tem uma lista?</summary><p><span class="pill ok">Cópia rasa</span> A referência da lista é copiada, então original e clone passam a compartilhar a mesma lista. É preciso copiar profundamente.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 2 ===================================================== -->
+<section class="chapter" data-title="Padrões GoF estruturais e comportamentais">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 2</span>
+  <h1>Padrões GoF estruturais e comportamentais</h1>
+  <span class="emoji">🧩</span>
+  <div class="steps">
+    <div class="step"><b>1. Estruturais (7)</b><span>Adapter, Decorator, Proxy, Facade, Composite, Bridge, Flyweight.</span></div>
+    <div class="step"><b>2. Comportamentais (11)</b><span>Strategy, Observer, Template Method, State, Command…</span></div>
+    <div class="step"><b>3. Gêmeos confusos</b><span>Adapter × Decorator × Proxy; Strategy × State × Template.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🔌</span><div><b>Analogia do dia:</b> estrutural é como <b>ligar aparelhos</b> (adaptador de tomada, filtro de linha, extensão). Comportamental é como <b>combinar quem faz o quê</b> numa equipe (quem avisa quem, quem decide a estratégia).</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">ADAPTER</span>
+  <h2>Adapter: o adaptador de tomada</h2>
+  <div class="two code">
+    <svg viewBox="0 0 360 230" role="img" aria-label="Adapter: cliente usa interface Pagamento, adapter traduz para GatewayAntigo">
+      <rect class="box" x="10" y="20" width="90" height="44" rx="8"/><text x="55" y="47" text-anchor="middle">Cliente</text>
+      <rect class="accbox" x="150" y="10" width="200" height="60" rx="8"/><text x="250" y="30" text-anchor="middle" class="small">«interface» Pagamento</text><text x="250" y="54" text-anchor="middle" class="small">pagar(BigDecimal)</text>
+      <line class="acc" x1="100" y1="42" x2="147" y2="42" marker-end="url(#ar)"/>
+      <rect class="keybox" x="150" y="110" width="200" height="44" rx="8"/><text x="250" y="137" text-anchor="middle" class="kt">GatewayAdapter</text>
+      <line class="dash" x1="250" y1="110" x2="250" y2="72" marker-end="url(#tri)"/>
+      <rect class="badbox" x="150" y="180" width="200" height="44" rx="8"/><text x="250" y="200" text-anchor="middle">GatewayAntigo</text><text x="250" y="217" text-anchor="middle" class="small">makePayment(double)</text>
+      <line class="acc" x1="250" y1="154" x2="250" y2="177" marker-end="url(#ar)"/>
+      <text x="20" y="140" class="small">traduz a</text><text x="20" y="158" class="small">chamada</text>
+    </svg>
+<pre><code>interface Pagamento { void pagar(BigDecimal v); }
+
+class GatewayAdapter <mark>implements Pagamento</mark> {
+  private final GatewayAntigo antigo;  <span class="c">// adaptado</span>
+  GatewayAdapter(GatewayAntigo a) { antigo = a; }
+  public void pagar(BigDecimal v) {
+    antigo.<mark>makePayment(v.doubleValue())</mark>;
+  }
+}</code></pre>
+  </div>
+  <div class="say law">Adapter <b>converte a interface</b> de uma classe em outra interface que o cliente espera, permitindo que classes incompatíveis trabalhem juntas. Há versão de <b>objeto</b> (composição, acima) e de <b>classe</b> (herança múltipla).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">DECORATOR</span>
+  <h2>Decorator: embrulhos que somam poderes</h2>
+  <div class="analogy"><span class="emoji">🎁</span><div>Um presente dentro de outra caixa, dentro de outra… Por fora é sempre “uma caixa” (mesma interface), mas cada camada acrescenta algo.</div></div>
+  <div class="two code">
+    <svg viewBox="0 0 360 170" role="img" aria-label="Camadas concêntricas: Buffered envolve GZIP que envolve File">
+      <rect class="accbox" x="10" y="10" width="340" height="150" rx="16"/><text x="22" y="32">BufferedInputStream</text>
+      <rect class="keybox" x="40" y="44" width="280" height="104" rx="14"/><text x="54" y="66" class="kt">GZIPInputStream</text>
+      <rect class="okbox" x="72" y="80" width="216" height="56" rx="12"/><text x="180" y="113" text-anchor="middle">FileInputStream</text>
+    </svg>
+<pre><code>InputStream in = new BufferedInputStream(
+                   new GZIPInputStream(
+                     new FileInputStream("autos.gz")));
+
+class LogDecorator implements Notificador {
+  private final Notificador interno;
+  LogDecorator(Notificador n) { interno = n; }
+  public void enviar(String m) {
+    log.info(m);           <span class="c">// extra</span>
+    <mark>interno.enviar(m);</mark>     <span class="c">// delega</span>
+  }
+}</code></pre>
+  </div>
+  <div class="say law">Decorator <b>anexa responsabilidades adicionais</b> a um objeto <b>dinamicamente</b>, mantendo a mesma interface: alternativa flexível à herança para estender funcionalidade.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PROXY</span>
+  <h2>Proxy: o porteiro do objeto</h2>
+  <div class="two code">
+<pre><code>class ImagemProxy implements Imagem {
+  private final String arquivo;
+  private ImagemReal real;          <span class="c">// ainda não existe</span>
+  ImagemProxy(String a) { arquivo = a; }
+  public void exibir() {
+    <mark>if (real == null) real = new ImagemReal(arquivo);</mark>
+    real.exibir();
+  }
+}</code></pre>
+    <div>
+      <p><b>Tipos de proxy:</b></p>
+      <ul class="mini">
+        <li><b>Virtual</b>: adia criação cara (lazy loading — o Hibernate usa proxies assim).</li>
+        <li><b>Remoto</b>: representa objeto em outro processo/máquina.</li>
+        <li><b>Proteção</b>: confere permissão antes de repassar.</li>
+        <li><b>Inteligente/cache</b>: conta referências, guarda resultados.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="say law">Proxy fornece um <b>substituto</b> (representante) de outro objeto para <b>controlar o acesso</b> a ele, com a mesma interface do objeto real.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>Adapter × Decorator × Proxy × Facade</h2>
+  <table class="mini">
+    <tr><th class="k">Padrão</th><th class="k">Interface que o cliente vê</th><th class="k">Objetivo</th></tr>
+    <tr><td><b>Adapter</b></td><td class="hl">DIFERENTE da do objeto envolvido</td><td>compatibilizar</td></tr>
+    <tr><td><b>Decorator</b></td><td class="hk">a MESMA</td><td>acrescentar comportamento (empilhável)</td></tr>
+    <tr><td><b>Proxy</b></td><td class="hk">a MESMA</td><td>controlar acesso</td></tr>
+    <tr><td><b>Facade</b></td><td>NOVA e mais simples, sobre vários objetos</td><td>simplificar um subsistema</td></tr>
+  </table>
+  <div class="say trap">
+    <div class="ex ng">“O Decorator altera a interface do objeto para torná-lo compatível com o cliente.”</div>
+    <div class="ex ok">Quem altera interface é o <b>Adapter</b>. O Decorator <b>preserva</b> a interface e soma responsabilidades.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">FACADE · COMPOSITE</span>
+  <h2>Facade simplifica; Composite monta árvores</h2>
+  <div class="two code">
+    <div>
+<pre><code>class CertidaoFacade {       <span class="c">// 1 chamada simples</span>
+  byte[] <mark>emitir(String cpf)</mark> {
+    var p = pessoas.buscar(cpf);
+    var r = distribuidor.consultar(p);
+    var pdf = gerador.gerar(r);
+    return assinador.assinar(pdf);
+  }
+}</code></pre>
+      <p class="mini"><b>Facade</b>: interface unificada e de alto nível para um subsistema; o cliente não precisa conhecer 4 classes.</p>
+    </div>
+    <div>
+      <svg viewBox="0 0 330 170" role="img" aria-label="Árvore composite: pasta contém arquivos e outra pasta">
+        <rect class="keybox" x="120" y="8" width="90" height="34" rx="8"/><text x="165" y="30" text-anchor="middle" class="kt">📁 Pasta</text>
+        <rect class="box" x="10" y="80" width="90" height="34" rx="8"/><text x="55" y="102" text-anchor="middle">📄 a.pdf</text>
+        <rect class="keybox" x="120" y="80" width="90" height="34" rx="8"/><text x="165" y="102" text-anchor="middle" class="kt">📁 Pasta</text>
+        <rect class="box" x="230" y="80" width="90" height="34" rx="8"/><text x="275" y="102" text-anchor="middle">📄 b.pdf</text>
+        <rect class="box" x="120" y="130" width="90" height="34" rx="8"/><text x="165" y="152" text-anchor="middle">📄 c.pdf</text>
+        <line x1="150" y1="42" x2="60" y2="78"/><line x1="165" y1="42" x2="165" y2="78"/><line x1="180" y1="42" x2="270" y2="78"/><line x1="165" y1="114" x2="165" y2="130"/>
+      </svg>
+<pre><code>interface Item { long tamanho(); }
+class Pasta implements Item {
+  List&lt;Item&gt; filhos = new ArrayList&lt;&gt;();
+  public long tamanho() {
+    return filhos.stream().mapToLong(<mark>Item::tamanho</mark>).sum();
+  }
+}</code></pre>
+    </div>
+  </div>
+  <div class="say law">Composite compõe objetos em <b>estruturas de árvore</b> (parte-todo) e permite tratar objetos individuais e composições <b>de maneira uniforme</b>. Completam os estruturais: <b>Bridge</b> (separa abstração da implementação) e <b>Flyweight</b> (compartilha estado intrínseco de muitos objetos).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">COMPORTAMENTAIS</span>
+  <h2>Os 11 comportamentais num olhar</h2>
+  <table class="cmp mini">
+    <tr><th>Padrão</th><th>Ideia em uma linha</th></tr>
+    <tr><td><b>Chain of Responsibility</b></td><td>pedido percorre uma corrente de handlers até alguém tratar</td></tr>
+    <tr><td><b>Command</b></td><td>pedido vira objeto: enfileirar, registrar, <b>desfazer</b></td></tr>
+    <tr><td><b>Interpreter</b></td><td>gramática + interpretador de sentenças</td></tr>
+    <tr><td><b>Iterator</b></td><td>percorrer coleção sem expor sua estrutura</td></tr>
+    <tr><td><b>Mediator</b></td><td>objetos conversam via um mediador central</td></tr>
+    <tr><td><b>Memento</b></td><td>salvar/restaurar estado sem violar encapsulamento</td></tr>
+    <tr><td><b>Observer</b></td><td>1 sujeito notifica N dependentes</td></tr>
+    <tr><td><b>State</b></td><td>comportamento muda com o estado interno</td></tr>
+    <tr><td><b>Strategy</b></td><td>algoritmos intercambiáveis</td></tr>
+    <tr><td><b>Template Method</b></td><td>esqueleto fixo, passos nas subclasses</td></tr>
+    <tr><td><b>Visitor</b></td><td>nova operação sobre uma estrutura sem mudar suas classes</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">STRATEGY</span>
+  <h2>Strategy: trocar o algoritmo como quem troca de rota</h2>
+  <div class="two code">
+    <svg viewBox="0 0 360 200" role="img" aria-label="Strategy: Checkout compõe Frete, com Sedex e PAC implementando">
+      <rect class="box" x="10" y="20" width="120" height="60" rx="8"/><text x="70" y="42" text-anchor="middle">Checkout</text><text x="70" y="66" text-anchor="middle" class="small">- frete: Frete</text>
+      <rect class="accbox" x="190" y="20" width="160" height="60" rx="8"/><text x="270" y="40" text-anchor="middle" class="small">«interface» Frete</text><text x="270" y="64" text-anchor="middle" class="small">calcular(Pedido)</text>
+      <line class="acc" x1="130" y1="50" x2="187" y2="50" marker-end="url(#ar)"/><text x="158" y="42" text-anchor="middle" class="small">usa</text>
+      <rect class="okbox" x="170" y="140" width="80" height="40" rx="8"/><text x="210" y="165" text-anchor="middle">Sedex</text>
+      <rect class="okbox" x="270" y="140" width="80" height="40" rx="8"/><text x="310" y="165" text-anchor="middle">PAC</text>
+      <line class="dash" x1="210" y1="140" x2="250" y2="82" marker-end="url(#tri)"/><line class="dash" x1="310" y1="140" x2="290" y2="82" marker-end="url(#tri)"/>
+    </svg>
+<pre><code>interface Frete { BigDecimal calcular(Pedido p); }
+class Sedex implements Frete { ... }
+
+class Checkout {
+  private Frete frete;                  <span class="c">// composição</span>
+  void <mark>setFrete(Frete f)</mark> { frete = f; }
+  BigDecimal total(Pedido p) {
+    return p.valor().add(frete.calcular(p));
+  }
+}
+checkout.setFrete(<mark>p -&gt; BigDecimal.ZERO</mark>); <span class="c">// lambda!</span></code></pre>
+  </div>
+  <div class="say law">Strategy define uma <b>família de algoritmos</b>, encapsula cada um e os torna <b>intercambiáveis</b>; o algoritmo varia independentemente dos clientes que o usam.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">OBSERVER</span>
+  <h2>Observer: “me avise quando mudar”</h2>
+  <div class="analogy"><span class="emoji">🔔</span><div>Você clica no “sininho” de um canal: quando sai vídeo novo, <b>todos os inscritos</b> são avisados. O canal não sabe quem você é, só que você está na lista.</div></div>
+  <div class="two code">
+    <svg viewBox="0 0 360 170" role="img" aria-label="Processo notifica três observadores">
+      <rect class="keybox" x="10" y="60" width="120" height="50" rx="10"/><text x="70" y="82" text-anchor="middle" class="kt">Processo</text><text x="70" y="100" text-anchor="middle" class="kt small">(sujeito)</text>
+      <rect class="okbox" x="220" y="8" width="130" height="38" rx="8"/><text x="285" y="32" text-anchor="middle" class="small">E-mail ao advogado</text>
+      <rect class="okbox" x="220" y="66" width="130" height="38" rx="8"/><text x="285" y="90" text-anchor="middle" class="small">Push no app</text>
+      <rect class="okbox" x="220" y="124" width="130" height="38" rx="8"/><text x="285" y="148" text-anchor="middle" class="small">Painel do gabinete</text>
+      <line class="acc" x1="130" y1="78" x2="217" y2="28" marker-end="url(#ar)"/><line class="acc" x1="130" y1="85" x2="217" y2="85" marker-end="url(#ar)"/><line class="acc" x1="130" y1="92" x2="217" y2="142" marker-end="url(#ar)"/>
+    </svg>
+<pre><code>interface Observador { void atualizar(Movimento m); }
+
+class Processo {
+  private final List&lt;Observador&gt; obs = new ArrayList&lt;&gt;();
+  void inscrever(Observador o) { obs.add(o); }
+  void movimentar(Movimento m) {
+    historico.add(m);
+    <mark>obs.forEach(o -&gt; o.atualizar(m));</mark>
+  }
+}</code></pre>
+  </div>
+  <div class="say law">Observer define uma dependência <b>um-para-muitos</b>: quando um objeto muda de estado, todos os seus dependentes são <b>notificados e atualizados</b> automaticamente. É a semente do publish/subscribe.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>Strategy × Template Method × State</h2>
+  <div class="two code">
+<pre><code>abstract class Importador {
+  <span class="c">// template method: esqueleto FINAL</span>
+  public <mark>final</mark> void importar() {
+    ler(); validar(); salvar();
+  }
+  protected abstract void ler();
+  protected abstract void validar();
+  protected void salvar() { repo.salvar(dados); } <span class="c">// gancho</span>
+}</code></pre>
+    <table class="mini">
+      <tr><th class="k">Padrão</th><th class="k">Mecanismo</th><th class="k">Quem troca?</th></tr>
+      <tr><td>Template Method</td><td>herança</td><td>subclasse, em compilação</td></tr>
+      <tr><td>Strategy</td><td>composição</td><td>o <b>cliente</b> escolhe</td></tr>
+      <tr><td>State</td><td>composição</td><td>o <b>próprio objeto</b>, ao mudar de estado</td></tr>
+    </table>
+  </div>
+  <div class="say trap">
+    <div class="ex ng">“No Template Method, o cliente injeta o algoritmo em tempo de execução por composição.”</div>
+    <div class="ex ok">Isso descreve <b>Strategy</b>. Template Method usa <b>herança</b>: a superclasse fixa a ordem dos passos (princípio de Hollywood) e as subclasses preenchem.</div>
+    <div class="ex ng">“Command e Memento são estruturais.”</div>
+    <div class="ex ok">Ambos são <b>comportamentais</b> — e juntos implementam o “desfazer”.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Resumo do capítulo</h2>
+  <div class="magic">Adapter MUDA a interface; Decorator e Proxy MANTÊM.<small>Decorator acrescenta, Proxy controla. Strategy = composição escolhida pelo cliente; Template Method = herança com esqueleto fixo.</small></div>
+  <ul class="checklist">
+    <li>Estruturais (7): Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy.</li>
+    <li>Facade = porta simples para subsistema; Composite = árvore parte-todo uniforme.</li>
+    <li>Comportamentais (11): Chain, Command, Interpreter, Iterator, Mediator, Memento, Observer, State, Strategy, Template Method, Visitor.</li>
+    <li>Observer = 1 para N com notificação automática.</li>
+    <li>Command = pedido como objeto (fila, log, desfazer).</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Teste rápido (estilo FGV)</h2>
+  <details><summary>1) Uma biblioteca de terceiros expõe <code>makePayment(double)</code>, mas o sistema espera <code>pagar(BigDecimal)</code>. Qual padrão resolve?</summary><p><span class="pill ok">Adapter</span> Converte uma interface na outra esperada pelo cliente.</p></details>
+  <details><summary>2) Um editor precisa de “desfazer” para cada ação do usuário, guardando as ações numa pilha. Qual padrão representa as ações?</summary><p><span class="pill ok">Command</span> Cada ação vira objeto com <code>executar()</code> e <code>desfazer()</code>. (Memento pode guardar o estado, mas a ação em si é Command.)</p></details>
+  <details><summary>3) “O Facade impede o acesso direto às classes do subsistema.” Certo ou errado?</summary><p><span class="pill ng">Errado</span> O Facade oferece um atalho simples, mas não proíbe quem precisar de usar as classes internas.</p></details>
+  <details><summary>4) Um pedido muda de comportamento conforme esteja “aberto”, “pago” ou “enviado”, cada um em uma classe. Strategy ou State?</summary><p><span class="pill ok">State</span> A troca é feita pelo próprio objeto conforme seu estado interno, não escolhida pelo cliente.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 3 ===================================================== -->
+<section class="chapter" data-title="IoC, injeção de dependência, SOA e microsserviços">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 3</span>
+  <h1>IoC, injeção de dependência, SOA e microsserviços</h1>
+  <span class="emoji">🧷</span>
+  <div class="steps">
+    <div class="step"><b>1. IoC e DI</b><span>Quem manda no fluxo e quem cria as dependências.</span></div>
+    <div class="step"><b>2. SOA</b><span>Serviços com contrato: SOAP, WSDL, ESB e REST.</span></div>
+    <div class="step"><b>3. Microsserviços</b><span>Decomposição, API Gateway, service mesh, serverless.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🔋</span><div><b>Analogia do dia:</b> um controle remoto não <b>fabrica</b> suas pilhas; ele tem um encaixe e <b>alguém coloca</b> as pilhas. Trocar de marca não exige abrir o controle. Isso é injeção de dependência.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">IoC</span>
+  <h2>Inversão de controle: “não nos chame, nós chamamos você”</h2>
+  <svg viewBox="0 0 680 190" role="img" aria-label="Comparação entre biblioteca, onde seu código chama, e framework, onde o framework chama seu código">
+    <text x="160" y="22" text-anchor="middle">Biblioteca (controle normal)</text>
+    <rect class="okbox" x="40" y="40" width="240" height="44" rx="10"/><text x="160" y="67" text-anchor="middle">SEU código (manda)</text>
+    <rect class="box" x="40" y="130" width="240" height="44" rx="10"/><text x="160" y="157" text-anchor="middle">biblioteca</text>
+    <line class="okl" x1="160" y1="84" x2="160" y2="127" marker-end="url(#arok)"/><text x="170" y="112" class="small">chama</text>
+    <text x="520" y="22" text-anchor="middle">Framework (controle INVERTIDO)</text>
+    <rect class="accbox" x="400" y="40" width="240" height="44" rx="10"/><text x="520" y="67" text-anchor="middle">framework / contêiner (manda)</text>
+    <rect class="box" x="400" y="130" width="240" height="44" rx="10"/><text x="520" y="157" text-anchor="middle">SEU código (é chamado)</text>
+    <line class="acc" x1="520" y1="84" x2="520" y2="127" marker-end="url(#ar)"/><text x="530" y="112" class="small">chama</text>
+  </svg>
+  <p>Exemplos de IoC: o servlet container chama seu <code>doGet()</code>; o Spring cria seus beans e chama seus <code>@Controller</code>; o JUnit chama seus métodos <code>@Test</code>; o Template Method chama os passos da subclasse.</p>
+  <div class="say law">Inversão de Controle (IoC) é o princípio em que o <b>fluxo de controle</b> (ou a criação de objetos) é transferido do código da aplicação para um <b>framework/contêiner</b>. Injeção de dependência é <b>uma das formas</b> de realizar IoC.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">INJEÇÃO DE DEPENDÊNCIA</span>
+  <h2>DI: receber em vez de fabricar</h2>
+  <div class="two">
+    <div><div class="ex ng">Acoplado: a classe dá <code>new</code></div>
+<pre><code>class RelatorioService {
+  private final RepoMySql repo =
+      <mark>new RepoMySql();</mark>
+  <span class="c">// teste? precisa de MySQL real</span>
+}</code></pre></div>
+    <div><div class="ex ok">Injetado pelo construtor</div>
+<pre><code>@Service
+class RelatorioService {
+  private final <mark>Repositorio</mark> repo;
+  RelatorioService(Repositorio repo) {
+    this.repo = repo;
+  }
+}</code></pre></div>
+  </div>
+  <div class="flow"><span>Contêiner lê config / anotações</span><i>→</i><span>cria RepoJpa</span><i>→</i><span>cria RelatorioService(repoJpa)</span><i>→</i><span>no teste: new RelatorioService(mock)</span></div>
+  <div class="say good">No Spring (desde a 4.3), se a classe tem <b>um único construtor</b>, ele é usado para injeção mesmo sem <code>@Autowired</code>.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">TIPOS</span>
+  <h2>Três formas de injetar (e um primo)</h2>
+  <table class="cmp mini">
+    <tr><th>Forma</th><th>Como</th><th>Quando</th></tr>
+    <tr><td><b>Construtor</b></td><td>parâmetros do construtor</td><td>dependências <b>obrigatórias</b>; permite campos <code>final</code> e objeto sempre válido — a preferida</td></tr>
+    <tr><td><b>Setter</b></td><td><code>setRepo(...)</code></td><td>dependências <b>opcionais</b> ou trocáveis depois</td></tr>
+    <tr><td><b>Interface</b></td><td>a classe implementa um método <code>injetar(...)</code> definido por interface</td><td>rara hoje (classificação de Martin Fowler)</td></tr>
+    <tr><td>Campo (<code>@Autowired</code> no atributo)</td><td>reflexão no campo privado</td><td>funciona, mas esconde dependências e dificulta testes sem o contêiner</td></tr>
+  </table>
+  <div class="say bad"><b>Service Locator</b> não é DI: a classe <b>pede</b> a dependência a um registro (<code>Locator.get(Repo.class)</code>). Também desacopla da implementação, mas a classe passa a depender do localizador e a dependência fica escondida.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>IoC × DI × DIP: três siglas, três coisas</h2>
+  <svg viewBox="0 0 680 150" role="img" aria-label="IoC contém DI; DIP é princípio de projeto relacionado">
+    <rect class="accbox" x="10" y="10" width="420" height="130" rx="18"/><text x="26" y="34">IoC — princípio amplo (quem controla o fluxo)</text>
+    <rect class="keybox" x="40" y="54" width="250" height="72" rx="14"/><text x="165" y="84" text-anchor="middle" class="kt">DI — técnica</text><text x="165" y="106" text-anchor="middle" class="kt small">entregar dependências de fora</text>
+    <rect class="okbox" x="460" y="30" width="210" height="96" rx="14"/><text x="565" y="62" text-anchor="middle">DIP — princípio SOLID</text><text x="565" y="86" text-anchor="middle" class="small">depender de abstrações,</text><text x="565" y="104" text-anchor="middle" class="small">não de concretos</text>
+  </svg>
+  <div class="say trap">
+    <div class="ex ng">“Injeção de dependência e Princípio da Inversão de Dependência são sinônimos.”</div>
+    <div class="ex ok">DIP (o “D” do SOLID) diz <b>o que</b> fazer: módulos de alto e baixo nível dependem de <b>abstrações</b>. DI é uma <b>técnica</b> que ajuda a cumprir o DIP. Dá para usar DI injetando classe concreta (sem cumprir DIP).</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">SOA</span>
+  <h2>SOA: o sistema como um conjunto de serviços com contrato</h2>
+  <svg viewBox="0 0 680 190" role="img" aria-label="Consumidores ligados a serviços via ESB, com registro UDDI">
+    <rect class="box" x="10" y="20" width="130" height="40" rx="10"/><text x="75" y="45" text-anchor="middle">Portal</text>
+    <rect class="box" x="10" y="80" width="130" height="40" rx="10"/><text x="75" y="105" text-anchor="middle">App móvel</text>
+    <rect class="box" x="10" y="140" width="130" height="40" rx="10"/><text x="75" y="165" text-anchor="middle">Outro órgão</text>
+    <rect class="keybox" x="200" y="20" width="110" height="160" rx="12"/><text x="255" y="96" text-anchor="middle" class="kt">ESB</text><text x="255" y="116" text-anchor="middle" class="kt small">roteia,</text><text x="255" y="132" text-anchor="middle" class="kt small">transforma</text>
+    <line class="acc" x1="140" y1="40" x2="197" y2="60" marker-end="url(#ar)"/><line class="acc" x1="140" y1="100" x2="197" y2="100" marker-end="url(#ar)"/><line class="acc" x1="140" y1="160" x2="197" y2="140" marker-end="url(#ar)"/>
+    <rect class="okbox" x="370" y="20" width="170" height="40" rx="10"/><text x="455" y="45" text-anchor="middle">Serviço Partes</text>
+    <rect class="okbox" x="370" y="80" width="170" height="40" rx="10"/><text x="455" y="105" text-anchor="middle">Serviço Custas</text>
+    <rect class="okbox" x="370" y="140" width="170" height="40" rx="10"/><text x="455" y="165" text-anchor="middle">Serviço Intimação</text>
+    <line class="acc" x1="310" y1="60" x2="367" y2="40" marker-end="url(#ar)"/><line class="acc" x1="310" y1="100" x2="367" y2="100" marker-end="url(#ar)"/><line class="acc" x1="310" y1="140" x2="367" y2="160" marker-end="url(#ar)"/>
+    <rect class="accbox" x="570" y="70" width="100" height="60" rx="10"/><text x="620" y="96" text-anchor="middle">UDDI</text><text x="620" y="116" text-anchor="middle" class="small">registro</text>
+  </svg>
+  <p class="mini">Princípios clássicos de serviço: <b>contrato padronizado</b>, <b>baixo acoplamento</b>, abstração, <b>reusabilidade</b>, autonomia, <b>ausência de estado</b>, descoberta e composição.</p>
+  <div class="say law">SOA (arquitetura orientada a serviços) organiza a TI como <b>serviços</b> de negócio reutilizáveis, de baixo acoplamento, expostos por <b>contratos</b> e consumidos de forma interoperável. Pode ser implementada com SOAP ou REST; o ESB é comum, mas não obrigatório.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">SOAP × REST</span>
+  <h2>Os dois sabores de web service</h2>
+  <table class="mini">
+    <tr><th></th><th class="k">SOAP</th><th class="k">REST</th></tr>
+    <tr><td>Natureza</td><td><b>protocolo</b> (W3C)</td><td><b>estilo arquitetural</b> (tese de Roy Fielding, 2000)</td></tr>
+    <tr><td>Formato</td><td>somente <b>XML</b> (envelope, header, body, fault)</td><td>qualquer representação: JSON, XML, HTML…</td></tr>
+    <tr><td>Contrato</td><td><b>WSDL</b></td><td>opcional (ex.: OpenAPI)</td></tr>
+    <tr><td>Transporte</td><td>HTTP, SMTP, JMS…</td><td>HTTP (verbos e URIs)</td></tr>
+    <tr><td>Segurança</td><td>WS-Security (mensagem)</td><td>HTTPS/TLS, OAuth 2.0, JWT</td></tr>
+  </table>
+  <table class="mini">
+    <tr><th>Verbo REST</th><th>Seguro?</th><th>Idempotente?</th></tr>
+    <tr><td>GET</td><td class="hk">sim</td><td class="hk">sim</td></tr>
+    <tr><td>PUT · DELETE</td><td class="hl">não</td><td class="hk">sim</td></tr>
+    <tr><td>POST</td><td class="hl">não</td><td class="hl">não</td></tr>
+  </table>
+  <div class="say trap"><div class="ex ng">“REST é um protocolo que exige JSON.”</div><div class="ex ok">REST é <b>estilo</b>: cliente-servidor, sem estado, cacheável, interface uniforme, sistema em camadas (e código sob demanda, opcional). JSON é só o formato mais comum.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">MICROSSERVIÇOS</span>
+  <h2>Monólito × microsserviços</h2>
+  <svg viewBox="0 0 680 200" role="img" aria-label="Monólito com um banco versus microsserviços cada um com seu banco">
+    <text x="150" y="20" text-anchor="middle">Monólito</text>
+    <rect class="badbox" x="40" y="32" width="220" height="100" rx="12"/><text x="150" y="62" text-anchor="middle">Partes · Custas · Intimação</text><text x="150" y="86" text-anchor="middle" class="small">1 código, 1 deploy,</text><text x="150" y="104" text-anchor="middle" class="small">escala tudo junto</text>
+    <rect class="box" x="100" y="150" width="100" height="40" rx="20"/><text x="150" y="175" text-anchor="middle">1 banco</text>
+    <line x1="150" y1="132" x2="150" y2="147" marker-end="url(#arg)"/>
+    <text x="500" y="20" text-anchor="middle">Microsserviços</text>
+    <rect class="okbox" x="330" y="40" width="100" height="56" rx="10"/><text x="380" y="73" text-anchor="middle">Partes</text>
+    <rect class="okbox" x="450" y="40" width="100" height="56" rx="10"/><text x="500" y="73" text-anchor="middle">Custas</text>
+    <rect class="okbox" x="570" y="40" width="100" height="56" rx="10"/><text x="620" y="73" text-anchor="middle">Intimação</text>
+    <rect class="box" x="345" y="140" width="70" height="40" rx="20"/><text x="380" y="165" text-anchor="middle" class="small">BD</text>
+    <rect class="box" x="465" y="140" width="70" height="40" rx="20"/><text x="500" y="165" text-anchor="middle" class="small">BD</text>
+    <rect class="box" x="585" y="140" width="70" height="40" rx="20"/><text x="620" y="165" text-anchor="middle" class="small">BD</text>
+    <line x1="380" y1="96" x2="380" y2="137" marker-end="url(#arg)"/><line x1="500" y1="96" x2="500" y2="137" marker-end="url(#arg)"/><line x1="620" y1="96" x2="620" y2="137" marker-end="url(#arg)"/>
+  </svg>
+  <p class="mini">Ganhos: deploy e escala <b>independentes</b>, times autônomos, tecnologia por serviço, falha isolada. Custos: rede (latência, falhas parciais), consistência eventual, observabilidade e operação mais difíceis.</p>
+  <div class="say law">Microsserviços: aplicação composta por serviços <b>pequenos e autônomos</b>, cada um rodando em processo próprio, organizados em torno de <b>capacidades de negócio</b>, com <b>implantação independente</b> e dados próprios (<i>database per service</i>), comunicando-se por mecanismos leves (HTTP/REST, gRPC, mensageria).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">DECOMPOSIÇÃO</span>
+  <h2>Como cortar o monólito</h2>
+  <div class="tables">
+    <div class="tbox"><h4>Por camada técnica</h4>
+      <table><tr><td class="hl">serviço de telas</td></tr><tr><td class="hl">serviço de regras</td></tr><tr><td class="hl">serviço de dados</td></tr></table>
+      <p class="cap">✗ Toda mudança atravessa os 3: “monólito distribuído”.</p></div>
+    <div class="tbox"><h4>Por capacidade de negócio / subdomínio</h4>
+      <table><tr><td class="hk">Distribuição</td></tr><tr><td class="hk">Custas</td></tr><tr><td class="hk">Intimações</td></tr></table>
+      <p class="cap">✓ Mudança fica dentro de um serviço. O DDD (bounded context) ajuda a achar as fronteiras.</p></div>
+  </div>
+  <div class="flow"><span>Monólito</span><i>→</i><span>fachada/roteador na frente</span><i>→</i><span>extrai 1 funcionalidade por vez</span><i>→</i><span>o velho “seca”</span></div>
+  <p class="mini">Esse é o padrão <b>Strangler Fig</b> (figueira estranguladora): migração incremental, sem “big bang”.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">GATEWAY · MESH · SERVERLESS</span>
+  <h2>Quem cuida do tráfego?</h2>
+  <svg viewBox="0 0 680 200" role="img" aria-label="Clientes passam pelo API Gateway; serviços conversam via sidecars do service mesh">
+    <rect class="box" x="10" y="80" width="90" height="40" rx="10"/><text x="55" y="105" text-anchor="middle">Clientes</text>
+    <rect class="keybox" x="140" y="60" width="130" height="80" rx="12"/><text x="205" y="94" text-anchor="middle" class="kt">API Gateway</text><text x="205" y="116" text-anchor="middle" class="kt small">norte-sul</text>
+    <line class="acc" x1="100" y1="100" x2="137" y2="100" marker-end="url(#ar)"/>
+    <rect class="okbox" x="320" y="20" width="110" height="50" rx="10"/><text x="375" y="50" text-anchor="middle">Serviço A</text>
+    <rect class="accbox" x="430" y="28" width="60" height="34" rx="8"/><text x="460" y="50" text-anchor="middle" class="small">sidecar</text>
+    <rect class="okbox" x="320" y="130" width="110" height="50" rx="10"/><text x="375" y="160" text-anchor="middle">Serviço B</text>
+    <rect class="accbox" x="430" y="138" width="60" height="34" rx="8"/><text x="460" y="160" text-anchor="middle" class="small">sidecar</text>
+    <line class="acc" x1="270" y1="90" x2="317" y2="50" marker-end="url(#ar)"/><line class="acc" x1="270" y1="110" x2="317" y2="150" marker-end="url(#ar)"/>
+    <line class="okl dash" x1="460" y1="62" x2="460" y2="135" marker-end="url(#arok)"/><text x="470" y="104" class="small">leste-oeste: mTLS, retry, métricas</text>
+  </svg>
+  <table class="cmp mini">
+    <tr><th>Peça</th><th>Faz o quê</th></tr>
+    <tr><td><b>API Gateway</b></td><td>entrada única: roteamento, autenticação, rate limiting, agregação de respostas (inclui a variação BFF — backend for frontend)</td></tr>
+    <tr><td><b>Service mesh</b></td><td>camada de infraestrutura com proxies <b>sidecar</b> (ex.: Istio/Envoy, Linkerd) para comunicação entre serviços</td></tr>
+    <tr><td><b>Serverless / FaaS</b></td><td>funções disparadas por eventos; provedor gerencia servidores e escala (até zero); cobrança por execução; atenção ao <i>cold start</i></td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Resumo do capítulo</h2>
+  <div class="magic">IoC é o guarda-chuva, DI é a técnica, DIP é o princípio.<small>Microsserviço de verdade = recorte por negócio + banco próprio + deploy independente.</small></div>
+  <ul class="checklist">
+    <li>Injeção por construtor (obrigatórias), setter (opcionais), interface (rara).</li>
+    <li>Service Locator: a classe busca; DI: a dependência chega.</li>
+    <li>SOAP = protocolo, XML, WSDL; REST = estilo, recursos, verbos HTTP, stateless.</li>
+    <li>API Gateway = norte-sul; service mesh = leste-oeste com sidecars.</li>
+    <li>Strangler Fig migra o monólito aos poucos.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Teste rápido (estilo FGV)</h2>
+  <details><summary>1) Uma classe obtém seu repositório chamando <code>Contexto.buscar("repo")</code>. Isso é injeção de dependência?</summary><p><span class="pill ng">Não</span> É <b>Service Locator</b>: a própria classe busca a dependência. Na DI ela é entregue de fora.</p></details>
+  <details><summary>2) Qual forma de injeção garante que o objeto nunca exista sem suas dependências obrigatórias?</summary><p><span class="pill ok">Construtor</span> Sem os argumentos, o objeto nem é criado; os campos podem ser <code>final</code>.</p></details>
+  <details><summary>3) “Em microsserviços, recomenda-se um banco de dados compartilhado por todos os serviços para garantir consistência.” Certo ou errado?</summary><p><span class="pill ng">Errado</span> O padrão é <b>banco por serviço</b>; banco compartilhado acopla os serviços. Consistência entre serviços costuma ser eventual (sagas).</p></details>
+  <details><summary>4) PUT é idempotente? E POST?</summary><p><span class="pill ok">PUT: sim</span> repetir deixa o recurso no mesmo estado. <span class="pill ng">POST: não</span> repetir pode criar dois recursos.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 4 ===================================================== -->
+<section class="chapter" data-title="Arquitetura orientada a eventos, Clean Architecture e DDD">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 4</span>
+  <h1>Arquitetura orientada a eventos, Clean Architecture e DDD</h1>
+  <span class="emoji">📣</span>
+  <div class="steps">
+    <div class="step"><b>1. Eventos</b><span>Kafka × RabbitMQ, garantias de entrega, CQRS, saga.</span></div>
+    <div class="step"><b>2. Clean Architecture</b><span>Camadas em círculo e a Regra da Dependência.</span></div>
+    <div class="step"><b>3. DDD</b><span>Bounded context, entidade, objeto de valor, agregado.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">📻</span><div><b>Analogia do dia:</b> a rádio anuncia “<b>chegou a chuva</b>” sem saber quem está ouvindo. O feirante recolhe a banca, o motorista liga o farol. Quem fala e quem reage <b>não se conhecem</b>: isso é arquitetura orientada a eventos.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">EDA</span>
+  <h2>Comando × evento e o publish/subscribe</h2>
+  <div class="two">
+    <div class="say"><b>Comando</b>: pedido no imperativo, tem destinatário, pode ser recusado.<br><code>EmitirIntimacao</code></div>
+    <div class="say good"><b>Evento</b>: <b>fato que já aconteceu</b>, no passado, imutável, sem destinatário certo.<br><code>SentencaPublicada</code></div>
+  </div>
+  <svg viewBox="0 0 680 170" role="img" aria-label="Produtor publica evento no broker, três consumidores reagem">
+    <rect class="keybox" x="10" y="60" width="150" height="50" rx="10"/><text x="85" y="90" text-anchor="middle" class="kt">Produtor</text>
+    <rect class="accbox" x="230" y="50" width="170" height="70" rx="12"/><text x="315" y="80" text-anchor="middle">Broker</text><text x="315" y="102" text-anchor="middle" class="small">Kafka / RabbitMQ</text>
+    <line class="acc" x1="160" y1="85" x2="227" y2="85" marker-end="url(#ar)"/><text x="194" y="76" text-anchor="middle" class="small">publica</text>
+    <rect class="okbox" x="480" y="8" width="190" height="40" rx="10"/><text x="575" y="33" text-anchor="middle">Intimação</text>
+    <rect class="okbox" x="480" y="65" width="190" height="40" rx="10"/><text x="575" y="90" text-anchor="middle">Diário eletrônico</text>
+    <rect class="okbox" x="480" y="122" width="190" height="40" rx="10"/><text x="575" y="147" text-anchor="middle">Estatística</text>
+    <line class="acc" x1="400" y1="75" x2="477" y2="30" marker-end="url(#ar)"/><line class="acc" x1="400" y1="85" x2="477" y2="85" marker-end="url(#ar)"/><line class="acc" x1="400" y1="95" x2="477" y2="140" marker-end="url(#ar)"/>
+  </svg>
+  <div class="say law">Na arquitetura orientada a eventos, componentes se comunicam pela <b>produção e consumo assíncronos de eventos</b> por meio de um intermediário (broker), gerando <b>baixo acoplamento</b> temporal e espacial. Custo: consistência eventual e depuração mais difícil.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">KAFKA</span>
+  <h2>Kafka: um caderno onde só se escreve no fim</h2>
+  <svg viewBox="0 0 680 210" role="img" aria-label="Tópico com duas partições; consumidores de um grupo leem por offset">
+    <text x="10" y="20">Tópico <tspan font-weight="800">sentencas</tspan></text>
+    <text x="10" y="58" class="small">Partição 0</text>
+    <rect class="box" x="90" y="38" width="44" height="32" rx="6"/><text x="112" y="60" text-anchor="middle">0</text>
+    <rect class="box" x="138" y="38" width="44" height="32" rx="6"/><text x="160" y="60" text-anchor="middle">1</text>
+    <rect class="box" x="186" y="38" width="44" height="32" rx="6"/><text x="208" y="60" text-anchor="middle">2</text>
+    <rect class="box" x="234" y="38" width="44" height="32" rx="6"/><text x="256" y="60" text-anchor="middle">3</text>
+    <rect class="keybox" x="282" y="38" width="44" height="32" rx="6"/><text x="304" y="60" text-anchor="middle" class="kt">4</text>
+    <text x="336" y="60" class="small">← novas mensagens no fim</text>
+    <text x="10" y="118" class="small">Partição 1</text>
+    <rect class="box" x="90" y="98" width="44" height="32" rx="6"/><text x="112" y="120" text-anchor="middle">0</text>
+    <rect class="box" x="138" y="98" width="44" height="32" rx="6"/><text x="160" y="120" text-anchor="middle">1</text>
+    <rect class="keybox" x="186" y="98" width="44" height="32" rx="6"/><text x="208" y="120" text-anchor="middle" class="kt">2</text>
+    <rect class="okbox" x="90" y="160" width="190" height="40" rx="10"/><text x="185" y="185" text-anchor="middle">Grupo “intimacao”: C1, C2</text>
+    <line class="okl" x1="160" y1="160" x2="208" y2="132" marker-end="url(#arok)"/><line class="okl" x1="140" y1="160" x2="256" y2="72" marker-end="url(#arok)"/>
+    <rect class="accbox" x="420" y="150" width="250" height="50" rx="10"/><text x="545" y="172" text-anchor="middle">Grupo “estatistica”</text><text x="545" y="191" text-anchor="middle" class="small">lê TUDO de novo, com offset próprio</text>
+  </svg>
+  <ul class="mini">
+    <li><b>Log distribuído</b> e append-only; mensagem fica guardada pelo período de <b>retenção</b> (não some ao ser lida).</li>
+    <li>Cada consumidor guarda seu <b>offset</b> (posição); pode reprocessar desde o início.</li>
+    <li><b>Ordem garantida só dentro da partição</b>; mesma chave → mesma partição.</li>
+    <li>Num <b>consumer group</b>, cada partição é lida por um só consumidor do grupo; grupos diferentes recebem tudo.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">RABBITMQ</span>
+  <h2>RabbitMQ: o carteiro que entrega e esquece</h2>
+  <svg viewBox="0 0 680 190" role="img" aria-label="Produtor envia para exchange que roteia por bindings para filas">
+    <rect class="keybox" x="10" y="70" width="110" height="44" rx="10"/><text x="65" y="97" text-anchor="middle" class="kt">Produtor</text>
+    <rect class="accbox" x="170" y="60" width="150" height="64" rx="12"/><text x="245" y="88" text-anchor="middle">Exchange</text><text x="245" y="108" text-anchor="middle" class="small">(direct/topic/…)</text>
+    <line class="acc" x1="120" y1="92" x2="167" y2="92" marker-end="url(#ar)"/><text x="144" y="60" text-anchor="middle" class="small">chave</text>
+    <rect class="box" x="400" y="20" width="130" height="40" rx="10"/><text x="465" y="45" text-anchor="middle">fila A</text>
+    <rect class="box" x="400" y="125" width="130" height="40" rx="10"/><text x="465" y="150" text-anchor="middle">fila B</text>
+    <line class="acc" x1="320" y1="80" x2="397" y2="42" marker-end="url(#ar)"/><line class="acc" x1="320" y1="104" x2="397" y2="145" marker-end="url(#ar)"/><text x="350" y="125" class="small">binding</text>
+    <rect class="okbox" x="580" y="20" width="90" height="40" rx="10"/><text x="625" y="45" text-anchor="middle" class="small">consumidor</text>
+    <rect class="okbox" x="580" y="125" width="90" height="40" rx="10"/><text x="625" y="150" text-anchor="middle" class="small">consumidor</text>
+    <line class="okl" x1="530" y1="40" x2="577" y2="40" marker-end="url(#arok)"/><line class="okl" x1="530" y1="145" x2="577" y2="145" marker-end="url(#arok)"/>
+  </svg>
+  <table class="cmp mini">
+    <tr><th>Exchange</th><th>Entrega para…</th></tr>
+    <tr><td><b>direct</b></td><td>filas cuja binding key é <b>igual</b> à routing key</td></tr>
+    <tr><td><b>fanout</b></td><td><b>todas</b> as filas ligadas (ignora a chave)</td></tr>
+    <tr><td><b>topic</b></td><td>padrões com <code>*</code> (exatamente uma palavra) e <code>#</code> (zero ou mais), ex.: <code>tjpb.*.sentenca</code></td></tr>
+    <tr><td><b>headers</b></td><td>conforme atributos do cabeçalho</td></tr>
+  </table>
+  <p class="mini">Protocolo principal: <b>AMQP 0-9-1</b>. Após o <b>ack</b> do consumidor, a mensagem sai da fila.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>Kafka × RabbitMQ e as garantias de entrega</h2>
+  <table class="mini">
+    <tr><th></th><th class="k">Kafka</th><th class="k">RabbitMQ</th></tr>
+    <tr><td>Modelo</td><td>log distribuído (streaming)</td><td>fila/broker de mensagens</td></tr>
+    <tr><td>Após consumir</td><td>mensagem <b>continua</b> (retenção)</td><td>mensagem <b>removida</b> após ack</td></tr>
+    <tr><td>Quem controla a posição</td><td>consumidor (offset)</td><td>broker</td></tr>
+    <tr><td>Forte em</td><td>alto volume, replay, event sourcing</td><td>roteamento flexível, tarefas</td></tr>
+  </table>
+  <div class="flow"><span>at-most-once: pode <b>perder</b></span><i>·</i><span>at-least-once: pode <b>duplicar</b></span><i>·</i><span>exactly-once: custo maior (no Kafka, produtor idempotente + transações)</span></div>
+  <div class="say trap">
+    <div class="ex ng">“Com entrega at-least-once, o consumidor não precisa se preocupar com mensagens repetidas.”</div>
+    <div class="ex ok">É justamente o contrário: at-least-once <b>pode repetir</b>; o consumidor deve ser <b>idempotente</b> (ex.: guardar o ID dos eventos já processados).</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PADRÕES DE EVENTOS</span>
+  <h2>Event Sourcing, CQRS, Saga e Outbox</h2>
+  <table class="cmp mini">
+    <tr><th>Padrão</th><th>Ideia</th></tr>
+    <tr><td><b>Event Sourcing</b></td><td>guarda a <b>sequência de eventos</b>, não só o estado final; o estado é reconstruído reaplicando-os (extrato bancário → saldo)</td></tr>
+    <tr><td><b>CQRS</b></td><td>separa o modelo de <b>escrita</b> (comandos) do de <b>leitura</b> (consultas), que podem até ter bancos diferentes</td></tr>
+    <tr><td><b>Saga</b></td><td>transação longa entre serviços como sequência de transações locais, com <b>ações compensatórias</b> se algo falhar; por <b>coreografia</b> (eventos) ou <b>orquestração</b> (coordenador)</td></tr>
+    <tr><td><b>Transactional Outbox</b></td><td>grava o evento numa tabela “outbox” na <b>mesma transação</b> do dado; um relay publica depois — evita salvar sem publicar</td></tr>
+  </table>
+  <div class="flow"><span>Reservar vaga ✓</span><i>→</i><span>Cobrar ✗</span><i>→</i><span>compensa: cancelar reserva</span></div>
+  <div class="say good">CQRS e Event Sourcing combinam bem, mas são <b>independentes</b>: dá para usar um sem o outro.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">CLEAN ARCHITECTURE</span>
+  <h2>Clean Architecture: tudo aponta para o centro</h2>
+  <div class="two code">
+    <svg viewBox="0 0 340 300" role="img" aria-label="Quatro círculos concêntricos com setas apontando para dentro">
+      <circle cx="170" cy="150" r="145" class="box"/><circle cx="170" cy="150" r="108" class="accbox"/><circle cx="170" cy="150" r="70" class="okbox"/><circle cx="170" cy="150" r="36" class="keybox"/>
+      <text x="170" y="155" text-anchor="middle" class="kt small">Entidades</text>
+      <text x="170" y="104" text-anchor="middle" class="small">Casos de uso</text>
+      <text x="170" y="66" text-anchor="middle" class="small">Adaptadores</text>
+      <text x="170" y="30" text-anchor="middle" class="small">Frameworks e drivers</text>
+      <text x="170" y="282" text-anchor="middle" class="small">Web · BD · UI · filas</text>
+      <line class="badl" x1="30" y1="150" x2="130" y2="150" marker-end="url(#arbad)"/><line class="badl" x1="310" y1="150" x2="210" y2="150" marker-end="url(#arbad)"/>
+    </svg>
+    <div>
+      <ol class="mini">
+        <li><b>Entidades</b>: regras de negócio da empresa.</li>
+        <li><b>Casos de uso</b>: regras da aplicação (“arquivar processo”).</li>
+        <li><b>Adaptadores de interface</b>: controllers, presenters, gateways/repositórios.</li>
+        <li><b>Frameworks e drivers</b>: Spring, banco, web, UI.</li>
+      </ol>
+      <div class="say good">Banco e framework são <b>detalhes</b>: dá para testar os casos de uso sem eles.</div>
+    </div>
+  </div>
+  <div class="say law">Regra da Dependência (Robert C. Martin): dependências de <b>código-fonte</b> só podem apontar <b>para dentro</b>. Nada de um círculo interno pode conhecer nomes (classes, funções, variáveis) de um círculo externo.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">NA PRÁTICA</span>
+  <h2>Como o núcleo usa o banco sem conhecê-lo? Portas!</h2>
+<pre><code><span class="c">// NÚCLEO (caso de uso) — nenhum import de JPA ou Spring</span>
+public interface <mark>ProcessoRepository</mark> {          <span class="c">// porta (definida DENTRO)</span>
+  Optional&lt;Processo&gt; porNumero(String numero);
+  void salvar(Processo p);
+}
+public class ArquivarProcesso {
+  private final ProcessoRepository repo;
+  public ArquivarProcesso(ProcessoRepository repo) { this.repo = repo; }
+  public void executar(String numero) {
+    Processo p = repo.porNumero(numero).orElseThrow();
+    p.arquivar();                                    <span class="c">// regra na entidade</span>
+    repo.salvar(p);
+  }
+}
+<span class="c">// CAMADA EXTERNA (adaptador) — depende do núcleo, nunca o contrário</span>
+class ProcessoRepositoryJpa <mark>implements ProcessoRepository</mark> { ... }</code></pre>
+  <div class="say good">É o DIP aplicado à arquitetura. A mesma ideia aparece na <b>Arquitetura Hexagonal</b> (Alistair Cockburn: <b>portas e adaptadores</b>) e na <b>Onion Architecture</b> (Jeffrey Palermo).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">DDD ESTRATÉGICO</span>
+  <h2>DDD: falar a língua do negócio, dentro de fronteiras</h2>
+  <svg viewBox="0 0 680 170" role="img" aria-label="Dois bounded contexts com o termo Parte significando coisas diferentes, ligados por camada anticorrupção">
+    <rect class="okbox" x="10" y="10" width="270" height="150" rx="18"/><text x="145" y="36" text-anchor="middle">Contexto Processual</text>
+    <text x="145" y="80" text-anchor="middle" class="small">“Parte” = autor ou réu,</text><text x="145" y="100" text-anchor="middle" class="small">com advogado e polo</text>
+    <rect class="accbox" x="400" y="10" width="270" height="150" rx="18"/><text x="535" y="36" text-anchor="middle">Contexto Financeiro (custas)</text>
+    <text x="535" y="80" text-anchor="middle" class="small">“Parte” = devedor,</text><text x="535" y="100" text-anchor="middle" class="small">com CPF e guias</text>
+    <rect class="keybox" x="300" y="60" width="80" height="50" rx="10"/><text x="340" y="90" text-anchor="middle" class="kt">ACL</text>
+    <line class="acc" x1="280" y1="85" x2="297" y2="85" marker-end="url(#ar)"/><line class="acc" x1="380" y1="85" x2="397" y2="85" marker-end="url(#ar)"/>
+  </svg>
+  <ul class="mini">
+    <li><b>Linguagem ubíqua</b>: os mesmos termos na fala do especialista e no código.</li>
+    <li><b>Bounded context</b>: fronteira explícita dentro da qual um modelo (e seus termos) é consistente.</li>
+    <li><b>Mapa de contextos</b>: relações como Shared Kernel, Customer/Supplier, Conformist, <b>Anticorruption Layer (ACL)</b>, Open Host Service, Published Language, Separate Ways.</li>
+  </ul>
+  <div class="say law">DDD (Eric Evans, 2003) foca o software no <b>domínio</b> e em sua lógica, construindo um <b>modelo</b> em colaboração com os especialistas. O design <b>estratégico</b> trata de contextos e suas relações; o <b>tático</b>, dos blocos de construção do modelo.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">DDD TÁTICO</span>
+  <h2>Os blocos de construção</h2>
+  <div class="two code">
+    <table class="mini">
+      <tr><th class="k">Bloco</th><th class="k">Marca registrada</th></tr>
+      <tr><td><b>Entidade</b></td><td>tem <b>identidade</b> que persiste (Processo nº X, mesmo mudando)</td></tr>
+      <tr><td><b>Objeto de Valor</b></td><td>sem identidade; igual se os valores são iguais; <b>imutável</b></td></tr>
+      <tr><td><b>Agregado</b></td><td>grupo tratado como unidade de consistência; acesso só pela <b>raiz</b></td></tr>
+      <tr><td><b>Repositório</b></td><td>persistência de <b>agregados</b> (um por raiz)</td></tr>
+      <tr><td><b>Serviço de Domínio</b></td><td>operação de negócio sem dono natural</td></tr>
+      <tr><td><b>Evento de Domínio</b></td><td>fato relevante ocorrido no domínio</td></tr>
+    </table>
+<pre><code><span class="c">// Objeto de Valor com record (Java 16+)</span>
+public <mark>record</mark> Dinheiro(BigDecimal valor,
+                      String moeda) {
+  public Dinheiro {                <span class="c">// valida</span>
+    if (valor.signum() &lt; 0)
+      throw new IllegalArgumentException();
+  }
+  Dinheiro somar(Dinheiro o) {     <span class="c">// novo objeto</span>
+    return new Dinheiro(valor.add(o.valor()), moeda);
+  }
+}</code></pre>
+  </div>
+  <div class="say trap">
+    <div class="ex ng">“Cada entidade do agregado deve ter seu próprio repositório e pode ser referenciada diretamente por outros agregados.”</div>
+    <div class="ex ok">Repositório existe para a <b>raiz</b> do agregado; de fora, só se referencia a raiz (de preferência pelo ID). E o <b>modelo anêmico</b> (entidade só com getters/setters, regras em serviços) é antipadrão no DDD.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Resumo do capítulo</h2>
+  <div class="magic">Kafka guarda e relê (offset); RabbitMQ entrega e apaga (ack).<small>Clean Architecture: dependências só para dentro. DDD: linguagem ubíqua dentro de bounded contexts.</small></div>
+  <ul class="checklist">
+    <li>Evento = fato no passado; comando = pedido.</li>
+    <li>Kafka: ordem por partição; consumer group divide partições.</li>
+    <li>RabbitMQ: direct (chave exata), fanout (todas), topic (* e #), headers.</li>
+    <li>At-least-once duplica → consumidor idempotente. Saga compensa; Outbox evita evento perdido.</li>
+    <li>Entidade (identidade) × Objeto de Valor (imutável) × Agregado (raiz).</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Teste rápido (estilo FGV)</h2>
+  <details><summary>1) Um consumidor Kafka caiu e, ao voltar, precisa reprocessar as mensagens da última semana. Isso é possível?</summary><p><span class="pill ok">Sim</span> Se ainda estiverem no período de retenção: basta reposicionar o offset. As mensagens não somem ao serem lidas.</p></details>
+  <details><summary>2) Routing key <code>tjpb.civel.sentenca</code>: a binding <code>tjpb.#</code> recebe? E <code>tjpb.*</code>?</summary><p><span class="pill ok"><code>tjpb.#</code> sim</span> # casa zero ou mais palavras. <span class="pill ng"><code>tjpb.*</code> não</span> * casa exatamente uma palavra.</p></details>
+  <details><summary>3) Na Clean Architecture, a entidade <code>Processo</code> pode ter anotação do framework web? </summary><p><span class="pill ng">Não, pela regra</span> A entidade é o círculo mais interno e não deve conhecer frameworks (círculo externo).</p></details>
+  <details><summary>4) CPF, Endereço e Dinheiro são, tipicamente, entidades ou objetos de valor?</summary><p><span class="pill ok">Objetos de valor</span> Definidos por seus atributos, sem ciclo de vida próprio e imutáveis.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 5 ===================================================== -->
+<section class="chapter" data-title="Métricas de qualidade e entrega (cobertura, MTTR, frequência de deploy)">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 5</span>
+  <h1>Métricas de qualidade e entrega</h1>
+  <span class="emoji">📏</span>
+  <div class="steps">
+    <div class="step"><b>1. Qualidade do código</b><span>Cobertura, mutação, densidade de defeitos, complexidade.</span></div>
+    <div class="step"><b>2. Confiabilidade</b><span>MTTR, MTBF e disponibilidade — com conta.</span></div>
+    <div class="step"><b>3. Entrega (DORA)</b><span>Frequência de deploy, lead time, falha de mudança, restauração.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🩺</span><div><b>Analogia do dia:</b> métricas são os <b>sinais vitais</b> do software. Febre (defeitos), pressão (complexidade), tempo de recuperação depois de uma gripe (MTTR). Um número só não dá diagnóstico; o conjunto, sim.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">COBERTURA</span>
+  <h2>Cobertura: quanto do código os testes “pisaram”</h2>
+  <div class="two code">
+<pre><code>int desconto(int idade, boolean servidor) {
+  int d = 0;
+  <mark>if (idade &gt;= 60)</mark> d += 10;
+  <mark>if (servidor)</mark>    d += 5;
+  return d;
+}
+<span class="c">// Teste único: desconto(70, true) == 15</span></code></pre>
+    <table class="mini">
+      <tr><th class="k">Critério</th><th class="k">Com 1 teste (70, true)</th></tr>
+      <tr><td>Comandos / linhas</td><td class="hk">100% — todas as linhas rodaram</td></tr>
+      <tr><td>Decisões (branches)</td><td class="hl">50% — os lados <b>falsos</b> dos dois if nunca rodaram</td></tr>
+      <tr><td>Caminhos</td><td class="hl">1 de 4 (V/V, V/F, F/V, F/F)</td></tr>
+    </table>
+  </div>
+  <p>Acrescentando <code>desconto(20, false) == 0</code>, a cobertura de decisões chega a 100% com 2 testes; a de caminhos ainda exigiria 4.</p>
+  <div class="say law">Cobertura de código = percentual de elementos (comandos, decisões, condições, caminhos) executados pelos testes. Hierarquia: <b>100% de decisões implica 100% de comandos</b>, mas não o inverso.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>Cobertura alta = testes bons?</h2>
+  <div class="two">
+    <div><div class="ex ng">Teste que “cobre” e não verifica nada</div>
+<pre><code>@Test void testaDesconto() {
+  desconto(70, true);   <span class="c">// sem assert!</span>
+}</code></pre><p class="mini">Cobertura de linhas: 100%. Bugs encontrados: zero.</p></div>
+    <div><div class="ex ok">Teste de mutação dá a resposta</div>
+      <p class="mini">A ferramenta (ex.: PIT, em Java) cria <b>mutantes</b>: troca <code>&gt;=</code> por <code>&gt;</code>, <code>+=</code> por <code>-=</code>… Se algum teste falha, o mutante foi <b>morto</b>.</p>
+      <div class="calc">escore de mutação = mutantes mortos ÷ mutantes (não equivalentes)</div>
+      <p class="mini">Para matar o mutante <code>idade &gt; 60</code>, é preciso testar a <b>fronteira</b> <code>idade = 60</code>.</p></div>
+  </div>
+  <div class="say trap">
+    <div class="ex ng">“100% de cobertura de comandos garante a ausência de defeitos.”</div>
+    <div class="ex ok">Cobertura mostra o que <b>não</b> foi testado; não prova que o testado está certo. Testes mostram a presença de defeitos, não sua ausência.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">DEFEITOS</span>
+  <h2>Densidade de defeitos e outras métricas de produto</h2>
+  <div class="calc">densidade de defeitos = nº de defeitos ÷ tamanho<br>ex.: 18 defeitos em 12 KLOC → 18 ÷ 12 = <b>1,5 defeito/KLOC</b></div>
+  <p class="mini">O tamanho pode ser KLOC (mil linhas) ou <b>pontos de função</b> — este último compara linguagens diferentes de forma mais justa.</p>
+  <table class="cmp mini">
+    <tr><th>Métrica</th><th>O que indica</th></tr>
+    <tr><td><b>Defeitos escapados</b></td><td>bugs achados em produção em vez de nos testes</td></tr>
+    <tr><td><b>Duplicação</b></td><td>% de código repetido (manutenção mais cara)</td></tr>
+    <tr><td><b>Acoplamento / coesão</b></td><td>métricas CK: CBO (acoplamento entre objetos), LCOM (falta de coesão), DIT (profundidade de herança), NOC (nº de filhos), WMC, RFC</td></tr>
+    <tr><td><b>Dívida técnica</b></td><td>esforço estimado para corrigir problemas de manutenibilidade</td></tr>
+  </table>
+  <div class="say good">Ferramentas como o <b>SonarQube</b> reúnem essas métricas e aplicam um <b>quality gate</b> (porta de qualidade): se o código novo não atinge as condições (cobertura mínima, sem bugs graves…), o pipeline reprova. Os limites exatos dependem da configuração.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">COMPLEXIDADE</span>
+  <h2>Complexidade ciclomática (McCabe)</h2>
+  <div class="two code">
+    <svg viewBox="0 0 300 300" role="img" aria-label="Grafo de fluxo com dois ifs: 6 nós e 7 arestas">
+      <circle cx="150" cy="24" r="18" class="box"/><text x="150" y="29" text-anchor="middle">1</text>
+      <circle cx="150" cy="88" r="18" class="keybox"/><text x="150" y="93" text-anchor="middle" class="kt">2</text>
+      <circle cx="230" cy="138" r="18" class="box"/><text x="230" y="143" text-anchor="middle">3</text>
+      <circle cx="150" cy="188" r="18" class="keybox"/><text x="150" y="193" text-anchor="middle" class="kt">4</text>
+      <circle cx="230" cy="236" r="18" class="box"/><text x="230" y="241" text-anchor="middle">5</text>
+      <circle cx="150" cy="276" r="18" class="box"/><text x="150" y="281" text-anchor="middle">6</text>
+      <line x1="150" y1="42" x2="150" y2="68" marker-end="url(#arg)"/>
+      <line class="okl" x1="164" y1="100" x2="214" y2="128" marker-end="url(#arok)"/>
+      <line class="badl" x1="150" y1="106" x2="150" y2="168" marker-end="url(#arbad)"/>
+      <line x1="216" y1="150" x2="166" y2="178" marker-end="url(#arg)"/>
+      <line class="okl" x1="164" y1="200" x2="214" y2="226" marker-end="url(#arok)"/>
+      <line class="badl" x1="150" y1="206" x2="150" y2="256" marker-end="url(#arbad)"/>
+      <line x1="216" y1="248" x2="166" y2="268" marker-end="url(#arg)"/>
+      <text x="20" y="93" class="small">if idade</text><text x="20" y="193" class="small">if servidor</text>
+    </svg>
+    <div>
+      <p>Grafo da função <code>desconto</code>: <b>N = 6</b> nós, <b>E = 7</b> arestas, <b>P = 1</b> componente.</p>
+      <div class="calc">M = E − N + 2P<br>M = 7 − 6 + 2 = <b>3</b><br>atalho: decisões + 1 = 2 + 1 = <b>3</b></div>
+      <p class="mini">M = nº de <b>caminhos linearmente independentes</b> → mínimo de casos de teste do <i>teste de caminho básico</i>. Note: 3 ≠ 4 caminhos completos.</p>
+    </div>
+  </div>
+  <div class="say law">Complexidade ciclomática mede a complexidade estrutural pelo grafo de fluxo de controle: <b>V(G) = E − N + 2P</b>. Valores altos indicam código difícil de testar e manter.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">MTTR · MTBF</span>
+  <h2>Quanto tempo fica de pé? Quanto tempo leva para voltar?</h2>
+  <svg viewBox="0 0 680 120" role="img" aria-label="Linha do tempo de 30 dias com três falhas de 20, 40 e 60 minutos">
+    <rect class="okbox" x="10" y="30" width="660" height="40" rx="8"/>
+    <rect class="badbox" x="150" y="30" width="12" height="40"/><rect class="badbox" x="360" y="30" width="20" height="40"/><rect class="badbox" x="560" y="30" width="28" height="40"/>
+    <text x="156" y="22" text-anchor="middle" class="small">20 min</text><text x="370" y="22" text-anchor="middle" class="small">40 min</text><text x="574" y="22" text-anchor="middle" class="small">60 min</text>
+    <text x="10" y="94" class="small">dia 1</text><text x="670" y="94" text-anchor="end" class="small">dia 30 (720 h)</text>
+    <text x="340" y="112" text-anchor="middle" class="small">verde = funcionando · vermelho = fora do ar</text>
+  </svg>
+  <div class="calc">MTTR = tempo total de reparo ÷ nº de incidentes = (20+40+60) ÷ 3 = <b>40 min</b><br>
+  MTBF = tempo em operação ÷ nº de falhas = (720 h − 2 h) ÷ 3 ≈ <b>239,3 h</b><br>
+  Disponibilidade = MTBF ÷ (MTBF + MTTR) = 239,3 ÷ (239,3 + 0,67) ≈ <b>99,72%</b></div>
+  <div class="say good">Confere: 718 h no ar ÷ 720 h = 99,72%. Para <b>aumentar a disponibilidade</b>: falhar menos (↑MTBF) <b>ou</b> voltar mais rápido (↓MTTR).</div>
+  <div class="say law">MTTR (<i>Mean Time To Repair/Recovery/Restore</i>) é o tempo médio para restabelecer o serviço após uma falha. O “R” varia conforme a fonte (reparo, recuperação, resolução); leia como o enunciado define.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">DORA</span>
+  <h2>As 4 métricas-chave de entrega (DORA)</h2>
+  <svg viewBox="0 0 680 200" role="img" aria-label="Quatro métricas DORA divididas em velocidade e estabilidade">
+    <rect class="accbox" x="10" y="10" width="325" height="180" rx="16"/><text x="172" y="36" text-anchor="middle">⚡ Velocidade (throughput)</text>
+    <rect class="box" x="26" y="52" width="293" height="60" rx="10"/><text x="172" y="78" text-anchor="middle">Frequência de deploy</text><text x="172" y="100" text-anchor="middle" class="small">com que frequência vai para produção</text>
+    <rect class="box" x="26" y="120" width="293" height="60" rx="10"/><text x="172" y="146" text-anchor="middle">Lead time de mudanças</text><text x="172" y="168" text-anchor="middle" class="small">do commit até rodar em produção</text>
+    <rect class="okbox" x="345" y="10" width="325" height="180" rx="16"/><text x="507" y="36" text-anchor="middle">🛡️ Estabilidade</text>
+    <rect class="box" x="361" y="52" width="293" height="60" rx="10"/><text x="507" y="78" text-anchor="middle">Taxa de falha de mudança</text><text x="507" y="100" text-anchor="middle" class="small">% de deploys que causam falha</text>
+    <rect class="box" x="361" y="120" width="293" height="60" rx="10"/><text x="507" y="146" text-anchor="middle">Tempo para restaurar (MTTR)</text><text x="507" y="168" text-anchor="middle" class="small">quanto leva para voltar ao normal</text>
+  </svg>
+  <p class="mini">Programa DORA (DevOps Research and Assessment), base do livro <i>Accelerate</i> e do relatório anual <i>State of DevOps</i>. Nos relatórios, os times de melhor desempenho fazem deploy <b>sob demanda</b> (várias vezes ao dia) e restauram em <b>menos de uma hora</b>. As faixas e até os nomes de métricas mudam entre edições (relatórios recentes chamam a restauração de <i>failed deployment recovery time</i>) — confira o relatório oficial.</p>
+  <div class="say law">Achado central do DORA: <b>velocidade e estabilidade não são opostas</b>; os melhores times são bons nas duas ao mesmo tempo.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">EXEMPLO</span>
+  <h2>Calculando as 4 chaves de um mês</h2>
+  <table class="mini">
+    <tr><th class="k">Dado do mês</th><th class="k">Métrica</th><th class="k">Resultado</th></tr>
+    <tr><td>40 deploys em 20 dias úteis</td><td>Frequência de deploy</td><td class="hk">2 por dia útil</td></tr>
+    <tr><td>commits levaram, em média, 6 h até produção</td><td>Lead time de mudanças</td><td class="hk">6 horas</td></tr>
+    <tr><td>4 dos 40 deploys geraram incidente ou rollback</td><td>Taxa de falha de mudança</td><td class="hk">4 ÷ 40 = 10%</td></tr>
+    <tr><td>esses 4 incidentes somaram 2 h de restauração</td><td>Tempo para restaurar</td><td class="hk">2 h ÷ 4 = 30 min</td></tr>
+  </table>
+  <div class="say trap">
+    <div class="ex ng">“Lead time de mudanças é o tempo desde a abertura do pedido pelo cliente até a entrega.”</div>
+    <div class="ex ok">No DORA, é do <b>commit</b> (código pronto) até estar <b>em produção</b>. O tempo desde o pedido do cliente é o lead time do fluxo/Kanban, mais amplo.</div>
+    <div class="ex ng">“Para reduzir a taxa de falha, o ideal é fazer deploys grandes e raros.”</div>
+    <div class="ex ok">Lotes <b>pequenos e frequentes</b> reduzem risco e facilitam restaurar — por isso CI/CD, feature flags e testes automatizados melhoram as quatro.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">CUIDADO</span>
+  <h2>Métrica vira meta → deixa de medir</h2>
+  <div class="analogy"><span class="emoji">🎯</span><div><b>Lei de Goodhart:</b> se a meta é “90% de cobertura”, surgem testes sem assert. Se a meta é “muitos deploys”, surgem deploys vazios. O número sobe; a qualidade, não.</div></div>
+  <table class="cmp mini">
+    <tr><th>Boa prática</th><th>Por quê</th></tr>
+    <tr><td>Olhar métricas em <b>conjunto</b> (velocidade + estabilidade)</td><td>uma compensa a manipulação da outra</td></tr>
+    <tr><td>Medir <b>tendência</b> do time, não ranquear pessoas</td><td>comparar times diferentes distorce</td></tr>
+    <tr><td>Exigir cobertura no <b>código novo</b></td><td>melhora contínua sem travar legado</td></tr>
+    <tr><td>Combinar cobertura com <b>mutação</b> e revisão</td><td>mede se o teste realmente verifica</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Resumo do capítulo</h2>
+  <div class="magic">MTTR = reparo total ÷ nº de incidentes. Decisão 100% ⇒ comando 100%, nunca o contrário.<small>DORA: 2 de velocidade (frequência de deploy, lead time) + 2 de estabilidade (taxa de falha, tempo para restaurar).</small></div>
+  <ul class="checklist">
+    <li>Cobertura mostra o que falta testar; mutação mostra se os testes verificam.</li>
+    <li>Densidade de defeitos = defeitos ÷ KLOC (ou pontos de função).</li>
+    <li>Ciclomática: E − N + 2P = decisões + 1 = mínimo de caminhos independentes.</li>
+    <li>Disponibilidade = MTBF ÷ (MTBF + MTTR).</li>
+    <li>Velocidade e estabilidade andam juntas; métricas não devem virar meta isolada.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Teste rápido (estilo FGV)</h2>
+  <details><summary>1) Em um mês houve 5 incidentes que somaram 150 minutos de indisponibilidade. Qual o MTTR?</summary><p><span class="pill ok">30 min</span> 150 ÷ 5. Cuidado para não responder 150 (total) nem dividir ao contrário.</p></details>
+  <details><summary>2) Um método tem um <code>if</code> e um <code>while</code>, sem outras decisões. Complexidade ciclomática?</summary><p><span class="pill ok">3</span> Cada <code>if</code>/<code>while</code> conta como decisão: 2 + 1 = 3.</p></details>
+  <details><summary>3) “Atingir 100% de cobertura de comandos garante 100% de cobertura de decisões.” Certo ou errado?</summary><p><span class="pill ng">Errado</span> É o inverso: decisões ⇒ comandos. Um <code>if</code> sem <code>else</code> executado só no lado verdadeiro já cobre todas as linhas.</p></details>
+  <details><summary>4) Frequência de deploy e lead time de mudanças medem velocidade ou estabilidade?</summary><p><span class="pill ok">Velocidade</span> As de estabilidade são taxa de falha de mudança e tempo para restaurar o serviço.</p></details>
+</div>
+
+</section>
+
+<script src="aula.js"></script></body></html>

@@ -1,0 +1,711 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Prova Discursiva (Estudo de Caso) — aulas visuais</title><link rel="stylesheet" href="aula.css">
+<style>
+.mini{font-size:15.5px}
+.cmp td,.cmp th{padding:7px 9px}
+pre{background:var(--cell);border:2px solid var(--line);border-radius:14px;padding:12px 14px;overflow-x:auto;font-size:14.5px;line-height:1.45;white-space:pre-wrap}
+</style>
+</head>
+<body data-subject="discursiva" data-title="Prova Discursiva (Estudo de Caso)">
+
+<!-- ===================================================== CAPÍTULO 1 ===================================================== -->
+<section class="chapter" data-title="O Que é o Estudo de Caso FGV">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 1</span>
+  <h1>O Que é o Estudo de Caso FGV</h1>
+  <span class="emoji">📝</span>
+  <div class="steps">
+    <div class="step"><b>1. Parecer, não redação</b><span>Você resolve um problema real do tribunal como analista.</span></div>
+    <div class="step"><b>2. Regras do Edital</b><span>30 linhas, 40 pontos, caneta azul ou preta, sem consulta.</span></div>
+    <div class="step"><b>3. Armadilhas do Zero</b><span>Código SQL/Java na folha e marcas pessoais zeram a prova.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🩺</span><div><b>Analogia do Médico de Plantão:</b> na redação escolar você filosofa sobre "a saúde no Brasil". No <b>estudo de caso</b>, o paciente chega com febre e dor (contexto), você dá o diagnóstico (problemas), explica a causa (teoria/norma) e receita o remédio (solução).</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">VISÃO GERAL DO EDITAL</span>
+  <h2>Quanto vale e como funciona na prova</h2>
+  <p>Na 2ª retificação do edital do TJPB (itens 10.7 a 10.7.3), a discursiva representa <b>40% de toda a nota do concurso</b>.</p>
+  <svg viewBox="0 0 660 200" role="img" aria-label="Composição da nota final: 60 pontos objetiva e 40 pontos discursiva">
+    <rect class="box" x="20" y="22" width="360" height="74" rx="12"/>
+    <text x="200" y="54" text-anchor="middle">Prova Objetiva (60 pts · 60%)</text>
+    <text x="200" y="76" text-anchor="middle" class="small">10 Port + 10 RLM + 40 Específicos</text>
+    <rect class="keybox" x="394" y="22" width="246" height="74" rx="12"/>
+    <text class="kt" x="517" y="54" text-anchor="middle">Discursiva (40 pts · 40%)</text>
+    <text class="kt" x="517" y="76" text-anchor="middle" class="small">1 Estudo de Caso · 30 linhas</text>
+    <rect class="okbox" x="20" y="114" width="300" height="64" rx="12"/>
+    <text x="170" y="142" text-anchor="middle">Mínimo do Edital (60%)</text>
+    <text x="170" y="162" text-anchor="middle" class="small">24,0 pts (ampla) · 19,2 pts (cotas)</text>
+    <rect class="accbox" x="340" y="114" width="300" height="64" rx="12"/>
+    <text x="490" y="142" text-anchor="middle">Meta de 1º Lugar</text>
+    <text x="490" y="162" text-anchor="middle" class="small">34 a 37 pts (margem de erro 3–6 pts)</text>
+  </svg>
+  <p class="mini">Tempo total de prova: <b>5 horas</b> (13h às 18h). Reserve <b>60 a 75 minutos</b> só para planejar e passar a limpo a discursiva.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">OS 4 PASSOS OBRIGATÓRIOS</span>
+  <h2>O que a banca manda você fazer</h2>
+  <p>O assunto sai dos <b>Conhecimentos Específicos</b> do cargo (Anexo I, Cargo 5 + Fundamentos comuns de TI). O edital define exatamente o roteiro mental:</p>
+  <div class="flow">
+    <span>1. Analisar o contexto</span><i>→</i>
+    <span>2. Identificar problemas</span><i>→</i>
+    <span>3. Aplicar teoria e normas</span><i>→</i>
+    <span>4. Propor solução</span>
+  </div>
+  <div class="say law">Conforme o edital (10.7.1 e 10.7.2, 2ª retificação), o estudo de caso apresenta situação-problema hipotética ou real das atribuições do cargo, exigindo análise crítica, identificação dos problemas, fundamentação teórica/normativa e encaminhamento objetivo.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">REDAÇÃO × ESTUDO DE CASO</span>
+  <h2>Por que o estilo "ENEM" reprova aqui</h2>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Critério</th><th class="ng">Redação Dissertativa (Errado)</th><th class="ok">Estudo de Caso FGV (Certo)</th></tr>
+    <tr><td><b>Abertura</b></td><td class="hl">"Desde a Antiguidade, a tecnologia evolui..."</td><td class="hk">"O cenário apresenta quatro problemas: (1)..."</td></tr>
+    <tr><td><b>Foco</b></td><td class="hl">Opinião geral sobre a sociedade</td><td class="hk">Diagnóstico técnico do caso do tribunal</td></tr>
+    <tr><td><b>Vocabulário</b></td><td class="hl">"Sistema moderno, rápido e seguro"</td><td class="hk">"Balanceador stateless, Redis, TLS, LGPD"</td></tr>
+    <tr><td><b>Fechamento</b></td><td class="hl">"Portanto, cabe ao governo investir mais"</td><td class="hk">"Conclui-se que a migração gradual reduz..."</td></tr>
+  </table></div>
+  <div class="say good"><b>Regra de ouro:</b> zero enrolação. Cada frase da folha definitiva deve carregar um problema, um conceito, uma norma ou uma ação concreta.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">COMO A FGV CORRIGE</span>
+  <h2>O segredo do "Padrão de Resposta"</h2>
+  <p>O edital do TJPB não publica uma tabela prévia de pontos por item. Porém, na prática usual da FGV, a correção usa um <b>espelho (padrão de resposta)</b> com itens objetivos.</p>
+  <svg viewBox="0 0 660 190" role="img" aria-label="Como o corretor pontua usando o padrão de resposta FGV">
+    <rect class="box" x="20" y="25" width="190" height="135" rx="12"/>
+    <text x="115" y="55" text-anchor="middle">Enunciado</text>
+    <text x="115" y="82" text-anchor="middle" class="small">• Identifique os problemas</text>
+    <text x="115" y="104" text-anchor="middle" class="small">• Fundamente com norma</text>
+    <text x="115" y="126" text-anchor="middle" class="small">• Proponha arquitetura</text>
+    <line x1="216" y1="92" x2="256" y2="92" stroke="#6d4aff" stroke-width="3"/>
+    <rect class="keybox" x="262" y="25" width="180" height="135" rx="12"/>
+    <text class="kt" x="352" y="55" text-anchor="middle">Checklist da Banca</text>
+    <text class="kt" x="352" y="82" text-anchor="middle" class="small">[✓] Citou Teorema CAP?</text>
+    <text class="kt" x="352" y="104" text-anchor="middle" class="small">[✓] Citou LGPD / CNJ?</text>
+    <text class="kt" x="352" y="126" text-anchor="middle" class="small">[✓] Deu solução real?</text>
+    <line x1="448" y1="92" x2="488" y2="92" stroke="#6d4aff" stroke-width="3"/>
+    <rect class="okbox" x="494" y="25" width="146" height="135" rx="12"/>
+    <text x="567" y="55" text-anchor="middle">Sua Nota</text>
+    <text x="567" y="92" text-anchor="middle">Soma dos itens</text>
+    <text x="567" y="116" text-anchor="middle" class="small">+ clareza/estrutura</text>
+  </svg>
+  <p class="mini">Observação: a tabela oficial de distribuição de pontos não é publicada no edital; confira sempre as regras oficiais de correção da banca.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">PERIGO MÁXIMO</span>
+  <h2>As 8 causas de Nota ZERO (Edital 10.7.3)</h2>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Alínea</th><th>O que dá ZERO</th><th>Como evitar na hora</th></tr>
+    <tr><td><b>(a) / (b) / (c)</b></td><td class="hl">Folha em branco, fugir do tema ou do formato</td><td class="hk">Responda ao caso pedido em texto corrido técnico</td></tr>
+    <tr><td><b>(d)</b></td><td class="hl">Ilegível, desenhos, números soltos, versos, <b>código alheio ao português</b></td><td class="hk">Letra legível, sem diagramas, <b>zero SQL/Java/YAML</b></td></tr>
+    <tr><td><b>(e) / (f)</b></td><td class="hl">Caneta fora do padrão ou cópia/plágio</td><td class="hk">Só caneta azul ou preta de corpo transparente</td></tr>
+    <tr><td><b>(g)</b></td><td class="hl">Qualquer marca de identificação</td><td class="hk">Nunca assine, rubrique ou faça símbolos</td></tr>
+    <tr><td><b>(h)</b></td><td class="hl">Resposta técnica plenamente incorreta</td><td class="hk">Não invente conceitos nem normas inexistentes</td></tr>
+  </table></div>
+</div>
+
+<div class="slide">
+  <span class="tag">ARMADILHA CLÁSSICA DE TI</span>
+  <h2>Posso escrever código SQL ou Java na discursiva?</h2>
+  <div class="say trap">O edital 10.7.3(d) dá <b>nota ZERO</b> para "códigos alheios à língua portuguesa escrita". Mesmo em prova de Desenvolvedor, escrever um bloco <code>SELECT ... JOIN</code> ou <code>public class</code> pode anular sua questão!</div>
+  <div class="two">
+    <div class="card">
+      <span class="pill ng">NÃO ESCREVA ASSIM</span>
+      <p class="mini"><code>CREATE INDEX idx_proc ON processo(cpf, data);</code></p>
+      <p class="mini"><code>if (tentativas &gt; 3) circuitBreaker.open();</code></p>
+    </div>
+    <div class="card">
+      <span class="pill ok">ESCREVA ASSIM</span>
+      <p class="mini">"Recomenda-se a criação de <b>índice composto</b> sobre os campos de busca, além da adoção do padrão <b>circuit breaker</b> para evitar falhas em cascata."</p>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">GESTÃO DO TEMPO</span>
+  <h2>Como encaixar 30 linhas nas 5 horas de prova</h2>
+  <p>Muita gente sabe a matéria, mas deixa 20 minutos para o final e escreve correndo, com letra ilegível e esquecendo comandos.</p>
+  <div class="steps">
+    <div class="step"><b>0–10 min</b><span>Ler o caso, grifar problemas e listar comandos.</span></div>
+    <div class="step"><b>10–25 min</b><span>Rascunhar tópicos: Problema → Norma → Solução.</span></div>
+    <div class="step"><b>25–55 min</b><span>Escrever texto definitivo em 30 linhas sem rasura.</span></div>
+    <div class="step"><b>55–65 min</b><span>Revisar cada comando e checar riscos de nota zero.</span></div>
+  </div>
+  <p class="mini">Dica prática: verifique no caderno de prova no dia do exame onde há espaço oficial para rascunho.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 1</span>
+  <h2>O que você precisa levar para a prova</h2>
+  <div class="magic">Parecer técnico em 30 linhas = Diagnóstico + Norma + Solução em português claro, sem código e sem marca pessoal.<small>Meta: 34 a 37 de 40 pontos · Mínimo do edital: 24 (ampla) / 19,2 (cotas).</small></div>
+  <ul class="checklist">
+    <li>Estudo de caso exige: analisar contexto, listar problemas, fundamentar e propor solução.</li>
+    <li>Nunca escreva trechos de código (SQL, Java, YAML) nem desenhe setas/diagramas na folha definitiva.</li>
+    <li>Use apenas caneta azul ou preta e nunca deixe nome, rubrica ou sinal identificador.</li>
+    <li>Reserve 60 a 75 minutos dentro das 5 horas de prova para planejar e redigir com calma.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 1</span>
+  <h2>4 questões no estilo FGV</h2>
+  <details><summary>1. Quantas linhas e quantos pontos tem a discursiva do TJPB (2ª retificação)?</summary><p><b>Resposta:</b> 1 estudo de caso, máximo de <b>30 linhas</b>, valendo <b>40 pontos</b> (40% da nota final), com mínimo de 24 pontos (ampla) ou 19,2 (cotas).</p></details>
+  <details><summary>2. Por que o candidato deve evitar escrever comandos SQL ou blocos de código na folha definitiva?</summary><p><b>Resposta:</b> O item 10.7.3(d) do edital prevê <b>nota zero</b> para "códigos alheios à língua portuguesa escrita". Descreva tudo em português usando os nomes técnicos dos conceitos.</p></details>
+  <details><summary>3. Qual a diferença central entre uma redação dissertativa e um estudo de caso técnico?</summary><p><b>Resposta:</b> A redação debate um tema amplo; o estudo de caso resolve uma situação-problema concreta do cargo, exigindo diagnóstico objetivo, fundamentação técnica/normativa e proposta aplicável.</p></details>
+  <details><summary>4. O candidato pode fazer um pequeno fluxograma com caixas e setas na folha definitiva para ilustrar a arquitetura?</summary><p><b>Resposta:</b> <b>Não!</b> O item 10.7.3(d) também veda desenhos na folha definitiva, sob pena de nota zero. Descreva o fluxo em texto corrido.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 2 ===================================================== -->
+<section class="chapter" data-title="Anatomia da Resposta em 30 Linhas">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 2</span>
+  <h1>Anatomia da Resposta em 30 Linhas</h1>
+  <span class="emoji">🦴</span>
+  <div class="steps">
+    <div class="step"><b>1. Esqueleto Fixo</b><span>5 blocos proporcionais para caber exatamente em 30 linhas.</span></div>
+    <div class="step"><b>2. Caça aos Comandos</b><span>Como ler os verbos da FGV sem pular nenhum ponto.</span></div>
+    <div class="step"><b>3. Vocabulário Exato</b><span>Trocar palavras vagas por termos que estão no espelho.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🧳</span><div><b>Analogia da Mala de Bordo:</b> 30 linhas é uma mala pequena de avião. Se você enfiar 15 linhas de introdução bonita (casaco gigante), não sobra espaço para a solução técnica (roupa essencial). Cada bloco tem seu compartimento exato!</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">ESQUELETO DE 30 LINHAS</span>
+  <h2>A planta baixa da sua resposta</h2>
+  <svg viewBox="0 0 660 245" role="img" aria-label="Distribuição das 30 linhas em 5 blocos estruturados">
+    <rect class="accbox" x="20" y="14" width="620" height="36" rx="8"/>
+    <text x="35" y="37">1. Diagnóstico (3–4 linhas) — Contexto + problemas numerados (1 a 4)</text>
+    <rect class="box" x="20" y="58" width="620" height="48" rx="8"/>
+    <text x="35" y="87">2. Fundamentação (8–10 linhas) — Para cada problema: conceito técnico + norma</text>
+    <rect class="okbox" x="20" y="114" width="620" height="54" rx="8"/>
+    <text x="35" y="146">3. Proposta Concreta (10–12 linhas) — Solução ordenada: arquitetura, dados, segurança</text>
+    <rect class="keybox" x="20" y="176" width="620" height="34" rx="8"/>
+    <text class="kt" x="35" y="198">4. Riscos e Trade-offs (3–4 linhas) — O que pode falhar, custo e mitigação</text>
+    <rect class="box" x="20" y="218" width="620" height="24" rx="8"/>
+    <text x="35" y="235" style="font-size:13px">5. Fecho (1–2 linhas) — Resultado esperado em 1 frase objetiva</text>
+  </svg>
+  <p class="mini">Repare que <b>Fundamentação + Proposta</b> ocupam cerca de <b>20 das 30 linhas</b> (dois terços do texto). É ali que mora a maioria dos pontos!</p>
+</div>
+
+<div class="slide">
+  <span class="tag">BLOCO 1 E BLOCO 2</span>
+  <h2>Como abrir forte sem gastar linhas</h2>
+  <p>Esqueça frases de efeito. Comece o parágrafo 1 listando os problemas numerados — isso facilita a vida do corretor na hora de dar nota.</p>
+  <div class="say good"><b>Modelo de Diagnóstico (4 linhas):</b> "O cenário apresenta quatro problemas: (1) ponto único de falha do monólito; (2) contenção no banco relacional; (3) exposição de dados pessoais em logs, violando a LGPD; e (4) ausência de interoperabilidade e governança de IA."</div>
+  <p class="mini">Na sequência (Bloco 2), você ataca os itens <b>na mesma ordem (1, 2, 3, 4)</b>, ligando cada um ao conceito técnico e à norma aplicável.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">BLOCOS 3, 4 E 5</span>
+  <h2>Proposta ordenada, Trade-off e Fecho</h2>
+  <ul>
+    <li><b>Proposta (10–12L):</b> organize por camadas — primeiro infraestrutura/disponibilidade, depois arquitetura/integração, depois dados/segurança e processo (CI/CD).</li>
+    <li><b>Riscos e Trade-offs (3–4L):</b> mostre maturidade! Ex.: "A migração incremental reduz risco de parada, mas exige convivência temporária com o legado e maior observabilidade."</li>
+    <li><b>Fecho (1–2L):</b> uma única frase resumindo o ganho de disponibilidade, conformidade legal e integração.</li>
+  </ul>
+  <div class="say law">Um parecer técnico completo não vende "bala de prata": ele mostra o benefício da solução, o custo envolvido (trade-off) e como mitigar riscos.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">LENDO A BANCA FGV</span>
+  <h2>Os verbos de comando que valem ponto</h2>
+  <p>Analisando provas reais recentes da FGV (ALEGO 2026, MP/ES 2026), o enunciado sempre traz um contexto curto seguido de <b>comandos objetivos</b>.</p>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Verbo no enunciado</th><th>O que o corretor espera ler</th><th>Erro que faz perder ponto</th></tr>
+    <tr><td><b>Identifique / Cite</b></td><td>Nome exato do problema, pilar ou norma</td><td class="hl">Dar volta sem nomear o termo</td></tr>
+    <tr><td><b>Descreva / Explique</b></td><td>Como funciona na prática (mecanismo)</td><td class="hl">Só citar o nome sem explicar</td></tr>
+    <tr><td><b>Compare / Diferencie</b></td><td>Critério A vs. Critério B lado a lado</td><td class="hl">Falar só de um e esquecer o outro</td></tr>
+    <tr><td><b>Justifique</b></td><td>O <b>porquê</b> técnico ou normativo da escolha</td><td class="hl">Responder apenas "sim" ou "não"</td></tr>
+    <tr><td><b>Proponha</b></td><td>Ação concreta em ordem de execução</td><td class="hl">Conselho vago ("melhorar o sistema")</td></tr>
+  </table></div>
+</div>
+
+<div class="slide">
+  <span class="tag">PRECISÃO DE VOCABULÁRIO</span>
+  <h2>Termo vago (0 pts) × Termo exato (nota máxima)</h2>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th class="ng">Frase vaga (evite!)</th><th class="ok">Termo técnico exato (use!)</th></tr>
+    <tr><td class="hl">"Usar um login mais moderno e seguro"</td><td class="hk">"Autenticação via OAuth 2.0, OpenID Connect e JWT"</td></tr>
+    <tr><td class="hl">"Deixar o banco rápido nas consultas e seguro"</td><td class="hk">"Teorema CAP: consistência forte (ACID) na gravação e eventual em réplicas de leitura"</td></tr>
+    <tr><td class="hl">"Colocar uma fila para não travar na hora do pico"</td><td class="hk">"Mensageria assíncrona (Kafka/RabbitMQ), cache Redis e circuit breaker"</td></tr>
+    <tr><td class="hl">"Esconder os dados dos clientes no arquivo de erro"</td><td class="hk">"Mascaramento de logs, minimização de dados e privacidade por padrão (LGPD)"</td></tr>
+  </table></div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA DA FGV</span>
+  <h2>Esquecer um "subcomando" escondido no texto</h2>
+  <div class="say trap">Muitas vezes um único item do enunciado tem <b>dois comandos juntos</b>: <i>"Identifique o problema de banco de dados <b>e justifique</b> a escolha da estratégia de consistência."</i> Quem só identifica ganha metade dos pontos!</div>
+  <svg viewBox="0 0 660 140" role="img" aria-label="Técnica de marcar cada comando com visto antes de passar a limpo">
+    <rect class="box" x="20" y="20" width="200" height="96" rx="12"/>
+    <text x="120" y="52" text-anchor="middle">1. Sublinhe verbos</text>
+    <text x="120" y="76" text-anchor="middle" class="small">"Identifique" + "Justifique"</text>
+    <text x="120" y="96" text-anchor="middle" class="small">+ "Proponha"</text>
+    <line x1="226" y1="68" x2="266" y2="68" stroke="#6d4aff" stroke-width="3"/>
+    <rect class="accbox" x="272" y="20" width="180" height="96" rx="12"/>
+    <text x="362" y="52" text-anchor="middle">2. Numere no rascunho</text>
+    <text x="362" y="76" text-anchor="middle" class="small">1 bloco para cada</text>
+    <text x="362" y="96" text-anchor="middle" class="small">comando na ordem</text>
+    <line x1="458" y1="68" x2="498" y2="68" stroke="#6d4aff" stroke-width="3"/>
+    <rect class="okbox" x="504" y="20" width="136" height="96" rx="12"/>
+    <text x="572" y="52" text-anchor="middle">3. Dê visto [✓]</text>
+    <text x="572" y="76" text-anchor="middle" class="small">Só passe a limpo</text>
+    <text x="572" y="96" text-anchor="middle" class="small">com todos [✓]</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">ESTÉTICA NA FOLHA</span>
+  <h2>Legibilidade também protege sua nota</h2>
+  <ul>
+    <li><b>Parágrafos claros:</b> separe Diagnóstico, Fundamentação, Proposta e Fecho em parágrafos distintos com recuo padrão.</li>
+    <li><b>Sem títulos ou listas com bolinhas:</b> escreva em prosa contínua, usando marcadores textuais como <i>"(1)... (2)..."</i> ou <i>"Em primeiro lugar..."</i>.</li>
+    <li><b>Errou uma palavra?</b> Passe apenas um traço simples horizontal sobre ela e continue ao lado (nunca rabisque nem use corretivo).</li>
+    <li><b>Respeite as margens:</b> não ultrapasse a linha 30 nem deixe texto fora da caixa delimitada.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 2</span>
+  <h2>Fórmula da resposta nota 36+</h2>
+  <div class="magic">3–4L Diagnóstico + 8–10L Fundamentação + 10–12L Proposta + 3–4L Trade-offs + 1–2L Fecho.<small>Cada comando respondido na ordem + termo técnico exato + norma aplicável.</small></div>
+  <ul class="checklist">
+    <li>Não desperdice linhas com introdução filosófica; comece numerando os problemas.</li>
+    <li>Conecte cada problema identificado a um conceito exato e uma norma, quando aplicável.</li>
+    <li>Explicite o trade-off da solução (o que se ganha, o que custa e como mitigar).</li>
+    <li>Dê um visto em cada verbo de comando do enunciado antes de passar a limpo.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 2</span>
+  <h2>4 questões no estilo FGV</h2>
+  <details><summary>1. Quantas linhas devem ser dedicadas, em média, à Fundamentação e à Proposta somadas?</summary><p><b>Resposta:</b> Cerca de <b>18 a 22 linhas</b> (8–10 para Fundamentação e 10–12 para Proposta), pois são os blocos com maior concentração de itens pontuáveis.</p></details>
+  <details><summary>2. O que significa o verbo "justifique" nos enunciados da FGV?</summary><p><b>Resposta:</b> Exige explicitar a <b>razão técnica ou normativa</b> da afirmação. Citar apenas o nome do conceito ou responder "sim/não" faz perder metade ou toda a pontuação do item.</p></details>
+  <details><summary>3. Por que devemos evitar expressões como "melhorar a segurança" na discursiva?</summary><p><b>Resposta:</b> Porque o corretor busca termos específicos do edital (como <b>OAuth 2.0, JWT, TLS, OWASP Top 10, mascaramento de logs</b>) no padrão de resposta.</p></details>
+  <details><summary>4. Qual a maneira correta de corrigir uma palavra errada na folha definitiva?</summary><p><b>Resposta:</b> Fazer um <b>traço simples</b> sobre a palavra errada e escrever a correta logo em seguida, sem rasuras pesadas, parênteses de desculpa ou corretivo.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 3 ===================================================== -->
+<section class="chapter" data-title="Arquitetura, Dados e Segurança no Judiciário">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 3</span>
+  <h1>Arquitetura, Dados e Segurança no Judiciário</h1>
+  <span class="emoji">🏛️</span>
+  <div class="steps">
+    <div class="step"><b>1. Escala e Banco</b><span>Monólito lento, cache, mensageria, circuit breaker e CAP.</span></div>
+    <div class="step"><b>2. Integração CNJ</b><span>PDPJ-Br (Res. 335/2020), MNI (Res. 91/2009) e DDD.</span></div>
+    <div class="step"><b>3. LGPD e Segurança</b><span>Logs, OWASP, OAuth 2.0 / JWT e ICP-Brasil.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🏦</span><div><b>Analogia do Cartório Lotado:</b> se um único atendente faz tudo (monólito), no último dia de prazo forma fila até a rua. A solução é abrir vários guichês iguais (escala horizontal), colocar um painel com os papéis mais pedidos (cache) e uma caixa de protocolo rápido para pedidos demorados (mensageria).</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">CENÁRIO 1 · DISPONIBILIDADE</span>
+  <h2>Salvando um monólito que trava nos picos</h2>
+  <p>Quando o caso descreve <i>"servidor único, lentidão nos prazos finais e queda em cascata"</i>, este é o arsenal técnico que resolve:</p>
+  <svg viewBox="0 0 660 210" role="img" aria-label="Arquitetura de alta disponibilidade com balanceador, instâncias stateless, cache e mensageria">
+    <rect class="accbox" x="20" y="75" width="120" height="60" rx="10"/>
+    <text x="80" y="102" text-anchor="middle" style="font-size:13px">Balanceador</text>
+    <text x="80" y="120" text-anchor="middle" class="small">NGINX/HAProxy</text>
+    <line x1="145" y1="105" x2="185" y2="55" stroke="#6d4aff" stroke-width="2"/>
+    <line x1="145" y1="105" x2="185" y2="155" stroke="#6d4aff" stroke-width="2"/>
+    <rect class="okbox" x="190" y="24" width="145" height="58" rx="10"/>
+    <text x="262" y="50" text-anchor="middle" style="font-size:13px">Instância App 1</text>
+    <text x="262" y="68" text-anchor="middle" class="small">Stateless + Circuit Brk</text>
+    <rect class="okbox" x="190" y="126" width="145" height="58" rx="10"/>
+    <text x="262" y="152" text-anchor="middle" style="font-size:13px">Instância App 2</text>
+    <text x="262" y="170" text-anchor="middle" class="small">Sessão externalizada</text>
+    <rect class="keybox" x="375" y="24" width="125" height="58" rx="10"/>
+    <text class="kt" x="437" y="50" text-anchor="middle" style="font-size:13px">Cache Redis</text>
+    <text class="kt" x="437" y="68" text-anchor="middle" class="small">Com TTL</text>
+    <rect class="box" x="375" y="126" width="125" height="58" rx="10"/>
+    <text x="437" y="152" text-anchor="middle" style="font-size:13px">Mensageria</text>
+    <text x="437" y="170" text-anchor="middle" class="small">Kafka / RabbitMQ</text>
+    <rect class="box" x="530" y="55" width="110" height="100" rx="10"/>
+    <text x="585" y="95" text-anchor="middle" style="font-size:13px">BD Primário</text>
+    <text x="585" y="118" text-anchor="middle" class="small">+ Réplicas</text>
+    <text x="585" y="136" text-anchor="middle" class="small">+ Failover</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">FUNDAMENTAÇÃO DE BANCO</span>
+  <h2>Como citar o Teorema CAP sem errar</h2>
+  <p>Se o caso tiver banco replicado e consultas travando gravações, use o <b>Teorema CAP</b> para justificar a separação entre leitura e escrita:</p>
+  <div class="say law">Pelo Teorema CAP, diante de uma partição de rede (P), um sistema distribuído precisa escolher entre <b>Consistência (C)</b> e <b>Disponibilidade (A)</b>.</div>
+  <div class="two">
+    <div class="card">
+      <span class="pill ok">GRAVAÇÃO (Atos Processuais)</span>
+      <p class="mini">Exige <b>consistência forte (ACID)</b> no nó primário. Não podemos perder ou duplicar um protocolo judicial.</p>
+    </div>
+    <div class="card">
+      <span class="pill ok">CONSULTA (Réplicas de Leitura)</span>
+      <p class="mini">Admite <b>consistência eventual</b> (atraso de milissegundos/segundos) para desafogar o banco principal.</p>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESILIÊNCIA</span>
+  <h2>Circuit Breaker e Degradação Graciosa</h2>
+  <p>E se um serviço externo (ex.: consulta de CPF ou assinador) cair no meio do pico? Sem proteção, todas as threads ficam esperando e o tribunal inteiro sai do ar.</p>
+  <ul>
+    <li><b>Circuit Breaker:</b> quando um serviço falha repetidamente, o disjuntor abre e retorna erro imediato, evitando sobrecarga e falha em cascata.</li>
+    <li><b>Degradação Graciosa:</b> em vez de derrubar o sistema inteiro, funções secundárias ficam temporariamente indisponíveis enquanto o protocolo principal continua funcionando.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">CENÁRIO 2 · INTEROPERABILIDADE</span>
+  <h2>PDPJ-Br, MNI e Migração Gradual (DDD)</h2>
+  <p>Nunca proponha "jogar o monólito fora e reescrever tudo do zero em 6 meses" (reescrita <i>big-bang</i>). A FGV valoriza <b>migração incremental</b>.</p>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Conceito / Norma</th><th>Para que serve na resposta</th></tr>
+    <tr><td><b>DDD + API Gateway</b></td><td>Extrair microsserviços por domínio aos poucos, expondo APIs padronizadas</td></tr>
+    <tr><td><b>PDPJ-Br (Res. CNJ 335/2020)</b></td><td>Arquitetura modular em nuvem e publicação de serviços no <b>Marketplace do CNJ</b></td></tr>
+    <tr><td><b>MNI (Res. CNJ 91/2009)</b></td><td>Padrão nacional de intercâmbio de dados processuais entre tribunais, MP e Defensoria</td></tr>
+    <tr><td><b>MInG</b></td><td>Modelo de Interoperabilidade do Governo para padrões de troca de dados</td></tr>
+  </table></div>
+  <p class="mini">📌 Para artigos e prazos específicos das resoluções do CNJ, confira sempre os textos oficiais.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">CENÁRIO 3 · DADOS E LGPD</span>
+  <h2>Logs com CPF e Privacidade por Padrão</h2>
+  <p>Um clássico de prova: o sistema grava CPF, nome ou dados sensíveis em logs de aplicação ou envia dados sem controle.</p>
+  <div class="say law">Pela <b>LGPD (Lei 13.709/2018)</b>, o tratamento deve seguir os princípios da finalidade, adequação, <b>minimização (necessidade)</b> e segurança, adotando <b>privacidade por padrão</b> (<i>privacy by design/default</i>).</div>
+  <ul>
+    <li><b>Nos logs:</b> mascaramento/ofuscação de dados pessoais e proibição de gravar senhas ou tokens em texto claro.</li>
+    <li><b>Em trânsito e repouso:</b> criptografia TLS (trânsito) e cifragem em banco/disco (repouso).</li>
+    <li><b>Papéis na LGPD:</b> Tribunal = <b>Controlador</b> (decide); empresa contratada = <b>Operador</b> (executa).</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">SEGURANÇA DE APLICAÇÕES</span>
+  <h2>OWASP Top 10, OAuth 2.0 e ICP-Brasil</h2>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Cenário do Caso</th><th>O que citar na solução</th></tr>
+    <tr><td>Login único e autorização entre APIs</td><td><b>OAuth 2.0</b> (autorização), <b>OpenID Connect</b> (identidade), <b>JWT</b> e <b>RBAC</b> (controle por perfil)</td></tr>
+    <tr><td>Assinatura de atos e documentos</td><td><b>PKI / ICP-Brasil</b> com certificado digital garantindo autenticidade, integridade e não repúdio</td></tr>
+    <tr><td>Vulnerabilidades web (injeção, acesso quebrado)</td><td>Diretrizes do <b>OWASP Top 10</b>, validação de entrada, rate limiting e trilha de auditoria</td></tr>
+  </table></div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA DA FGV</span>
+  <h2>Confundir Autenticação com Autorização (ou Anonimização)</h2>
+  <div class="say trap">Cuidado! Base64 ou criptografia reversível <b>NÃO é anonimização</b> na LGPD. E <b>OAuth 2.0</b> puro é protocolo de autorização (quem dá identidade é o <b>OpenID Connect</b>).</div>
+  <div class="two">
+    <div class="card">
+      <span class="pill ng">ERRO COMUM</span>
+      <p class="mini">"Vamos usar OAuth 2.0 para criptografar os logs e anonimizar o CPF com Base64."</p>
+    </div>
+    <div class="card">
+      <span class="pill ok">CORRETO NA PROVA</span>
+      <p class="mini">"Autenticação/autorização via OIDC + OAuth 2.0 + JWT; nos logs, mascaramento e minimização conforme LGPD."</p>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 3</span>
+  <h2>Combo Arquitetura + Normas Judiciárias</h2>
+  <div class="magic">Problema → Conceito Técnico → Norma Aplicável → Trade-off.<small>Ex.: Contenção no BD → Réplicas + Redis + CAP → ACID na gravação vs. eventual na leitura.</small></div>
+  <ul class="checklist">
+    <li>Monólito travado: balanceador stateless, réplicas, Redis, Kafka/RabbitMQ e circuit breaker.</li>
+    <li>Integração: migração gradual (DDD), API Gateway, PDPJ-Br (Res. 335/2020) e MNI (Res. 91/2009).</li>
+    <li>Dados e segurança: LGPD (mascaramento, minimização, TLS), OWASP Top 10, OAuth 2.0/OIDC/JWT e PKI.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 3</span>
+  <h2>4 questões no estilo FGV</h2>
+  <details><summary>1. Como justificar o uso de réplicas de leitura em sistema judicial usando o Teorema CAP?</summary><p><b>Resposta:</b> Na partição de rede escolhe-se entre consistência e disponibilidade. Mantém-se consistência forte (ACID) nas gravações de atos processuais no primário e admite-se consistência eventual nas consultas às réplicas.</p></details>
+  <details><summary>2. Qual a função do padrão Circuit Breaker em arquitetura de microsserviços?</summary><p><b>Resposta:</b> Interromper chamadas a um serviço que está falhando repetidamente, evitando esgotamento de recursos e falha em cascata no restante do sistema.</p></details>
+  <details><summary>3. Quais normas do CNJ fundamentam a modularização em microsserviços e a troca de dados processuais?</summary><p><b>Resposta:</b> <b>PDPJ-Br (Res. CNJ 335/2020)</b> para arquitetura em microsserviços e Marketplace; <b>MNI (Res. CNJ 91/2009)</b> para interoperabilidade de dados processuais.</p></details>
+  <details><summary>4. O que propor quando logs de aplicação registram CPF e nome das partes sem controle?</summary><p><b>Resposta:</b> Adequação à <b>LGPD (Lei 13.709/2018)</b> com mascaramento de dados pessoais nos logs, minimização, criptografia TLS/em repouso, controle de acesso (RBAC) e trilha de auditoria.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 4 ===================================================== -->
+<section class="chapter" data-title="IA, DevSecOps, Acessibilidade e Gestão">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 4</span>
+  <h1>IA, DevSecOps, Acessibilidade e Gestão</h1>
+  <span class="emoji">🤖</span>
+  <div class="steps">
+    <div class="step"><b>1. IA Generativa no CNJ</b><span>RAG institucional, prompt injection, retenção zero e supervisão humana.</span></div>
+    <div class="step"><b>2. DevSecOps e CI/CD</b><span>Docker/K8s, SAST/DAST, TDD e métricas DORA (MTTR).</span></div>
+    <div class="step"><b>3. Acessibilidade e Gestão</b><span>e-MAG/WCAG, APF/IFPUG, Res. CNJ 468/2022 e Mobile.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🧑‍⚖️</span><div><b>Analogia do Estagiário Brilhante:</b> a IA generativa é um estagiário que lê mil processos por segundo e sugere minutas ótimas, mas às vezes inventa uma lei (alucinação) ou se distrai com truques (prompt injection). Por isso ele <b>nunca assina nada sozinho</b>: precisa de livros oficiais (RAG) e revisão do chefe (supervisão humana).</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">CENÁRIO 4 · IA GENERATIVA</span>
+  <h2>Arquitetura segura de LLM no Judiciário</h2>
+  <svg viewBox="0 0 660 200" role="img" aria-label="Fluxo seguro de IA generativa com RAG, sanitização, retenção zero e supervisão humana">
+    <rect class="box" x="15" y="65" width="115" height="68" rx="10"/>
+    <text x="72" y="95" text-anchor="middle" style="font-size:13px">Pedido + Dados</text>
+    <text x="72" y="114" text-anchor="middle" class="small">Filtro Injection</text>
+    <line x1="134" y1="99" x2="164" y2="99" stroke="#6d4aff" stroke-width="2"/>
+    <rect class="accbox" x="168" y="65" width="145" height="68" rx="10"/>
+    <text x="240" y="95" text-anchor="middle" style="font-size:13px">RAG Institucional</text>
+    <text x="240" y="114" text-anchor="middle" class="small">Base oficial do TJ</text>
+    <line x1="317" y1="99" x2="347" y2="99" stroke="#6d4aff" stroke-width="2"/>
+    <rect class="keybox" x="351" y="65" width="135" height="68" rx="10"/>
+    <text class="kt" x="418" y="95" text-anchor="middle" style="font-size:13px">LLM Retenção Zero</text>
+    <text class="kt" x="418" y="114" text-anchor="middle" class="small">Sem treino externo</text>
+    <line x1="490" y1="99" x2="520" y2="99" stroke="#6d4aff" stroke-width="2"/>
+    <rect class="okbox" x="524" y="65" width="122" height="68" rx="10"/>
+    <text x="585" y="95" text-anchor="middle" style="font-size:13px">Revisão Humana</text>
+    <text x="585" y="114" text-anchor="middle" class="small">Apoia, não decide</text>
+  </svg>
+  <p class="mini">Sempre cite <b>sanitização de saídas</b>, <b>auditabilidade</b>, <b>transparência</b> e <b>avaliação de impacto algorítmico</b> conforme as normas do CNJ sobre IA (confira os textos oficiais).</p>
+</div>
+
+<div class="slide">
+  <span class="tag">GOVERNANÇA DE IA</span>
+  <h2>O que é obrigatório escrever em casos de IA</h2>
+  <div class="say law">Pelos normativos do CNJ sobre inteligência artificial no Poder Judiciário, a ferramenta tem caráter exclusivamente <b>auxiliar</b>, exigindo <b>supervisão humana</b>, transparência, auditabilidade e mitigação de vieses discriminatórios.</div>
+  <ul>
+    <li><b>RAG (Retrieval-Augmented Generation):</b> ancora as respostas em jurisprudência e normas do próprio tribunal, reduzindo alucinações.</li>
+    <li><b>Retenção zero:</b> garantia contratual e técnica de que os dados enviados ao modelo não serão armazenados nem usados para retreino público.</li>
+    <li><b>Prompt injection e jailbreak:</b> validação e isolamento de entradas para impedir que textos maliciosos sequestrem as instruções do sistema.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">CENÁRIO 5 · DEVSECOPS</span>
+  <h2>Entregas lentas e cheias de bugs em produção</h2>
+  <p>Quando o estudo de caso descreve <i>"deploy manual, demora para corrigir falhas e bugs recorrentes"</i>, proponha uma esteira moderna:</p>
+  <div class="flow">
+    <span>Git + TDD</span><i>→</i>
+    <span>Build Docker</span><i>→</i>
+    <span>SAST / SonarQube</span><i>→</i>
+    <span>Deploy Kubernetes</span><i>→</i>
+    <span>DAST + Observabilidade</span>
+  </div>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Prática / Métrica</th><th>O que resolve no caso</th></tr>
+    <tr><td><b>CI/CD + Contêineres</b></td><td>Padroniza ambientes (Docker/Kubernetes) e automatiza entregas sem erro manual</td></tr>
+    <tr><td><b>SAST / DAST / IAST</b></td><td>Detecta falhas de segurança no código (estática) e na aplicação rodando (dinâmica)</td></tr>
+    <tr><td><b>MTTR e Freq. de Liberação</b></td><td>Métricas DORA para provar que o tempo de recuperação e a cadência melhoraram</td></tr>
+  </table></div>
+</div>
+
+<div class="slide">
+  <span class="tag">CENÁRIO 6 · ACESSIBILIDADE</span>
+  <h2>Portal público que exclui cidadãos</h2>
+  <p>Um tribunal precisa atender todos os cidadãos e advogados, inclusive pessoas com deficiência visual ou motora.</p>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Padrão</th><th>Aplicação concreta na proposta</th></tr>
+    <tr><td><b>e-MAG</b></td><td>Modelo de Acessibilidade em Governo Eletrônico (referência no setor público brasileiro)</td></tr>
+    <tr><td><b>WCAG 2.1 / 2.2 (POUR)</b></td><td>Garantir conteúdo <b>P</b>erceptível, <b>O</b>perável, <b>C</b>ompreensível e <b>R</b>obusto (níveis A/AA/AAA)</td></tr>
+    <tr><td><b>HTML5 Semântico + ARIA</b></td><td>Uso correto de tags estruturais, rótulos para leitores de tela e navegação por teclado</td></tr>
+    <tr><td><b>Mobile-first</b></td><td>Layout responsivo para acesso adequado em smartphones</td></tr>
+  </table></div>
+</div>
+
+<div class="slide">
+  <span class="tag">CENÁRIOS 7 E 8 · GESTÃO E MOBILE</span>
+  <h2>Contratação de TIC e App de Consulta</h2>
+  <div class="two">
+    <div class="card">
+      <h3>📊 Estimativa e Contratação</h3>
+      <ul>
+        <li><b>Requisitos e Ágil:</b> Scrum ou SAFe para entregas iterativas com valor.</li>
+        <li><b>Métrica de tamanho:</b> APF / IFPUG (Análise de Pontos de Função) para dimensionar e remunerar software.</li>
+        <li><b>Norma:</b> Contratações de TIC no Judiciário (<b>Res. CNJ 468/2022</b> — confira o texto oficial).</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>📱 Aplicativo Móvel</h3>
+      <ul>
+        <li><b>Tecnologia:</b> Flutter ou nativo (Android/iOS) consumindo APIs REST/JSON.</li>
+        <li><b>Segurança móvel:</b> <b>SSL pinning</b> contra interceptação e armazenamento seguro de credenciais no aparelho.</li>
+        <li><b>Notificações:</b> mensageria push (ex.: FCM) para avisos sem expor dados sensíveis na tela bloqueada.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA DA FGV</span>
+  <h2>Confundir SAST com DAST ou ignorar o "porquê" do e-MAG</h2>
+  <div class="say trap">Na discursiva, dizer apenas "faremos testes" ou "aplicaremos WCAG" rende poucos pontos. Diga <b>SAST</b> (análise estática de código-fonte antes do deploy) + <b>DAST</b> (análise dinâmica na aplicação em execução) e cite os 4 princípios <b>POUR</b>.</div>
+  <p class="mini">Outro erro comum em casos de IA: propor enviar autos judiciais sigilosos diretamente para uma API pública sem mencionar <b>retenção zero</b> e <b>LGPD</b>.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 4</span>
+  <h2>Mapeamento rápido dos cenários modernos</h2>
+  <div class="magic">IA = RAG + Retenção Zero + Humano no Comando.<br>DevSecOps = CI/CD + SAST/DAST + MTTR.<small>Portal = e-MAG + WCAG (POUR) + ARIA · Gestão = APF + Res. CNJ 468/2022.</small></div>
+  <ul class="checklist">
+    <li>Em IA generativa, sempre deixe claro que o modelo apoia e não decide sozinho.</li>
+    <li>Em entregas lentas, conecte CI/CD + Docker/K8s + testes (TDD/SAST/DAST) + métricas (MTTR).</li>
+    <li>Em acessibilidade, cite e-MAG, WCAG 2.1/2.2 (POUR), HTML5 semântico, ARIA e mobile-first.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 4</span>
+  <h2>4 questões no estilo FGV</h2>
+  <details><summary>1. Por que usar RAG sobre base institucional em um assistente de minutas do tribunal?</summary><p><b>Resposta:</b> Porque fundamenta as respostas do LLM em documentos e jurisprudência oficiais do próprio tribunal, reduzindo alucinações e aumentando a rastreabilidade.</p></details>
+  <details><summary>2. Qual a diferença prática entre SAST e DAST em uma esteira DevSecOps?</summary><p><b>Resposta:</b> <b>SAST</b> analisa estaticamente o código-fonte em busca de vulnerabilidades; <b>DAST</b> testa a aplicação já em execução simulando ataques externos.</p></details>
+  <details><summary>3. Quais são os quatro princípios da WCAG 2.1/2.2 representados pela sigla POUR?</summary><p><b>Resposta:</b> Perceptível, Operável, Compreensível (Understandable) e Robusto.</p></details>
+  <details><summary>4. Que medida de segurança protege a comunicação de um app móvel contra interceptação de certificado?</summary><p><b>Resposta:</b> <b>SSL pinning</b> (associado a TLS e armazenamento seguro local de tokens/chaves).</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 5 ===================================================== -->
+<section class="chapter" data-title="Estudo de Caso Resolvido e Treino">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 5</span>
+  <h1>Estudo de Caso Resolvido e Treino</h1>
+  <span class="emoji">🏆</span>
+  <div class="steps">
+    <div class="step"><b>1. Caso Completo</b><span>Dissecando uma resposta-modelo de ~30 linhas passo a passo.</span></div>
+    <div class="step"><b>2. Adaptando Provas</b><span>Como transformar questões FGV (ALEGO/MP-ES) em casos TJPB.</span></div>
+    <div class="step"><b>3. Régua e Rotina</b><span>Treino semanal cronometrado e checklist pré-entrega.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🎬</span><div><b>Analogia da Coreografia Ensaiada:</b> ninguém improvisa todos os passos no palco. Quem treina 1 estudo de caso por semana já entra na sala com os "blocos prontos" na cabeça (CAP, LGPD, PDPJ-Br, RAG) e só encaixa na história da banca.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">O ENUNCIADO MODELO</span>
+  <h2>Lendo um caso completo de 40 pontos</h2>
+  <div class="card">
+    <p class="mini"><b>Situação:</b> Um tribunal estadual opera seu sistema processual como <b>monólito em servidor único</b>. Nos prazos finais, o sistema fica lento e cai; consultas travam o banco; os <b>logs guardam CPF e nome</b> sem controle. A direção quer <b>integrar à PDPJ-Br</b> e <b>testar IA generativa</b> para sugerir minutas. Elabore parecer identificando problemas, fundamentando e propondo solução.</p>
+  </div>
+  <div class="flow">
+    <span>P1: Servidor único</span><i>·</i>
+    <span>P2: Contenção no BD</span><i>·</i>
+    <span>P3: Logs com CPF</span><i>·</i>
+    <span>P4: PDPJ-Br e IA</span>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">DISSECANDO A RESPOSTA</span>
+  <h2>Diagnóstico + Disponibilidade + Banco (Linhas 1–12)</h2>
+  <p class="mini"><b>Bloco 1 (4L):</b> Lista exatamente os 4 problemas numerados: (1) ponto único de falha; (2) contenção leitura × gravação; (3) dados pessoais em logs (LGPD, Lei 13.709/2018); (4) falta de interoperabilidade e governança de IA.</p>
+  <p class="mini"><b>Bloco 2+3a (8L):</b> Propõe escalabilidade horizontal <i>stateless</i> atrás de balanceador (NGINX/HAProxy), sessão externalizada, réplicas de leitura com failover e <b>Teorema CAP</b> (ACID na gravação × eventual nas réplicas). Adiciona <b>Redis</b> (TTL), <b>Kafka/RabbitMQ</b>, <b>circuit breaker</b> e degradação graciosa.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">DISSECANDO A RESPOSTA</span>
+  <h2>Arquitetura + LGPD + IA + Fecho (Linhas 13–30)</h2>
+  <svg viewBox="0 0 660 190" role="img" aria-label="Mapeamento dos blocos finais da resposta modelo: arquitetura, LGPD, IA e fecho">
+    <rect class="accbox" x="15" y="18" width="195" height="115" rx="10"/>
+    <text x="112" y="45" text-anchor="middle" style="font-size:14px">Arquitetura (6–7L)</text>
+    <text x="112" y="70" text-anchor="middle" class="small">DDD + API Gateway</text>
+    <text x="112" y="90" text-anchor="middle" class="small">PDPJ-Br (335/2020) + MNI</text>
+    <text x="112" y="110" text-anchor="middle" class="small">CI/CD, SAST/DAST, OAuth2</text>
+    <rect class="keybox" x="225" y="18" width="195" height="115" rx="10"/>
+    <text class="kt" x="322" y="45" text-anchor="middle" style="font-size:14px">LGPD (3–4L)</text>
+    <text class="kt" x="322" y="70" text-anchor="middle" class="small">Mascarar CPF em logs</text>
+    <text class="kt" x="322" y="90" text-anchor="middle" class="small">Minimização + TLS</text>
+    <text class="kt" x="322" y="110" text-anchor="middle" class="small">RBAC + Auditoria</text>
+    <rect class="okbox" x="435" y="18" width="210" height="115" rx="10"/>
+    <text x="540" y="45" text-anchor="middle" style="font-size:14px">IA Generativa (4–5L)</text>
+    <text x="540" y="70" text-anchor="middle" class="small">Normas CNJ: apoia, não decide</text>
+    <text x="540" y="90" text-anchor="middle" class="small">Supervisão humana + RAG</text>
+    <text x="540" y="110" text-anchor="middle" class="small">Prompt injection + Retenção 0</text>
+    <rect class="box" x="15" y="148" width="630" height="32" rx="8"/>
+    <text x="330" y="169" text-anchor="middle" style="font-size:13px">Fecho (1–2L): Reduz indisponibilidade, atende LGPD e integra via migração incremental.</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">ADAPTANDO PROVAS FGV</span>
+  <h2>Como treinar com ALEGO 2026 e MP/ES 2026</h2>
+  <p>Provas recentes da FGV trouxeram comandos diretos (POO, Scrum, Normalização 1FN–3FN, PKI/Assinatura Digital). Para treinar no padrão TJPB, converta o tema em um problema de tribunal:</p>
+  <div class="scroll">
+  <table class="cmp">
+    <tr><th>Tema FGV Real</th><th>No edital TJPB?</th><th>Como transformar em Estudo de Caso</th></tr>
+    <tr><td><b>Normalização 1FN–3FN</b> (MP/ES)</td><td class="hk">Sim (BD)</td><td>Tabela única com dados repetidos e anomalias → explicar 1FN/2FN/3FN sem escrever SQL</td></tr>
+    <tr><td><b>Scrum</b> (ALEGO Sis)</td><td class="hk">Sim (Eng. Soft.)</td><td>Equipe sem dono de produto nem entregas frequentes → papéis, eventos e artefatos</td></tr>
+    <tr><td><b>Blockchain / Power BI</b></td><td class="hl">Não no Cargo 5</td><td><b>Não gaste tempo</b> com Blockchain nem Power BI específico (não estão no seu edital)</td></tr>
+  </table></div>
+</div>
+
+<div class="slide">
+  <span class="tag">RÉGUA DE AUTOCORREÇÃO</span>
+  <h2>Como dar nota para o seu próprio treino</h2>
+  <div class="say law">O edital (10.13.1) fixa o piso de <b>24/40</b> (ampla) e <b>19,2/40</b> (cotas). Como a banca não publica grade de pontos por item, use esta <b>régua sugerida de 40 pontos</b> ao corrigir seus simulados semanais:</div>
+  <div class="steps">
+    <div class="step"><b>Diagnóstico (8 pts)</b><span>Identificou todos os problemas do enunciado?</span></div>
+    <div class="step"><b>Fundamentação (12 pts)</b><span>Citou conceitos exatos e normas do CNJ/LGPD?</span></div>
+    <div class="step"><b>Proposta (14 pts)</b><span>Solução concreta, ordenada e com trade-offs?</span></div>
+    <div class="step"><b>Clareza (6 pts)</b><span>30 linhas, coeso, legível e zero código?</span></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">ROTINA ATÉ A PROVA</span>
+  <h2>O plano semanal que garante 34–37 pontos</h2>
+  <ul>
+    <li><b>Frequência:</b> 1 estudo de caso por semana, cronometrado em <b>60 a 75 minutos</b>.</li>
+    <li><b>Condição real:</b> sempre à mão, caneta azul ou preta, folha pautada de <b>30 linhas</b>.</li>
+    <li><b>Caderno de conceitos prontos:</b> guarde parágrafos-modelo de CAP, circuit breaker, LGPD, PDPJ-Br e RAG para reusar o vocabulário com rapidez.</li>
+    <li><b>Simulado às cegas:</b> 1 vez por mês, faça um caso <b>sem consultar nada</b>, exatamente como no dia 24/01/2027.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA FINAL</span>
+  <h2>Perder 8 pontos por pressa na revisão</h2>
+  <div class="say trap">Candidato cansado escreve 28 linhas e entrega sem reler. Se deixou de responder um único item (por exemplo, esqueceu de falar da IA ou não citou a LGPD), perde um bloco inteiro de pontos.</div>
+  <p class="mini">Use os últimos <b>5 minutos</b> da discursiva exclusivamente para conferir cada comando do enunciado com um visto no rascunho.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO DO CAPÍTULO 5</span>
+  <h2>Checklist final antes de fechar o caderno</h2>
+  <div class="magic">Treino semanal à mão em 30 linhas transforma vocabulário técnico em reflexo automático.<small>Meta: 34 a 37 de 40 pontos · Erro máximo tolerado: 3 a 6 pontos.</small></div>
+  <ul class="checklist">
+    <li>Todos os problemas e verbos de comando do enunciado foram respondidos na ordem?</li>
+    <li>Os termos técnicos e normas (CNJ, LGPD) estão nomeados com exatidão?</li>
+    <li>Há pelo menos um trade-off e uma forma de mitigação explícitos?</li>
+    <li>Zero código (SQL/Java), zero desenho, zero marca pessoal e limite de 30 linhas respeitado?</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO · CAPÍTULO 5</span>
+  <h2>4 questões no estilo FGV</h2>
+  <details><summary>1. Ao estudar provas anteriores da FGV (ALEGO e MP/ES), quais temas devem ser descartados para o Cargo 5 do TJPB?</summary><p><b>Resposta:</b> <b>Blockchain</b> e <b>Power BI</b> específico (este último cai só para Ciência de Dados). Foque em Scrum, POO, Normalização 1FN–3FN, PKI, arquitetura, segurança e normas do CNJ.</p></details>
+  <details><summary>2. No caso modelo completo, por que se propõe migração gradual (DDD) em vez de reescrever tudo do zero?</summary><p><b>Resposta:</b> Porque a migração incremental reduz o risco de indisponibilidade, custos e falhas de projeto, permitindo coexistência controlada com o legado.</p></details>
+  <details><summary>3. Na régua sugerida de autocorreção (40 pontos), quanto peso somam Fundamentação e Proposta?</summary><p><b>Resposta:</b> <b>26 de 40 pontos</b> (12 para Fundamentação técnica/normativa e 14 para Proposta concreta e ordenada).</p></details>
+  <details><summary>4. Qual a última checagem obrigatória antes de entregar a folha definitiva da discursiva?</summary><p><b>Resposta:</b> Conferir que cada comando do enunciado recebeu resposta, que não há código nem desenho, que não há marca identificadora e que o texto cabe nas 30 linhas com letra legível.</p></details>
+</div>
+
+</section>
+
+<script src="aula.js"></script>
+</body></html>

@@ -1,0 +1,811 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DevOps, IaC e Nuvem — aulas visuais</title><link rel="stylesheet" href="aula.css">
+<style>
+.mini{font-size:15px}
+.mini table,.io table{font-size:14px}
+.io th,.io td{padding:4px 7px}
+.io{display:grid;grid-template-columns:1fr 34px 1fr;gap:8px;align-items:start;margin:10px 0}
+.io > .arr{font-size:28px;color:var(--acc);text-align:center;font-weight:900;align-self:center}
+.tbox h4 .pill{font-size:12px}
+pre{background:var(--cell);border:2px solid var(--line);border-radius:12px;padding:8px 12px;margin:8px 0;overflow-x:auto;font:14.5px/1.45 ui-monospace,Consolas,monospace;white-space:pre}
+pre code{background:none;padding:0;font-size:1em}
+pre b{color:var(--acc)}
+pre i{color:var(--muted);font-style:normal}
+@media (max-width:700px){.io{grid-template-columns:1fr}.io > .arr{transform:rotate(90deg)}}
+</style></head>
+<body data-subject="devops" data-title="DevOps, IaC e Nuvem">
+
+<!-- ===================================================== CAPÍTULO 1 ===================================================== -->
+<section class="chapter" data-title="Git, fluxos e GitOps">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 1</span>
+  <h1>Git, fluxos e GitOps</h1>
+  <span class="emoji">🌿</span>
+  <div class="steps">
+    <div class="step"><b>1. Áreas do Git</b><span>Working Tree, Staging e Repositório.</span></div>
+    <div class="step"><b>2. Merge × Rebase</b><span>Preservar bifurcação ou linearizar.</span></div>
+    <div class="step"><b>3. Fluxos &amp; GitOps</b><span>Gitflow, Trunk-Based e reconciliação pull.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">📖</span><div><b>Analogia do dia:</b> o Git é um <b>álbum de fotos do código</b>. Antes de colar a foto no álbum (<code>commit</code>), você escolhe quais fotos vão para a mesa de seleção (<code>staging</code>). Branches são rascunhos paralelos para testar ideias sem estragar o álbum principal.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">FUNDAMENTOS</span>
+  <h2>As 3 áreas do Git (e o remoto)</h2>
+  <svg viewBox="0 0 640 165" role="img" aria-label="Working Tree, Staging Area, Local Repo e Remote Repo">
+    <defs><marker id="g1a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="box" x="10" y="30" width="135" height="75" rx="14"/><text x="77" y="60" text-anchor="middle">Working Tree</text><text x="77" y="82" text-anchor="middle" class="small">arquivos no disco</text>
+    <rect class="accbox" x="172" y="30" width="135" height="75" rx="14"/><text x="239" y="60" text-anchor="middle">Staging (Index)</text><text x="239" y="82" text-anchor="middle" class="small">próximo pacote</text>
+    <rect class="okbox" x="334" y="30" width="135" height="75" rx="14"/><text x="401" y="60" text-anchor="middle">Repo Local</text><text x="401" y="82" text-anchor="middle" class="small">histórico (.git)</text>
+    <rect class="keybox" x="496" y="30" width="134" height="75" rx="14"/><text class="kt" x="563" y="60" text-anchor="middle">Repo Remoto</text><text class="kt" x="563" y="82" text-anchor="middle" style="font-size:12px">origin (GitLab/Hub)</text>
+    <line x1="147" y1="67" x2="169" y2="67" stroke="#6d4aff" stroke-width="3" marker-end="url(#g1a)"/>
+    <line x1="309" y1="67" x2="331" y2="67" stroke="#6d4aff" stroke-width="3" marker-end="url(#g1a)"/>
+    <line x1="471" y1="67" x2="493" y2="67" stroke="#6d4aff" stroke-width="3" marker-end="url(#g1a)"/>
+    <text x="158" y="22" text-anchor="middle" class="small">git add</text>
+    <text x="320" y="22" text-anchor="middle" class="small">git commit</text>
+    <text x="482" y="22" text-anchor="middle" class="small">git push</text>
+    <text x="320" y="142" text-anchor="middle" class="small">git fetch baixa metadados; git pull = fetch + merge (ou rebase)</text>
+  </svg>
+  <div class="say law"><b>Branch</b> no Git não é cópia pesada de pasta: é apenas um <b>ponteiro leve e móvel</b> para um commit. <code>HEAD</code> aponta para a branch (ou commit) atual.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">INTEGRAÇÃO</span>
+  <h2>Merge (Fast-Forward × 3-Way)</h2>
+  <svg viewBox="0 0 640 185" role="img" aria-label="Merge fast-forward versus merge 3-way">
+    <text x="160" y="22" text-anchor="middle" style="fill:#2ea043">Fast-Forward (main não andou)</text>
+    <circle cx="50" cy="60" r="14" class="box"/><text x="50" y="65" text-anchor="middle" class="small">C1</text>
+    <circle cx="130" cy="60" r="14" class="box"/><text x="130" y="65" text-anchor="middle" class="small">C2</text>
+    <circle cx="210" cy="60" r="14" class="okbox"/><text x="210" y="65" text-anchor="middle" class="small">C3</text>
+    <line x1="64" y1="60" x2="116" y2="60" stroke="#5b6475" stroke-width="2"/>
+    <line x1="144" y1="60" x2="196" y2="60" stroke="#2ea043" stroke-width="3"/>
+    <text x="210" y="96" text-anchor="middle" class="small">main + feat avançam</text>
+    <text x="480" y="22" text-anchor="middle" style="fill:#6d4aff">3-Way Merge (houve bifurcação)</text>
+    <circle cx="360" cy="70" r="14" class="box"/><text x="360" y="75" text-anchor="middle" class="small">C1</text>
+    <circle cx="440" cy="50" r="14" class="box"/><text x="440" y="55" text-anchor="middle" class="small">C2</text>
+    <circle cx="440" cy="115" r="14" class="accbox"/><text x="440" y="120" text-anchor="middle" class="small">F1</text>
+    <circle cx="540" cy="70" r="14" class="keybox"/><text x="540" y="75" text-anchor="middle" class="kt" style="font-size:12px">M</text>
+    <line x1="374" y1="66" x2="426" y2="52" stroke="#5b6475" stroke-width="2"/>
+    <line x1="374" y1="76" x2="426" y2="112" stroke="#6d4aff" stroke-width="2"/>
+    <line x1="454" y1="52" x2="526" y2="68" stroke="#5b6475" stroke-width="2"/>
+    <line x1="454" y1="112" x2="526" y2="74" stroke="#6d4aff" stroke-width="2"/>
+    <text x="540" y="106" text-anchor="middle" class="small">novo commit de merge (2 pais)</text>
+    <text x="320" y="165" text-anchor="middle" class="small">Merge nunca apaga commits antigos: preserva exatamente quando os caminhos se juntaram.</text>
+  </svg>
+  <p class="mini">Conflito acontece quando duas branches alteram a mesma região do mesmo arquivo: o Git pausa o merge e pede escolha humana.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">HISTÓRICO</span>
+  <h2>Merge × Rebase</h2>
+  <div class="two">
+    <div class="card" style="margin:0">
+      <b>git merge</b>
+      <p class="mini">Junta duas pontas criando um commit de merge (ou fast-forward).</p>
+      <p class="ex ok">Preserva a história real e os hashes originais.</p>
+      <p class="ex ok">Seguro em branches compartilhadas.</p>
+    </div>
+    <div class="card" style="margin:0">
+      <b>git rebase</b>
+      <p class="mini">Pega seus commits e os <b>reaplica</b> no topo da outra branch.</p>
+      <p class="ex ok">Gera histórico linear e limpo.</p>
+      <p class="ex ng">Cria <b>novos hashes</b> (reescreve histórico).</p>
+    </div>
+  </div>
+  <div class="say trap"><span class="pill ng">✗</span> Fazer <code>git rebase</code> na branch <code>main</code> já enviada ao remoto. <span class="pill ok">✓</span> Regra de ouro: <b>nunca</b> dê rebase em branch pública/compartilhada — só na sua branch local antes de abrir PR/MR.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">FLUXO CLÁSSICO</span>
+  <h2>Gitflow: organizado por papéis de branch</h2>
+  <svg viewBox="0 0 640 175" role="img" aria-label="Branches do Gitflow: main, hotfix, release, develop e feature">
+    <line x1="30" y1="35" x2="610" y2="35" stroke="#2ea043" stroke-width="4"/>
+    <text x="35" y="25" style="fill:#2ea043">main (produção + tags v1.0, v1.1)</text>
+    <line x1="30" y1="105" x2="610" y2="105" stroke="#6d4aff" stroke-width="4"/>
+    <text x="35" y="95" style="fill:#6d4aff">develop (integração contínua do próximo release)</text>
+    <path d="M120,105 L160,150 L270,150 L310,105" fill="none" stroke="#2f6fdf" stroke-width="3"/>
+    <text x="215" y="142" text-anchor="middle" style="fill:#2f6fdf" class="small">feature/*</text>
+    <path d="M350,105 L380,68 L450,68 L480,35" fill="none" stroke="#e8871a" stroke-width="3"/>
+    <text x="415" y="60" text-anchor="middle" style="fill:#e8871a" class="small">release/*</text>
+    <path d="M480,35 L510,68 L560,68 L590,35" fill="none" stroke="#e5484d" stroke-width="3"/>
+    <text x="535" y="60" text-anchor="middle" style="fill:#e5484d" class="small">hotfix/* (volta p/ main e develop)</text>
+  </svg>
+  <div class="say law"><b>Gitflow</b> mantém duas branches perpétuas (<code>main</code> e <code>develop</code>) e branches de apoio (<code>feature</code>, <code>release</code>, <code>hotfix</code>). É indicado para software com <b>versões planejadas</b>, mas gera atrito se a equipe quer publicar várias vezes por dia.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">FLUXO ÁGIL</span>
+  <h2>Trunk-Based Development (TBD)</h2>
+  <div class="analogy"><span class="emoji">🚂</span><div><b>Analogia:</b> em vez de cada passageiro montar um trem separado por semanas (Gitflow), todos embarcam no <b>mesmo trem expresso</b> (<code>main/trunk</code>) com pacotes pequenos todo dia.</div></div>
+  <table class="cmp mini">
+    <tr><th>Critério</th><th>Gitflow</th><th>Trunk-Based (TBD)</th></tr>
+    <tr><td><b>Branches longas</b></td><td>main + develop + release</td><td>Apenas a <code>main</code> (trunk)</td></tr>
+    <tr><td><b>Branches de feature</b></td><td>Podem durar semanas</td><td>Curtíssimas (horas ou 1–2 dias)</td></tr>
+    <tr><td><b>Código inacabado</b></td><td>Fica isolado na branch</td><td>Vai pra <code>main</code> atrás de <b>feature flag</b></td></tr>
+    <tr><td><b>Ideal para</b></td><td>Releases agendadas / móveis</td><td>CI/CD rápido e deploy contínuo</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">OPERAÇÃO DECLARATIVA</span>
+  <h2>GitOps: o Git manda no cluster</h2>
+  <p class="mini">No GitOps, tanto o código quanto os manifestos de infraestrutura/Kubernetes moram no Git. Toda mudança entra via <b>Pull Request</b> revisado.</p>
+  <div class="two">
+    <div class="tbox"><h4><span class="pill ng">Push tradicional</span></h4>
+      <div class="flow"><span>Git</span><i>→</i><span>CI</span><i>→</i><span>empurra p/ Cluster</span></div>
+      <p class="cap">A esteira precisa de credencial admin do cluster e não vê se alguém mexeu à mão lá dentro.</p>
+    </div>
+    <div class="tbox"><h4><span class="pill ok">Pull GitOps (ArgoCD / Flux)</span></h4>
+      <div class="flow"><span>Git</span><i>←</i><span>Agente no Cluster</span></div>
+      <p class="cap">O agente compara o estado real com o Git e <b>reconcilia</b> qualquer desvio (drift) sozinho.</p>
+    </div>
+  </div>
+  <div class="say law">Pilares do GitOps: estado <b>declarativo</b>, <b>versionado e imutável</b> no Git, <b>puxado automaticamente</b> por agentes e <b>reconciliado continuamente</b>.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>Onde a FGV tenta te derrubar em Git</h2>
+  <div class="say trap"><span class="pill ng">✗</span> “<code>git pull</code> apenas baixa as referências remotas sem alterar os arquivos locais.” <span class="pill ok">✓</span> Quem só baixa sem integrar é <code>git fetch</code>. <code>git pull</code> faz <code>fetch</code> + <code>merge</code> (ou <code>rebase</code>).</div>
+  <div class="say trap"><span class="pill ng">✗</span> “Gitflow é obrigatório para usar CI/CD moderno.” <span class="pill ok">✓</span> Pelo contrário: o <b>Trunk-Based Development</b> é a prática recomendada para CI/CD de alta frequência, usando <i>feature flags</i>.</div>
+  <div class="say trap"><span class="pill ng">✗</span> “GitOps significa apenas guardar scripts bash no Git.” <span class="pill ok">✓</span> GitOps exige <b>estado declarativo</b> + <b>reconciliação automática</b> por agente (modelo pull).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Capítulo 1 numa colinha</h2>
+  <div class="magic">Merge preserva história; Rebase lineariza. TBD acelera; GitOps reconcilia.<small>Working Tree → (add) → Staging → (commit) → Repo Local → (push) → Remoto.</small></div>
+  <ul class="checklist">
+    <li><code>fetch</code> baixa sem mesclar; <code>pull</code> baixa e mescla.</li>
+    <li>Fast-forward não cria commit extra; 3-way cria commit de merge com 2 pais.</li>
+    <li>Nunca dê <code>rebase</code> em branch compartilhada (altera os hashes).</li>
+    <li>Gitflow: <code>main</code> + <code>develop</code> + <code>feature/release/hotfix</code>.</li>
+    <li>Trunk-Based: integração contínua na <code>main</code> com <i>feature flags</i>.</li>
+    <li>GitOps: Git é fonte única da verdade; agente pull detecta e corrige <i>drift</i>.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Pense antes de abrir</h2>
+  <details><summary>1) Qual comando baixa commits do remoto sem alterar a branch em que você está trabalhando?</summary>
+    <p><span class="pill ok">git fetch</span> Ele atualiza as referências remotas localmente, sem fazer merge automático (ao contrário do <code>git pull</code>).</p></details>
+  <details><summary>2) Em um hotfix urgente no Gitflow, a partir de qual branch ele nasce e para quais ele volta?</summary>
+    <p><span class="pill ok">Nasce da main; volta para main e develop</span> Assim a correção vai para produção e também não se perde no próximo release.</p></details>
+  <details><summary>3) Como o Trunk-Based Development evita que uma feature inacabada quebre o usuário em produção?</summary>
+    <p><span class="pill ok">Feature flags (toggles)</span> O código é integrado na <code>main</code> diariamente, mas fica desligado em produção até estar pronto.</p></details>
+  <details><summary>4) No GitOps com ArgoCD, o que acontece se um operador editar um Deployment direto com kubectl?</summary>
+    <p><span class="pill ok">Detecção de drift e reconciliação</span> O agente percebe que o cluster divergiu do Git e restaura o estado declarado.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 2 ===================================================== -->
+<section class="chapter" data-title="CI/CD e esteiras de entrega">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 2</span>
+  <h1>CI/CD e esteiras de entrega</h1>
+  <span class="emoji">⚙️</span>
+  <div class="steps">
+    <div class="step"><b>1. CI × Delivery × Deployment</b><span>Até onde a automação vai sozinha.</span></div>
+    <div class="step"><b>2. Ferramentas</b><span>Jenkins, GitLab CI e GitHub Actions.</span></div>
+    <div class="step"><b>3. Deploys seguros</b><span>Rolling, Blue-Green e Canary.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🏭</span><div><b>Analogia do dia:</b> uma esteira de fábrica de bolos. A cada receita alterada, um robô mistura, assa e prova o bolo (<b>CI</b>). Se deixa o bolo embalado esperando o gerente dizer "vai pra vitrine", é <b>Delivery</b>. Se o robô já põe na vitrine sozinho, é <b>Deployment</b>.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONCEITO CENTRAL</span>
+  <h2>CI vs Continuous Delivery vs Continuous Deployment</h2>
+  <svg viewBox="0 0 640 190" role="img" aria-label="Pipeline mostrando até onde vai CI, Continuous Delivery e Continuous Deployment">
+    <defs><marker id="c2a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="accbox" x="15" y="45" width="95" height="54" rx="12"/><text x="62" y="77" text-anchor="middle">Commit</text>
+    <rect class="accbox" x="130" y="45" width="95" height="54" rx="12"/><text x="177" y="77" text-anchor="middle">Build</text>
+    <rect class="accbox" x="245" y="45" width="105" height="54" rx="12"/><text x="297" y="77" text-anchor="middle">Testes</text>
+    <rect class="keybox" x="370" y="45" width="115" height="54" rx="12"/><text class="kt" x="427" y="70" text-anchor="middle">Homologação</text><text class="kt" x="427" y="88" text-anchor="middle" style="font-size:11px">(pronto p/ prod)</text>
+    <rect class="okbox" x="505" y="45" width="120" height="54" rx="12"/><text x="565" y="77" text-anchor="middle">Produção</text>
+    <line x1="110" y1="72" x2="128" y2="72" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c2a)"/>
+    <line x1="225" y1="72" x2="243" y2="72" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c2a)"/>
+    <line x1="350" y1="72" x2="368" y2="72" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c2a)"/>
+    <line x1="485" y1="72" x2="503" y2="72" stroke="#e8871a" stroke-width="3" stroke-dasharray="4,3" marker-end="url(#c2a)"/>
+    <text x="200" y="25" text-anchor="middle" style="fill:#6d4aff">CI (Integração Contínua)</text>
+    <text x="250" y="130" text-anchor="middle" style="fill:#b38600">Continuous Delivery (aprovação manual p/ prod)</text>
+    <text x="320" y="162" text-anchor="middle" style="fill:#2ea043">Continuous Deployment (100% automático até produção)</text>
+  </svg>
+  <div class="say law"><b>CI</b> automatiza integração, build e testes a cada mudança. <b>Continuous Delivery</b> garante que o software está sempre pronto para ir à produção com um clique manual. <b>Continuous Deployment</b> publica automaticamente toda mudança aprovada nos testes.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ANATOMIA</span>
+  <h2>Por dentro de um pipeline</h2>
+  <div class="steps">
+    <div class="step"><b>Trigger (Gatilho)</b><span>Push, Pull Request, tag ou agendamento (cron).</span></div>
+    <div class="step"><b>Stage (Estágio)</b><span>Fase lógica: <code>build</code> → <code>test</code> → <code>scan</code> → <code>deploy</code>.</span></div>
+    <div class="step"><b>Job &amp; Step</b><span>Jobs rodam em paralelo dentro do stage; steps rodam em sequência.</span></div>
+    <div class="step"><b>Runner / Agent</b><span>Máquina ou container que executa os comandos do job.</span></div>
+  </div>
+  <div class="two">
+    <div class="card" style="margin:0"><b>Artifact</b><p class="mini">Saída gerada por um job (ex.: <code>app.jar</code>, relatório de cobertura) passada para o próximo estágio.</p></div>
+    <div class="card" style="margin:0"><b>Cache</b><p class="mini">Guarda dependências (<code>node_modules</code>, <code>.m2</code>) entre execuções para acelerar o build.</p></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">FERRAMENTAS DO EDITAL</span>
+  <h2>Jenkins, GitLab CI e GitHub Actions</h2>
+  <table class="cmp mini">
+    <tr><th>Ferramenta</th><th>Arquivo do pipeline</th><th>Executor</th><th>Característica forte</th></tr>
+    <tr><td><b>Jenkins</b></td><td><code>Jenkinsfile</code> (Groovy: Declarative ou Scripted)</td><td>Controller + Agents</td><td>Self-hosted maduro, ecossistema gigante de plugins</td></tr>
+    <tr><td><b>GitLab CI</b></td><td><code>.gitlab-ci.yml</code> na raiz</td><td>GitLab Runner (Docker, Shell, K8s)</td><td>Integrado ao GitLab (MRs, registry, ambientes)</td></tr>
+    <tr><td><b>GitHub Actions</b></td><td><code>.github/workflows/*.yml</code></td><td>Runners (hosted ou self-hosted)</td><td>Reuso fácil de ações da comunidade (<code>uses:</code>)</td></tr>
+  </table>
+  <pre><code><i># Exemplo GitHub Actions / GitLab CI (Pipeline as Code)</i>
+<mark>on:</mark> [push, pull_request]
+<mark>jobs:</mark>
+  testar:
+    runs-on: ubuntu-latest
+    steps:
+      - run: mvn test</code></pre>
+</div>
+
+<div class="slide">
+  <span class="tag">PIPELINE AS CODE</span>
+  <h2>Por que o pipeline mora no repositório?</h2>
+  <div class="analogy"><span class="emoji">📜</span><div><b>Analogia:</b> antes, alguém clicava em 40 telas no Jenkins para configurar um build (se o servidor morresse, perdia tudo). Hoje, a receita do build é um arquivo de texto junto do código.</div></div>
+  <ul class="checklist">
+    <li><b>Versionado:</b> se o código da v2 precisa de Java 21 e a v1 de Java 17, cada branch tem seu próprio pipeline.</li>
+    <li><b>Auditável:</b> mudanças na esteira passam por Code Review no Pull Request.</li>
+    <li><b>Reprodutível:</b> fácil de recriar em outro servidor ou runner.</li>
+  </ul>
+  <div class="say law"><b>Pipeline as Code</b> trata a definição da esteira de CI/CD como código-fonte versionado no mesmo repositório da aplicação.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">DEPLOY SEGURO · PARTE 1</span>
+  <h2>Rolling Update × Blue-Green</h2>
+  <div class="io">
+    <div class="tbox"><h4>Rolling Update (Gradual)</h4>
+      <table>
+        <tr><th>Passo</th><th>Instâncias</th></tr>
+        <tr><td>Início</td><td>v1 · v1 · v1</td></tr>
+        <tr><td>Meio</td><td class="hk">v2 · v1 · v1</td></tr>
+        <tr><td>Fim</td><td class="hk">v2 · v2 · v2</td></tr>
+      </table>
+      <p class="cap">Economiza recursos (não dobra servidores), mas v1 e v2 convivem durante a troca.</p>
+    </div>
+    <div class="arr">×</div>
+    <div class="tbox"><h4>Blue-Green (Dois ambientes)</h4>
+      <table>
+        <tr><th>Ambiente</th><th>Tráfego</th></tr>
+        <tr><td>Blue (v1)</td><td class="hl">0% (espera)</td></tr>
+        <tr><td>Green (v2)</td><td class="hk">100% (ativo)</td></tr>
+      </table>
+      <p class="cap">Virada instantânea no roteador; rollback imediato voltando pro Blue. Custa o dobro de infra na troca.</p>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">DEPLOY SEGURO · PARTE 2</span>
+  <h2>Canary Release (Canário)</h2>
+  <svg viewBox="0 0 640 165" role="img" aria-label="Roteador enviando 95% para v1 e 5% para v2 Canary">
+    <defs><marker id="c2b" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="box" x="20" y="52" width="130" height="60" rx="14"/><text x="85" y="87" text-anchor="middle">Usuários</text>
+    <rect class="accbox" x="210" y="52" width="140" height="60" rx="14"/><text x="280" y="78" text-anchor="middle">Load Balancer</text><text x="280" y="98" text-anchor="middle" class="small">divide tráfego</text>
+    <rect class="okbox" x="430" y="15" width="185" height="55" rx="12"/><text x="522" y="40" text-anchor="middle">Versão Estável (v1)</text><text x="522" y="58" text-anchor="middle" class="small">95% das requisições</text>
+    <rect class="keybox" x="430" y="95" width="185" height="55" rx="12"/><text class="kt" x="522" y="120" text-anchor="middle">Canary (v2)</text><text class="kt" x="522" y="138" text-anchor="middle" style="font-size:12px">5% (teste real controlado)</text>
+    <line x1="150" y1="82" x2="207" y2="82" stroke="#6d4aff" stroke-width="3" marker-end="url(#c2b)"/>
+    <line x1="350" y1="72" x2="427" y2="45" stroke="#2ea043" stroke-width="3" marker-end="url(#c2b)"/>
+    <line x1="350" y1="92" x2="427" y2="120" stroke="#e8871a" stroke-width="3" marker-end="url(#c2b)"/>
+  </svg>
+  <p class="mini">Inspirado no canário da mina de carvão: se os 5% apresentarem erro ou lentidão nas métricas, você corta o Canary antes de afetar os outros 95%. Se tudo for bem, sobe para 25%, 50%, 100%.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>Pegadinhas clássicas de CI/CD</h2>
+  <div class="say trap"><span class="pill ng">✗</span> “CI já coloca o código em produção.” <span class="pill ok">✓</span> CI vai até build e testes automatizados; quem coloca em produção é o CD (Delivery/Deployment).</div>
+  <div class="say trap"><span class="pill ng">✗</span> “Blue-Green divide 10% do tráfego para a versão nova enquanto 90% ficam na antiga.” <span class="pill ok">✓</span> Dividir tráfego em porcentagem pequena é <b>Canary</b>. Blue-Green vira 100% do tráfego entre dois ambientes completos.</div>
+  <div class="say trap"><span class="pill ng">✗</span> “Artifact e Cache são a mesma coisa no GitLab CI / GitHub Actions.” <span class="pill ok">✓</span> <b>Cache</b> acelera builds futuros (dependências); <b>Artifact</b> passa resultados do build atual entre estágios.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Capítulo 2 numa colinha</h2>
+  <div class="magic">CI = testa; Delivery = pronto com botão; Deployment = automático.<small>Jenkins (Jenkinsfile), GitLab CI (.gitlab-ci.yml), GitHub Actions (workflows/*.yml).</small></div>
+  <ul class="checklist">
+    <li>Pipeline as Code versiona a esteira junto com o código da aplicação.</li>
+    <li>Stages organizam fases; jobs dentro do mesmo stage podem rodar em paralelo.</li>
+    <li>Rolling Update troca instâncias aos poucos (convivem v1 e v2).</li>
+    <li>Blue-Green usa dois ambientes completos e dá rollback instantâneo.</li>
+    <li>Canary libera para pequena fatia de usuários e monitora antes de expandir.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Pense antes de abrir</h2>
+  <details><summary>1) Uma empresa automatizou build, testes e deploy em homologação, mas exige clique de um gerente para subir em produção. Isso é:</summary>
+    <p><span class="pill ok">Continuous Delivery</span> O código está sempre pronto para produção, mas a liberação final tem aprovação manual.</p></details>
+  <details><summary>2) Qual estratégia de deploy reduz o raio de impacto testando a v2 com apenas 2% dos usuários reais?</summary>
+    <p><span class="pill ok">Canary Release</span> Permite validar métricas reais com risco mínimo antes de escalar para 100%.</p></details>
+  <details><summary>3) Qual arquivo define o pipeline declarativo ou scripted no Jenkins?</summary>
+    <p><span class="pill ok">Jenkinsfile</span> Versionado na raiz do repositório (Pipeline as Code).</p></details>
+  <details><summary>4) Qual a principal desvantagem do Blue-Green Deployment frente ao Rolling Update?</summary>
+    <p><span class="pill ok">Custo de infraestrutura</span> Exige manter dois ambientes de produção completos simultaneamente durante a transição.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 3 ===================================================== -->
+<section class="chapter" data-title="Docker e containers">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 3</span>
+  <h1>Docker e containers</h1>
+  <span class="emoji">🐳</span>
+  <div class="steps">
+    <div class="step"><b>1. Container × VM</b><span>Kernel compartilhado, namespaces e cgroups.</span></div>
+    <div class="step"><b>2. Imagem &amp; Dockerfile</b><span>Camadas, instruções e multi-stage build.</span></div>
+    <div class="step"><b>3. Dados &amp; Rede</b><span>Volumes, bridge/host e Docker Compose.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">📦</span><div><b>Analogia do dia:</b> uma <b>VM</b> é uma casa inteira com sua própria caixa d'água, padrão de luz e encanamento. Um <b>Container</b> é um apartamento num prédio: cada um tem suas paredes e chave (<i>namespaces</i>) e seu limite de consumo (<i>cgroups</i>), mas todos usam a mesma fundação e encanamento do prédio (o <b>kernel do host</b>).</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">ARQUITETURA</span>
+  <h2>Máquina Virtual × Container</h2>
+  <svg viewBox="0 0 640 205" role="img" aria-label="Comparação de camadas entre Máquina Virtual e Container">
+    <text x="155" y="20" text-anchor="middle">Máquina Virtual (VM)</text>
+    <rect class="accbox" x="25" y="30" width="120" height="40" rx="8"/><text x="85" y="55" text-anchor="middle" class="small">App A + Libs</text>
+    <rect class="accbox" x="165" y="30" width="120" height="40" rx="8"/><text x="225" y="55" text-anchor="middle" class="small">App B + Libs</text>
+    <rect class="badbox" x="25" y="75" width="120" height="35" rx="8"/><text x="85" y="97" text-anchor="middle" class="small">SO Convidado</text>
+    <rect class="badbox" x="165" y="75" width="120" height="35" rx="8"/><text x="225" y="97" text-anchor="middle" class="small">SO Convidado</text>
+    <rect class="keybox" x="25" y="116" width="260" height="30" rx="8"/><text class="kt" x="155" y="136" text-anchor="middle" style="font-size:13px">Hypervisor (virtualiza hardware)</text>
+    <rect class="box" x="25" y="152" width="260" height="34" rx="8"/><text x="155" y="174" text-anchor="middle" class="small">SO Host + Hardware</text>
+
+    <text x="485" y="20" text-anchor="middle">Containers (Docker)</text>
+    <rect class="accbox" x="355" y="55" width="120" height="55" rx="8"/><text x="415" y="87" text-anchor="middle" class="small">App A + Libs</text>
+    <rect class="accbox" x="495" y="55" width="120" height="55" rx="8"/><text x="555" y="87" text-anchor="middle" class="small">App B + Libs</text>
+    <rect class="okbox" x="355" y="116" width="260" height="30" rx="8"/><text x="485" y="136" text-anchor="middle" class="small">Container Engine (Docker / containerd)</text>
+    <rect class="box" x="355" y="152" width="260" height="34" rx="8"/><text x="485" y="174" text-anchor="middle" class="small">Kernel do SO Host + Hardware</text>
+  </svg>
+  <div class="say law">Containers isolam processos usando recursos do kernel Linux: <b>namespaces</b> (isolamento de PID, rede, sistema de arquivos, usuários) e <b>cgroups</b> (controle e limite de CPU, memória e I/O).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">IMAGEM × CONTAINER</span>
+  <h2>Receita congelada × Bolo em execução</h2>
+  <div class="two">
+    <div class="card" style="margin:0">
+      <b>Imagem Docker</b>
+      <p class="mini">Modelo <b>imutável e somente leitura</b> formado por camadas empilhadas (UnionFS). Fica salva num <b>Registry</b> (Docker Hub, Harbor).</p>
+      <p class="ex ok">Mesma imagem pode gerar vários containers.</p>
+    </div>
+    <div class="card" style="margin:0">
+      <b>Container</b>
+      <p class="mini">Instância em execução da imagem + uma <b>camada gravável fina</b> no topo.</p>
+      <p class="ex ng">Se o container for removido, o que foi gravado nessa camada efêmera <b>some</b>!</p>
+    </div>
+  </div>
+  <div class="say law">Imagens são construídas em camadas cacheadas: se uma linha do Dockerfile não mudou, o Docker reaproveita o cache daquela camada.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">DOCKERFILE</span>
+  <h2>As instruções que caem em prova</h2>
+  <pre><code><mark>FROM</mark> eclipse-temurin:21-jre-alpine   <i># imagem base</i>
+<mark>WORKDIR</mark> /app                        <i># diretório de trabalho</i>
+<mark>COPY</mark> target/app.jar app.jar         <i># copia arquivos locais (preferir ao ADD)</i>
+<mark>ENV</mark> SPRING_PROFILES_ACTIVE=prod     <i># variável em runtime</i>
+<mark>EXPOSE</mark> 8080                         <i># documenta a porta (não publica sozinha!)</i>
+<mark>RUN</mark> addgroup -S app                 <i># roda no BUILD da imagem</i>
+<mark>ENTRYPOINT</mark> ["java","-jar","app.jar"] <i># processo principal ao iniciar</i></code></pre>
+  <table class="cmp mini">
+    <tr><th>Par</th><th>Diferença-chave para a FGV</th></tr>
+    <tr><td><b>RUN × CMD</b></td><td><code>RUN</code> executa no <b>build</b> (grava camada); <code>CMD</code> define o comando padrão ao <b>iniciar o container</b>.</td></tr>
+    <tr><td><b>CMD × ENTRYPOINT</b></td><td><code>CMD</code> é facilmente sobrescrito por argumentos no <code>docker run</code>; <code>ENTRYPOINT</code> fixa o executável (e o <code>CMD</code> vira argumento dele).</td></tr>
+    <tr><td><b>COPY × ADD</b></td><td><code>COPY</code> só copia local→imagem; <code>ADD</code> também descompacta <code>.tar</code> e baixa URL (use <code>COPY</code> por padrão).</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">BOAS PRÁTICAS</span>
+  <h2>Multi-stage Build: imagem leve e segura</h2>
+  <svg viewBox="0 0 640 155" role="img" aria-label="Multi-stage build compilando no estágio 1 e copiando só o jar para o estágio 2">
+    <defs><marker id="c3a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2ea043"/></marker></defs>
+    <rect class="badbox" x="15" y="25" width="250" height="85" rx="14"/><text x="140" y="52" text-anchor="middle">Estágio 1: builder (Maven + JDK)</text><text x="140" y="74" text-anchor="middle" class="small">~500 MB · compila código-fonte</text><text x="140" y="95" text-anchor="middle" class="small">descartado no final!</text>
+    <rect class="okbox" x="355" y="25" width="270" height="85" rx="14"/><text x="490" y="52" text-anchor="middle">Estágio 2: final (JRE Alpine)</text><text x="490" y="74" text-anchor="middle" class="small">~90 MB · recebe só o app.jar</text><text x="490" y="95" text-anchor="middle" class="small">menos superfície de ataque</text>
+    <line x1="268" y1="68" x2="351" y2="68" stroke="#2ea043" stroke-width="3" marker-end="url(#c3a)"/>
+    <text x="310" y="55" text-anchor="middle" class="small">COPY --from=builder</text>
+    <text x="320" y="140" text-anchor="middle" class="small">Dois FROM no mesmo Dockerfile = imagem final enxuta, sem compilador nem código-fonte.</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">PERSISTÊNCIA E REDE</span>
+  <h2>Volumes e Redes no Docker</h2>
+  <div class="two">
+    <div class="card" style="margin:0">
+      <b>Onde salvar dados persistentes?</b>
+      <ul class="mini">
+        <li><b>Named Volume</b> (<code>-v dados:/var/lib/pg</code>): gerenciado pelo Docker; ideal em produção.</li>
+        <li><b>Bind Mount</b> (<code>-v ./src:/app</code>): espelha pasta exata do host; ótimo em dev.</li>
+        <li><b>tmpfs</b>: só na RAM; some ao parar o container.</li>
+      </ul>
+    </div>
+    <div class="card" style="margin:0">
+      <b>Tipos de Rede</b>
+      <ul class="mini">
+        <li><b>bridge</b>: padrão; rede virtual isolada no host (containers conversam por nome em bridge customizada).</li>
+        <li><b>host</b>: remove isolamento de rede; usa direto o IP/portas do host.</li>
+        <li><b>none</b>: sem interface de rede.</li>
+        <li><b>overlay</b>: conecta containers entre múltiplos hosts (Swarm).</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">MULTI-CONTAINER</span>
+  <h2>Docker Compose (<code>compose.yml</code>)</h2>
+  <p class="mini">Em vez de digitar vários <code>docker run</code> compridos, você descreve a pilha inteira num YAML e sobe com <code>docker compose up -d</code>.</p>
+  <pre><code><mark>services:</mark>
+  api:
+    build: .
+    ports: ["8080:8080"]
+    depends_on: [db]      <i># ordem de inicialização (não espera o banco estar "pronto" sem healthcheck!)</i>
+  db:
+    image: postgres:16
+    volumes: [pgdata:/var/lib/postgresql/data]
+<mark>volumes:</mark>
+  pgdata:</code></pre>
+  <div class="say law">Docker Compose cria automaticamente uma rede <b>bridge</b> para os serviços do arquivo se enxergarem pelo nome do serviço (ex.: <code>db</code>).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>Pegadinhas clássicas de Docker</h2>
+  <div class="say trap"><span class="pill ng">✗</span> “<code>EXPOSE 8080</code> no Dockerfile já publica a porta no host.” <span class="pill ok">✓</span> <code>EXPOSE</code> é apenas documentação. Para publicar de verdade, use <code>-p 8080:8080</code> no <code>docker run</code> ou <code>ports:</code> no Compose.</div>
+  <div class="say trap"><span class="pill ng">✗</span> “<code>depends_on: [db]</code> garante que o PostgreSQL já terminou de inicializar antes da API subir.” <span class="pill ok">✓</span> Sem <code>condition: service_healthy</code> + <code>healthcheck</code>, o Compose só espera o container iniciar, não a porta estar pronta.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Capítulo 3 numa colinha</h2>
+  <div class="magic">Container = Kernel compartilhado + namespaces (isola) + cgroups (limita).<small>Imagem é imutável em camadas; dados duráveis vão em Volumes.</small></div>
+  <ul class="checklist">
+    <li>VM virtualiza hardware e SO completo; container compartilha o kernel do host.</li>
+    <li><code>RUN</code> roda no build; <code>CMD</code>/<code>ENTRYPOINT</code> rodam no start do container.</li>
+    <li>Multi-stage build reduz tamanho e superfície de ataque da imagem final.</li>
+    <li>Named volume (gerenciado) e bind mount (caminho do host) persistem dados.</li>
+    <li>Rede <code>bridge</code> isola; <code>host</code> compartilha rede do servidor; <code>none</code> desliga rede.</li>
+    <li>Docker Compose orquestra múltiplos serviços, redes e volumes declarativamente.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Pense antes de abrir</h2>
+  <details><summary>1) Qual recurso do Linux impede que um container consuma 100% da RAM do servidor?</summary>
+    <p><span class="pill ok">cgroups (Control Groups)</span> Enquanto <i>namespaces</i> isolam o que o processo vê, <i>cgroups</i> limitam CPU, memória e I/O.</p></details>
+  <details><summary>2) Se você apagar um container que rodava um banco sem volume configurado, o que acontece com os dados?</summary>
+    <p><span class="pill ng">São perdidos</span> Os dados estavam na camada gravável efêmera do container.</p></details>
+  <details><summary>3) Qual a diferença entre <code>COPY</code> e <code>ADD</code> no Dockerfile?</summary>
+    <p><span class="pill ok">COPY só copia arquivos locais</span> <code>ADD</code> faz o mesmo, mas também baixa URLs remotas e extrai arquivos compactados (<code>.tar</code>) automaticamente.</p></details>
+  <details><summary>4) Na rede <code>host</code>, é necessário mapear portas com <code>-p 8080:8080</code>?</summary>
+    <p><span class="pill ng">Não</span> O container compartilha diretamente a pilha de rede e as portas do próprio host.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 4 ===================================================== -->
+<section class="chapter" data-title="Kubernetes (K8s)">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 4</span>
+  <h1>Kubernetes (K8s)</h1>
+  <span class="emoji">☸️</span>
+  <div class="steps">
+    <div class="step"><b>1. Arquitetura</b><span>Control Plane e Worker Nodes.</span></div>
+    <div class="step"><b>2. Cargas &amp; Rede</b><span>Pod, Deployment, Service e Ingress.</span></div>
+    <div class="step"><b>3. Configuração</b><span>ConfigMaps e Secrets (cuidado com Base64!).</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🚢</span><div><b>Analogia do dia:</b> se o Docker é o <b>contêiner de carga</b>, o Kubernetes é o <b>porto automatizado inteiro</b>: ele decide em qual navio (Nó) colocar cada caixa (Pod), substitui caixas que caíram no mar (Deployment) e direciona os caminhões até o portão certo (Service/Ingress).</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">ARQUITETURA DO CLUSTER</span>
+  <h2>Control Plane × Worker Nodes</h2>
+  <svg viewBox="0 0 640 205" role="img" aria-label="Control Plane com API Server, etcd, Scheduler, Controller Manager e Worker Nodes com kubelet, kube-proxy e Pods">
+    <defs><marker id="c4a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect x="15" y="12" width="290" height="178" rx="16" fill="none" stroke="#6d4aff" stroke-width="2.5"/>
+    <text x="160" y="34" text-anchor="middle" style="fill:#6d4aff">Control Plane (Cérebro)</text>
+    <rect class="accbox" x="30" y="46" width="125" height="48" rx="10"/><text x="92" y="68" text-anchor="middle" class="small">kube-apiserver</text><text x="92" y="84" text-anchor="middle" class="small">(porta de entrada)</text>
+    <rect class="keybox" x="168" y="46" width="122" height="48" rx="10"/><text class="kt" x="229" y="68" text-anchor="middle" style="font-size:13px">etcd</text><text class="kt" x="229" y="84" text-anchor="middle" style="font-size:11px">(banco chave-valor)</text>
+    <rect class="box" x="30" y="108" width="125" height="48" rx="10"/><text x="92" y="130" text-anchor="middle" class="small">kube-scheduler</text><text x="92" y="146" text-anchor="middle" class="small">(escolhe o nó)</text>
+    <rect class="box" x="168" y="108" width="122" height="48" rx="10"/><text x="229" y="130" text-anchor="middle" class="small">controller-mgr</text><text x="229" y="146" text-anchor="middle" class="small">(reconcilia estado)</text>
+
+    <rect x="345" y="12" width="280" height="178" rx="16" fill="none" stroke="#2ea043" stroke-width="2.5"/>
+    <text x="485" y="34" text-anchor="middle" style="fill:#2ea043">Worker Node (Músculo)</text>
+    <rect class="okbox" x="360" y="46" width="120" height="44" rx="10"/><text x="420" y="66" text-anchor="middle" class="small">kubelet</text><text x="420" y="81" text-anchor="middle" class="small">(agente do nó)</text>
+    <rect class="okbox" x="492" y="46" width="118" height="44" rx="10"/><text x="551" y="66" text-anchor="middle" class="small">kube-proxy</text><text x="551" y="81" text-anchor="middle" class="small">(regras de rede)</text>
+    <rect class="box" x="360" y="104" width="250" height="70" rx="10"/><text x="485" y="126" text-anchor="middle" class="small">Container Runtime (containerd)</text>
+    <rect class="accbox" x="378" y="136" width="95" height="28" rx="6"/><text x="425" y="155" text-anchor="middle" class="small">Pod 1</text>
+    <rect class="accbox" x="495" y="136" width="95" height="28" rx="6"/><text x="542" y="155" text-anchor="middle" class="small">Pod 2</text>
+    <line x1="305" y1="70" x2="357" y2="70" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c4a)"/>
+  </svg>
+  <div class="say law">Todos os componentes falam com o <b>etcd</b> apenas através do <b>kube-apiserver</b>. O <b>kubelet</b> garante que os containers dos Pods estejam rodando no nó.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">CARGA DE TRABALHO</span>
+  <h2>Pod, ReplicaSet e Deployment</h2>
+  <div class="flow"><span>Deployment</span><i>→</i><span>ReplicaSet</span><i>→</i><span>Pods (réplicas)</span></div>
+  <ul class="mini">
+    <li><b>Pod:</b> menor unidade implantável no K8s. Agrupa 1 ou mais containers que dividem o <b>mesmo IP</b> (<code>localhost</code> entre eles) e volumes. É <b>efêmero</b>: se morrer, nasce outro com outro IP.</li>
+    <li><b>ReplicaSet:</b> mantém o número desejado de réplicas de um Pod (ex.: sempre 3).</li>
+    <li><b>Deployment:</b> objeto que você cria no dia a dia. Gerencia ReplicaSets para fazer <b>rolling updates</b> sem queda e <b>rollback</b> fácil para versão anterior.</li>
+  </ul>
+  <div class="say law">Na prática, não se cria Pods avulsos em produção: cria-se um <b>Deployment</b> (stateless) ou <b>StatefulSet</b> (com identidade/armazenamento persistente).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">REDE INTERNA E EXTERNA</span>
+  <h2>Services: dando endereço fixo para Pods efêmeros</h2>
+  <p class="mini">Como Pods morrem e mudam de IP, o <b>Service</b> usa seletores de rótulos (<code>labels</code>) para criar um IP e DNS estáveis e balancear carga entre os Pods saudáveis.</p>
+  <table class="cmp mini">
+    <tr><th>Tipo de Service</th><th>Quem acessa</th><th>Como funciona</th></tr>
+    <tr><td><b>ClusterIP</b> (padrão)</td><td>Só dentro do cluster</td><td>Cria um IP virtual interno (ex.: comunicação API → Banco).</td></tr>
+    <tr><td><b>NodePort</b></td><td>Externo (porta alta)</td><td>Abre a mesma porta (30000–32767) em todos os nós do cluster.</td></tr>
+    <tr><td><b>LoadBalancer</b></td><td>Externo (Internet)</td><td>Provisiona um balanceador externo no provedor de nuvem.</td></tr>
+    <tr><td><b>ExternalName</b></td><td>Interno → DNS fora</td><td>Mapeia o Service para um nome DNS externo (CNAME).</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">CAMADA 7 (HTTP/HTTPS)</span>
+  <h2>Ingress: o porteiro inteligente</h2>
+  <svg viewBox="0 0 640 160" role="img" aria-label="Cliente acessando Ingress que roteia /api e /web para Services e Pods">
+    <defs><marker id="c4b" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="box" x="15" y="50" width="110" height="56" rx="12"/><text x="70" y="75" text-anchor="middle" class="small">Cliente HTTPS</text><text x="70" y="92" text-anchor="middle" class="small">tjpb.jus.br</text>
+    <rect class="keybox" x="175" y="40" width="160" height="76" rx="14"/><text class="kt" x="255" y="68" text-anchor="middle">Ingress (+ Controller)</text><text class="kt" x="255" y="88" text-anchor="middle" style="font-size:12px">TLS + regras host/path</text>
+    <rect class="accbox" x="395" y="18" width="105" height="46" rx="10"/><text x="447" y="45" text-anchor="middle" class="small">Svc /api</text>
+    <rect class="accbox" x="395" y="92" width="105" height="46" rx="10"/><text x="447" y="119" text-anchor="middle" class="small">Svc /web</text>
+    <rect class="okbox" x="530" y="18" width="95" height="46" rx="10"/><text x="577" y="45" text-anchor="middle" class="small">Pods API</text>
+    <rect class="okbox" x="530" y="92" width="95" height="46" rx="10"/><text x="577" y="119" text-anchor="middle" class="small">Pods Web</text>
+    <line x1="125" y1="78" x2="172" y2="78" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c4b)"/>
+    <line x1="335" y1="65" x2="392" y2="43" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c4b)"/>
+    <line x1="335" y1="90" x2="392" y2="113" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#c4b)"/>
+    <line x1="500" y1="41" x2="527" y2="41" stroke="#2ea043" stroke-width="2.5" marker-end="url(#c4b)"/>
+    <line x1="500" y1="115" x2="527" y2="115" stroke="#2ea043" stroke-width="2.5" marker-end="url(#c4b)"/>
+  </svg>
+  <div class="say law"><b>Ingress não é um tipo de Service</b>: ele é um objeto de roteamento HTTP/HTTPS (camada 7) que exige um <b>Ingress Controller</b> (ex.: NGINX, Traefik) para funcionar.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONFIGURAÇÃO</span>
+  <h2>ConfigMap × Secret</h2>
+  <div class="two">
+    <div class="card" style="margin:0">
+      <b>ConfigMap</b>
+      <p class="mini">Guarda configurações <b>não sensíveis</b> (URLs, feature flags, arquivos <code>application.properties</code>) separadas da imagem.</p>
+      <p class="ex ok">Entra no Pod como variável de ambiente ou arquivo montado.</p>
+    </div>
+    <div class="card" style="margin:0">
+      <b>Secret</b>
+      <p class="mini">Guarda dados <b>sensíveis</b> (senhas, tokens, certificados TLS).</p>
+      <p class="ex ng">Armazenado em <b>Base64</b> por padrão — isso é codificação, NÃO criptografia!</p>
+    </div>
+  </div>
+  <pre><code><i># Qualquer um decodifica Base64 sem chave nenhuma:</i>
+echo <mark>"c2VuaGExMjM="</mark> | base64 -d   <i># → senha123</i></code></pre>
+</div>
+
+<div class="slide">
+  <span class="tag">EXEMPLO YAML</span>
+  <h2>Lendo um manifesto declarativo</h2>
+  <pre><code>apiVersion: apps/v1
+kind: <mark>Deployment</mark>
+metadata: { name: pje-api }
+spec:
+  replicas: <mark>3</mark>                 <i># estado desejado</i>
+  selector:
+    matchLabels: { app: pje } <i># casa com os Pods</i>
+  template:
+    metadata:
+      labels: { app: pje }
+    spec:
+      containers:
+        - name: api
+          image: registry.tjpb/pje:1.4</code></pre>
+  <p class="mini">Se um Pod cair, o controller-manager vê que só há 2 de 3 e manda criar outro automaticamente.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>Onde a FGV pega em Kubernetes</h2>
+  <div class="say trap"><span class="pill ng">✗</span> “Kubernetes Secrets criptografam senhas com Base64.” <span class="pill ok">✓</span> Base64 é apenas <b>codificação</b> reversível. Segurança real exige <b>RBAC</b> restrito + <b>Encryption at Rest</b> no <code>etcd</code> (ou cofre externo como Vault).</div>
+  <div class="say trap"><span class="pill ng">✗</span> “O Service LoadBalancer roteia por caminho <code>/api</code> e <code>/web</code>.” <span class="pill ok">✓</span> Services operam na camada 4 (TCP/UDP). Roteamento HTTP por host/path é papel do <b>Ingress</b>.</div>
+  <div class="say trap"><span class="pill ng">✗</span> “O kubelet fica no Control Plane.” <span class="pill ok">✓</span> <code>kubelet</code> e <code>kube-proxy</code> rodam nos <b>Worker Nodes</b>.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Capítulo 4 numa colinha</h2>
+  <div class="magic">Deployment garante Pods; Service dá IP fixo; Ingress roteia HTTP.<small>Control Plane (apiserver, etcd, scheduler, controller-manager) × Worker (kubelet, kube-proxy).</small></div>
+  <ul class="checklist">
+    <li><code>etcd</code> guarda todo o estado do cluster; só o <code>kube-apiserver</code> fala direto com ele.</li>
+    <li>Pod é efêmero; containers do mesmo Pod dividem IP e volumes.</li>
+    <li><code>ClusterIP</code> (interno), <code>NodePort</code> (porta no nó), <code>LoadBalancer</code> (externo L4).</li>
+    <li>Ingress roteia L7 (host/path/TLS) e precisa de Ingress Controller.</li>
+    <li>ConfigMap = dados comuns; Secret = dados sensíveis (Base64 ≠ criptografia!).</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Pense antes de abrir</h2>
+  <details><summary>1) Qual componente do Control Plane decide em qual Worker Node um novo Pod será colocado?</summary>
+    <p><span class="pill ok">kube-scheduler</span> Ele avalia recursos disponíveis, afinidade e restrições para escolher o melhor nó.</p></details>
+  <details><summary>2) Dois containers dentro do mesmo Pod querem conversar via HTTP. Qual endereço usam?</summary>
+    <p><span class="pill ok">localhost (127.0.0.1)</span> Containers de um mesmo Pod compartilham o mesmo namespace de rede.</p></details>
+  <details><summary>3) Você quer expor 5 serviços HTTP diferentes sob um único domínio e certificado TLS. O que usar?</summary>
+    <p><span class="pill ok">Ingress</span> Roteia por host/path (camada 7) para cada Service ClusterIP interno.</p></details>
+  <details><summary>4) Por que não basta criar um Secret para garantir sigilo absoluto de uma senha no cluster?</summary>
+    <p><span class="pill ok">Base64 é só codificação</span> Sem RBAC e criptografia em repouso no <code>etcd</code>, quem lê o objeto decodifica a senha facilmente.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 5 ===================================================== -->
+<section class="chapter" data-title="Nuvem, Terraform e Observabilidade">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 5</span>
+  <h1>Nuvem, Terraform e Observabilidade</h1>
+  <span class="emoji">☁️</span>
+  <div class="steps">
+    <div class="step"><b>1. Nuvem</b><span>IaaS, PaaS, SaaS e pública/privada/híbrida.</span></div>
+    <div class="step"><b>2. Terraform (IaC)</b><span>Providers, módulos, ciclo e <code>tfstate</code>.</span></div>
+    <div class="step"><b>3. Observabilidade</b><span>Métricas, Logs, Tracing distribuído e APM.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🍕</span><div><b>Analogia da Pizza as a Service:</b> fazer tudo em casa = <b>On-Premises</b>. Comprar massa e forno alugados e você assar = <b>IaaS</b>. Pedir delivery só pra servir na mesa = <b>PaaS</b>. Comer no restaurante pronto = <b>SaaS</b>.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">MODELOS DE SERVIÇO</span>
+  <h2>Quem cuida de quê: On-Premises, IaaS, PaaS, SaaS</h2>
+  <div class="scroll"><table class="cmp mini">
+    <tr><th>Camada</th><th>On-Premises</th><th>IaaS (ex.: EC2)</th><th>PaaS (ex.: App Engine)</th><th>SaaS (ex.: Gmail)</th></tr>
+    <tr><td><b>Aplicação e Dados</b></td><td class="hl">Você</td><td class="hl">Você</td><td class="hl">Você</td><td class="hk">Provedor</td></tr>
+    <tr><td><b>Runtime e Middleware</b></td><td class="hl">Você</td><td class="hl">Você</td><td class="hk">Provedor</td><td class="hk">Provedor</td></tr>
+    <tr><td><b>Sistema Operacional</b></td><td class="hl">Você</td><td class="hl">Você</td><td class="hk">Provedor</td><td class="hk">Provedor</td></tr>
+    <tr><td><b>Virtualização / Rede / Hardware</b></td><td class="hl">Você</td><td class="hk">Provedor</td><td class="hk">Provedor</td><td class="hk">Provedor</td></tr>
+  </table></div>
+  <div class="say law"><b>Nuvem Pública</b> (recursos compartilhados pela Internet), <b>Privada</b> (infra dedicada a uma organização), <b>Híbrida</b> (integra pública e privada) e <b>Multi-cloud</b> (usa 2+ provedores públicos).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">INFRAESTRUTURA COMO CÓDIGO</span>
+  <h2>Terraform: declarativo e idempotente</h2>
+  <p class="mini">Em vez de clicar no console da nuvem, você descreve a infra em arquivos <code>.tf</code> (linguagem <b>HCL</b>). Se rodar de novo sem mudar nada, ele não duplica servidores (<b>idempotência</b>).</p>
+  <div class="two">
+    <div class="card" style="margin:0">
+      <b>Blocos principais do HCL</b>
+      <ul class="mini">
+        <li><code>provider</code>: conecta à nuvem (AWS, Azure, GCP, K8s).</li>
+        <li><code>resource</code>: cria/gerencia um recurso real.</li>
+        <li><code>data</code>: apenas lê um recurso que já existe.</li>
+        <li><code>module</code>: empacota recursos reutilizáveis.</li>
+      </ul>
+    </div>
+    <div class="card" style="margin:0">
+      <b>Ciclo de vida</b>
+      <div class="flow"><span>init</span><i>→</i><span>plan</span><i>→</i><span>apply</span><i>→</i><span>destroy</span></div>
+      <p class="mini"><code>init</code> baixa providers; <code>plan</code> mostra o diff antes de mexer; <code>apply</code> executa; <code>destroy</code> apaga tudo.</p>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">ESTADO DO TERRAFORM</span>
+  <h2>O papel crítico do <code>terraform.tfstate</code></h2>
+  <svg viewBox="0 0 640 160" role="img" aria-label="Terraform compara código .tf com tfstate e aplica na nuvem">
+    <defs><marker id="c5a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="accbox" x="20" y="35" width="150" height="75" rx="14"/><text x="95" y="65" text-anchor="middle">Código (.tf)</text><text x="95" y="87" text-anchor="middle" class="small">estado desejado</text>
+    <rect class="keybox" x="240" y="35" width="160" height="75" rx="14"/><text class="kt" x="320" y="65" text-anchor="middle">terraform.tfstate</text><text class="kt" x="320" y="87" text-anchor="middle" style="font-size:12px">mapa do que existe</text>
+    <rect class="okbox" x="470" y="35" width="150" height="75" rx="14"/><text x="545" y="65" text-anchor="middle">Nuvem Real</text><text x="545" y="87" text-anchor="middle" class="small">VMs, redes, bancos</text>
+    <line x1="173" y1="72" x2="237" y2="72" stroke="#6d4aff" stroke-width="3" marker-end="url(#c5a)"/>
+    <line x1="403" y1="72" x2="467" y2="72" stroke="#6d4aff" stroke-width="3" marker-end="url(#c5a)"/>
+    <text x="320" y="142" text-anchor="middle" class="small">Em equipe: use backend remoto (ex.: S3/Bucket) com state locking e NUNCA comite tfstate com segredos no Git!</text>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">OBSERVABILIDADE · 3 PILARES</span>
+  <h2>Métricas, Logs e Traces</h2>
+  <svg viewBox="0 0 640 175" role="img" aria-label="Três pilares da observabilidade: Métricas, Logs e Traces">
+    <rect class="accbox" x="15" y="25" width="190" height="125" rx="16"/>
+    <text x="110" y="55" text-anchor="middle">1. Métricas</text>
+    <text x="110" y="80" text-anchor="middle" class="small">Números ao longo do tempo</text>
+    <text x="110" y="102" text-anchor="middle" class="small">(CPU, latência, req/s)</text>
+    <text x="110" y="130" text-anchor="middle" class="small">Prometheus · Zabbix · Grafana</text>
+
+    <rect class="okbox" x="225" y="25" width="190" height="125" rx="16"/>
+    <text x="320" y="55" text-anchor="middle">2. Logs</text>
+    <text x="320" y="80" text-anchor="middle" class="small">Eventos discretos com data</text>
+    <text x="320" y="102" text-anchor="middle" class="small">(erros, stacktraces, auditoria)</text>
+    <text x="320" y="130" text-anchor="middle" class="small">ELK · OpenSearch · Fluentd</text>
+
+    <rect class="keybox" x="435" y="25" width="190" height="125" rx="16"/>
+    <text class="kt" x="530" y="55" text-anchor="middle">3. Traces (Rastro)</text>
+    <text class="kt" x="530" y="80" text-anchor="middle" style="font-size:13px">Caminho da requisição</text>
+    <text class="kt" x="530" y="102" text-anchor="middle" style="font-size:13px">(Trace ID + Spans)</text>
+    <text class="kt" x="530" y="130" text-anchor="middle" style="font-size:12px">OpenTelemetry · Jaeger · APM</text>
+  </svg>
+  <div class="say law"><b>Monitoramento</b> alerta <i>que</i> algo falhou; <b>Observabilidade</b> permite investigar <i>por que</i> falhou correlacionando métricas, logs e traces.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">FERRAMENTAS DE OBSERVABILIDADE</span>
+  <h2>Quem faz o quê na prática</h2>
+  <table class="cmp mini">
+    <tr><th>Ferramenta</th><th>Papel principal</th></tr>
+    <tr><td><b>Zabbix</b></td><td>Monitoramento clássico de infraestrutura, servidores e rede (agentes, SNMP, ICMP, alertas).</td></tr>
+    <tr><td><b>Prometheus</b></td><td>Banco de séries temporais que coleta métricas via <b>pull</b> (scraping HTTP <code>/metrics</code>) e consulta com <b>PromQL</b>.</td></tr>
+    <tr><td><b>Grafana</b></td><td>Camada de <b>visualização/dashboards</b> e alertas (lê Prometheus, Zabbix, Elasticsearch etc.).</td></tr>
+    <tr><td><b>ELK / OpenSearch</b></td><td><b>E</b>lasticsearch (indexa/busca) + <b>L</b>ogstash (coleta/trata) + <b>K</b>ibana (visualiza). OpenSearch é o fork aberto compatível.</td></tr>
+    <tr><td><b>APM &amp; Tracing</b></td><td>Instrumenta a aplicação (OpenTelemetry, Jaeger, Elastic APM) para medir tempo por serviço e query SQL.</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">TRACING NA PRÁTICA</span>
+  <h2>Como um Trace acha o gargalo</h2>
+  <pre><code>Trace ID: <mark>9f8a-12bc</mark> (Requisição total: 850 ms)
+├─ Span 1: API Gateway         [ 20 ms ]
+├─ Span 2: Serviço de Processo [800 ms]  ← <mark>GARGALO!</mark>
+│  └─ Span 3: Query PostgreSQL [740 ms]
+└─ Span 4: Serviço de Log      [ 30 ms ]</code></pre>
+  <p class="mini">Cada serviço propaga o cabeçalho do <b>Trace ID</b>. Sem tracing distribuído, você só saberia que "o sistema está lento", sem saber qual microsserviço travou.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>Pegadinhas clássicas do Bloco 8</h2>
+  <div class="say trap"><span class="pill ng">✗</span> “Em PaaS, o cliente gerencia atualizações do sistema operacional.” <span class="pill ok">✓</span> Gerenciar SO é obrigação do cliente em <b>IaaS</b>. Em PaaS o provedor cuida do SO e do runtime.</div>
+  <div class="say trap"><span class="pill ng">✗</span> “O <code>terraform.tfstate</code> deve ser commitado no Git com todas as senhas.” <span class="pill ok">✓</span> O state pode conter segredos em texto claro! Deve ficar em <b>backend remoto criptografado</b> com <i>locking</i>.</div>
+  <div class="say trap"><span class="pill ng">✗</span> “Grafana coleta métricas sozinho via SNMP.” <span class="pill ok">✓</span> Grafana é visualizador; quem coleta/armazena métricas é Prometheus ou Zabbix.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Capítulo 5 numa colinha</h2>
+  <div class="magic">IaaS dá VM; PaaS dá plataforma; SaaS dá software. Terraform usa tfstate.<small>Observabilidade = Métricas (Prometheus) + Logs (ELK/OpenSearch) + Traces (APM).</small></div>
+  <ul class="checklist">
+    <li>IaaS: você gerencia SO/runtime/app; PaaS: você gerencia app/dados; SaaS: tudo é do provedor.</li>
+    <li>Terraform é declarativo e idempotente; ciclo <code>init → plan → apply → destroy</code>.</li>
+    <li><code>tfstate</code> mapeia <code>.tf</code> para recursos reais; em equipe exige backend remoto + lock.</li>
+    <li>Prometheus coleta métricas por <i>pull</i>; Zabbix monitora infra/SNMP; Grafana cria painéis.</li>
+    <li>ELK / OpenSearch centralizam logs; Tracing (Trace/Span ID) rastreia requisições entre serviços.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Pense antes de abrir</h2>
+  <details><summary>1) Você sobe apenas o código Python e o provedor cuida do SO, runtime e escala. Esse modelo é:</summary>
+    <p><span class="pill ok">PaaS (Platform as a Service)</span> O desenvolvedor foca apenas na aplicação e nos dados.</p></details>
+  <details><summary>2) Qual comando do Terraform mostra as mudanças previstas na nuvem sem alterar nada ainda?</summary>
+    <p><span class="pill ok">terraform plan</span> Ele compara o código <code>.tf</code> com o estado real (<code>tfstate</code>) e exibe o plano de execução.</p></details>
+  <details><summary>3) Na stack ELK, qual componente armazena e indexa os logs para busca rápida?</summary>
+    <p><span class="pill ok">Elasticsearch</span> Logstash coleta/transforma e Kibana exibe os gráficos e buscas.</p></details>
+  <details><summary>4) Qual pilar da observabilidade usa Trace ID e Spans para localizar lentidão entre microsserviços?</summary>
+    <p><span class="pill ok">Tracing distribuído (APM)</span> Mostra exatamente quanto tempo cada chamada levou em cada serviço.</p></details>
+</div>
+
+</section>
+
+<script src="aula.js"></script></body></html>

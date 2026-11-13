@@ -1,0 +1,706 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Design de Sistemas — aulas visuais</title><link rel="stylesheet" href="aula.css">
+<style>
+pre{background:#1e2230;color:#e8eaf2;border-radius:12px;padding:10px 14px;font:14px/1.45 ui-monospace,Consolas,monospace;overflow-x:auto;margin:8px 0;white-space:pre}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+pre mark{background:#ffd84d;color:#2a2100}
+pre .c{color:#8fd19e}
+.mini{font-size:15px}
+.mini td,.mini th{font-size:15px}
+svg .mono{font:500 13px ui-monospace,Consolas,monospace;fill:var(--ink)}
+svg line,svg path.l{stroke:var(--muted);stroke-width:2;fill:none}
+svg .dash{stroke-dasharray:6 4}
+svg .acc{stroke:var(--acc)}
+svg .okl{stroke:var(--ok)}
+svg .badl{stroke:var(--bad)}
+.calc{font-family:ui-monospace,Consolas,monospace;font-size:16px;background:var(--cell);border-radius:12px;padding:10px 14px;margin:8px 0;line-height:1.6}
+</style></head>
+<body data-subject="sysdesign" data-title="Design de Sistemas">
+<svg width="0" height="0" style="position:absolute;width:0;height:0;margin:0;overflow:hidden" aria-hidden="true">
+  <defs>
+    <marker id="ar" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker>
+    <marker id="arg" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8a93a6"/></marker>
+    <marker id="arok" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2ea043"/></marker>
+    <marker id="arbad" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e5484d"/></marker>
+  </defs>
+</svg>
+
+<!-- ===================================================== CAPÍTULO 1 ===================================================== -->
+<section class="chapter" data-title="Latência, throughput, CAP, PACELC, ACID e BASE">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 1</span>
+  <h1>Latência, throughput, CAP, PACELC, ACID e BASE</h1>
+  <span class="emoji">⚖️</span>
+  <div class="steps">
+    <div class="step"><b>1. Velocidade vs. vazão</b><span>Latência (ms) não é throughput (req/s).</span></div>
+    <div class="step"><b>2. CAP e PACELC</b><span>O que acontece quando a rede parte — e quando não parte.</span></div>
+    <div class="step"><b>3. ACID vs. BASE</b><span>Consistência forte ou disponibilidade máxima.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🍔</span><div><b>Analogia do dia:</b> uma lanchonete faz <b>1 hambúrguer em 3 minutos</b> (latência). Com <b>5 chapas</b> ligadas, entrega <b>100 hambúrgueres por hora</b> (throughput). O tempo de 1 lanche não mudou, mas a cozinha atende muito mais gente!</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">DESEMPENHO</span>
+  <h2>Latência vs. Throughput</h2>
+  <svg viewBox="0 0 680 185" role="img" aria-label="Comparação entre latência de um pedido e throughput de vários pedidos por segundo">
+    <rect class="accbox" x="20" y="25" width="300" height="140" rx="14"/>
+    <text x="170" y="52" text-anchor="middle">⏱️ Latência (tempo de 1 pedido)</text>
+    <rect class="box" x="45" y="75" width="75" height="36" rx="8"/><text x="82" y="98" text-anchor="middle" class="small">Cliente</text>
+    <rect class="keybox" x="195" y="75" width="95" height="36" rx="8"/><text x="242" y="98" text-anchor="middle" class="small kt">Servidor</text>
+    <line class="acc" x1="120" y1="88" x2="191" y2="88" marker-end="url(#ar)"/>
+    <line class="acc" x1="195" y1="100" x2="124" y2="100" marker-end="url(#ar)"/>
+    <text x="170" y="142" text-anchor="middle" class="small">Medida: ms (ex.: 40 ms)</text>
+
+    <rect class="okbox" x="355" y="25" width="305" height="140" rx="14"/>
+    <text x="507" y="52" text-anchor="middle">📦 Throughput (vazão por segundo)</text>
+    <rect class="box" x="380" y="70" width="55" height="24" rx="6"/><text x="407" y="86" text-anchor="middle" class="small">req 1</text>
+    <rect class="box" x="380" y="98" width="55" height="24" rx="6"/><text x="407" y="114" text-anchor="middle" class="small">req 2</text>
+    <rect class="box" x="455" y="70" width="55" height="24" rx="6"/><text x="482" y="86" text-anchor="middle" class="small">req 3</text>
+    <rect class="box" x="455" y="98" width="55" height="24" rx="6"/><text x="482" y="114" text-anchor="middle" class="small">req 4</text>
+    <rect class="keybox" x="545" y="72" width="90" height="48" rx="8"/><text x="590" y="100" text-anchor="middle" class="small kt">Sistema</text>
+    <line class="okl" x1="513" y1="96" x2="541" y2="96" marker-end="url(#arok)"/>
+    <text x="507" y="142" text-anchor="middle" class="small">Medida: req/s (RPS) ou MB/s</text>
+  </svg>
+  <div class="say law"><b>Latência</b> é o intervalo entre enviar uma requisição e receber a resposta. <b>Throughput</b> é a quantidade de trabalho concluído por unidade de tempo.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">NA PRÁTICA</span>
+  <h2>Por que a média engana? Olhe p95 e p99!</h2>
+  <p>Se 99 pedidos levam <b>10 ms</b> e 1 pedido trava por <b>5.000 ms</b>, a média parece boa (~60 ms), mas 1% dos usuários sofreu 5 segundos de espera.</p>
+  <table class="cmp mini">
+    <tr><th>Métrica</th><th>O que mostra</th><th>Exemplo real</th></tr>
+    <tr><td><b>p50 (mediana)</b></td><td>Metade dos usuários foi mais rápida que isso</td><td>18 ms</td></tr>
+    <tr><td><b>p95</b></td><td>95% das requisições terminaram até esse tempo</td><td>85 ms</td></tr>
+    <tr><td><b>p99 (cauda)</b></td><td>Os 1% piores casos — revela gargalos de fila e GC</td><td>420 ms</td></tr>
+  </table>
+  <div class="say good"><b>Regra de ouro:</b> quando o sistema chega perto de 100% de uso (saturação), filas crescem e a <b>latência p99 explode</b> antes mesmo do throughput cair.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">TEOREMA CAP</span>
+  <h2>CAP: quando o cabo da rede arrebenta</h2>
+  <svg viewBox="0 0 680 215" role="img" aria-label="Triângulo do Teorema CAP: Consistency, Availability, Partition Tolerance">
+    <polygon points="340,22 140,188 540,188" fill="none" stroke="#6d4aff" stroke-width="3"/>
+    <rect class="keybox" x="255" y="8" width="170" height="36" rx="10"/><text x="340" y="31" text-anchor="middle" class="kt">C · Consistência</text>
+    <rect class="okbox" x="45" y="168" width="190" height="36" rx="10"/><text x="140" y="191" text-anchor="middle">A · Disponibilidade</text>
+    <rect class="accbox" x="445" y="168" width="190" height="36" rx="10"/><text x="540" y="191" text-anchor="middle">P · Tolerância a Partição</text>
+    <text x="200" y="96" text-anchor="middle" class="small">CA (só sem rede</text>
+    <text x="200" y="112" text-anchor="middle" class="small">distribuída)</text>
+    <text x="480" y="96" text-anchor="middle" class="small">CP (recusa se</text>
+    <text x="480" y="112" text-anchor="middle" class="small">perder sincronia)</text>
+    <text x="340" y="176" text-anchor="middle" class="small">AP (responde mesmo defasado)</text>
+  </svg>
+  <div class="say law">Pelo Teorema CAP (Brewer), um sistema distribuído garante no máximo <b>2 de 3</b> propriedades. Como <b>partições de rede (P) são inevitáveis</b>, o projeto escolhe entre <b>CP</b> (ex.: banco bancário) ou <b>AP</b> (ex.: feed de rede social).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PACELC</span>
+  <h2>PACELC: e quando a rede NÃO está partida?</h2>
+  <p>O CAP só fala do momento da falha! Daniel Abadi criou o <b>PACELC</b> para completar a história:</p>
+  <div class="flow">
+    <span>Se houver Partição (P)</span><i>→</i><span>escolhe <b>A</b> ou <b>C</b></span><i>|</i><span>Senão (Else = E)</span><i>→</i><span>escolhe <b>L</b> (Latência) ou <b>C</b> (Consistência)</span>
+  </div>
+  <table class="cmp mini">
+    <tr><th>Sistema</th><th>Classificação</th><th>Por quê?</th></tr>
+    <tr><td><b>DynamoDB / Cassandra</b></td><td><b>PA / EL</b></td><td>Disponível na falha (A); no dia a dia prefere responder rápido (L) com replicação assíncrona.</td></tr>
+    <tr><td><b>Spanner / CockroachDB</b></td><td><b>PC / EC</b></td><td>Consistente na falha (C); no dia a dia paga latência extra para replicar síncrono (C).</td></tr>
+    <tr><td><b>MongoDB (padrão)</b></td><td><b>PA / EC</b></td><td>Depende da configuração de <i>write/read concern</i>, mas pode priorizar consistência no primário.</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">TRANSAÇÕES</span>
+  <h2>ACID: o cofre de banco</h2>
+  <p>Usado em bancos relacionais (PostgreSQL, Oracle). Garante que dinheiro nunca some nem aparece do nada.</p>
+  <div class="steps">
+    <div class="step"><b>A · Atomicidade</b><span>Tudo ou nada: se um passo falhar, faz <i>rollback</i>.</span></div>
+    <div class="step"><b>C · Consistência</b><span>Sai de um estado válido para outro válido (regras, FKs).</span></div>
+    <div class="step"><b>I · Isolamento</b><span>Transações simultâneas não se atropelam.</span></div>
+    <div class="step"><b>D · Durabilidade</b><span>Confirmou (commit)? Gravado em disco, sobrevive a queda.</span></div>
+  </div>
+  <div class="say law">Exemplo clássico: transferir R$ 100 da conta A para B. Debitar A e creditar B precisam acontecer juntos (A) e respeitar saldo ≥ 0 (C).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ESCALA NOSQL</span>
+  <h2>BASE: o oposto pragmático do ACID</h2>
+  <p>Quando você tem milhões de usuários em vários continentes, travar tudo com locks ACID derruba a disponibilidade.</p>
+  <table class="cmp mini">
+    <tr><th>Critério</th><th class="ok">ACID</th><th class="k">BASE</th></tr>
+    <tr><td><b>Significado</b></td><td>Atomic, Consistent, Isolated, Durable</td><td><b>B</b>asically <b>A</b>vailable, <b>S</b>oft state, <b>E</b>ventually consistent</td></tr>
+    <tr><td><b>Prioridade</b></td><td>Consistência forte imediata</td><td>Disponibilidade e escala horizontal</td></tr>
+    <tr><td><b>Estado</b></td><td>Sempre exato após o commit</td><td>Pode variar por instantes (<i>soft state</i>) até convergir</td></tr>
+    <tr><td><b>Onde brilha</b></td><td>Pagamentos, estoque, contabilidade</td><td>Carrinhos, curtidas, catálogos, feeds</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>Dois erros clássicos da FGV</h2>
+  <div class="say trap">
+    <b>Pegadinha 1 — "O sistema distribuído escolheu CA":</b><br>
+    <span class="pill ng">Errado</span> Se há rede distribuída, partição (P) vai acontecer. CA só existe em nó único (sem distribuição real).<br><br>
+    <b>Pegadinha 2 — Confundir o "C" do ACID com o "C" do CAP:</b><br>
+    • <b>C do ACID</b> = integridade de regras do banco (constraints, triggers, saldo).<br>
+    • <b>C do CAP</b> = <b>linearizabilidade</b> (todos os nós veem o mesmo dado ao mesmo tempo).
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Para levar para a prova</h2>
+  <div class="magic">Pergunta mágica: “Se o cabo entre dois servidores cair agora, eu prefiro parar ou responder com dado velho?”<small>Parar = <b>CP</b> · Responder = <b>AP</b> · No tempo normal, replicar síncrono troca <b>L</b> por <b>C</b> (PACELC).</small></div>
+  <ul class="checklist">
+    <li><b>Latência</b> = tempo de 1 pedido (ms); <b>Throughput</b> = pedidos por segundo (RPS).</li>
+    <li><b>p95 / p99</b> revelam lentidão escondida pela média.</li>
+    <li><b>CAP</b> em rede distribuída: escolha é <b>CP ou AP</b> (P é obrigatório).</li>
+    <li><b>PACELC</b> adiciona o <b>Else</b>: Latência (L) vs. Consistência (C).</li>
+    <li><b>ACID</b> = consistência forte; <b>BASE</b> = disponibilidade + consistência eventual.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TREINO</span>
+  <h2>Teste rápido (estilo FGV)</h2>
+  <details><summary>1) Um sistema de reservas aéreas bloqueia novas vendas em uma região isolada por falha de rede para evitar vender o mesmo assento duas vezes. No CAP, ele é:</summary><p><span class="pill ok">CP</span> Sacrificou disponibilidade (A) durante a partição (P) para preservar consistência (C).</p></details>
+  <details><summary>2) Aumentar o número de threads elevou os RPS de 200 para 800, mas o p99 subiu de 30 ms para 900 ms. O que aconteceu?</summary><p><span class="pill ok">Saturação / fila</span> O throughput subiu até o gargalo; a fila de espera disparou a latência de cauda (p99).</p></details>
+  <details><summary>3) No modelo PACELC, um banco classificado como PA/EL prioriza o quê em operação normal?</summary><p><span class="pill ok">Latência (L)</span> Sem partição (Else), responde rápido sem esperar réplicas confirmarem (consistência eventual).</p></details>
+  <details><summary>4) O "C" de ACID e o "C" de CAP significam exatamente a mesma coisa. Certo ou errado?</summary><p><span class="pill ng">Errado</span> ACID-C é validade das regras/invariantes da transação; CAP-C é todos os nós enxergarem o dado mais recente ao mesmo tempo.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 2 ===================================================== -->
+<section class="chapter" data-title="Comunicação: REST, gRPC, mensageria e WebSockets">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 2</span>
+  <h1>Comunicação: REST, gRPC, mensageria e WebSockets</h1>
+  <span class="emoji">📡</span>
+  <div class="steps">
+    <div class="step"><b>1. REST vs. gRPC</b><span>HTTP/JSON legível ou HTTP/2 binário ultrarrápido.</span></div>
+    <div class="step"><b>2. WebSockets</b><span>Canal aberto nos dois sentidos em tempo real.</span></div>
+    <div class="step"><b>3. Mensageria</b><span>Filas e tópicos para desacoplar e absorver picos.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">📬</span><div><b>Analogia do dia:</b> <b>REST</b> é mandar carta registrada e esperar resposta; <b>gRPC</b> é falar por rádio codificado super rápido; <b>WebSocket</b> é deixar o telefone na linha o tempo todo; <b>Mensageria</b> é deixar o recado na caixa do correio e seguir trabalhando.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">REST</span>
+  <h2>REST: recursos, verbos HTTP e stateless</h2>
+  <p>REST trata tudo como <b>recurso</b> identificado por URI (ex.: <code>/processos/42</code>). Cada requisição carrega todo o contexto necessário (<b>stateless</b>).</p>
+  <table class="cmp mini">
+    <tr><th>Verbo</th><th>Uso típico</th><th>Seguro?</th><th>Idempotente?</th></tr>
+    <tr><td><b>GET</b></td><td>Consultar recurso</td><td class="hk">Sim</td><td class="hk">Sim</td></tr>
+    <tr><td><b>POST</b></td><td>Criar novo recurso / disparar ação</td><td class="hl">Não</td><td class="hl">Não</td></tr>
+    <tr><td><b>PUT</b></td><td>Substituir recurso inteiro</td><td>Não</td><td class="hk">Sim</td></tr>
+    <tr><td><b>PATCH</b></td><td>Atualizar parte do recurso</td><td>Não</td><td>Depende</td></tr>
+    <tr><td><b>DELETE</b></td><td>Remover recurso</td><td>Não</td><td class="hk">Sim</td></tr>
+  </table>
+  <div class="say law"><b>Idempotente</b> = chamar 1 vez ou 10 vezes com os mesmos dados deixa o sistema no mesmo estado final.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">gRPC</span>
+  <h2>gRPC: HTTP/2 + Protocol Buffers</h2>
+  <svg viewBox="0 0 680 185" role="img" aria-label="Comparação de payload entre REST com JSON e gRPC com Protobuf binário">
+    <rect class="box" x="20" y="20" width="300" height="145" rx="14"/>
+    <text x="170" y="46" text-anchor="middle">REST (HTTP/1.1 + JSON)</text>
+    <rect class="badbox" x="42" y="62" width="256" height="58" rx="8"/>
+    <text x="170" y="86" text-anchor="middle" class="mono">{"id":42,"nome":"Ana"}</text>
+    <text x="170" y="106" text-anchor="middle" class="small">Texto legível, porém maior</text>
+    <text x="170" y="148" text-anchor="middle" class="small">1 req por conexão (ou head-of-line)</text>
+
+    <rect class="okbox" x="355" y="20" width="305" height="145" rx="14"/>
+    <text x="507" y="46" text-anchor="middle">gRPC (HTTP/2 + Protobuf)</text>
+    <rect class="keybox" x="377" y="62" width="261" height="58" rx="8"/>
+    <text x="507" y="86" text-anchor="middle" class="mono kt">08 2A 12 03 41 6E 61</text>
+    <text x="507" y="106" text-anchor="middle" class="small kt">Binário compacto + contrato .proto</text>
+    <text x="507" y="148" text-anchor="middle" class="small">Multiplexado + streaming bidirecional</text>
+  </svg>
+  <p>Como o contrato fica em arquivos <code>.proto</code>, o compilador gera cliente e servidor tipados em Java, Go, Python, C#, etc.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">LADO A LADO</span>
+  <h2>REST vs. gRPC na decisão de arquitetura</h2>
+  <table class="cmp mini">
+    <tr><th>Critério</th><th>REST</th><th>gRPC</th></tr>
+    <tr><td><b>Transporte</b></td><td>HTTP/1.1 ou HTTP/2</td><td>Obrigatório <b>HTTP/2</b></td></tr>
+    <tr><td><b>Formato</b></td><td>JSON (texto, fácil de depurar)</td><td><b>Protobuf</b> (binário, menor e mais rápido)</td></tr>
+    <tr><td><b>Contrato</b></td><td>Opcional (OpenAPI / Swagger)</td><td>Obrigatório e rígido (<code>.proto</code>)</td></tr>
+    <tr><td><b>Suporte no browser</b></td><td class="hk">Nativo</td><td class="hl">Precisa de proxy (gRPC-Web)</td></tr>
+    <tr><td><b>Uso ideal</b></td><td>APIs públicas, web, mobile</td><td>Comunicação interna entre microsserviços</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">TEMPO REAL</span>
+  <h2>WebSockets: conversa contínua nos dois sentidos</h2>
+  <svg viewBox="0 0 680 175" role="img" aria-label="Handshake HTTP Upgrade virando túnel TCP WebSocket full-duplex">
+    <rect class="box" x="25" y="30" width="120" height="115" rx="12"/><text x="85" y="92" text-anchor="middle">Cliente</text>
+    <rect class="accbox" x="535" y="30" width="120" height="115" rx="12"/><text x="595" y="92" text-anchor="middle">Servidor</text>
+    <line class="acc" x1="148" y1="50" x2="531" y2="50" marker-end="url(#ar)"/>
+    <text x="340" y="43" text-anchor="middle" class="small">1. GET /chat · Connection: Upgrade · Upgrade: websocket</text>
+    <line class="okl" x1="531" y1="80" x2="148" y2="80" marker-end="url(#arok)"/>
+    <text x="340" y="73" text-anchor="middle" class="small">2. HTTP 101 Switching Protocols</text>
+    <rect class="keybox" x="175" y="102" width="330" height="32" rx="8"/>
+    <text x="340" y="123" text-anchor="middle" class="small kt">3. Túnel TCP aberto: envia ↔ recebe (full-duplex)</text>
+  </svg>
+  <div class="say good"><b>Sem polling!</b> Em vez do cliente perguntar "tem novidade?" a cada 2 segundos, o servidor empurra a mensagem na hora em que ela nasce.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ASSÍNCRONO</span>
+  <h2>Mensageria: fila, tópico e resiliência</h2>
+  <svg viewBox="0 0 680 165" role="img" aria-label="Produtor envia para Broker com Fila e Dead Letter Queue para Consumidor">
+    <rect class="box" x="18" y="50" width="110" height="50" rx="10"/><text x="73" y="80" text-anchor="middle">Produtor</text>
+    <rect class="accbox" x="195" y="35" width="160" height="80" rx="12"/><text x="275" y="65" text-anchor="middle">Broker (Fila/Tópico)</text>
+    <text x="275" y="88" text-anchor="middle" class="small">RabbitMQ / Kafka</text>
+    <rect class="okbox" x="430" y="25" width="130" height="46" rx="10"/><text x="495" y="53" text-anchor="middle">Consumidor</text>
+    <rect class="badbox" x="430" y="96" width="130" height="46" rx="10"/><text x="495" y="124" text-anchor="middle">DLQ (falhas)</text>
+    <line class="acc" x1="128" y1="75" x2="191" y2="75" marker-end="url(#ar)"/>
+    <line class="okl" x1="355" y1="55" x2="426" y2="48" marker-end="url(#arok)"/>
+    <line class="badl dash" x1="355" y1="95" x2="426" y2="118" marker-end="url(#arbad)"/>
+  </svg>
+  <p><b>Por que usar?</b> Desacopla no tempo (consumidor pode estar fora), <b>nivela picos</b> (buffer) e isola mensagens com erro na <b>DLQ</b>. Consumidores devem ser <b>idempotentes</b> (entrega <i>at-least-once</i> pode duplicar).</p>
+</div>
+
+<div class="slide">
+  <span class="tag">ESCOLHA</span>
+  <h2>Qual protocolo escolher no estudo de caso?</h2>
+  <div class="steps">
+    <div class="step"><b>API pública / Browser</b><span>Use <b>REST</b> (JSON, cache HTTP, simples de integrar).</span></div>
+    <div class="step"><b>Microsserviço ↔ Microsserviço</b><span>Use <b>gRPC</b> se precisar de baixa latência, contrato forte ou streaming.</span></div>
+    <div class="step"><b>Chat / Placar / Painel ao vivo</b><span>Use <b>WebSocket</b> (ou SSE se for só servidor → cliente).</span></div>
+    <div class="step"><b>E-mail / PDF / Pico de pedidos</b><span>Use <b>Mensageria</b> (assíncrono, não trava o usuário).</span></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>Pegadinhas clássicas de comunicação</h2>
+  <div class="say trap">
+    <b>1. "WebSocket é stateless igual ao REST":</b><br>
+    <span class="pill ng">Errado</span> WebSocket mantém conexão TCP aberta e estado ligado a um servidor — exige cuidado ao escalar horizontalmente (ex.: pub/sub no Redis entre instâncias).<br><br>
+    <b>2. "POST é idempotente porque cria um registro":</b><br>
+    <span class="pill ng">Errado</span> Repetir um <code>POST /pedidos</code> cria vários pedidos! Quem é idempotente por definição é <code>GET</code>, <code>PUT</code> e <code>DELETE</code>.
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Para levar para a prova</h2>
+  <div class="magic">Pergunta mágica: “Quem chama precisa da resposta AGORA, ou pode processar depois?”<small>Agora + público = <b>REST</b> · Agora + interno rápido = <b>gRPC</b> · Tempo real bidirecional = <b>WebSocket</b> · Depois = <b>Mensageria</b>.</small></div>
+  <ul class="checklist">
+    <li><b>REST</b>: stateless, HTTP, JSON, cacheável; GET/PUT/DELETE são idempotentes, POST não.</li>
+    <li><b>gRPC</b>: HTTP/2 + Protobuf binário + contrato <code>.proto</code> + streaming.</li>
+    <li><b>WebSocket</b>: handshake HTTP <code>101</code> → canal TCP full-duplex persistente.</li>
+    <li><b>Mensageria</b>: desacoplamento, buffer de picos, DLQ e idempotência no consumidor.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TREINO</span>
+  <h2>Teste rápido (estilo FGV)</h2>
+  <details><summary>1) Qual código de status HTTP confirma a troca de protocolo para WebSocket?</summary><p><span class="pill ok">101 Switching Protocols</span> O cliente envia <code>Upgrade: websocket</code> e o servidor responde 101.</p></details>
+  <details><summary>2) Entre microsserviços internos, qual vantagem explica a menor latência e menor banda do gRPC frente ao REST/JSON?</summary><p><span class="pill ok">HTTP/2 + Protobuf</span> Serialização binária compacta com multiplexação em uma única conexão TCP.</p></details>
+  <details><summary>3) Em mensageria com garantia at-least-once, o que o consumidor precisa implementar para evitar cobrança dupla?</summary><p><span class="pill ok">Idempotência</span> Verificar se a chave/ID da mensagem já foi processada antes de aplicar o efeito.</p></details>
+  <details><summary>4) Browsers modernos executam chamadas gRPC nativamente sem nenhum proxy intermediário. Certo ou errado?</summary><p><span class="pill ng">Errado</span> Browsers não expõem controle completo de frames HTTP/2 necessário ao gRPC puro; usa-se gRPC-Web com proxy.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 3 ===================================================== -->
+<section class="chapter" data-title="Escalabilidade, clustering, balanceamento e failover">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 3</span>
+  <h1>Escalabilidade, clustering, balanceamento e failover</h1>
+  <span class="emoji">📈</span>
+  <div class="steps">
+    <div class="step"><b>1. Vertical vs. Horizontal</b><span>Turbinar 1 máquina ou multiplicar máquinas.</span></div>
+    <div class="step"><b>2. Clustering e Failover</b><span>Trabalhar em grupo e assumir quando um nó cai.</span></div>
+    <div class="step"><b>3. LB, NGINX e HAProxy</b><span>Distribuir tráfego em L4 e L7 sem perder sessão.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🚚</span><div><b>Analogia do dia:</b> se precisa carregar mais caixas, você pode comprar um <b>caminhão gigante</b> (vertical — caro e tem limite) ou montar uma <b>frota de vans</b> com um despachante na porta (horizontal + balanceador). Se uma van quebrar, as outras continuam!</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">ESCALABILIDADE</span>
+  <h2>Vertical (Scale Up) vs. Horizontal (Scale Out)</h2>
+  <svg viewBox="0 0 680 175" role="img" aria-label="Escalabilidade vertical aumenta uma máquina; horizontal adiciona várias máquinas atrás de um balanceador">
+    <rect class="badbox" x="25" y="25" width="280" height="130" rx="14"/>
+    <text x="165" y="50" text-anchor="middle">⬆️ Vertical (Scale Up)</text>
+    <rect class="box" x="110" y="65" width="110" height="54" rx="10"/><text x="165" y="90" text-anchor="middle" class="small">64 vCPU · 256 GB</text>
+    <text x="165" y="108" text-anchor="middle" class="small">1 máquina só</text>
+    <text x="165" y="140" text-anchor="middle" class="small">Tem teto físico e SPOF</text>
+
+    <rect class="okbox" x="345" y="25" width="310" height="130" rx="14"/>
+    <text x="500" y="50" text-anchor="middle">➡️ Horizontal (Scale Out)</text>
+    <rect class="keybox" x="365" y="75" width="60" height="36" rx="8"/><text x="395" y="98" text-anchor="middle" class="small kt">LB</text>
+    <rect class="box" x="455" y="60" width="75" height="24" rx="6"/><text x="492" y="76" text-anchor="middle" class="small">App 1</text>
+    <rect class="box" x="455" y="90" width="75" height="24" rx="6"/><text x="492" y="106" text-anchor="middle" class="small">App 2</text>
+    <rect class="box" x="550" y="75" width="75" height="24" rx="6"/><text x="587" y="91" text-anchor="middle" class="small">App 3</text>
+    <line class="okl" x1="425" y1="88" x2="452" y2="74" marker-end="url(#arok)"/>
+    <line class="okl" x1="425" y1="96" x2="452" y2="102" marker-end="url(#arok)"/>
+    <text x="500" y="140" text-anchor="middle" class="small">Elástico e tolerante a falhas</text>
+  </svg>
+  <div class="say law"><b>SPOF</b> (Single Point of Failure) é qualquer peça única cuja queda derruba o sistema todo. Escalabilidade horizontal elimina o SPOF da camada de aplicação.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ALTA DISPONIBILIDADE</span>
+  <h2>Clustering e Failover</h2>
+  <p><b>Cluster</b> é um conjunto de servidores (nós) que atuam coordenados como um sistema único. <b>Failover</b> é a transferência automática para outro nó quando o principal falha.</p>
+  <div class="two">
+    <div class="card"><h3>Ativo-Passivo</h3><p>Um nó atende; o reserva fica em <i>standby</i> ouvindo <b>heartbeat</b>. Se o ativo calar, o reserva assume o IP virtual (VIP).</p></div>
+    <div class="card"><h3>Ativo-Ativo</h3><p>Todos os nós atendem tráfego ao mesmo tempo atrás do balanceador. Melhor uso de recursos e failover instantâneo.</p></div>
+  </div>
+  <div class="say good">Na prova, lembre: <b>RTO</b> = tempo máximo aceitável fora do ar; <b>RPO</b> = perda máxima aceitável de dados (em tempo).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">BALANCEAMENTO</span>
+  <h2>Load Balancer: L4 vs. L7 e algoritmos</h2>
+  <table class="cmp mini">
+    <tr><th>Camada</th><th>O que enxerga</th><th>Vantagem</th></tr>
+    <tr><td><b>L4 (Transporte)</b></td><td>IP e porta (TCP/UDP)</td><td>Altíssima velocidade; não abre o pacote HTTP.</td></tr>
+    <tr><td><b>L7 (Aplicação)</b></td><td>URL, método, headers, cookies</td><td>Roteamento inteligente (ex.: <code>/api</code> → A, <code>/img</code> → B).</td></tr>
+  </table>
+  <div class="steps">
+    <div class="step"><b>Round Robin</b><span>Revezamento 1, 2, 3… (Weighted dá peso maior a máquinas mais fortes).</span></div>
+    <div class="step"><b>Least Connections</b><span>Manda para quem tem menos conexões abertas agora.</span></div>
+    <div class="step"><b>IP Hash</b><span>Mesmo IP do cliente tende a cair no mesmo servidor.</span></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">ESTADO</span>
+  <h2>Stateless vs. Sticky Sessions</h2>
+  <p>Se o servidor guarda o login na <b>memória RAM local</b>, escalar horizontalmente quebra: o próximo clique pode cair em outro servidor que não conhece o usuário!</p>
+  <table class="cmp mini">
+    <tr><th>Abordagem</th><th>Como funciona</th><th>Veredito</th></tr>
+    <tr><td><b>Sticky Session</b> (afinidade)</td><td>Balanceador gruda o usuário no mesmo nó via cookie/IP</td><td class="hl">Quebra se o nó cair e desbalanceia carga</td></tr>
+    <tr><td><b>Stateless + Redis / JWT</b></td><td>Estado vai para Redis compartilhado ou token assinado</td><td class="hk">Padrão ouro para escalar horizontalmente</td></tr>
+  </table>
+  <div class="say law"><b>Health check</b>: o balanceador testa periodicamente (ex.: <code>GET /health</code>) e remove automaticamente nós doentes da rotação.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">FERRAMENTAS</span>
+  <h2>NGINX vs. HAProxy: o que a banca cobra</h2>
+  <table class="cmp mini">
+    <tr><th>Recurso</th><th>NGINX</th><th>HAProxy</th></tr>
+    <tr><td><b>Papel principal</b></td><td>Servidor web + Proxy reverso + LB + Cache HTTP</td><td><b>Proxy reverso e Load Balancer</b> L4/L7 dedicado</td></tr>
+    <tr><td><b>Arquitetura</b></td><td>Orientado a eventos, assíncrono, altíssima concorrência</td><td>Orientado a eventos, focado em <b>latência mínima e vazão</b></td></tr>
+    <tr><td><b>Arquivos estáticos</b></td><td class="hk">Serve direto com muita eficiência</td><td class="hl">Não serve arquivos estáticos (só faz proxy)</td></tr>
+    <tr><td><b>Health checks / filas</b></td><td>Básicos no open-source (avançados no NGINX Plus)</td><td class="hk">Nativos e muito ricos (filas, draining, stats)</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">EXEMPLO REAL</span>
+  <h2>Como fica na configuração (NGINX × HAProxy)</h2>
+  <div class="two">
+    <div><div class="ex ok">NGINX (proxy reverso + LB)</div>
+<pre><code><mark>upstream</mark> app_pool {
+  least_conn;
+  server 10.0.0.1:8080;
+  server 10.0.0.2:8080;
+}
+server {
+  location /api/ {
+    <mark>proxy_pass</mark> http_app;
+  }
+}</code></pre></div>
+    <div><div class="ex ok">HAProxy (frontend + backend)</div>
+<pre><code><mark>frontend</mark> entrada
+  bind *:80
+  default_backend app_pool
+
+<mark>backend</mark> app_pool
+  balance <mark>leastconn</mark>
+  server s1 10.0.0.1:8080 check
+  server s2 10.0.0.2:8080 check</code></pre></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>Pegadinhas de balanceamento e failover</h2>
+  <div class="say trap">
+    <b>1. "Round Robin sempre equilibra a carga perfeitamente":</b><br>
+    <span class="pill ng">Errado</span> Se uma requisição demora 10 s e outra 10 ms, Round Robin continua mandando 1 pra cada e pode afogar um nó. Use <b>Least Connections</b>.<br><br>
+    <b>2. "HAProxy substitui o NGINX para servir HTML/JS estático":</b><br>
+    <span class="pill ng">Errado</span> HAProxy é proxy/balanceador puro, não servidor de arquivos estáticos.
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Para levar para a prova</h2>
+  <div class="magic">Pergunta mágica: “Se eu desligar um servidor da tomada agora, algum usuário perde a sessão ou o sistema cai?”<small>Se não perde nem cai, sua camada é <b>stateless</b>, balanceada e com <b>failover</b>.</small></div>
+  <ul class="checklist">
+    <li><b>Scale Up</b> = mais CPU/RAM numa máquina; <b>Scale Out</b> = mais máquinas atrás de LB.</li>
+    <li><b>Ativo-Passivo</b> usa heartbeat + VIP; <b>Ativo-Ativo</b> distribui carga o tempo todo.</li>
+    <li><b>LB L4</b> olha IP/porta; <b>LB L7</b> olha URL, cookies e headers HTTP.</li>
+    <li><b>NGINX</b> = web server + proxy + LB; <b>HAProxy</b> = especialista puro em LB L4/L7.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TREINO</span>
+  <h2>Teste rápido (estilo FGV)</h2>
+  <details><summary>1) Um cluster tem dois nós, mas apenas um recebe tráfego enquanto o outro monitora por heartbeat para assumir em caso de queda. Esse modo é:</summary><p><span class="pill ok">Ativo-Passivo</span> O segundo nó fica em espera (standby) e entra em ação apenas no failover.</p></details>
+  <details><summary>2) Por que sticky sessions dificultam o auto-scaling horizontal?</summary><p><span class="pill ok">Acoplam o cliente a um nó</span> Novos servidores entram vazios e os antigos continuam presos aos usuários já conectados.</p></details>
+  <details><summary>3) Para rotear <code>/pagamentos</code> para um serviço e <code>/catalogo</code> para outro no balanceador, é preciso operar em qual camada?</summary><p><span class="pill ok">Camada 7 (Aplicação)</span> Só o LB L7 lê o caminho da URL HTTP.</p></details>
+  <details><summary>4) Qual das ferramentas abaixo é projetada especificamente como proxy/balanceador TCP e HTTP, sem servir arquivos estáticos?</summary><p><span class="pill ok">HAProxy</span> NGINX também serve estáticos e faz cache; HAProxy foca em proxy e balanceamento de alto desempenho.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 4 ===================================================== -->
+<section class="chapter" data-title="Dados em escala: replicação e sharding">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 4</span>
+  <h1>Dados em escala: replicação e sharding</h1>
+  <span class="emoji">🗄️</span>
+  <div class="steps">
+    <div class="step"><b>1. Replicação</b><span>Copiar os mesmos dados para escalar leitura e sobreviver a quedas.</span></div>
+    <div class="step"><b>2. Topologias</b><span>Single-Leader, Multi-Leader e Leaderless (quórum).</span></div>
+    <div class="step"><b>3. Sharding</b><span>Fatiar os dados entre servidores para escalar escrita.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">📚</span><div><b>Analogia do dia:</b> se 100 alunos querem ler o mesmo livro, você tira <b>5 cópias idênticas</b> (<b>replicação</b>). Mas se a estante encheu e não cabe mais livro nenhum, você divide: <b>A–M na sala 1, N–Z na sala 2</b> (<b>sharding</b>).</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">REPLICAÇÃO</span>
+  <h2>Leader-Follower: síncrona vs. assíncrona</h2>
+  <svg viewBox="0 0 680 185" role="img" aria-label="Escrita vai ao Leader e leituras vão às réplicas Follower">
+    <rect class="keybox" x="40" y="65" width="120" height="50" rx="10"/><text x="100" y="95" text-anchor="middle" class="kt">Aplicação</text>
+    <rect class="accbox" x="260" y="25" width="150" height="50" rx="10"/><text x="335" y="55" text-anchor="middle">Leader (Primário)</text>
+    <rect class="okbox" x="260" y="115" width="150" height="50" rx="10"/><text x="335" y="145" text-anchor="middle">Follower (Réplica)</text>
+    <rect class="box" x="490" y="115" width="155" height="50" rx="10"/><text x="567" y="145" text-anchor="middle">Follower 2</text>
+    <line class="acc" x1="160" y1="80" x2="256" y2="52" marker-end="url(#ar)"/><text x="205" y="54" class="small">Escrita</text>
+    <line class="okl" x1="160" y1="102" x2="256" y2="136" marker-end="url(#arok)"/><text x="200" y="136" class="small">Leitura</text>
+    <line class="acc dash" x1="335" y1="75" x2="335" y2="111" marker-end="url(#ar)"/><text x="345" y="98" class="small">replica</text>
+    <line class="acc dash" x1="410" y1="55" x2="560" y2="111" marker-end="url(#ar)"/>
+  </svg>
+  <p><b>Síncrona:</b> líder só confirma após a réplica gravar (zero perda, mais lenta). <b>Assíncrona:</b> líder confirma logo (rápida, mas sofre <b>replication lag</b>).</p>
+</div>
+
+<div class="slide">
+  <span class="tag">TOPOLOGIAS</span>
+  <h2>Três jeitos de replicar dados</h2>
+  <table class="cmp mini">
+    <tr><th>Topologia</th><th>Quem aceita escrita?</th><th>Ponto forte</th><th>Desafio</th></tr>
+    <tr><td><b>Single-Leader</b></td><td>Só 1 líder</td><td>Sem conflito de escrita; simples</td><td>Líder é gargalo de escrita</td></tr>
+    <tr><td><b>Multi-Leader</b></td><td>Vários líderes (ex.: por região)</td><td>Escrita local rápida em vários continentes</td><td class="hl">Conflito se dois editarem o mesmo registro</td></tr>
+    <tr><td><b>Leaderless</b> (Dynamo)</td><td>Qualquer nó (via quórum)</td><td>Alta disponibilidade mesmo com nós caídos</td><td>Exige regra <b>W + R &gt; N</b> para leitura fresca</td></tr>
+  </table>
+  <div class="say law"><b>Quórum (W + R &gt; N):</b> com N=3 réplicas, se você escreve em W=2 e lê de R=2, pelo menos 1 nó tem o dado mais novo (2 + 2 &gt; 3).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">SHARDING</span>
+  <h2>Sharding: fatiando o banco em pedaços</h2>
+  <p>Quando 1 banco não aguenta mais o volume de disco ou o número de <b>escritas por segundo</b>, aplicamos <b>particionamento horizontal (sharding)</b>.</p>
+  <svg viewBox="0 0 680 175" role="img" aria-label="Roteador distribui linhas diferentes entre Shard 1, Shard 2 e Shard 3">
+    <rect class="keybox" x="240" y="14" width="200" height="40" rx="10"/><text x="340" y="39" text-anchor="middle" class="kt">Roteador / App (Shard Key)</text>
+    <rect class="okbox" x="35" y="102" width="180" height="58" rx="10"/><text x="125" y="126" text-anchor="middle">Shard 1</text><text x="125" y="146" text-anchor="middle" class="small">IDs 1 – 1.000.000</text>
+    <rect class="accbox" x="250" y="102" width="180" height="58" rx="10"/><text x="340" y="126" text-anchor="middle">Shard 2</text><text x="340" y="146" text-anchor="middle" class="small">IDs 1.000.001 – 2M</text>
+    <rect class="box" x="465" y="102" width="180" height="58" rx="10"/><text x="555" y="126" text-anchor="middle">Shard 3</text><text x="555" y="146" text-anchor="middle" class="small">IDs 2.000.001 – 3M</text>
+    <line class="okl" x1="290" y1="54" x2="125" y2="98" marker-end="url(#arok)"/>
+    <line class="acc" x1="340" y1="54" x2="340" y2="98" marker-end="url(#ar)"/>
+    <line class="acc" x1="390" y1="54" x2="555" y2="98" marker-end="url(#ar)"/>
+  </svg>
+</div>
+
+<div class="slide">
+  <span class="tag">ESTRATÉGIAS</span>
+  <h2>Como escolher a chave de sharding?</h2>
+  <table class="cmp mini">
+    <tr><th>Estratégia</th><th>Como funciona</th><th>Prós</th><th>Contras</th></tr>
+    <tr><td><b>Range (faixa)</b></td><td>Por intervalo (data, CEP, ID)</td><td>Consultas por faixa são fáceis</td><td class="hl">Hotspot (tudo novo cai no último shard)</td></tr>
+    <tr><td><b>Hash</b></td><td><code>hash(chave) % N</code></td><td class="hk">Distribui escrita por igual</td><td class="hl">Difícil buscar por faixa; adicionar nó move dados</td></tr>
+    <tr><td><b>Diretório</b></td><td>Tabela de lookup aponta onde está cada chave</td><td>Flexível para rebalancear</td><td>A tabela de lookup vira ponto crítico</td></tr>
+  </table>
+  <div class="say good"><b>Consistent Hashing</b> resolve a dor de adicionar/remover shards: quando um nó entra, só uma fração pequena das chaves muda de lugar.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">COMPARAÇÃO</span>
+  <h2>Replicação × Sharding (não confunda!)</h2>
+  <table class="cmp mini">
+    <tr><th>Pergunta</th><th>Replicação</th><th>Sharding</th></tr>
+    <tr><td><b>O que tem em cada nó?</b></td><td>Os <b>MESMOS</b> dados (cópias)</td><td>Dados <b>DIFERENTES</b> (fatias)</td></tr>
+    <tr><td><b>Escala o quê?</b></td><td><b>Leituras</b> e alta disponibilidade</td><td><b>Escritas</b> e armazenamento total</td></tr>
+    <tr><td><b>JOINs e transações</b></td><td>Normais dentro de cada nó</td><td class="hl">Caros e complexos entre shards</td></tr>
+    <tr><td><b>Podem andar juntos?</b></td><td class="hk" colspan="2">Sim! Cada shard costuma ter suas próprias réplicas para não perder dados.</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>Pegadinhas de replicação e sharding</h2>
+  <div class="say trap">
+    <b>1. "Adicionar Read Replicas resolve gargalo de escrita":</b><br>
+    <span class="pill ng">Errado</span> Todas as réplicas precisam aplicar as mesmas escritas vindas do líder! Quem escala escrita é <b>sharding</b>.<br><br>
+    <b>2. "Após sharding, JOINs continuam baratos igual antes":</b><br>
+    <span class="pill ng">Errado</span> JOIN entre shards diferentes exige tráfego de rede e coordenação; em sistemas muito grandes costuma-se desnormalizar.
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Para levar para a prova</h2>
+  <div class="magic">Pergunta mágica: “Meu gargalo é muita gente LENDO, ou muita gente ESCREVENDO e faltando disco?”<small>Muita leitura / HA = <b>Replicação</b> · Muita escrita / disco cheio = <b>Sharding</b>.</small></div>
+  <ul class="checklist">
+    <li><b>Leader-Follower</b>: síncrona (consistente, lenta) vs. assíncrona (rápida, <i>replication lag</i>).</li>
+    <li><b>Multi-Leader</b>: escrita em vários nós, exige resolução de conflitos.</li>
+    <li><b>Leaderless</b>: quórum <code>W + R &gt; N</code> garante leitura atualizada.</li>
+    <li><b>Sharding</b>: Range (risco de hotspot) vs. Hash (melhor distribuição, difícil range).</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TREINO</span>
+  <h2>Teste rápido (estilo FGV)</h2>
+  <details><summary>1) Em um banco Leaderless com N=5 réplicas e escrita em W=3 nós, qual o menor valor de R para garantir leitura atualizada?</summary><p><span class="pill ok">R = 3</span> Pela regra de quórum <code>W + R &gt; N</code>, 3 + 3 = 6 &gt; 5.</p></details>
+  <details><summary>2) Um usuário altera seu perfil e, ao recarregar a página, ainda vê o nome antigo por 500 ms. Qual a causa provável?</summary><p><span class="pill ok">Replication lag</span> A escrita foi no Leader e a leitura imediata caiu em uma réplica assíncrona ainda não atualizada.</p></details>
+  <details><summary>3) Qual estratégia de sharding evita que quase todas as inserções recentes caiam no mesmo servidor?</summary><p><span class="pill ok">Hash (ou Consistent Hashing)</span> Espalha chaves sequenciais uniformemente entre os shards, evitando hotspot.</p></details>
+  <details><summary>4) Criar 10 réplicas de leitura resolve o esgotamento de disco de uma tabela de 20 TB. Certo ou errado?</summary><p><span class="pill ng">Errado</span> Cada réplica guarda uma cópia completa dos 20 TB. Para dividir o volume, é necessário sharding.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 5 ===================================================== -->
+<section class="chapter" data-title="Cache em camadas (CDN, Redis), circuit breaker e graceful degradation">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 5</span>
+  <h1>Cache em camadas (CDN, Redis), circuit breaker e graceful degradation</h1>
+  <span class="emoji">⚡</span>
+  <div class="steps">
+    <div class="step"><b>1. Cache em camadas</b><span>CDN na borda e Redis perto da aplicação.</span></div>
+    <div class="step"><b>2. Problemas de cache</b><span>Stampede, Penetration e Avalanche.</span></div>
+    <div class="step"><b>3. Resiliência</b><span>Circuit Breaker e Graceful Degradation.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🥤</span><div><b>Analogia do dia:</b> você deixa um copo d'água na mesa (<b>cache do browser</b>), uma garrafa na geladeira (<b>Redis</b>) e o galão no supermercado (<b>banco</b>). E se a torneira quebrar? O <b>disjuntor</b> (<b>Circuit Breaker</b>) desarma para não queimar a casa inteira!</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">ARQUITETURA DE CACHE</span>
+  <h2>Cache em camadas: do usuário até o banco</h2>
+  <svg viewBox="0 0 680 155" role="img" aria-label="Camadas de cache: Browser, CDN, Redis e Banco de Dados">
+    <rect class="box" x="15" y="45" width="110" height="58" rx="10"/><text x="70" y="72" text-anchor="middle">Browser</text><text x="70" y="90" text-anchor="middle" class="small">~0 ms</text>
+    <rect class="okbox" x="160" y="45" width="120" height="58" rx="10"/><text x="220" y="72" text-anchor="middle">CDN (Borda)</text><text x="220" y="90" text-anchor="middle" class="small">~10–30 ms</text>
+    <rect class="keybox" x="315" y="45" width="130" height="58" rx="10"/><text x="380" y="72" text-anchor="middle" class="kt">Redis (RAM)</text><text x="380" y="90" text-anchor="middle" class="small kt">~1–2 ms interno</text>
+    <rect class="badbox" x="480" y="45" width="175" height="58" rx="10"/><text x="567" y="72" text-anchor="middle">Banco (Disco)</text><text x="567" y="90" text-anchor="middle" class="small">~10–100 ms + I/O</text>
+    <line class="okl" x1="125" y1="74" x2="156" y2="74" marker-end="url(#arok)"/>
+    <line class="acc" x1="280" y1="74" x2="311" y2="74" marker-end="url(#ar)"/>
+    <line class="badl" x1="445" y1="74" x2="476" y2="74" marker-end="url(#arbad)"/>
+  </svg>
+  <p><b>Cache Hit:</b> dado estava lá, responde rápido. <b>Cache Miss:</b> não estava, busca na camada seguinte. Quanto mais perto do usuário, menor a latência e menor o custo no banco.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">BORDA</span>
+  <h2>CDN: trazendo o conteúdo para perto do usuário</h2>
+  <p>Uma <b>CDN (Content Delivery Network)</b> espalha servidores (<b>PoPs</b> — Pontos de Presença) por várias cidades/países.</p>
+  <div class="steps">
+    <div class="step"><b>O que guarda</b><span>Imagens, CSS, JS, vídeos e páginas estáticas/públicas.</span></div>
+    <div class="step"><b>Como controla</b><span>Cabeçalhos HTTP (<code>Cache-Control: max-age=3600</code>, <code>ETag</code>) e <b>TTL</b>.</span></div>
+    <div class="step"><b>E se mudar antes?</b><span><b>Purge/invalidação</b> ou URL versionada (<code>app.v2.js</code>).</span></div>
+  </div>
+  <div class="say law">CDN reduz <b>latência geográfica</b>, economiza banda do servidor de origem e ajuda a absorver picos e ataques DDoS.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">REDIS &amp; PADRÕES</span>
+  <h2>Estratégias de cache (leitura e escrita)</h2>
+  <table class="cmp mini">
+    <tr><th>Padrão</th><th>Como funciona</th><th>Prós / Contras</th></tr>
+    <tr><td><b>Cache-Aside</b></td><td>App lê o Redis; se <i>miss</i>, lê o banco e grava no Redis</td><td>Mais comum; app controla tudo</td></tr>
+    <tr><td><b>Write-Through</b></td><td>App grava no cache e o cache grava <b>síncrono</b> no banco</td><td>Dado consistente; escrita mais lenta</td></tr>
+    <tr><td><b>Write-Back</b> (Behind)</td><td>Grava só no cache e persiste no banco <b>depois</b></td><td class="hl">Muito rápido, mas arrisca perda se o cache cair</td></tr>
+  </table>
+  <p>Quando a RAM do Redis enche, entram políticas de despejo (<i>eviction</i>): <b>LRU</b> (menos usado recentemente), <b>LFU</b> (menos frequente) ou <b>TTL</b> (tempo de vida).</p>
+</div>
+
+<div class="slide">
+  <span class="tag">ARMADILHAS DE CACHE</span>
+  <h2>Três problemas clássicos (e como resolver)</h2>
+  <table class="cmp mini">
+    <tr><th>Problema</th><th>O que acontece</th><th>Solução</th></tr>
+    <tr><td><b>Cache Stampede</b></td><td>Uma chave muito popular expira e 10.000 pedidos vão juntos ao banco</td><td>Lock/mutex para só 1 recalcular, ou refresh antecipado</td></tr>
+    <tr><td><b>Cache Penetration</b></td><td>Pedem IDs que <b>não existem</b>; nunca ficam em cache e sempre batem no banco</td><td>Cachear resposta nula por curto TTL ou usar <b>Bloom Filter</b></td></tr>
+    <tr><td><b>Cache Avalanche</b></td><td>Milhares de chaves expiram ao <b>mesmo tempo</b> e derrubam o banco</td><td>Adicionar <b>jitter</b> (variação aleatória) no TTL</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">RESILIÊNCIA</span>
+  <h2>Circuit Breaker: o disjuntor de software</h2>
+  <svg viewBox="0 0 680 175" role="img" aria-label="Máquina de estados do Circuit Breaker: Closed, Open e Half-Open">
+    <rect class="okbox" x="30" y="55" width="145" height="60" rx="12"/><text x="102" y="82" text-anchor="middle">Closed</text><text x="102" y="100" text-anchor="middle" class="small">Fluxo normal</text>
+    <rect class="badbox" x="268" y="55" width="145" height="60" rx="12"/><text x="340" y="82" text-anchor="middle">Open</text><text x="340" y="100" text-anchor="middle" class="small">Falha rápida!</text>
+    <rect class="keybox" x="505" y="55" width="145" height="60" rx="12"/><text x="577" y="82" text-anchor="middle" class="kt">Half-Open</text><text x="577" y="100" text-anchor="middle" class="small kt">Testa poucas reqs</text>
+    <line class="badl" x1="175" y1="85" x2="264" y2="85" marker-end="url(#arbad)"/><text x="220" y="76" text-anchor="middle" class="small">muitos erros</text>
+    <line class="acc" x1="413" y1="85" x2="501" y2="85" marker-end="url(#ar)"/><text x="457" y="76" text-anchor="middle" class="small">timeout</text>
+    <path class="l okl" d="M577,55 C577,15 102,15 102,51" marker-end="url(#arok)"/><text x="340" y="22" text-anchor="middle" class="small">testes OK → fecha</text>
+    <path class="l badl" d="M555,115 C510,158 390,158 350,119" marker-end="url(#arbad)"/><text x="457" y="160" text-anchor="middle" class="small">falhou → reabre</text>
+  </svg>
+  <p>Evita <b>falha em cascata</b>: em vez de travar todas as threads esperando timeout de um serviço morto, o disjuntor abre e responde erro/fallback na hora.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">SOBREVIVÊNCIA</span>
+  <h2>Graceful Degradation (degradação graciosa)</h2>
+  <p>Quando parte do sistema falha ou sofre sobrecarga, o sistema <b>não cai por completo</b>: ele entrega uma versão reduzida, mantendo o que é essencial.</p>
+  <div class="two">
+    <div class="card"><span class="pill ok">✓ Com Graceful Degradation</span><p>O serviço de recomendações de IA caiu? O e-commerce continua exibindo busca, preço e finalizando compras com uma lista estática.</p></div>
+    <div class="card"><span class="pill ng">✗ Sem proteção</span><p>A página inicial espera 30 s pelo módulo de recomendações, esgota as threads e derruba até o checkout.</p></div>
+  </div>
+  <div class="say good">Combine com <b>Timeout</b> (não esperar para sempre), <b>Retry com Exponential Backoff + Jitter</b> e <b>Bulkhead</b> (isolar pools de threads).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>Pegadinhas de cache e resiliência</h2>
+  <div class="say trap">
+    <b>1. "Circuit Breaker é a mesma coisa que Retry":</b><br>
+    <span class="pill ng">Errado</span> <b>Retry</b> tenta de novo na esperança de erro passageiro. <b>Circuit Breaker</b> <u>para</u> de chamar o serviço doente quando o erro é contínuo.<br><br>
+    <b>2. "Write-Back garante durabilidade imediata no banco antes de responder":</b><br>
+    <span class="pill ng">Errado</span> Quem garante no banco antes de responder é <b>Write-Through</b>; Write-Back grava primeiro no cache e depois no banco.
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Para levar para a prova</h2>
+  <div class="magic">Pergunta mágica: “Se um serviço dependente travar por 30 segundos, meu sistema trava junto ou entrega o básico e segue vivo?”<small>Travar junto = falta <b>Timeout + Circuit Breaker + Graceful Degradation</b>.</small></div>
+  <ul class="checklist">
+    <li><b>CDN</b>: cache na borda (PoPs) para estáticos e baixa latência geográfica.</li>
+    <li><b>Redis</b>: cache em memória; padrões Cache-Aside, Write-Through e Write-Back.</li>
+    <li><b>Stampede / Penetration / Avalanche</b>: lock, Bloom Filter/null cache, jitter no TTL.</li>
+    <li><b>Circuit Breaker</b>: Closed → Open → Half-Open; evita falha em cascata.</li>
+    <li><b>Graceful Degradation</b>: mantém funcionalidades críticas no ar durante falhas parciais.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TREINO</span>
+  <h2>Teste rápido (estilo FGV)</h2>
+  <details><summary>1) Para evitar que todas as chaves de cache expirem exatamente à meia-noite e derrubem o banco (Cache Avalanche), aplica-se:</summary><p><span class="pill ok">Jitter aleatório no TTL</span> Espalha os vencimentos ao longo do tempo em vez de concentrar tudo no mesmo segundo.</p></details>
+  <details><summary>2) Um invasor consulta milhões de CPFs inexistentes, furando o Redis e sobrecarregando o PostgreSQL. Qual técnica barra isso antes do banco?</summary><p><span class="pill ok">Bloom Filter ou cache de valor nulo</span> Evita que chaves inexistentes atinjam o banco repetidamente (Cache Penetration).</p></details>
+  <details><summary>3) No Circuit Breaker, o que dispara a transição de Open para Half-Open?</summary><p><span class="pill ok">Expiração do tempo de espera (cooldown/timeout)</span> Após o intervalo configurado, o disjuntor deixa poucas chamadas de teste passarem.</p></details>
+  <details><summary>4) Qual política de despejo do Redis remove primeiro o item que está há mais tempo sem ser acessado?</summary><p><span class="pill ok">LRU (Least Recently Used)</span> LFU remove o menos frequentemente usado; LRU remove o menos recentemente usado.</p></details>
+</div>
+
+</section>
+
+<script src="aula.js"></script></body></html>

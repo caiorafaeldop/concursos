@@ -1,0 +1,1206 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Linguagens e Frameworks — aulas visuais</title><link rel="stylesheet" href="aula.css">
+<style>
+pre{background:#1b1f2a;color:#e9ecf3;border-radius:12px;padding:10px 14px;margin:8px 0;overflow-x:auto;font:14px/1.5 ui-monospace,Consolas,"Cascadia Mono",monospace;white-space:pre}
+pre code{background:none;padding:0;font-size:inherit;color:inherit;border-radius:0}
+pre .c{color:#9aa4b8;font-style:italic}
+pre .r{color:#7ee2a0}
+pre .e{color:#ff9a9e}
+pre mark{background:#ffd84d;color:#2a2100}
+.out{background:var(--ok-bg);border-left:5px solid var(--ok);border-radius:0 10px 10px 0;padding:6px 12px;font:14px/1.5 ui-monospace,Consolas,monospace;margin:6px 0;white-space:pre-wrap}
+.out::before{content:"▶ saída  ";font-weight:800;color:var(--ok);font-family:system-ui,sans-serif}
+.out.err{background:var(--bad-bg);border-left-color:var(--bad)}
+.out.err::before{content:"💥 erro  ";color:var(--bad)}
+.mini{font-size:15px}
+.mini td,.mini th{padding:4px 7px}
+.two > div > h4{margin:4px 0;font-size:15px}
+.ar{stroke:var(--acc);stroke-width:2.5;fill:none}
+.arh{fill:var(--acc)}
+.ln{stroke:var(--line);stroke-width:4}
+details p{margin:6px 0 0}
+</style></head>
+<body data-subject="linguagens" data-title="Linguagens e Frameworks">
+
+<!-- ===================================================== CAPÍTULO 1 ===================================================== -->
+<section class="chapter" data-title="Java moderno: Collections, Streams, lambdas, records, sealed e virtual threads">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 1</span>
+  <h1>Java moderno</h1>
+  <span class="emoji">☕</span>
+  <div class="steps">
+    <div class="step"><b>1. Collections</b><span>List, Set, Map, Queue: qual guarda ordem, qual aceita repetido.</span></div>
+    <div class="step"><b>2. Lambdas + Streams</b><span>Funções como valor e “esteira” de dados.</span></div>
+    <div class="step"><b>3. Records e sealed</b><span>Classes de dados enxutas e hierarquias fechadas.</span></div>
+    <div class="step"><b>4. Virtual threads</b><span>Milhares de tarefas de I/O sem esgotar o sistema.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🏭</span><div><b>Analogia do dia:</b> o Java moderno é uma <b>fábrica</b>. As Collections são as <b>caixas</b> onde guardamos peças, o Stream é a <b>esteira</b> que passa as peças por máquinas (filtrar, transformar) e o lambda é a <b>instrução curtinha</b> que você entrega para cada máquina.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">LINHA DO TEMPO</span>
+  <h2>Em que versão cada recurso ficou <u>final</u>?</h2>
+  <svg viewBox="0 0 880 210" role="img" aria-label="linha do tempo das versões do Java">
+    <line class="ln" x1="30" y1="70" x2="860" y2="70"/>
+    <g text-anchor="middle">
+      <circle cx="60" cy="70" r="16" class="accbox"/><text x="60" y="75">8</text><text x="60" y="40" class="small">2014 · LTS</text>
+      <text x="60" y="110" class="small">lambdas</text><text x="60" y="127" class="small">Streams</text><text x="60" y="144" class="small">Optional</text>
+      <circle cx="170" cy="70" r="16" class="box"/><text x="170" y="75">9</text>
+      <text x="170" y="110" class="small">List.of</text><text x="170" y="127" class="small">Map.of</text>
+      <circle cx="270" cy="70" r="16" class="box"/><text x="270" y="75">10</text>
+      <text x="270" y="110" class="small">var (local)</text>
+      <circle cx="380" cy="70" r="16" class="box"/><text x="380" y="75">14</text>
+      <text x="380" y="110" class="small">switch com “-&gt;”</text><text x="380" y="127" class="small">(expressão)</text>
+      <circle cx="510" cy="70" r="18" class="keybox"/><text x="510" y="75" class="kt">16</text>
+      <text x="510" y="110">records</text><text x="510" y="128" class="small">instanceof</text><text x="510" y="144" class="small">com padrão</text>
+      <circle cx="640" cy="70" r="18" class="keybox"/><text x="640" y="75" class="kt">17</text><text x="640" y="40" class="small">2021 · LTS</text>
+      <text x="640" y="110">sealed</text>
+      <circle cx="790" cy="70" r="18" class="keybox"/><text x="790" y="75" class="kt">21</text><text x="790" y="40" class="small">2023 · LTS</text>
+      <text x="790" y="110">switch c/ padrões</text><text x="790" y="128">record patterns</text><text x="790" y="146">virtual threads</text>
+    </g>
+  </svg>
+  <div class="say trap">Antes de virar final, quase tudo passa por versões <b>preview</b> (precisam de <code>--enable-preview</code>). Records foram preview no 14 e 15 → <b>final no 16</b>. Sealed: preview 15 e 16 → <b>final no 17</b>. Virtual threads: preview 19 e 20 → <b>final no 21</b>. “Records surgiram no Java 14” é meia-verdade: ali eram só preview.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">COLLECTIONS</span>
+  <h2>A família das coleções</h2>
+  <svg viewBox="0 0 880 250" role="img" aria-label="hierarquia: Collection tem List, Set e Queue; Map fica separado">
+    <defs><marker id="m11" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arh"/></marker></defs>
+    <rect class="accbox" x="200" y="10" width="200" height="40" rx="10"/><text x="300" y="36" text-anchor="middle">Collection&lt;E&gt;</text>
+    <line class="ar" x1="250" y1="50" x2="100" y2="92" marker-end="url(#m11)"/>
+    <line class="ar" x1="300" y1="50" x2="300" y2="92" marker-end="url(#m11)"/>
+    <line class="ar" x1="350" y1="50" x2="500" y2="92" marker-end="url(#m11)"/>
+    <rect class="box" x="30" y="95" width="140" height="38" rx="10"/><text x="100" y="120" text-anchor="middle">List</text>
+    <rect class="box" x="230" y="95" width="140" height="38" rx="10"/><text x="300" y="120" text-anchor="middle">Set</text>
+    <rect class="box" x="430" y="95" width="140" height="38" rx="10"/><text x="500" y="120" text-anchor="middle">Queue / Deque</text>
+    <text x="100" y="158" text-anchor="middle" class="small">ArrayList</text><text x="100" y="176" text-anchor="middle" class="small">LinkedList</text>
+    <text x="300" y="158" text-anchor="middle" class="small">HashSet</text><text x="300" y="176" text-anchor="middle" class="small">LinkedHashSet</text><text x="300" y="194" text-anchor="middle" class="small">TreeSet</text>
+    <text x="500" y="158" text-anchor="middle" class="small">ArrayDeque</text><text x="500" y="176" text-anchor="middle" class="small">PriorityQueue</text>
+    <rect class="badbox" x="660" y="95" width="180" height="38" rx="10" stroke-dasharray="6 4"/><text x="750" y="120" text-anchor="middle">Map&lt;K,V&gt;</text>
+    <text x="750" y="80" text-anchor="middle" class="small">NÃO herda de Collection</text>
+    <text x="750" y="158" text-anchor="middle" class="small">HashMap</text><text x="750" y="176" text-anchor="middle" class="small">LinkedHashMap</text><text x="750" y="194" text-anchor="middle" class="small">TreeMap</text>
+  </svg>
+  <table class="cmp mini">
+    <tr><th>Tipo</th><th>Ordem</th><th>Repetidos?</th><th>Custo típico</th></tr>
+    <tr><td><b>ArrayList</b></td><td>de inserção (índice)</td><td>sim</td><td><code>get(i)</code> O(1)</td></tr>
+    <tr><td><b>HashSet</b> / <b>HashMap</b></td><td>nenhuma garantida</td><td>não (chave única)</td><td>busca O(1) médio</td></tr>
+    <tr><td><b>LinkedHashSet/Map</b></td><td>de inserção</td><td>não</td><td>O(1) médio</td></tr>
+    <tr><td><b>TreeSet</b> / <b>TreeMap</b></td><td>ordenada (natural ou Comparator)</td><td>não</td><td>O(log n)</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">COLLECTIONS NA PRÁTICA</span>
+  <h2>Ordem, imutabilidade e o par equals/hashCode</h2>
+  <pre><code>Set&lt;String&gt; t = new TreeSet&lt;&gt;(List.of("pera", "uva", "abacaxi"));
+System.out.println(t);            <span class="c">// [abacaxi, pera, uva]  (ordenado)</span>
+
+List&lt;Integer&gt; fixa = List.of(1, 2, 3);
+fixa.add(4);                      <span class="e">// UnsupportedOperationException</span>
+
+List&lt;Integer&gt; a = Arrays.asList(1, 2, 3);
+a.set(0, 9);                      <span class="r">// ok → [9, 2, 3]</span>
+a.add(4);                         <span class="e">// UnsupportedOperationException</span></code></pre>
+  <table class="mini">
+    <tr><th>Afirmação</th><th>Veredito</th></tr>
+    <tr><td><code>List.of(...)</code> devolve lista imutável e não aceita <code>null</code></td><td class="hk">✓ certo (null → NullPointerException)</td></tr>
+    <tr><td><code>Arrays.asList</code> é totalmente imutável</td><td class="hl">✗ tamanho fixo, mas <code>set</code> funciona</td></tr>
+    <tr><td>Sobrescrever <code>equals</code> sem <code>hashCode</code> é inofensivo</td><td class="hl">✗ quebra HashSet/HashMap</td></tr>
+  </table>
+  <div class="say law">Contrato: objetos iguais por <code>equals</code> devem ter o mesmo <code>hashCode</code>. O inverso não é exigido (hashCode igual não implica equals).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">LAMBDAS</span>
+  <h2>Lambda = função curtinha que vira valor</h2>
+  <div class="analogy"><span class="emoji">📝</span><div>Em vez de criar uma classe inteira só para dizer “compare pelo tamanho”, você entrega um <b>bilhete</b>: <code>(a, b) -&gt; a.length() - b.length()</code>. O bilhete só cabe em lugares que esperam <b>uma única tarefa</b>: a <b>interface funcional</b>.</div></div>
+  <table class="cmp mini">
+    <tr><th>Interface (java.util.function)</th><th>Método</th><th>Recebe → devolve</th><th>Exemplo</th></tr>
+    <tr><td><b>Predicate&lt;T&gt;</b></td><td>test</td><td>T → boolean</td><td><code>s -&gt; s.isEmpty()</code></td></tr>
+    <tr><td><b>Function&lt;T,R&gt;</b></td><td>apply</td><td>T → R</td><td><code>s -&gt; s.length()</code></td></tr>
+    <tr><td><b>Consumer&lt;T&gt;</b></td><td>accept</td><td>T → nada</td><td><code>s -&gt; System.out.println(s)</code></td></tr>
+    <tr><td><b>Supplier&lt;T&gt;</b></td><td>get</td><td>nada → T</td><td><code>() -&gt; new ArrayList&lt;&gt;()</code></td></tr>
+  </table>
+  <div class="two">
+    <div><h4>Lambda</h4><pre><code>s -&gt; s.length()
+x -&gt; System.out.println(x)
+() -&gt; new ArrayList&lt;&gt;()</code></pre></div>
+    <div><h4>Referência a método (mesma coisa)</h4><pre><code>String::length
+System.out::println
+ArrayList::new</code></pre></div>
+  </div>
+  <div class="say law">Interface funcional tem <b>exatamente um método abstrato</b> (pode ter métodos <code>default</code> e <code>static</code>). <code>@FunctionalInterface</code> é opcional; só faz o compilador conferir. Variáveis locais usadas no lambda precisam ser <b>final ou efetivamente final</b>.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">STREAMS</span>
+  <h2>A esteira: fonte → intermediárias → terminal</h2>
+  <svg viewBox="0 0 880 150" role="img" aria-label="pipeline de stream">
+    <defs><marker id="m12" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arh"/></marker></defs>
+    <rect class="box" x="10" y="40" width="150" height="56" rx="12"/><text x="85" y="66" text-anchor="middle">fonte</text><text x="85" y="86" text-anchor="middle" class="small">[1,2,3,4,5,6]</text>
+    <line class="ar" x1="160" y1="68" x2="205" y2="68" marker-end="url(#m12)"/>
+    <rect class="accbox" x="210" y="40" width="170" height="56" rx="12"/><text x="295" y="66" text-anchor="middle">filter(par)</text><text x="295" y="86" text-anchor="middle" class="small">2, 4, 6</text>
+    <line class="ar" x1="380" y1="68" x2="425" y2="68" marker-end="url(#m12)"/>
+    <rect class="accbox" x="430" y="40" width="170" height="56" rx="12"/><text x="515" y="66" text-anchor="middle">map(n*n)</text><text x="515" y="86" text-anchor="middle" class="small">4, 16, 36</text>
+    <line class="ar" x1="600" y1="68" x2="645" y2="68" marker-end="url(#m12)"/>
+    <rect class="okbox" x="650" y="40" width="210" height="56" rx="12"/><text x="755" y="66" text-anchor="middle">toList()</text><text x="755" y="86" text-anchor="middle" class="small">[4, 16, 36]</text>
+    <text x="405" y="128" text-anchor="middle" class="small">intermediárias: preguiçosas (lazy), devolvem outro Stream</text>
+    <text x="755" y="128" text-anchor="middle" class="small">terminal: dispara tudo</text>
+  </svg>
+  <pre><code>List&lt;Integer&gt; r = List.of(1, 2, 3, 4, 5, 6).stream()
+    .filter(n -&gt; n % 2 == 0)
+    .map(n -&gt; n * n)
+    .toList();
+System.out.println(r);
+
+Stream.of("a", "b").peek(System.out::println);  <span class="c">// sem terminal: NÃO imprime nada</span></code></pre>
+  <div class="out">[4, 16, 36]</div>
+  <div class="say law">Intermediárias (<code>filter, map, flatMap, sorted, distinct, limit, peek</code>) são <b>lazy</b>; nada executa até uma <b>operação terminal</b> (<code>collect, toList, forEach, reduce, count, findFirst, anyMatch</code>). O Stream não altera a coleção de origem.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">STREAMS: COLETORES</span>
+  <h2>Agrupar, somar, juntar e as armadilhas</h2>
+  <pre><code>record Proc(String vara, double valor) {}
+var ps = List.of(new Proc("Cível", 100), new Proc("Penal", 50), new Proc("Cível", 30));
+
+ps.stream().collect(Collectors.groupingBy(Proc::vara, Collectors.counting()));
+                                              <span class="r">// {Cível=2, Penal=1} (ordem não garantida)</span>
+ps.stream().mapToDouble(Proc::valor).sum();   <span class="r">// 180.0</span>
+Stream.of(1, 2, 3).reduce(0, Integer::sum);   <span class="r">// 6</span>
+Stream.of("a", "b", "c").collect(Collectors.joining(", ", "[", "]"));  <span class="r">// [a, b, c]</span>
+
+Stream&lt;String&gt; s = Stream.of("x");
+s.count();
+s.count();                                    <span class="e">// IllegalStateException: já consumido</span></code></pre>
+  <div class="say trap">
+    <span class="pill ng">✗</span> “Um Stream pode ser percorrido várias vezes.” → só <b>uma</b> vez.<br>
+    <span class="pill ng">✗</span> “<code>parallelStream()</code> é sempre mais rápido.” → depende do volume e do custo; tem overhead.<br>
+    <span class="pill ok">✓</span> <code>stream.toList()</code> (Java 16) devolve lista <b>não modificável</b>.<br>
+    <span class="pill ok">✓</span> <code>findFirst()</code>, <code>max()</code> devolvem <b>Optional</b> (pode estar vazio).
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RECORDS (FINAL NO JAVA 16)</span>
+  <h2>Classe de dados em uma linha</h2>
+  <div class="two">
+    <div><h4><span class="pill ng">antes: classe “na mão”</span></h4><pre><code>final class Ponto {
+  private final int x, y;
+  Ponto(int x, int y) { this.x = x; this.y = y; }
+  int getX() { return x; }
+  int getY() { return y; }
+  <span class="c">// + equals, hashCode, toString...</span>
+}</code></pre></div>
+    <div><h4><span class="pill ok">record</span></h4><pre><code>record Ponto(int x, int y) {
+  Ponto {                <span class="c">// construtor compacto</span>
+    if (x &lt; 0) throw new
+      IllegalArgumentException();
+  }
+}</code></pre></div>
+  </div>
+  <pre><code>var p = new Ponto(1, 2);
+System.out.println(p);                        <span class="r">// Ponto[x=1, y=2]</span>
+System.out.println(p.<mark>x()</mark>);                    <span class="r">// 1   (acessor x(), não getX())</span>
+System.out.println(p.equals(new Ponto(1, 2)));<span class="r">// true (compara os componentes)</span></code></pre>
+  <div class="say law">Record gera campos <code>private final</code>, construtor canônico, acessores, <code>equals</code>, <code>hashCode</code> e <code>toString</code>. É implicitamente <b>final</b>, estende <code>java.lang.Record</code> (logo não estende outra classe), <b>pode implementar interfaces</b>, pode ter métodos e campos <code>static</code>, mas <b>não</b> campos de instância extras. A imutabilidade é <b>rasa</b>: um componente <code>List</code> mutável continua mutável.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">SEALED (17) + SWITCH COM PADRÕES (21)</span>
+  <h2>Hierarquia fechada + switch que confere tudo</h2>
+  <svg viewBox="0 0 880 120" role="img" aria-label="Forma permite só Circulo e Quadrado">
+    <defs><marker id="m13" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arh"/></marker></defs>
+    <rect class="keybox" x="330" y="8" width="220" height="38" rx="10"/><text x="440" y="33" text-anchor="middle" class="kt">sealed interface Forma</text>
+    <line class="ar" x1="400" y1="46" x2="180" y2="76" marker-end="url(#m13)"/>
+    <line class="ar" x1="440" y1="46" x2="440" y2="76" marker-end="url(#m13)"/>
+    <rect class="okbox" x="90" y="78" width="180" height="34" rx="10"/><text x="180" y="100" text-anchor="middle">record Circulo ✓</text>
+    <rect class="okbox" x="350" y="78" width="180" height="34" rx="10"/><text x="440" y="100" text-anchor="middle">record Quadrado ✓</text>
+    <rect class="badbox" x="620" y="78" width="220" height="34" rx="10" stroke-dasharray="6 4"/><text x="730" y="100" text-anchor="middle">Triangulo ✗ (fora do permits)</text>
+  </svg>
+  <pre><code>sealed interface Forma <mark>permits Circulo, Quadrado</mark> {}
+record Circulo(double r) implements Forma {}
+record Quadrado(double lado) implements Forma {}
+
+static double area(Forma f) {
+  return switch (f) {
+    case Circulo c          -&gt; Math.PI * c.r() * c.r();
+    case Quadrado(double l) -&gt; l * l;          <span class="c">// record pattern</span>
+  };                                           <span class="c">// sem default: o compilador sabe que é exaustivo</span>
+}
+area(new Quadrado(3));                         <span class="r">// 9.0</span></code></pre>
+  <div class="say law">Subclasse permitida de um tipo <code>sealed</code> deve ser <b>final</b>, <b>sealed</b> ou <b>non-sealed</b> (records já são final). No switch com padrões é possível usar guarda: <code>case Integer i when i &gt; 10 -&gt; ...</code> e <code>case null</code>.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">VIRTUAL THREADS (FINAL NO JAVA 21)</span>
+  <h2>Muitas threads leves sobre poucas threads do SO</h2>
+  <svg viewBox="0 0 880 170" role="img" aria-label="muitas virtual threads montadas em poucas carrier threads">
+    <defs><marker id="m14" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arh"/></marker></defs>
+    <g class="small"><text x="20" y="20">virtual threads (milhares, baratas, criadas pela JVM)</text></g>
+    <g>
+      <circle cx="40" cy="45" r="11" class="accbox"/><circle cx="75" cy="45" r="11" class="accbox"/><circle cx="110" cy="45" r="11" class="accbox"/><circle cx="145" cy="45" r="11" class="accbox"/><circle cx="180" cy="45" r="11" class="accbox"/><circle cx="215" cy="45" r="11" class="accbox"/><circle cx="250" cy="45" r="11" class="accbox"/><circle cx="285" cy="45" r="11" class="accbox"/><circle cx="320" cy="45" r="11" class="accbox"/><circle cx="355" cy="45" r="11" class="accbox"/><text x="380" y="50">…</text>
+      <circle cx="430" cy="45" r="11" class="box"/><circle cx="465" cy="45" r="11" class="box"/><circle cx="500" cy="45" r="11" class="box"/><text x="525" y="50" class="small">bloqueadas em I/O: “desmontadas”, não ocupam carrier</text>
+    </g>
+    <line class="ar" x1="150" y1="60" x2="150" y2="96" marker-end="url(#m14)"/>
+    <line class="ar" x1="300" y1="60" x2="300" y2="96" marker-end="url(#m14)"/>
+    <rect class="okbox" x="80" y="100" width="140" height="30" rx="8"/><text x="150" y="120" text-anchor="middle">carrier 1</text>
+    <rect class="okbox" x="230" y="100" width="140" height="30" rx="8"/><text x="300" y="120" text-anchor="middle">carrier 2</text>
+    <text x="400" y="120" class="small">threads de plataforma (≈ nº de núcleos) num ForkJoinPool</text>
+    <text x="20" y="158" class="small">thread de plataforma tradicional = 1 thread do sistema operacional, cara (memória de pilha, troca de contexto)</text>
+  </svg>
+  <pre><code>try (var ex = Executors.newVirtualThreadPerTaskExecutor()) {
+  for (int i = 0; i &lt; 10_000; i++)
+    ex.submit(() -&gt; { Thread.sleep(1000); return 1; });
+}   <span class="c">// close() espera todas: termina em ~1 s, não em 10.000 s</span>
+Thread.ofVirtual().start(() -&gt; System.out.println("oi"));</code></pre>
+  <div class="say trap"><span class="pill ok">✓</span> Ganham em <b>vazão</b> para tarefas que <b>esperam I/O</b> (banco, HTTP). <span class="pill ng">✗</span> Não deixam código <b>CPU-bound</b> mais rápido. <span class="pill ng">✗</span> Não se faz pool de virtual threads: cria-se uma por tarefa. No Java 21, bloquear dentro de <code>synchronized</code> pode “prender” (<i>pinning</i>) a carrier.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>O que levar para a prova</h2>
+  <div class="magic">Pergunta mágica: “Isso é final em que versão, e o que ele gera/exige?”<small>records 16 · sealed 17 · switch com padrões, record patterns e virtual threads 21 · lambdas e Streams 8.</small></div>
+  <ul class="checklist">
+    <li>Map <b>não</b> é Collection; TreeSet/TreeMap ordenam; HashSet não garante ordem.</li>
+    <li><code>List.of</code> imutável e sem null; <code>Arrays.asList</code> tamanho fixo.</li>
+    <li>Interface funcional = 1 método abstrato; variáveis capturadas efetivamente finais.</li>
+    <li>Stream: lazy, usado uma vez, só executa com operação terminal.</li>
+    <li>Record: final, acessor <code>x()</code>, equals/hashCode/toString gerados, pode implementar interface.</li>
+    <li>Sealed + <code>permits</code>; filhas final/sealed/non-sealed; switch exaustivo sem default.</li>
+    <li>Virtual threads: para I/O, uma por tarefa, sem pool.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Estilo FGV: resolva antes de abrir</h2>
+  <details><summary>1. Qual a saída de <code>Stream.of(3,1,2).sorted().map(n -&gt; n*10).toList()</code>?</summary><p><b>[10, 20, 30].</b> sorted ordena (1,2,3) e map multiplica cada um. A lista resultante não é modificável.</p></details>
+  <details><summary>2. “Um record pode estender uma classe abstrata própria do sistema.” Certo ou errado?</summary><p><b>Errado.</b> Todo record já estende <code>java.lang.Record</code> e Java não tem herança múltipla de classes. Ele pode, porém, <b>implementar</b> interfaces.</p></details>
+  <details><summary>3. Uma classe que estende uma classe <code>sealed</code> sem declarar final, sealed ou non-sealed compila?</summary><p><b>Não.</b> A subclasse permitida é obrigada a escolher um dos três modificadores (records e enums já são implicitamente finais).</p></details>
+  <details><summary>4. Um serviço CPU-bound (cálculo pesado) ficará mais rápido trocando threads de plataforma por virtual threads?</summary><p><b>Não.</b> Virtual threads aumentam a vazão de tarefas que passam o tempo esperando I/O. O trabalho de CPU continua limitado ao número de núcleos.</p></details>
+</div>
+</section>
+
+<!-- ===================================================== CAPÍTULO 2 ===================================================== -->
+<section class="chapter" data-title="Jakarta EE, Spring Boot e JPA/Hibernate">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 2</span>
+  <h1>Jakarta EE, Spring Boot e JPA/Hibernate</h1>
+  <span class="emoji">🌱</span>
+  <div class="steps">
+    <div class="step"><b>1. Jakarta EE</b><span>Especificações × implementações; javax → jakarta.</span></div>
+    <div class="step"><b>2. Spring / Boot</b><span>IoC, injeção de dependência, anotações, auto-configuração.</span></div>
+    <div class="step"><b>3. Transações</b><span>Como o <code>@Transactional</code> funciona por dentro.</span></div>
+    <div class="step"><b>4. JPA/Hibernate</b><span>Entidades, estados, relacionamentos, N+1.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🔌</span><div><b>Analogia do dia:</b> a <b>especificação</b> é o padrão da tomada (formato dos pinos). A <b>implementação</b> é a marca do aparelho que encaixa nela. JPA é a tomada; Hibernate é uma das marcas.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">JAKARTA EE</span>
+  <h2>Especificação × implementação</h2>
+  <div class="flow"><span>J2EE / Java EE (Sun → Oracle)</span><i>→</i><span>Eclipse Foundation: <b>Jakarta EE 8</b> (ainda <code>javax.*</code>)</span><i>→</i><span><b>Jakarta EE 9</b>: pacotes viram <code>jakarta.*</code></span></div>
+  <table class="cmp mini">
+    <tr><th>Especificação (o “contrato”)</th><th>Para quê</th><th>Implementações conhecidas</th></tr>
+    <tr><td><b>Jakarta Persistence (JPA)</b></td><td>ORM: objetos ↔ tabelas</td><td>Hibernate, EclipseLink</td></tr>
+    <tr><td><b>CDI</b></td><td>injeção de dependência (<code>@Inject</code>)</td><td>Weld</td></tr>
+    <tr><td><b>Jakarta RESTful Web Services (JAX-RS)</b></td><td>APIs REST (<code>@Path</code>, <code>@GET</code>)</td><td>Jersey, RESTEasy</td></tr>
+    <tr><td><b>Servlet</b></td><td>requisição/resposta HTTP</td><td>Tomcat, Jetty</td></tr>
+    <tr><td><b>Bean Validation</b></td><td><code>@NotNull</code>, <code>@Size</code></td><td>Hibernate Validator</td></tr>
+  </table>
+  <div class="say trap"><span class="pill ng">✗</span> “Hibernate é a especificação de persistência do Java.” → Hibernate <b>implementa</b> a especificação JPA. <span class="pill ng">✗</span> “Tomcat é um servidor Jakarta EE completo.” → é um <b>contêiner de Servlet</b> (implementa parte da plataforma); servidores completos: WildFly, GlassFish, Payara, Open Liberty.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">INVERSÃO DE CONTROLE</span>
+  <h2>Quem cria os objetos? O contêiner.</h2>
+  <div class="analogy"><span class="emoji">🍽️</span><div>No restaurante você não vai à cozinha buscar o prato: você <b>declara</b> o que quer e o garçom <b>entrega</b>. Na IoC, sua classe declara do que precisa e o <b>contêiner</b> (Spring ou CDI) monta e <b>injeta</b>.</div></div>
+  <svg viewBox="0 0 880 130" role="img" aria-label="contêiner cria repositório e injeta no serviço">
+    <defs><marker id="m21" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arh"/></marker></defs>
+    <rect class="keybox" x="20" y="35" width="210" height="56" rx="12"/><text x="125" y="60" text-anchor="middle" class="kt">Contêiner IoC</text><text x="125" y="80" text-anchor="middle" class="kt" style="font-size:13px">ApplicationContext</text>
+    <line class="ar" x1="230" y1="63" x2="330" y2="63" marker-end="url(#m21)"/><text x="280" y="52" text-anchor="middle" class="small">cria</text>
+    <rect class="box" x="335" y="35" width="210" height="56" rx="12"/><text x="440" y="68" text-anchor="middle">ProcessoRepository</text>
+    <line class="ar" x1="545" y1="63" x2="645" y2="63" marker-end="url(#m21)"/><text x="595" y="52" text-anchor="middle" class="small">injeta</text>
+    <rect class="okbox" x="650" y="35" width="210" height="56" rx="12"/><text x="755" y="68" text-anchor="middle">ProcessoService</text>
+  </svg>
+  <pre><code>@Service
+public class ProcessoService {
+  private final ProcessoRepository repo;
+  public ProcessoService(ProcessoRepository repo) {   <span class="c">// injeção por construtor</span>
+    this.repo = repo;                                 <span class="c">// (construtor único dispensa @Autowired)</span>
+  }
+}</code></pre>
+  <div class="say law">Inversão de controle: o framework controla o ciclo de vida dos objetos. Injeção de dependência é uma forma de IoC em que as dependências são fornecidas de fora (por construtor, setter ou campo). Por construtor é a forma recomendada: permite campos <code>final</code> e facilita testes.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">SPRING: ANOTAÇÕES</span>
+  <h2>Estereótipos e escopos</h2>
+  <div class="two">
+    <table class="cmp mini">
+      <tr><th>Anotação</th><th>Papel</th></tr>
+      <tr><td><b>@Component</b></td><td>bean genérico</td></tr>
+      <tr><td><b>@Service</b></td><td>regra de negócio</td></tr>
+      <tr><td><b>@Repository</b></td><td>acesso a dados (+ tradução de exceções)</td></tr>
+      <tr><td><b>@Controller</b></td><td>MVC, devolve views</td></tr>
+      <tr><td><b>@RestController</b></td><td>= @Controller + @ResponseBody (JSON)</td></tr>
+      <tr><td><b>@Configuration + @Bean</b></td><td>bean criado por método</td></tr>
+    </table>
+    <table class="cmp mini">
+      <tr><th>Escopo</th><th>Quantas instâncias</th></tr>
+      <tr><td class="hk"><b>singleton</b> (padrão)</td><td>uma por contêiner</td></tr>
+      <tr><td><b>prototype</b></td><td>uma nova a cada pedido</td></tr>
+      <tr><td><b>request</b></td><td>uma por requisição HTTP</td></tr>
+      <tr><td><b>session</b></td><td>uma por sessão HTTP</td></tr>
+    </table>
+  </div>
+  <div class="say trap"><span class="pill ng">✗</span> “O escopo padrão do Spring é prototype.” → é <b>singleton</b>. Por isso um bean singleton não deve guardar estado de usuário em campos: ele é compartilhado entre requisições.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">SPRING BOOT</span>
+  <h2>O que o Boot acrescenta ao Spring</h2>
+  <pre><code>@SpringBootApplication      <span class="c">// = @SpringBootConfiguration + @EnableAutoConfiguration + @ComponentScan</span>
+public class App {
+  public static void main(String[] args) { SpringApplication.run(App.class, args); }
+}</code></pre>
+  <div class="steps">
+    <div class="step"><b>Starters</b><span><code>spring-boot-starter-web</code> traz Spring MVC + Tomcat embutido + Jackson.</span></div>
+    <div class="step"><b>Auto-configuração</b><span>Vê o que está no classpath e configura (achou driver JDBC? cria DataSource).</span></div>
+    <div class="step"><b>Servidor embutido</b><span>Roda como <code>java -jar app.jar</code>, sem instalar servidor.</span></div>
+    <div class="step"><b>Config externa</b><span><code>application.properties</code>/<code>.yml</code> e perfis (<code>spring.profiles.active=prod</code>).</span></div>
+    <div class="step"><b>Actuator</b><span>Endpoints operacionais, ex.: <code>/actuator/health</code>.</span></div>
+  </div>
+  <div class="say law">Spring Boot é “convenção sobre configuração”: auto-configura o que encontra no classpath e você sobrescreve só o necessário. Spring Boot 3 exige Java 17+ e usa o namespace <code>jakarta.*</code>.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">API REST COM SPRING</span>
+  <h2>Do HTTP ao método Java</h2>
+  <pre><code>@RestController
+@RequestMapping("/processos")
+public class ProcessoController {
+  @GetMapping("/{id}")
+  public Processo buscar(<mark>@PathVariable</mark> Long id) { ... }        <span class="c">// GET /processos/7</span>
+
+  @GetMapping
+  public List&lt;Processo&gt; listar(<mark>@RequestParam</mark> String vara) { ... } <span class="c">// GET /processos?vara=civel</span>
+
+  @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  public Processo criar(<mark>@RequestBody</mark> @Valid Processo p) { ... } <span class="c">// JSON no corpo → objeto</span>
+}</code></pre>
+  <table class="mini">
+    <tr><th>Pedaço da requisição</th><th>Anotação</th></tr>
+    <tr><td>trecho do caminho <code>/processos/<b>7</b></code></td><td class="hk">@PathVariable</td></tr>
+    <tr><td>query string <code>?vara=<b>civel</b></code></td><td class="hk">@RequestParam</td></tr>
+    <tr><td>corpo JSON</td><td class="hk">@RequestBody</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">@TRANSACTIONAL</span>
+  <h2>A transação mora num <u>proxy</u></h2>
+  <svg viewBox="0 0 880 130" role="img" aria-label="chamada externa passa pelo proxy; chamada interna não">
+    <defs><marker id="m22" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arh"/></marker></defs>
+    <rect class="box" x="20" y="40" width="160" height="50" rx="12"/><text x="100" y="70" text-anchor="middle">Controller</text>
+    <line class="ar" x1="180" y1="65" x2="275" y2="65" marker-end="url(#m22)"/>
+    <rect class="keybox" x="280" y="30" width="220" height="70" rx="12"/><text x="390" y="58" text-anchor="middle" class="kt">Proxy</text><text x="390" y="80" text-anchor="middle" class="kt" style="font-size:13px">begin … commit/rollback</text>
+    <line class="ar" x1="500" y1="65" x2="595" y2="65" marker-end="url(#m22)"/>
+    <rect class="okbox" x="600" y="30" width="260" height="70" rx="12"/><text x="730" y="58" text-anchor="middle">ProcessoService</text><text x="730" y="80" text-anchor="middle" class="small">this.outroMetodo() ✗ não passa pelo proxy</text>
+  </svg>
+  <table class="mini">
+    <tr><th>Situação</th><th>Rollback?</th></tr>
+    <tr><td><code>RuntimeException</code> ou <code>Error</code> lançada</td><td class="hk">✓ sim (padrão)</td></tr>
+    <tr><td>exceção <b>checked</b> (ex.: <code>IOException</code>)</td><td class="hl">✗ não, faz commit (a menos que <code>rollbackFor</code>)</td></tr>
+    <tr><td>método <code>@Transactional</code> chamado pelo <b>próprio objeto</b> (<code>this</code>)</td><td class="hl">✗ anotação ignorada (autoinvocação)</td></tr>
+  </table>
+  <div class="say law">Propagação padrão: <b>REQUIRED</b> (usa a transação existente ou cria uma). <b>REQUIRES_NEW</b> suspende a atual e abre outra. A anotação só age em chamadas que entram pelo proxy; métodos <code>private</code> nunca são interceptados.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">JPA: ENTIDADE E ESTADOS</span>
+  <h2>Uma classe vira tabela; o EntityManager cuida dela</h2>
+  <pre><code>@Entity @Table(name = "processo")
+public class Processo {
+  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+  @Column(nullable = false, unique = true) private String numero;
+  protected Processo() {}            <span class="c">// JPA exige construtor sem argumentos</span>
+}</code></pre>
+  <svg viewBox="0 0 880 140" role="img" aria-label="estados: novo, gerenciado, destacado, removido">
+    <defs><marker id="m23" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arh"/></marker></defs>
+    <rect class="box" x="10" y="45" width="150" height="44" rx="22"/><text x="85" y="72" text-anchor="middle">novo (transient)</text>
+    <line class="ar" x1="160" y1="67" x2="300" y2="67" marker-end="url(#m23)"/><text x="230" y="58" text-anchor="middle" class="small">persist()</text>
+    <rect class="okbox" x="305" y="45" width="190" height="44" rx="22"/><text x="400" y="72" text-anchor="middle">gerenciado (managed)</text>
+    <line class="ar" x1="495" y1="58" x2="650" y2="40" marker-end="url(#m23)"/><text x="570" y="35" text-anchor="middle" class="small">fechar contexto / detach</text>
+    <line class="ar" x1="655" y1="52" x2="500" y2="72" marker-end="url(#m23)"/><text x="590" y="80" text-anchor="middle" class="small">merge()</text>
+    <rect class="accbox" x="655" y="15" width="200" height="40" rx="20"/><text x="755" y="40" text-anchor="middle">destacado (detached)</text>
+    <line class="ar" x1="400" y1="89" x2="400" y2="105" marker-end="url(#m23)"/><text x="470" y="104" class="small">remove()</text>
+    <rect class="badbox" x="320" y="108" width="160" height="28" rx="14"/><text x="400" y="127" text-anchor="middle">removido</text>
+  </svg>
+  <div class="say law">Entidade gerenciada está no <b>contexto de persistência</b> (cache de 1º nível): alterar um campo dela gera UPDATE no flush/commit sem chamar nenhum método (<i>dirty checking</i>). <code>find</code> busca já; <code>getReference</code> pode devolver um proxy preguiçoso.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RELACIONAMENTOS E N+1</span>
+  <h2>Quem é o dono, o que carrega junto e o problema N+1</h2>
+  <div class="two">
+    <div><pre><code>@Entity class Vara {
+  @OneToMany(<mark>mappedBy = "vara"</mark>)
+  List&lt;Processo&gt; processos;   <span class="c">// lado inverso</span>
+}
+@Entity class Processo {
+  @ManyToOne @JoinColumn(name="vara_id")
+  Vara vara;                  <span class="c">// lado dono (tem a FK)</span>
+}</code></pre></div>
+    <table class="cmp mini">
+      <tr><th>Anotação</th><th>Fetch padrão</th></tr>
+      <tr><td>@ManyToOne · @OneToOne</td><td><b>EAGER</b></td></tr>
+      <tr><td>@OneToMany · @ManyToMany</td><td><b>LAZY</b></td></tr>
+    </table>
+  </div>
+  <div class="tables">
+    <div class="tbox"><h4><span class="pill ng">✗ N+1</span></h4><pre><code>varas = "SELECT v FROM Vara v"   <span class="c">// 1 consulta</span>
+for (v : varas) v.getProcessos().size(); <span class="c">// +N</span></code></pre></div>
+    <div class="tbox"><h4><span class="pill ok">✓ JOIN FETCH</span></h4><pre><code>"SELECT DISTINCT v FROM Vara v
+   JOIN FETCH v.processos"       <span class="c">// 1 consulta</span></code></pre></div>
+  </div>
+  <div class="say trap">Acessar uma coleção LAZY depois que o contexto fechou gera <code>LazyInitializationException</code> (Hibernate). A solução não é pôr tudo EAGER: é buscar o necessário com <b>JOIN FETCH</b> ou <b>@EntityGraph</b>. No Spring Data, <code>interface ProcessoRepo extends JpaRepository&lt;Processo, Long&gt;</code> já traz <code>save</code>, <code>findById</code>, <code>findAll</code>; <code>findByNumero(String n)</code> é derivado do nome do método.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>O que levar para a prova</h2>
+  <div class="magic">Pergunta mágica: “Isso é especificação ou implementação? Passa pelo proxy?”<small>JPA é contrato, Hibernate implementa. @Transactional só age quando a chamada entra pelo proxy.</small></div>
+  <ul class="checklist">
+    <li>Jakarta EE 9 trocou <code>javax.*</code> por <code>jakarta.*</code>; Spring Boot 3 usa jakarta e exige Java 17+.</li>
+    <li>IoC: o contêiner cria; DI: o contêiner entrega. Prefira injeção por construtor.</li>
+    <li>Escopo padrão: singleton. @RestController = @Controller + @ResponseBody.</li>
+    <li>@SpringBootApplication = configuração + auto-configuração + component scan.</li>
+    <li>Rollback padrão: RuntimeException/Error; checked não; autoinvocação ignora.</li>
+    <li>Estados JPA: novo, gerenciado, destacado, removido; dirty checking.</li>
+    <li>ToOne = EAGER; ToMany = LAZY; dono = lado da FK; N+1 → JOIN FETCH.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Estilo FGV: resolva antes de abrir</h2>
+  <details><summary>1. Um método @Transactional lança <code>IOException</code> (checked). Sem configuração extra, o que acontece?</summary><p><b>Commit.</b> Por padrão o Spring só faz rollback em exceções não verificadas (RuntimeException) e Error. Para checked, use <code>rollbackFor = IOException.class</code>.</p></details>
+  <details><summary>2. Num relacionamento bidirecional Vara 1–N Processo, onde vai o <code>mappedBy</code>?</summary><p><b>No lado inverso</b>, o <code>@OneToMany</code> em Vara. O dono é Processo, que possui a chave estrangeira (<code>@ManyToOne</code>/<code>@JoinColumn</code>).</p></details>
+  <details><summary>3. Qual anotação liga <code>/processos/7</code> ao parâmetro <code>Long id</code>?</summary><p><b>@PathVariable.</b> @RequestParam pega a query string (<code>?id=7</code>); @RequestBody desserializa o corpo.</p></details>
+  <details><summary>4. “Hibernate e JPA são sinônimos.” Certo ou errado?</summary><p><b>Errado.</b> JPA (Jakarta Persistence) é a especificação; Hibernate é uma implementação dela, com recursos próprios além do padrão. EclipseLink é outra implementação.</p></details>
+</div>
+</section>
+
+<!-- ===================================================== CAPÍTULO 3 ===================================================== -->
+<section class="chapter" data-title="JavaScript, TypeScript e Node.js">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 3</span>
+  <h1>JavaScript, TypeScript e Node.js</h1>
+  <span class="emoji">🟨</span>
+  <div class="steps">
+    <div class="step"><b>1. JS por dentro</b><span>Escopo, coerção, truthy/falsy, closures e <code>this</code>.</span></div>
+    <div class="step"><b>2. Assincronia</b><span>Event loop, Promises e async/await: a ordem da saída.</span></div>
+    <div class="step"><b>3. TypeScript</b><span>Tipos que existem só na compilação.</span></div>
+    <div class="step"><b>4. Node.js</b><span>JS fora do navegador, I/O não bloqueante, módulos.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🧑‍🍳</span><div><b>Analogia do dia:</b> o JavaScript é um <b>cozinheiro sozinho</b> (uma thread). Ele não fica parado olhando o forno: põe o bolo para assar, anota “me avise quando ficar pronto” e vai cortar legumes. Esse “me avise” é o <b>callback/Promise</b>; quem organiza os avisos é o <b>event loop</b>.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">ESCOPO</span>
+  <h2>var × let × const</h2>
+  <table class="cmp mini">
+    <tr><th></th><th>var</th><th>let</th><th>const</th></tr>
+    <tr><td><b>Escopo</b></td><td class="hl">função</td><td class="hk">bloco <code>{ }</code></td><td class="hk">bloco <code>{ }</code></td></tr>
+    <tr><td><b>Usar antes de declarar</b></td><td>vale <code>undefined</code> (hoisting)</td><td colspan="2">ReferenceError (zona morta temporal, TDZ)</td></tr>
+    <tr><td><b>Reatribuir</b></td><td>sim</td><td>sim</td><td>não</td></tr>
+  </table>
+  <div class="two">
+    <div><pre><code>console.log(a);  <span class="r">// undefined</span>
+var a = 1;
+console.log(b);  <span class="e">// ReferenceError</span>
+let b = 2;
+
+const obj = { n: 1 };
+obj.n = 2;       <span class="r">// ok! o objeto muda</span>
+obj = {};        <span class="e">// TypeError</span></code></pre></div>
+    <div><pre><code>for (var i = 0; i &lt; 3; i++)
+  setTimeout(() =&gt; console.log(i));
+<span class="r">// 3 3 3  (um único i)</span>
+
+for (let j = 0; j &lt; 3; j++)
+  setTimeout(() =&gt; console.log(j));
+<span class="r">// 0 1 2  (um j por volta)</span></code></pre></div>
+  </div>
+  <div class="say trap"><span class="pill ng">✗</span> “<code>const</code> torna o objeto imutável.” → <code>const</code> só impede <b>reatribuir a variável</b>. Para congelar o objeto: <code>Object.freeze</code> (raso).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">TIPOS E COERÇÃO</span>
+  <h2>== converte; === não converte</h2>
+  <div class="analogy"><span class="emoji">⚖️</span><div><code>==</code> é um juiz “boa-praça”: antes de comparar, <b>converte</b> os tipos. <code>===</code> é rigoroso: tipo diferente já é <b>false</b>.</div></div>
+  <table class="mini">
+    <tr><th>Expressão</th><th>Resultado</th><th>Por quê</th></tr>
+    <tr><td><code>1 == "1"</code></td><td class="hk">true</td><td>"1" vira número</td></tr>
+    <tr><td><code>1 === "1"</code></td><td class="hl">false</td><td>tipos diferentes</td></tr>
+    <tr><td><code>null == undefined</code> / <code>===</code></td><td>true / false</td><td>regra especial do ==</td></tr>
+    <tr><td><code>NaN === NaN</code></td><td class="hl">false</td><td>use <code>Number.isNaN</code></td></tr>
+    <tr><td><code>"5" + 3</code> · <code>"5" - 3</code></td><td><code>"53"</code> · <code>2</code></td><td>+ concatena string; − só faz conta</td></tr>
+    <tr><td><code>typeof null</code> · <code>typeof []</code></td><td><code>"object"</code> · <code>"object"</code></td><td>use <code>Array.isArray</code></td></tr>
+    <tr><td><code>[1, 10, 2].sort()</code></td><td class="hl"><code>[1, 10, 2]</code></td><td>ordena como texto; use <code>(a,b) =&gt; a-b</code></td></tr>
+    <tr><td><code>0.1 + 0.2 === 0.3</code></td><td class="hl">false</td><td>ponto flutuante binário</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">TRUTHY / FALSY</span>
+  <h2>|| × ?? × ?.</h2>
+  <div class="say law">Valores <b>falsy</b> (os únicos): <code>false, 0, -0, 0n, "", null, undefined, NaN</code>. Todo o resto é truthy, inclusive <code>"0"</code>, <code>[]</code> e <code>{}</code>.</div>
+  <div class="two">
+    <div><h4>|| troca qualquer falsy</h4><pre><code>0   || 10     <span class="r">// 10</span>
+""  || "x"    <span class="r">// "x"</span>
+null || "x"   <span class="r">// "x"</span></code></pre></div>
+    <div><h4>?? troca só null/undefined</h4><pre><code>0   ?? 10     <span class="r">// 0</span>
+""  ?? "x"    <span class="r">// ""</span>
+null ?? "x"   <span class="r">// "x"</span></code></pre></div>
+  </div>
+  <pre><code>const u = { nome: "Ana" };
+u.endereco.cidade;       <span class="e">// TypeError: cannot read properties of undefined</span>
+u.endereco?.cidade;      <span class="r">// undefined (para no primeiro null/undefined)</span>
+const { nome, idade = 30 } = u;   <span class="r">// desestruturação: nome="Ana", idade=30</span>
+const v = { ...u, ativo: true };  <span class="r">// spread: { nome: "Ana", ativo: true }</span></code></pre>
+</div>
+
+<div class="slide">
+  <span class="tag">FUNÇÕES</span>
+  <h2>Closure e o <code>this</code> da arrow function</h2>
+  <div class="two">
+    <div><h4>Closure: a função leva a “mochila” do escopo</h4><pre><code>function contador() {
+  let n = 0;
+  return () =&gt; ++n;
+}
+const c = contador();
+c(); c();
+console.log(c());   <span class="r">// 3</span></code></pre></div>
+    <div><h4>Arrow não tem this próprio</h4><pre><code>const timer = {
+  seg: 0,
+  iniciar() {
+    setTimeout(function () {
+      console.log(this.seg); <span class="e">// undefined</span>
+    });
+    setTimeout(() =&gt;
+      console.log(this.seg)); <span class="r">// 0</span>
+  }
+};
+timer.iniciar();</code></pre></div>
+  </div>
+  <div class="say law"><b>Closure</b>: a função interna continua acessando as variáveis do escopo onde foi <b>criada</b>, mesmo depois que a função externa terminou. <b>Arrow function</b> não tem <code>this</code> nem <code>arguments</code> próprios e não pode ser usada com <code>new</code>; o <code>this</code> vem do escopo ao redor (léxico).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">EVENT LOOP</span>
+  <h2>Quem roda primeiro?</h2>
+  <svg viewBox="0 0 880 150" role="img" aria-label="pilha, fila de microtarefas, fila de tarefas">
+    <defs><marker id="m31" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arh"/></marker></defs>
+    <rect class="keybox" x="10" y="30" width="230" height="70" rx="12"/><text x="125" y="58" text-anchor="middle" class="kt">1. Código síncrono</text><text x="125" y="80" text-anchor="middle" class="kt" style="font-size:13px">pilha de chamadas</text>
+    <line class="ar" x1="240" y1="65" x2="310" y2="65" marker-end="url(#m31)"/>
+    <rect class="okbox" x="315" y="30" width="250" height="70" rx="12"/><text x="440" y="58" text-anchor="middle">2. Microtarefas (todas)</text><text x="440" y="80" text-anchor="middle" class="small">.then, await, queueMicrotask</text>
+    <line class="ar" x1="565" y1="65" x2="635" y2="65" marker-end="url(#m31)"/>
+    <rect class="accbox" x="640" y="30" width="230" height="70" rx="12"/><text x="755" y="58" text-anchor="middle">3. Uma tarefa</text><text x="755" y="80" text-anchor="middle" class="small">setTimeout, I/O, eventos</text>
+    <text x="440" y="132" text-anchor="middle" class="small">depois de cada tarefa, esvazia de novo as microtarefas</text>
+  </svg>
+  <div class="two">
+    <div><pre><code>console.log("A");
+setTimeout(() =&gt; console.log("B"), 0);
+Promise.resolve()
+  .then(() =&gt; console.log("C"));
+console.log("D");</code></pre><div class="out">A  D  C  B</div></div>
+    <div><pre><code>async function f() {
+  console.log(1);
+  await null;  <span class="c">// resto vira microtarefa</span>
+  console.log(2);
+}
+f(); console.log(3);</code></pre><div class="out">1  3  2</div></div>
+  </div>
+  <div class="say trap"><span class="pill ng">✗</span> “<code>setTimeout(fn, 0)</code> executa imediatamente.” → espera o síncrono terminar e as microtarefas (Promises) esvaziarem.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PROMISES</span>
+  <h2>Combinar várias Promises</h2>
+  <pre><code>const ok   = (v, ms) =&gt; new Promise(r =&gt; setTimeout(() =&gt; r(v), ms));
+const erro = ms =&gt; new Promise((_, rej) =&gt; setTimeout(() =&gt; rej("falhou"), ms));
+
+async function main() {
+  try {
+    const [a, b] = await Promise.all([ok(1, 100), ok(2, 50)]);
+    console.log(a, b);                     <span class="r">// 1 2 (ordem do array, não do tempo)</span>
+    await Promise.all([ok(1, 100), erro(10)]);
+  } catch (e) { console.log("capturado:", e); }   <span class="r">// capturado: falhou</span>
+}
+main();</code></pre>
+  <table class="cmp mini">
+    <tr><th>Método</th><th>Cumpre quando…</th><th>Rejeita quando…</th></tr>
+    <tr><td><b>Promise.all</b></td><td>todas cumprem</td><td>a <b>primeira</b> rejeita</td></tr>
+    <tr><td><b>Promise.allSettled</b></td><td>todas terminam (sucesso ou erro)</td><td>nunca</td></tr>
+    <tr><td><b>Promise.race</b></td><td>a primeira a terminar cumpre</td><td>a primeira a terminar rejeita</td></tr>
+    <tr><td><b>Promise.any</b></td><td>a primeira cumpre</td><td>todas rejeitam (AggregateError)</td></tr>
+  </table>
+</div>
+
+<div class="slide">
+  <span class="tag">TYPESCRIPT</span>
+  <h2>TS = JS + tipos que somem na compilação</h2>
+  <svg viewBox="0 0 880 100" role="img" aria-label="tsc verifica tipos e gera JavaScript sem tipos">
+    <defs><marker id="m32" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arh"/></marker></defs>
+    <rect class="accbox" x="20" y="20" width="220" height="56" rx="12"/><text x="130" y="53" text-anchor="middle">arquivo .ts</text>
+    <line class="ar" x1="240" y1="48" x2="340" y2="48" marker-end="url(#m32)"/>
+    <rect class="keybox" x="345" y="20" width="200" height="56" rx="12"/><text x="445" y="45" text-anchor="middle" class="kt">tsc</text><text x="445" y="65" text-anchor="middle" class="kt" style="font-size:13px">checa tipos · apaga tipos</text>
+    <line class="ar" x1="545" y1="48" x2="645" y2="48" marker-end="url(#m32)"/>
+    <rect class="okbox" x="650" y="20" width="210" height="56" rx="12"/><text x="755" y="53" text-anchor="middle">arquivo .js</text>
+  </svg>
+  <div class="two">
+    <div><h4>TypeScript</h4><pre><code>function soma(a: number, b: number): number {
+  return a + b;
+}
+soma(1, "2");  <span class="e">// erro de COMPILAÇÃO</span></code></pre></div>
+    <div><h4>JavaScript gerado</h4><pre><code>function soma(a, b) {
+  return a + b;
+}
+<span class="c">// nenhum tipo sobrou</span></code></pre></div>
+  </div>
+  <pre><code>interface Pessoa { nome: string }
+class Juiz { nome = "Ana"; vara = 1 }
+const p: Pessoa = new Juiz();   <span class="r">// ok: tipagem ESTRUTURAL (tem 'nome', serve)</span></code></pre>
+  <div class="say law">TypeScript é um superconjunto tipado do JavaScript. A checagem é <b>estática</b>; os tipos são <b>apagados</b> e não existem em tempo de execução. A compatibilidade é <b>estrutural</b> (pela forma), não nominal.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">TIPOS DO TS</span>
+  <h2>union, literal, generics, unknown e utilitários</h2>
+  <pre><code>type Status = "ativo" | "baixado";            <span class="c">// união de literais</span>
+function primeiro&lt;T&gt;(xs: T[]): T | undefined { return xs[0]; }
+primeiro([10, 20]);                           <span class="r">// 10 (T inferido como number)</span>
+
+let a: any = "oi";     a.voa();               <span class="c">// compila (any desliga a checagem)</span>
+let u: unknown = "oi"; u.toUpperCase();       <span class="e">// erro: precisa estreitar antes</span>
+if (typeof u === "string") u.toUpperCase();   <span class="r">// ok (narrowing)</span></code></pre>
+  <table class="cmp mini">
+    <tr><th>Utilitário</th><th>Faz</th><th>Exemplo com <code>Proc {id; numero; vara}</code></th></tr>
+    <tr><td><b>Partial&lt;T&gt;</b></td><td>tudo opcional</td><td>útil para atualização parcial</td></tr>
+    <tr><td><b>Readonly&lt;T&gt;</b></td><td>tudo somente leitura</td><td>impede <code>p.id = 2</code></td></tr>
+    <tr><td><b>Pick&lt;T,K&gt;</b> / <b>Omit&lt;T,K&gt;</b></td><td>escolhe / remove campos</td><td><code>Omit&lt;Proc, "id"&gt;</code> = {numero; vara}</td></tr>
+    <tr><td><b>Record&lt;K,V&gt;</b></td><td>objeto de chaves K e valores V</td><td><code>Record&lt;Status, number&gt;</code></td></tr>
+  </table>
+  <div class="say trap"><span class="pill ng">✗</span> “<code>unknown</code> e <code>any</code> são iguais.” → <code>any</code> aceita tudo sem checar; <code>unknown</code> aceita qualquer valor, mas <b>obriga</b> verificar o tipo antes de usar.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">NODE.JS</span>
+  <h2>JavaScript no servidor: V8 + libuv</h2>
+  <svg viewBox="0 0 880 135" role="img" aria-label="Node: seu código, event loop, libuv com thread pool">
+    <defs><marker id="m33" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arh"/></marker></defs>
+    <rect class="accbox" x="10" y="15" width="200" height="56" rx="12"/><text x="110" y="40" text-anchor="middle">seu código JS</text><text x="110" y="59" text-anchor="middle" class="small">executado pelo V8</text>
+    <line class="ar" x1="210" y1="43" x2="290" y2="43" marker-end="url(#m33)"/>
+    <rect class="keybox" x="295" y="15" width="230" height="56" rx="12"/><text x="410" y="40" text-anchor="middle" class="kt">event loop</text><text x="410" y="59" text-anchor="middle" class="kt" style="font-size:13px">1 thread para o JS</text>
+    <line class="ar" x1="525" y1="43" x2="605" y2="43" marker-end="url(#m33)"/>
+    <rect class="okbox" x="610" y="15" width="260" height="56" rx="12"/><text x="740" y="40" text-anchor="middle">libuv</text><text x="740" y="59" text-anchor="middle" class="small">I/O assíncrono do SO + thread pool</text>
+    <text x="740" y="96" text-anchor="middle" class="small">pool (padrão 4): fs, crypto, zlib, dns.lookup</text>
+    <text x="410" y="96" text-anchor="middle" class="small">ótimo para muito I/O; cálculo pesado trava tudo</text>
+    <text x="410" y="116" text-anchor="middle" class="small">→ use worker_threads para CPU</text>
+  </svg>
+  <div class="two">
+    <div><h4>CommonJS</h4><pre><code>const fs = require("fs");
+module.exports = { soma };</code></pre></div>
+    <div><h4>ES Modules (<code>"type":"module"</code> ou .mjs)</h4><pre><code>import fs from "fs";
+export function soma() {}</code></pre></div>
+  </div>
+  <pre><code>setTimeout(() =&gt; console.log("timeout"), 0);
+Promise.resolve().then(() =&gt; console.log("promise"));
+process.nextTick(() =&gt; console.log("nextTick"));
+console.log("sync");                      <span class="c">// executado como script CommonJS</span></code></pre>
+  <div class="out">sync  nextTick  promise  timeout</div>
+  <div class="say law">Node.js é um runtime JavaScript fora do navegador, baseado no V8, orientado a eventos e com <b>I/O não bloqueante</b>. <code>package.json</code> lista <code>dependencies</code> (produção) e <code>devDependencies</code> (desenvolvimento); <code>package-lock.json</code> fixa as versões exatas.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>O que levar para a prova</h2>
+  <div class="magic">Pergunta mágica: “Isso acontece na compilação, no síncrono, na microtarefa ou na tarefa?”<small>Tipos TS: só compilação. Ordem: síncrono → microtarefas (Promise) → tarefas (setTimeout).</small></div>
+  <ul class="checklist">
+    <li><code>var</code> = escopo de função e hoisting com undefined; <code>let/const</code> = bloco e TDZ.</li>
+    <li><code>const</code> não congela objeto. <code>===</code> não converte tipos.</li>
+    <li>Falsy: false, 0, -0, 0n, "", null, undefined, NaN. <code>??</code> só troca null/undefined.</li>
+    <li>Arrow function: <code>this</code> léxico. Closure lembra o escopo de criação.</li>
+    <li>Promise.all falha na 1ª rejeição; allSettled espera todas.</li>
+    <li>TS: estrutural, tipos apagados; <code>unknown</code> exige narrowing.</li>
+    <li>Node: 1 thread de JS + libuv; ótimo para I/O, ruim para CPU pesada.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Estilo FGV: resolva antes de abrir</h2>
+  <details><summary>1. Saída de: <code>console.log(1); setTimeout(()=&gt;console.log(2)); Promise.resolve().then(()=&gt;console.log(3)); console.log(4);</code></summary><p><b>1 4 3 2.</b> Primeiro o síncrono (1, 4), depois a microtarefa da Promise (3), por fim a tarefa do setTimeout (2).</p></details>
+  <details><summary>2. Quanto vale <code>0 || 5</code> e <code>0 ?? 5</code>?</summary><p><b>5 e 0.</b> <code>||</code> substitui qualquer falsy (0 é falsy); <code>??</code> só substitui null ou undefined.</p></details>
+  <details><summary>3. “Anotações de tipo do TypeScript impedem, em tempo de execução, que uma string vinda de um JSON externo chegue a um parâmetro number.” Certo?</summary><p><b>Errado.</b> Os tipos são apagados na compilação. Dados externos precisam de validação em tempo de execução (checagens manuais ou bibliotecas de schema).</p></details>
+  <details><summary>4. Por que um laço de cálculo pesado em uma rota Node.js deixa as outras requisições lentas?</summary><p>Porque o JavaScript roda numa <b>única thread</b> do event loop; enquanto ela calcula, nenhum callback é atendido. Solução: <code>worker_threads</code>, processos separados ou outro serviço.</p></details>
+</div>
+</section>
+
+<!-- ===================================================== CAPÍTULO 4 ===================================================== -->
+<section class="chapter" data-title="Angular e React">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 4</span>
+  <h1>Angular e React</h1>
+  <span class="emoji">⚛️</span>
+  <div class="steps">
+    <div class="step"><b>1. Visão geral</b><span>Framework completo × biblioteca de UI.</span></div>
+    <div class="step"><b>2. Angular</b><span>Componentes, bindings, ciclo de vida, serviços, RxJS, signals.</span></div>
+    <div class="step"><b>3. React</b><span>JSX, props, estado, hooks, useEffect.</span></div>
+    <div class="step"><b>4. Pegadinhas</b><span>Estado “atrasado”, mutação, keys, regras dos hooks.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🏠</span><div><b>Analogia do dia:</b> o <b>Angular</b> é uma casa <b>entregue mobiliada</b>: rotas, formulários, HTTP e injeção de dependência já vêm de fábrica. O <b>React</b> é um <b>kit de cômodos</b> excelente; os móveis (rotas, estado global, HTTP) você escolhe na loja.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">COMPARATIVO</span>
+  <h2>Angular × React lado a lado</h2>
+  <table class="cmp mini">
+    <tr><th></th><th>Angular</th><th>React</th></tr>
+    <tr><td><b>O que é</b></td><td>framework completo (Google)</td><td>biblioteca de interface (Meta)</td></tr>
+    <tr><td><b>Linguagem</b></td><td>TypeScript</td><td>JavaScript ou TypeScript, com <b>JSX</b></td></tr>
+    <tr><td><b>Template</b></td><td>HTML com sintaxe própria (<code>{{ }}</code>, <code>[ ]</code>, <code>( )</code>)</td><td>JSX: “HTML” dentro do JS</td></tr>
+    <tr><td><b>Fluxo de dados</b></td><td>unidirecional + two-way opcional <code>[(ngModel)]</code></td><td>unidirecional (props descem, callbacks sobem)</td></tr>
+    <tr><td><b>Injeção de dependência</b></td><td class="hk">nativa (<code>@Injectable</code>)</td><td>não tem; usa Context/props</td></tr>
+    <tr><td><b>Rotas, HTTP, formulários</b></td><td class="hk">incluídos (Router, HttpClient, Forms)</td><td>bibliotecas à parte (ex.: React Router)</td></tr>
+    <tr><td><b>Reatividade</b></td><td>detecção de mudanças, RxJS, Signals</td><td>estado → nova renderização; Virtual DOM</td></tr>
+    <tr><td><b>CLI</b></td><td><code>ng new</code>, <code>ng generate component</code></td><td>ferramentas de build variadas (ex.: Vite)</td></tr>
+  </table>
+  <div class="say trap"><span class="pill ng">✗</span> “React é um framework MVC completo com injeção de dependência nativa.” → React se define como <b>biblioteca</b> para construir interfaces; DI nativa é marca do <b>Angular</b>.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ANGULAR: COMPONENTE</span>
+  <h2>Classe + template + estilo</h2>
+  <svg viewBox="0 0 880 110" role="img" aria-label="componente angular: decorator junta classe, template e estilos">
+    <defs><marker id="m41" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arh"/></marker></defs>
+    <rect class="box" x="20" y="10" width="200" height="40" rx="10"/><text x="120" y="35" text-anchor="middle">classe TS (dados, lógica)</text>
+    <rect class="box" x="20" y="60" width="200" height="40" rx="10"/><text x="120" y="85" text-anchor="middle">template HTML + CSS</text>
+    <line class="ar" x1="220" y1="30" x2="330" y2="50" marker-end="url(#m41)"/>
+    <line class="ar" x1="220" y1="80" x2="330" y2="62" marker-end="url(#m41)"/>
+    <rect class="keybox" x="335" y="30" width="200" height="50" rx="12"/><text x="435" y="60" text-anchor="middle" class="kt">@Component</text>
+    <line class="ar" x1="535" y1="55" x2="625" y2="55" marker-end="url(#m41)"/>
+    <rect class="okbox" x="630" y="30" width="230" height="50" rx="12"/><text x="745" y="60" text-anchor="middle">&lt;app-contador&gt; na tela</text>
+  </svg>
+  <pre><code>@Component({
+  selector: 'app-contador',
+  standalone: true,
+  template: `&lt;button (click)="inc()"&gt;{{ total }}&lt;/button&gt;`
+})
+export class ContadorComponent implements OnInit {
+  @Input() inicio = 0;                  <span class="c">// dado vindo do pai</span>
+  @Output() mudou = new EventEmitter&lt;number&gt;();   <span class="c">// evento para o pai</span>
+  total = 0;
+  ngOnInit() { this.total = this.inicio; }        <span class="c">// inputs já disponíveis</span>
+  inc() { this.total++; this.mudou.emit(this.total); }
+}</code></pre>
+  <pre><code>&lt;app-contador [inicio]="5" (mudou)="log($event)"&gt;&lt;/app-contador&gt;   <span class="r">// mostra 5; clique → 6</span></code></pre>
+</div>
+
+<div class="slide">
+  <span class="tag">ANGULAR: DATA BINDING</span>
+  <h2>Quatro setas entre classe e tela</h2>
+  <svg viewBox="0 0 880 210" role="img" aria-label="interpolação e property binding vão da classe para a view; event binding volta; two-way nos dois sentidos">
+    <defs>
+      <marker id="m42" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arh"/></marker>
+      <marker id="m43" markerWidth="10" markerHeight="10" refX="1" refY="5" orient="auto"><path d="M10,0 L0,5 L10,10 z" class="arh"/></marker>
+    </defs>
+    <rect class="accbox" x="20" y="10" width="170" height="190" rx="14"/><text x="105" y="110" text-anchor="middle">Classe</text>
+    <rect class="okbox" x="690" y="10" width="170" height="190" rx="14"/><text x="775" y="110" text-anchor="middle">Template (DOM)</text>
+    <line class="ar" x1="190" y1="40" x2="686" y2="40" marker-end="url(#m42)"/><text x="440" y="32" text-anchor="middle">{{ valor }}  interpolação</text>
+    <line class="ar" x1="190" y1="88" x2="686" y2="88" marker-end="url(#m42)"/><text x="440" y="80" text-anchor="middle">[disabled]="x"  property binding</text>
+    <line class="ar" x1="686" y1="136" x2="194" y2="136" marker-end="url(#m42)"/><text x="440" y="128" text-anchor="middle">(click)="f()"  event binding</text>
+    <line class="ar" x1="196" y1="184" x2="684" y2="184" marker-start="url(#m43)" marker-end="url(#m42)"/><text x="440" y="176" text-anchor="middle">[(ngModel)]="nome"  two-way (“banana na caixa”)</text>
+  </svg>
+  <div class="say law"><code>[(x)]</code> é açúcar sintático para <code>[x]</code> + <code>(xChange)</code>. <code>ngModel</code> exige o <code>FormsModule</code>. Diretivas: <b>componentes</b>, <b>estruturais</b> (mudam o DOM: <code>*ngIf</code>, <code>*ngFor</code>) e <b>de atributo</b> (mudam aparência/comportamento: <code>ngClass</code>, <code>ngStyle</code>).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ANGULAR: CICLO DE VIDA</span>
+  <h2>A ordem dos hooks</h2>
+  <svg viewBox="0 0 880 150" role="img" aria-label="ordem dos lifecycle hooks do Angular">
+    <defs><marker id="m44" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arh"/></marker></defs>
+    <g text-anchor="middle">
+      <rect class="box" x="5" y="20" width="120" height="40" rx="10"/><text x="65" y="45">constructor</text>
+      <rect class="keybox" x="150" y="20" width="130" height="40" rx="10"/><text x="215" y="45" class="kt">ngOnChanges</text>
+      <rect class="keybox" x="305" y="20" width="110" height="40" rx="10"/><text x="360" y="45" class="kt">ngOnInit</text>
+      <rect class="box" x="440" y="20" width="110" height="40" rx="10"/><text x="495" y="45">ngDoCheck</text>
+      <rect class="box" x="575" y="20" width="140" height="40" rx="10"/><text x="645" y="45" style="font-size:13px">ngAfterContentInit</text>
+      <rect class="box" x="740" y="20" width="135" height="40" rx="10"/><text x="807" y="45" style="font-size:13px">ngAfterViewInit</text>
+      <rect class="badbox" x="740" y="95" width="135" height="40" rx="10"/><text x="807" y="120">ngOnDestroy</text>
+      <text x="215" y="80" class="small">inputs mudaram</text><text x="360" y="80" class="small">1 vez, após 1º</text><text x="360" y="96" class="small">ngOnChanges</text>
+      <text x="807" y="80" class="small">view filha pronta</text><text x="560" y="120" class="small">limpar: unsubscribe, timers →</text>
+    </g>
+    <line class="ar" x1="125" y1="40" x2="146" y2="40" marker-end="url(#m44)"/><line class="ar" x1="280" y1="40" x2="301" y2="40" marker-end="url(#m44)"/>
+    <line class="ar" x1="415" y1="40" x2="436" y2="40" marker-end="url(#m44)"/><line class="ar" x1="550" y1="40" x2="571" y2="40" marker-end="url(#m44)"/>
+    <line class="ar" x1="715" y1="40" x2="736" y2="40" marker-end="url(#m44)"/>
+  </svg>
+  <p class="mini">Depois de cada <code>AfterContentInit</code>/<code>AfterViewInit</code> vêm os “Checked” (<code>ngAfterContentChecked</code>, <code>ngAfterViewChecked</code>), repetidos a cada verificação de mudanças.</p>
+  <div class="say trap"><span class="pill ng">✗</span> “O lugar ideal para ler <code>@Input</code> e buscar dados é o construtor.” → no construtor os inputs ainda <b>não</b> chegaram; use <b>ngOnInit</b>. <span class="pill ng">✗</span> “<code>ngOnInit</code> roda a cada mudança de input.” → isso é <b>ngOnChanges</b>; ngOnInit roda <b>uma vez</b>.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ANGULAR: SERVIÇOS, RXJS, SIGNALS</span>
+  <h2>Dados compartilhados e reatividade</h2>
+  <pre><code>@Injectable({ providedIn: 'root' })            <span class="c">// um único serviço para a app toda</span>
+export class ProcessoService {
+  private http = inject(HttpClient);
+  listar() { return this.http.get&lt;Processo[]&gt;('/api/processos'); }   <span class="c">// Observable</span>
+}
+<span class="c">// no componente:</span>
+this.svc.listar().subscribe(ps =&gt; this.lista = ps);  <span class="c">// sem subscribe (ou pipe async), nada é requisitado</span>
+
+contador = signal(0);
+dobro = computed(() =&gt; this.contador() * 2);
+this.contador.set(5);                         <span class="r">// dobro() === 10</span></code></pre>
+  <div class="two">
+    <div><h4>Sintaxe antiga (diretivas)</h4><pre><code>&lt;li *ngFor="let p of ps"&gt;{{ p.numero }}&lt;/li&gt;
+&lt;p *ngIf="vazio"&gt;Nada&lt;/p&gt;</code></pre></div>
+    <div><h4>Controle de fluxo nativo (v17+)</h4><pre><code>@for (p of ps; track p.id) { &lt;li&gt;{{ p.numero }}&lt;/li&gt; }
+@if (vazio) { &lt;p&gt;Nada&lt;/p&gt; }</code></pre></div>
+  </div>
+  <div class="say law">O <code>HttpClient</code> devolve <b>Observable</b> (RxJS), que é <b>frio</b>: a requisição só sai quando alguém se inscreve. <b>Pipes</b> transformam valores no template: <code>{{ data | date:'dd/MM/yyyy' }}</code>. Formulários: <b>template-driven</b> (ngModel) ou <b>reativos</b> (FormGroup/FormControl).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">REACT: COMPONENTE</span>
+  <h2>Função que recebe props e devolve JSX</h2>
+  <div class="two">
+    <div><pre><code>function Contador({ inicio }) {
+  const [n, setN] = useState(inicio);
+  return (
+    &lt;button onClick={() =&gt; setN(n + 1)}&gt;
+      {n}
+    &lt;/button&gt;
+  );
+}
+
+&lt;Contador inicio={5} /&gt;</code></pre><div class="out">mostra 5; clique → 6</div></div>
+    <div>
+      <svg viewBox="0 0 360 230" role="img" aria-label="props descem do pai para o filho, eventos sobem via callback">
+        <defs><marker id="m45" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arh"/></marker></defs>
+        <rect class="keybox" x="100" y="10" width="160" height="44" rx="10"/><text x="180" y="38" text-anchor="middle" class="kt">Pai (tem o estado)</text>
+        <rect class="okbox" x="100" y="170" width="160" height="44" rx="10"/><text x="180" y="198" text-anchor="middle">Filho</text>
+        <line class="ar" x1="140" y1="54" x2="140" y2="166" marker-end="url(#m45)"/><text x="132" y="116" text-anchor="end" class="small">props (só leitura)</text>
+        <line class="ar" x1="220" y1="170" x2="220" y2="58" marker-end="url(#m45)"/><text x="228" y="116" class="small">callback onX()</text>
+      </svg>
+    </div>
+  </div>
+  <div class="say law">Em React, a interface é função do estado: <b>UI = f(estado)</b>. <b>Props</b> são entradas somente leitura vindas do pai; <b>estado</b> (<code>useState</code>) é memória do próprio componente; mudar o estado agenda nova renderização. Para dois irmãos compartilharem dados, <b>eleve o estado</b> ao pai comum.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">REACT: ESTADO</span>
+  <h2>As duas pegadinhas de estado</h2>
+  <div class="tables">
+    <div class="tbox"><h4><span class="pill ng">✗ soma só 1</span></h4><pre><code>function mais2() {
+  setN(n + 1);   <span class="c">// n ainda é 0</span>
+  setN(n + 1);   <span class="c">// n ainda é 0</span>
+}                <span class="e">// resultado: 1</span></code></pre></div>
+    <div class="tbox"><h4><span class="pill ok">✓ soma 2</span></h4><pre><code>function mais2() {
+  setN(c =&gt; c + 1);
+  setN(c =&gt; c + 1);
+}                <span class="r">// resultado: 2</span></code></pre></div>
+    <div class="tbox"><h4><span class="pill ng">✗ tela não atualiza</span></h4><pre><code>lista.push(novo);
+setLista(lista);   <span class="c">// mesma referência</span></code></pre></div>
+    <div class="tbox"><h4><span class="pill ok">✓ novo array</span></h4><pre><code>setLista([...lista, novo]);</code></pre></div>
+  </div>
+  <div class="say trap">O valor de <code>n</code> é uma “foto” daquela renderização; <code>setN</code> não muda a variável na hora, <b>agenda</b> a atualização (e o React agrupa várias, o <i>batching</i>). Use a <b>forma funcional</b> quando o novo valor depende do anterior e <b>nunca mute</b> o estado: crie objetos/arrays novos.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">REACT: HOOKS</span>
+  <h2>useEffect e as regras dos hooks</h2>
+  <pre><code>useEffect(() =&gt; {
+  const id = setInterval(tick, 1000);
+  return () =&gt; clearInterval(id);       <span class="c">// limpeza: antes de rodar de novo e ao desmontar</span>
+}, [velocidade]);                       <span class="c">// array de dependências</span></code></pre>
+  <table class="mini">
+    <tr><th>Dependências</th><th>Quando o efeito roda</th></tr>
+    <tr><td>sem array</td><td>depois de <b>toda</b> renderização</td></tr>
+    <tr><td><code>[]</code></td><td>só depois da montagem (uma vez*)</td></tr>
+    <tr><td><code>[a, b]</code></td><td>na montagem e quando <code>a</code> ou <code>b</code> mudarem</td></tr>
+  </table>
+  <p class="mini">* Em desenvolvimento, o <code>StrictMode</code> monta, desmonta e monta de novo para revelar efeitos sem limpeza.</p>
+  <div class="two">
+    <table class="cmp mini">
+      <tr><th>Hook</th><th>Para quê</th></tr>
+      <tr><td>useMemo</td><td>memoriza um <b>valor</b> calculado</td></tr>
+      <tr><td>useCallback</td><td>memoriza uma <b>função</b></td></tr>
+      <tr><td>useRef</td><td>valor mutável que não re-renderiza; acesso ao DOM</td></tr>
+      <tr><td>useContext</td><td>lê dado global sem “prop drilling”</td></tr>
+    </table>
+    <div class="say law">Regras: chame hooks <b>só no nível superior</b> (nunca dentro de <code>if</code>, laço ou função aninhada) e <b>só</b> em componentes de função ou hooks customizados (<code>useAlgo</code>). O React identifica cada hook pela <b>ordem</b> de chamada.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">REACT: VIRTUAL DOM E KEYS</span>
+  <h2>Comparar duas árvores e mudar só o necessário</h2>
+  <svg viewBox="0 0 880 150" role="img" aria-label="nova árvore virtual comparada com a anterior; só a diferença vai ao DOM real">
+    <defs><marker id="m46" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arh"/></marker></defs>
+    <rect class="box" x="10" y="40" width="170" height="60" rx="12"/><text x="95" y="66" text-anchor="middle">estado mudou</text><text x="95" y="86" text-anchor="middle" class="small">setN(6)</text>
+    <line class="ar" x1="180" y1="70" x2="245" y2="70" marker-end="url(#m46)"/>
+    <rect class="accbox" x="250" y="40" width="190" height="60" rx="12"/><text x="345" y="66" text-anchor="middle">render: nova árvore</text><text x="345" y="86" text-anchor="middle" class="small">virtual (objetos JS)</text>
+    <line class="ar" x1="440" y1="70" x2="505" y2="70" marker-end="url(#m46)"/>
+    <rect class="keybox" x="510" y="40" width="160" height="60" rx="12"/><text x="590" y="66" text-anchor="middle" class="kt">diff</text><text x="590" y="86" text-anchor="middle" class="kt" style="font-size:13px">reconciliação</text>
+    <line class="ar" x1="670" y1="70" x2="735" y2="70" marker-end="url(#m46)"/>
+    <rect class="okbox" x="740" y="40" width="130" height="60" rx="12"/><text x="805" y="66" text-anchor="middle">DOM real</text><text x="805" y="86" text-anchor="middle" class="small">só o “5”→“6”</text>
+  </svg>
+  <div class="tables">
+    <div class="tbox"><h4><span class="pill ng">✗ índice como key (lista que reordena)</span></h4><pre><code>{ps.map((p, i) =&gt; &lt;Item key={i} p={p} /&gt;)}</code></pre></div>
+    <div class="tbox"><h4><span class="pill ok">✓ id estável</span></h4><pre><code>{ps.map(p =&gt; &lt;Item key={p.id} p={p} /&gt;)}</code></pre></div>
+  </div>
+  <div class="say law">A <b>key</b> diz ao React qual item é qual entre renderizações. Deve ser <b>única entre irmãos</b> e <b>estável</b>. Usar o índice numa lista que muda de ordem pode misturar o estado dos itens.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>O que levar para a prova</h2>
+  <div class="magic">Pergunta mágica: “Quem é dono do dado, e por qual seta ele anda?”<small>Angular: {{ }} e [ ] descem, ( ) sobe, [( )] vai e volta. React: props descem, callbacks sobem.</small></div>
+  <ul class="checklist">
+    <li>Angular = framework completo em TS, com DI, Router, HttpClient e Forms.</li>
+    <li>Hooks Angular: ngOnChanges → ngOnInit (1 vez) → … → ngOnDestroy.</li>
+    <li><code>providedIn: 'root'</code> = serviço singleton; HttpClient devolve Observable frio.</li>
+    <li>React = biblioteca; JSX; props só leitura; estado com useState.</li>
+    <li>setState agenda; use forma funcional; nunca mute estado.</li>
+    <li>useEffect: sem array / [] / [deps]; retorne a limpeza.</li>
+    <li>Hooks só no topo; keys estáveis e únicas.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Estilo FGV: resolva antes de abrir</h2>
+  <details><summary>1. Em Angular, qual sintaxe liga o evento de clique a um método?</summary><p><b><code>(click)="salvar()"</code></b> (event binding). <code>[ ]</code> é property binding; <code>[( )]</code> é two-way; <code>{{ }}</code> é interpolação.</p></details>
+  <details><summary>2. Com <code>n = 0</code>, o handler executa <code>setN(n+1); setN(n+1); setN(n+1);</code>. Qual o valor após a renderização?</summary><p><b>1.</b> As três chamadas leem o mesmo <code>n</code> (0). Com <code>setN(c =&gt; c + 1)</code> três vezes, o resultado seria 3.</p></details>
+  <details><summary>3. Um <code>useEffect</code> com array de dependências vazio <code>[]</code> roda quando?</summary><p><b>Após a montagem</b> do componente (uma vez em produção). Sua função de retorno roda na desmontagem.</p></details>
+  <details><summary>4. “Em Angular, ler um @Input dentro do construtor é a forma recomendada de inicializar o componente.” Certo?</summary><p><b>Errado.</b> Os inputs só estão disponíveis a partir de <code>ngOnChanges</code>/<code>ngOnInit</code>. O construtor deve ficar para injeção de dependências.</p></details>
+</div>
+</section>
+
+<!-- ===================================================== CAPÍTULO 5 ===================================================== -->
+<section class="chapter" data-title="Python (FastAPI e Django), Dart e Flutter">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 5</span>
+  <h1>Python, Dart e Flutter</h1>
+  <span class="emoji">🐍</span>
+  <div class="steps">
+    <div class="step"><b>1. Django (MTV)</b><span>Baterias inclusas, ORM próprio e templates no servidor.</span></div>
+    <div class="step"><b>2. FastAPI</b><span>APIs assíncronas rápidas com type hints e Pydantic.</span></div>
+    <div class="step"><b>3. Dart</b><span>Null safety, <code>final</code>/<code>const</code> e <code>Future</code>/<code>Stream</code>.</span></div>
+    <div class="step"><b>4. Flutter</b><span>Tudo é Widget, ciclo de vida, layout, rotas e estado.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🧰</span><div><b>Analogia do dia:</b> o <b>Django</b> é um kit completo de cozinha industrial (já vem com fogão, panela e estoque). O <b>FastAPI</b> é um food truck moderno e ágil: foca só em entregar pedidos via API na velocidade máxima. Já o <b>Flutter</b> é o salão colorido onde cada cadeira e placa é um <b>Widget</b> desenhado pelo Dart.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">PYTHON: DJANGO MTV</span>
+  <h2>No Django, a View não é a tela!</h2>
+  <p class="lead">O Django segue o padrão <b>MTV</b> (Model – Template – View), equivalente ao MVC tradicional, mas com nomes trocados.</p>
+  <svg viewBox="0 0 880 185" role="img" aria-label="Fluxo MTV do Django: URLs direcionam para View, que consulta Model e renderiza Template">
+    <defs><marker id="m51" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arh"/></marker></defs>
+    <rect class="box" x="15" y="55" width="145" height="68" rx="12"/><text x="87" y="84" text-anchor="middle">Requisição</text><text x="87" y="104" text-anchor="middle" class="small">urls.py (rota)</text>
+    <line class="ar" x1="160" y1="89" x2="225" y2="89" marker-end="url(#m51)"/>
+    <rect class="accbox" x="230" y="55" width="185" height="68" rx="12"/><text x="322" y="84" text-anchor="middle">View (Python)</text><text x="322" y="104" text-anchor="middle" class="small">lógica = Controller</text>
+    <line class="ar" x1="415" y1="74" x2="485" y2="48" marker-end="url(#m51)"/>
+    <line class="ar" x1="415" y1="104" x2="485" y2="132" marker-end="url(#m51)"/>
+    <rect class="okbox" x="490" y="14" width="175" height="60" rx="12"/><text x="577" y="40" text-anchor="middle">Model (ORM)</text><text x="577" y="59" text-anchor="middle" class="small">dados + migrations</text>
+    <rect class="keybox" x="490" y="106" width="175" height="60" rx="12"/><text x="577" y="132" text-anchor="middle" class="kt">Template (HTML)</text><text x="577" y="151" text-anchor="middle" class="kt" style="font-size:13px">apresentação = View</text>
+    <line class="ar" x1="665" y1="136" x2="730" y2="89" marker-end="url(#m51)"/>
+    <rect class="box" x="735" y="55" width="130" height="68" rx="12"/><text x="800" y="84" text-anchor="middle">Resposta</text><text x="800" y="104" text-anchor="middle" class="small">HTML ou JSON</text>
+  </svg>
+  <div class="say law"><b>MTV no Django:</b> <b>Model</b> = camada de dados/ORM; <b>Template</b> = camada de apresentação (HTML); <b>View</b> = função/classe Python que recebe a requisição e decide o que devolver (papel do <i>Controller</i> no MVC).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PYTHON: FASTAPI VS DJANGO</span>
+  <h2>Quando escolher FastAPI ou Django?</h2>
+  <table class="cmp mini">
+    <tr><th>Critério</th><th>Django</th><th>FastAPI</th></tr>
+    <tr><td><b>Estilo</b></td><td>Full-stack (“baterias inclusas”)</td><td>Microframework focado em APIs</td></tr>
+    <tr><td><b>Base</b></td><td>WSGI (padrão) ou ASGI</td><td>ASGI nativo (Starlette + Uvicorn)</td></tr>
+    <tr><td><b>Validação</b></td><td>Forms / ModelForms (ou DRF)</td><td><b>Pydantic</b> + <i>type hints</i> do Python</td></tr>
+    <tr><td><b>Docs API</b></td><td>Exige pacotes (ex.: drf-spectacular)</td><td><b>OpenAPI / Swagger</b> automático</td></tr>
+    <tr><td><b>Banco / Admin</b></td><td>ORM próprio, migrations e Admin prontos</td><td>Agnóstico (você escolhe SQLAlchemy etc.)</td></tr>
+  </table>
+  <pre><code><span class="c"># FastAPI: type hints validam entrada, geram Swagger e injetam dependências</span>
+<span class="kw">@app.get</span>(<span class="r">"/processos/{num}"</span>)
+<span class="kw">async def</span> buscar(num: <mark>int</mark>, db = <mark>Depends(get_db)</mark>):
+    <span class="kw">return</span> {<span class="r">"numero"</span>: num}</code></pre>
+</div>
+
+<div class="slide">
+  <span class="tag">PYTHON: PEGADINHAS</span>
+  <h2>Event loop do FastAPI e QuerySet lazy do Django</h2>
+  <div class="two">
+    <div class="card">
+      <h4>⚡ FastAPI: <code>async def</code> vs <code>def</code></h4>
+      <p>Funções <code>async def</code> rodam direto no <b>event loop</b>. Se você colocar uma chamada de banco síncrona (bloqueante) lá dentro, trava todas as requisições!</p>
+      <p class="ex ok">Use <code>async def</code> só com I/O assíncrono (<code>await</code>).</p>
+      <p class="ex ok">Se a lib for síncrona, declare <code>def</code> normal: o FastAPI joga para uma <i>threadpool</i>.</p>
+    </div>
+    <div class="card">
+      <h4>🐢 Django ORM: <i>Lazy</i> e N+1</h4>
+      <p>Um <code>QuerySet</code> é <b>preguiçoso (lazy)</b>: criar o filtro não consulta o banco; só executa quando você itera, fatia ou chama <code>list()</code>.</p>
+      <p><b>Para evitar N+1 queries:</b></p>
+      <ul>
+        <li><code>select_related()</code> → 1:1 e ForeignKey (faz <b>SQL JOIN</b>).</li>
+        <li><code>prefetch_related()</code> → M2M e reversos (faz 2 queries e junta em Python).</li>
+      </ul>
+    </div>
+  </div>
+  <div class="say trap">A banca adora trocar <code>select_related</code> (JOIN no SQL para relação única) com <code>prefetch_related</code> (consultas separadas para coleções/M2M), ou dizer que <code>QuerySet</code> executa SQL na linha em que <code>filter()</code> é chamado.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">DART ESSENCIAL</span>
+  <h2>Null safety, imutabilidade e assincronia</h2>
+  <table class="cmp mini">
+    <tr><th>Palavra-chave</th><th>Pode reatribuir?</th><th>Quando o valor é definido?</th><th>Exemplo</th></tr>
+    <tr><td><code>var</code></td><td>Sim (mesmo tipo inferido)</td><td>Execução</td><td><code>var x = 10;</code></td></tr>
+    <tr><td><code>dynamic</code></td><td>Sim (muda até o tipo!)</td><td>Execução (sem checagem estática)</td><td><code>dynamic d = "oi"; d = 5;</code></td></tr>
+    <tr><td><code>final</code></td><td><b>Não</b> (1 atribuição)</td><td>Tempo de <b>execução</b></td><td><code>final agora = DateTime.now();</code></td></tr>
+    <tr><td><code>const</code></td><td><b>Não</b> (profundamente imutável)</td><td>Tempo de <b>compilação</b></td><td><code>const pi = 3.14;</code></td></tr>
+  </table>
+  <div class="two">
+    <div class="say law"><b>Null Safety:</b> por padrão, <code>String nome</code> <b>não aceita <code>null</code></b>. Para aceitar, use <code>String?</code>. Operadores: <code>?.</code> (acesso seguro), <code>??</code> (valor padrão se nulo) e <code>!</code> (garante que não é nulo — lança erro se for).</div>
+    <div class="card">
+      <h4>⏳ Future vs Stream</h4>
+      <p><b><code>Future&lt;T&gt;</code></b>: entrega <b>1 valor</b> (ou erro) no futuro → usa <code>async</code> / <code>await</code>.</p>
+      <p><b><code>Stream&lt;T&gt;</code></b>: entrega <b>vários valores</b> ao longo do tempo → usa <code>async*</code> / <code>yield</code> e <code>await for</code>.</p>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">FLUTTER: ARQUITETURA</span>
+  <h2>Tudo é Widget — e as 3 árvores por baixo</h2>
+  <svg viewBox="0 0 880 175" role="img" aria-label="As três árvores do Flutter: Widget cria Element que gerencia RenderObject">
+    <defs><marker id="m52" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arh"/></marker></defs>
+    <rect class="accbox" x="20" y="30" width="240" height="110" rx="14"/>
+    <text x="140" y="62" text-anchor="middle">1. Árvore de Widgets</text>
+    <text x="140" y="86" text-anchor="middle" class="small">Configuração IMUTÁVEL</text>
+    <text x="140" y="106" text-anchor="middle" class="small">“A planta da casa” (barata)</text>
+    <line class="ar" x1="260" y1="85" x2="315" y2="85" marker-end="url(#m52)"/>
+    <rect class="keybox" x="320" y="30" width="240" height="110" rx="14"/>
+    <text x="440" y="62" text-anchor="middle" class="kt">2. Árvore de Elements</text>
+    <text x="440" y="86" text-anchor="middle" class="kt" style="font-size:13px">Ciclo de vida e State</text>
+    <text x="440" y="106" text-anchor="middle" class="kt" style="font-size:13px">Reaproveita quando pode</text>
+    <line class="ar" x1="560" y1="85" x2="615" y2="85" marker-end="url(#m52)"/>
+    <rect class="okbox" x="620" y="30" width="240" height="110" rx="14"/>
+    <text x="740" y="62" text-anchor="middle">3. RenderObjects</text>
+    <text x="740" y="86" text-anchor="middle" class="small">Tamanho, posição e pintura</text>
+    <text x="740" y="106" text-anchor="middle" class="small">Desenha via motor gráfico</text>
+  </svg>
+  <div class="say law"><b>Por que reconstruir Widgets é rápido?</b> Widgets são objetos leves e <b>imutáveis</b>. Quando o estado muda, o Flutter recria a árvore de Widgets, mas a árvore de <b>Elements</b> compara as alterações e atualiza só os <b>RenderObjects</b> necessários (usando <code>Key</code> para identificar itens em listas).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">FLUTTER: CICLO DE VIDA</span>
+  <h2>StatelessWidget × StatefulWidget</h2>
+  <div class="two">
+    <div class="card">
+      <h4>🪨 StatelessWidget</h4>
+      <p>Não guarda estado interno mutável. Só depende dos parâmetros recebidos no construtor. Tem apenas o método <code>build(BuildContext)</code>.</p>
+    </div>
+    <div class="card">
+      <h4>🔄 StatefulWidget</h4>
+      <p>Tem um objeto <b><code>State&lt;T&gt;</code></b> separado que sobrevive às reconstruções do widget. Chamar <code>setState(() { ... })</code> marca o widget como sujo para rodar <code>build()</code> de novo.</p>
+    </div>
+  </div>
+  <div class="flow">
+    <span>createState()</span><i>→</i>
+    <span>initState() <small>(1x)</small></span><i>→</i>
+    <span>didChangeDependencies()</span><i>→</i>
+    <span>build() <small>(Nx)</small></span><i>→</i>
+    <span>didUpdateWidget()</span><i>→</i>
+    <span>dispose() <small>(fim)</small></span>
+  </div>
+  <div class="say trap"><b>Pegadinha clássica:</b> colocar chamada de API ou inicialização pesada dentro de <code>build()</code> — o <code>build()</code> roda dezenas de vezes! Inicialize no <b><code>initState()</code></b> e libere controllers/streams no <b><code>dispose()</code></b>.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">FLUTTER: LAYOUT E NAVEGAÇÃO</span>
+  <h2>Regra de ouro do layout e rotas</h2>
+  <div class="two">
+    <div class="card">
+      <h4>📐 Regra do Layout</h4>
+      <p><b>“Constraints go down. Sizes go up. Parent sets position.”</b></p>
+      <ul>
+        <li><code>Row</code> (horizontal) e <code>Column</code> (vertical): eixos <i>main</i> e <i>cross</i>.</li>
+        <li><code>Expanded</code>: ocupa o espaço restante no eixo principal.</li>
+        <li><code>Stack</code>: sobrepõe widgets (eixo Z).</li>
+        <li><code>ListView.builder</code>: lista rolável sob demanda.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>🧭 Navegação (Rotas)</h4>
+      <ul>
+        <li><b>Imperativa (Navigator 1.0):</b> pilha de telas com <code>Navigator.push()</code> / <code>pop()</code> ou rotas nomeadas (<code>pushNamed</code>).</li>
+        <li><b>Declarativa (Router / Navigator 2.0):</b> gerencia pilha pelo estado do app e URL (deep linking), muito usada com <code>go_router</code>.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="say trap">Colocar um <code>ListView</code> ou <code>TextField</code> sem largura/altura dentro de uma <code>Row</code>/<code>Column</code> gera erro de <i>unbounded constraints</i> — resolva envolvendo com <code>Expanded</code> ou <code>SizedBox</code>.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">FLUTTER: GERÊNCIA DE ESTADO</span>
+  <h2>Provider, Riverpod, Cubit e BLoC</h2>
+  <table class="cmp mini">
+    <tr><th>Solução</th><th>Como funciona</th><th>Destaque para a prova</th></tr>
+    <tr><td><b>setState</b></td><td>Estado local dentro de um único <code>State</code></td><td>Simples; não escala para várias telas</td></tr>
+    <tr><td><b>Provider</b></td><td>Wrapper sobre <code>InheritedWidget</code> (<code>ChangeNotifier</code>)</td><td><code>context.watch()</code> escuta; <code>context.read()</code> só lê</td></tr>
+    <tr><td><b>Riverpod</b></td><td>Reescrita do Provider, independente da árvore de widgets</td><td>Seguro em compilação; não precisa de <code>BuildContext</code></td></tr>
+    <tr><td><b>Cubit</b></td><td>Versão simplificada do BLoC: métodos chamam <code>emit(estado)</code></td><td>Sem classe de Eventos; menos boilerplate</td></tr>
+    <tr><td><b>BLoC</b></td><td>Recebe <b>Events</b> → processa → emite <b>States</b> (Streams)</td><td>Separação estrita UI × regra; alta testabilidade</td></tr>
+  </table>
+  <div class="say trap">No <b>Provider</b>: usar <code>context.watch&lt;T&gt;()</code> dentro de um callback como <code>onPressed</code> causa erro em runtime; em callbacks use sempre <b><code>context.read&lt;T&gt;()</code></b> (e <code>watch</code> dentro do <code>build</code>).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>O que levar para a prova</h2>
+  <div class="magic">Pergunta mágica: “Quem valida/controla os dados e onde mora o estado?”<small>Django (View = lógica, Template = HTML) · FastAPI (async + Pydantic) · Dart (null safety + const/final) · Flutter (Widgets imutáveis + State).</small></div>
+  <ul class="checklist">
+    <li>Django usa <b>MTV</b>: Model (ORM/migrations), Template (HTML), View (lógica).</li>
+    <li>Django <code>QuerySet</code> é <i>lazy</i>; <code>select_related</code> = JOIN (FK/1:1); <code>prefetch_related</code> = 2 queries (M2M).</li>
+    <li>FastAPI = ASGI + <b>Pydantic</b> + OpenAPI automático + <code>Depends()</code>; I/O síncrono vai em <code>def</code>, não <code>async def</code>.</li>
+    <li>Dart: <code>final</code> é runtime, <code>const</code> é compile-time; <code>String?</code> aceita nulo; <code>Stream</code> emite vários valores.</li>
+    <li>Flutter: 3 árvores (Widget → Element → RenderObject); <code>initState</code> inicia, <code>dispose</code> limpa.</li>
+    <li>Layout: constraints descem, tamanhos sobem, pai posiciona; Navigator (pilha) vs Router (declarativo).</li>
+    <li>Estado: Provider (<code>watch</code>/<code>read</code>), Riverpod (sem context), Cubit (métodos→estados), BLoC (eventos→estados).</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Estilo FGV: resolva antes de abrir</h2>
+  <details><summary>1. No Django, qual componente do padrão MTV corresponde ao Controller do MVC?</summary><p><b>A View.</b> No Django, a <b>View</b> contém a lógica que recebe a requisição e retorna a resposta; o <b>Template</b> é a camada de apresentação.</p></details>
+  <details><summary>2. Em FastAPI, o que acontece ao declarar uma rota com <code>async def</code> que faz consulta bloqueante (síncrona) ao banco?</summary><p><b>Bloqueia o event loop</b> e trava a concorrência das demais requisições. Para bibliotecas síncronas, deve-se usar <code>def</code> normal (executado em threadpool).</p></details>
+  <details><summary>3. Em Dart, qual a diferença entre <code>final</code> e <code>const</code>?</summary><p><b><code>final</code></b> é atribuído uma única vez em <b>tempo de execução</b> (ex.: resultado de função); <b><code>const</code></b> é constante em <b>tempo de compilação</b> e profundamente imutável.</p></details>
+  <details><summary>4. No Flutter com BLoC vs Cubit, qual a principal diferença na entrada de dados?</summary><p>O <b>BLoC</b> recebe objetos de <b>Evento</b> e os transforma em Estados via streams; o <b>Cubit</b> dispensa eventos e expõe <b>métodos</b> diretos que chamam <code>emit(estado)</code>.</p></details>
+</div>
+</section>
+
+<script src="aula.js"></script></body></html>

@@ -1,0 +1,803 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Algoritmos e Estruturas de Dados — aulas visuais</title><link rel="stylesheet" href="aula.css">
+<style>
+.mini{font-size:15px}
+.slide svg{max-height:230px}
+.stepper svg{max-height:175px}
+.fcap{min-height:0}
+pre{background:var(--cell);border-radius:12px;padding:10px 14px;margin:8px 0;overflow-x:auto;font:15px/1.5 ui-monospace,Consolas,monospace}
+pre code{background:none;padding:0;font-size:inherit}
+.stepper{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:8px 14px 10px;margin:10px 0}
+.stepper .frame{display:none}.stepper .frame.on{display:block;animation:au-in .3s ease}
+.st-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.st-n{color:var(--muted);font-size:14px;font-weight:700}
+.fcap{font-size:16px;margin:2px 0 6px;min-height:2.6em}
+.cx td,.cx th{text-align:center}.cx td:first-child,.cx th:first-child{text-align:left}
+td.n2{background:var(--bad-bg)} td.nl{background:var(--ok-bg)} td.lin{background:var(--blue-bg)}
+.trace td{font-family:ui-monospace,Consolas,monospace;font-size:15px}
+.cards5{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
+.cards5 div{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px 12px;font-size:15px}
+.cards5 b{display:block;font-size:24px;color:var(--acc)}
+</style></head>
+<body data-subject="algoritmos" data-title="Algoritmos e Estruturas de Dados">
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"><defs>
+<marker id="ah" viewBox="0 0 10 10" markerWidth="4.5" markerHeight="4.5" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--acc)"/></marker>
+<marker id="ahb" viewBox="0 0 10 10" markerWidth="4.5" markerHeight="4.5" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--blue)"/></marker>
+<marker id="ahg" viewBox="0 0 10 10" markerWidth="4.5" markerHeight="4.5" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ok)"/></marker>
+<marker id="ahr" viewBox="0 0 10 10" markerWidth="4.5" markerHeight="4.5" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
+</defs></svg>
+
+<!-- ===================================================== CAPÍTULO 1 ===================================================== -->
+<section class="chapter" data-title="Complexidade e Big-O">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 1</span>
+  <h1>Complexidade e Big-O</h1>
+  <span class="emoji">⏱️</span>
+  <div class="steps">
+    <div class="step"><b>1. Contar passos</b><span>Por que medimos passos e não segundos.</span></div>
+    <div class="step"><b>2. O, Ω e Θ</b><span>Teto, piso e “sanduíche”.</span></div>
+    <div class="step"><b>3. Regras de bolso</b><span>Calcular a complexidade de um código em segundos.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">📖</span><div><b>Analogia do dia:</b> procurar “Silva” num dicionário de nomes. Folhear página por página (1, 2, 3...) demora proporcional ao tamanho do livro. Abrir no meio e descartar metade a cada vez é <b>muito</b> mais rápido. Big-O é o jeito de dizer <b>o quanto</b> mais rápido.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">CONCEITO</span>
+  <h2>Por que contar passos, e não segundos?</h2>
+  <p>O mesmo programa roda em 1 s num notebook e em 0,1 s num servidor. O tempo em segundos depende da máquina. O que <b>não</b> muda é <b>quantos passos</b> o algoritmo dá quando a entrada tem tamanho <b>n</b>.</p>
+<pre><code>int soma(int[] v) {
+  int s = 0;                 <mark>// 1 vez</mark>
+  for (int x : v) s += x;    <mark>// n vezes</mark>
+  return s;                  <mark>// 1 vez</mark>
+}                            // total ≈ n + 2 passos</code></pre>
+  <p>Se o vetor dobra, o trabalho dobra: o custo cresce <b>linearmente</b> → <b>O(n)</b>.</p>
+  <div class="say law">Complexidade de tempo é a função que conta as operações básicas em função do tamanho n da entrada; a análise assintótica estuda seu comportamento para n grande.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ILUSTRAÇÃO</span>
+  <h2>A corrida das curvas</h2>
+  <svg viewBox="0 0 640 290" role="img" aria-label="curvas de crescimento" style="max-height:250px"><line x1="50" y1="250" x2="610" y2="250" style="stroke:var(--muted)" stroke-width="2" marker-end="url(#ah)"/><line x1="50" y1="250" x2="50" y2="15" style="stroke:var(--muted)" stroke-width="2" marker-end="url(#ah)"/><text class="small" x="600" y="275" text-anchor="end">tamanho da entrada n →</text><text class="small" x="58" y="22">passos</text><polyline fill="none" style="stroke:var(--muted)" stroke-width="3.5" points="77.0,247.8 83.8,247.8 90.5,247.8 97.3,247.8 104.0,247.8 110.8,247.8 117.5,247.8 124.3,247.8 131.0,247.8 137.8,247.8 144.5,247.8 151.3,247.8 158.0,247.8 164.8,247.8 171.5,247.8 178.3,247.8 185.0,247.8 191.8,247.8 198.5,247.8 205.3,247.8 212.0,247.8 218.8,247.8 225.5,247.8 232.3,247.8 239.0,247.8 245.8,247.8 252.5,247.8 259.3,247.8 266.0,247.8 272.8,247.8 279.5,247.8 286.3,247.8 293.0,247.8 299.8,247.8 306.5,247.8 313.3,247.8 320.0,247.8 326.8,247.8 333.5,247.8 340.3,247.8 347.0,247.8 353.8,247.8 360.5,247.8 367.3,247.8 374.0,247.8 380.8,247.8 387.5,247.8 394.3,247.8 401.0,247.8 407.8,247.8 414.5,247.8 421.3,247.8 428.0,247.8 434.8,247.8 441.5,247.8 448.3,247.8 455.0,247.8 461.8,247.8 468.5,247.8 475.3,247.8 482.0,247.8 488.8,247.8 495.5,247.8 502.3,247.8 509.0,247.8 515.8,247.8 522.5,247.8 529.3,247.8 536.0,247.8 542.8,247.8 549.5,247.8 556.3,247.8 563.0,247.8 569.8,247.8 576.5,247.8 583.3,247.8 590.0,247.8"/><text x="590" y="252.75" style="fill:var(--muted);font-size:16px;font-weight:800">1</text><polyline fill="none" style="stroke:var(--ok)" stroke-width="3.5" points="77.0,250.0 83.8,249.3 90.5,248.7 97.3,248.2 104.0,247.8 110.8,247.4 117.5,247.0 124.3,246.7 131.0,246.4 137.8,246.2 144.5,245.9 151.3,245.7 158.0,245.5 164.8,245.3 171.5,245.1 178.3,244.9 185.0,244.8 191.8,244.6 198.5,244.5 205.3,244.3 212.0,244.2 218.8,244.1 225.5,243.9 232.3,243.8 239.0,243.7 245.8,243.6 252.5,243.5 259.3,243.4 266.0,243.3 272.8,243.2 279.5,243.1 286.3,243.0 293.0,242.9 299.8,242.8 306.5,242.7 313.3,242.6 320.0,242.5 326.8,242.4 333.5,242.4 340.3,242.3 347.0,242.2 353.8,242.1 360.5,242.1 367.3,242.0 374.0,241.9 380.8,241.9 387.5,241.8 394.3,241.7 401.0,241.7 407.8,241.6 414.5,241.6 421.3,241.5 428.0,241.4 434.8,241.4 441.5,241.3 448.3,241.3 455.0,241.2 461.8,241.2 468.5,241.1 475.3,241.1 482.0,241.0 488.8,240.9 495.5,240.9 502.3,240.9 509.0,240.8 515.8,240.8 522.5,240.7 529.3,240.7 536.0,240.6 542.8,240.6 549.5,240.5 556.3,240.5 563.0,240.4 569.8,240.4 576.5,240.4 583.3,240.3 590.0,240.3"/><text x="590" y="245.27566178650343" style="fill:var(--ok);font-size:16px;font-weight:800">log n</text><polyline fill="none" style="stroke:var(--blue)" stroke-width="3.5" points="77.0,247.8 83.8,247.2 90.5,246.6 97.3,246.1 104.0,245.5 110.8,244.9 117.5,244.4 124.3,243.8 131.0,243.3 137.8,242.7 144.5,242.1 151.3,241.6 158.0,241.0 164.8,240.4 171.5,239.9 178.3,239.3 185.0,238.8 191.8,238.2 198.5,237.6 205.3,237.1 212.0,236.5 218.8,235.9 225.5,235.4 232.3,234.8 239.0,234.3 245.8,233.7 252.5,233.1 259.3,232.6 266.0,232.0 272.8,231.4 279.5,230.9 286.3,230.3 293.0,229.8 299.8,229.2 306.5,228.6 313.3,228.1 320.0,227.5 326.8,226.9 333.5,226.4 340.3,225.8 347.0,225.3 353.8,224.7 360.5,224.1 367.3,223.6 374.0,223.0 380.8,222.4 387.5,221.9 394.3,221.3 401.0,220.8 407.8,220.2 414.5,219.6 421.3,219.1 428.0,218.5 434.8,217.9 441.5,217.4 448.3,216.8 455.0,216.3 461.8,215.7 468.5,215.1 475.3,214.6 482.0,214.0 488.8,213.4 495.5,212.9 502.3,212.3 509.0,211.8 515.8,211.2 522.5,210.6 529.3,210.1 536.0,209.5 542.8,208.9 549.5,208.4 556.3,207.8 563.0,207.3 569.8,206.7 576.5,206.1 583.3,205.6 590.0,205.0"/><text x="590" y="210" style="fill:var(--blue);font-size:16px;font-weight:800">n</text><polyline fill="none" style="stroke:var(--acc)" stroke-width="3.5" points="77.0,250.0 83.8,249.1 90.5,248.0 97.3,246.8 104.0,245.5 110.8,244.1 117.5,242.6 124.3,241.0 131.0,239.3 137.8,237.6 144.5,235.8 151.3,233.9 158.0,232.0 164.8,230.0 171.5,228.0 178.3,226.0 185.0,223.9 191.8,221.7 198.5,219.6 205.3,217.4 212.0,215.1 218.8,212.8 225.5,210.5 232.3,208.2 239.0,205.8 245.8,203.4 252.5,200.9 259.3,198.5 266.0,196.0 272.8,193.5 279.5,191.0 286.3,188.4 293.0,185.8 299.8,183.2 306.5,180.6 313.3,177.9 320.0,175.3 326.8,172.6 333.5,169.9 340.3,167.1 347.0,164.4 353.8,161.6 360.5,158.8 367.3,156.0 374.0,153.2 380.8,150.4 387.5,147.5 394.3,144.6 401.0,141.8 407.8,138.9 414.5,135.9 421.3,133.0 428.0,130.1 434.8,127.1 441.5,124.1 448.3,121.1 455.0,118.1 461.8,115.1 468.5,112.1 475.3,109.1 482.0,106.0 488.8,102.9 495.5,99.9 502.3,96.8 509.0,93.7 515.8,90.5 522.5,87.4 529.3,84.3 536.0,81.1 542.8,78.0 549.5,74.8 556.3,71.6 563.0,68.4 569.8,65.2 576.5,62.0 583.3,58.8 590.0,55.5"/><text x="590" y="60.513235730068686" style="fill:var(--acc);font-size:16px;font-weight:800">n log n</text><polyline fill="none" style="stroke:var(--orange)" stroke-width="3.5" points="77.0,247.8 83.8,246.5 90.5,244.9 97.3,243.1 104.0,241.0 110.8,238.6 117.5,235.9 124.3,233.0 131.0,229.8 137.8,226.2 144.5,222.4 151.3,218.4 158.0,214.0 164.8,209.4 171.5,204.4 178.3,199.2 185.0,193.8 191.8,188.0 198.5,181.9 205.3,175.6 212.0,169.0 218.8,162.1 225.5,154.9 232.3,147.5 239.0,139.8 245.8,131.7 252.5,123.4 259.3,114.9 266.0,106.0 272.8,96.9 279.5,87.4 286.3,77.7 293.0,67.8 299.8,57.5 306.5,46.9 313.3,36.1 320.0,25.0"/><text x="326" y="43" style="fill:var(--orange);font-size:16px;font-weight:800">n²</text><polyline fill="none" style="stroke:var(--bad)" stroke-width="3.5" points="77.0,245.5 83.8,244.6 90.5,243.6 97.3,242.4 104.0,241.0 110.8,239.3 117.5,237.3 124.3,234.9 131.0,232.0 137.8,228.6 144.5,224.5 151.3,219.7 158.0,214.0 164.8,207.2 171.5,199.1 178.3,189.5 185.0,178.0 191.8,164.4 198.5,148.2 205.3,128.9 212.0,106.0 218.8,78.8 225.5,46.4 232.3,25.0"/><text x="238.25" y="43" style="fill:var(--bad);font-size:16px;font-weight:800">2ⁿ</text></svg>
+  <table class="cmp mini cx"><tr><th>n</th><th>log₂ n</th><th>n log₂ n</th><th>n²</th><th>2ⁿ</th></tr>
+  <tr><td>16</td><td>4</td><td>64</td><td>256</td><td>65.536</td></tr>
+  <tr><td>1.024</td><td class="hk">10</td><td>10.240</td><td>1.048.576</td><td class="hl">≈ 1,8 × 10³⁰⁸</td></tr></table>
+</div>
+
+<div class="slide">
+  <span class="tag">DEFINIÇÃO</span>
+  <h2>Big-O: um “teto” a partir de certo ponto</h2>
+  <svg viewBox="0 0 600 220" role="img" aria-label="f(n) fica abaixo de c vezes g(n) depois de n zero" style="max-width:560px">
+    <line x1="40" y1="200" x2="580" y2="200" style="stroke:var(--muted)" stroke-width="2" marker-end="url(#ah)"/><line x1="40" y1="200" x2="40" y2="10" style="stroke:var(--muted)" stroke-width="2" marker-end="url(#ah)"/>
+    <path d="M40,185 C200,180 380,120 560,20" fill="none" style="stroke:var(--blue)" stroke-width="3.5"/>
+    <path d="M40,130 C120,120 170,150 230,140 C330,125 420,110 560,75" fill="none" style="stroke:var(--bad)" stroke-width="3.5"/>
+    <line x1="268" y1="200" x2="268" y2="40" style="stroke:var(--muted)" stroke-width="2" stroke-dasharray="6 5"/>
+    <text x="268" y="216" text-anchor="middle" style="fill:var(--muted)">n₀</text>
+    <text x="500" y="30" style="fill:var(--blue)">c·g(n)</text><text x="500" y="105" style="fill:var(--bad)">f(n)</text>
+    <text class="small" x="150" y="105" text-anchor="middle">antes de n₀ pode passar</text>
+    <text class="small" x="420" y="175" text-anchor="middle">depois de n₀: f(n) ≤ c·g(n) sempre</text>
+  </svg>
+  <p><b>Exemplo:</b> f(n) = 3n² + 5n + 2. Para n ≥ 1: 3n² + 5n + 2 ≤ 3n² + 5n² + 2n² = <b>10n²</b>. Com c = 10 e n₀ = 1 → f(n) = <b>O(n²)</b>.</p>
+  <div class="say law">f(n) = O(g(n)) se existem constantes positivas c e n₀ tais que 0 ≤ f(n) ≤ c·g(n) para todo n ≥ n₀.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">COMPARAÇÃO</span>
+  <h2>O, Ω e Θ: teto, piso e sanduíche</h2>
+  <table class="cmp"><tr><th>Notação</th><th>Ideia</th><th>Em palavras</th><th>Exemplo com 3n² + 5n</th></tr>
+  <tr><td><b>O(g)</b></td><td>limite superior</td><td>“cresce <b>no máximo</b> como g”</td><td>é O(n²) e também O(n³)</td></tr>
+  <tr><td><b>Ω(g)</b></td><td>limite inferior</td><td>“cresce <b>no mínimo</b> como g”</td><td>é Ω(n²) e também Ω(n)</td></tr>
+  <tr><td><b>Θ(g)</b></td><td>limite justo</td><td>“cresce <b>exatamente</b> como g” (O e Ω juntos)</td><td>é Θ(n²) e só isso</td></tr></table>
+  <div class="say trap">
+    <p>“Como 3n² + 5n é O(n²), é <b>errado</b> dizer que ela é O(n³).”</p>
+    <div class="ex ng">Errado dizer O(n³): O(n²) é a única resposta.</div>
+    <div class="ex ok">É <b>verdade</b> que é O(n³): O é só um teto (frouxo, mas válido). O que ela <b>não</b> é: Θ(n³).</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">REGRAS DE BOLSO</span>
+  <h2>Cinco regras que resolvem 90% das questões</h2>
+  <table class="cmp mini"><tr><th>Regra</th><th>Exemplo</th><th>Resultado</th></tr>
+  <tr><td>Descarte constantes</td><td>5n + 100</td><td><b>O(n)</b></td></tr>
+  <tr><td>Fica o termo dominante</td><td>n² + n log n + n</td><td><b>O(n²)</b></td></tr>
+  <tr><td>Blocos em sequência: soma (vence o maior)</td><td>laço n; depois laço n²</td><td><b>O(n²)</b></td></tr>
+  <tr><td>Laços aninhados: multiplica</td><td>for i&lt;n { for j&lt;m }</td><td><b>O(n·m)</b></td></tr>
+  <tr><td>Divide (ou dobra) a cada volta</td><td>while (i &lt; n) i = i * 2</td><td><b>O(log n)</b></td></tr></table>
+  <div class="magic">Escadinha: 1 &lt; log n &lt; n &lt; n log n &lt; n² &lt; n³ &lt; 2ⁿ &lt; n!<small>Na base do log não se mexe: log₂ n e log₁₀ n diferem só por constante, então ambos são O(log n).</small></div>
+</div>
+
+<div class="slide">
+  <span class="tag">EXEMPLO RESOLVIDO</span>
+  <h2>Calcule a complexidade, bloco a bloco</h2>
+<pre><code>for (i = 0; i &lt; n; i++) x++;                 <mark>// bloco A: n</mark>
+for (i = 0; i &lt; n; i++)
+  for (j = 0; j &lt; i; j++) x++;               <mark>// bloco B: 0+1+...+(n-1)</mark>
+for (i = 1; i &lt; n; i = i * 2) x++;           <mark>// bloco C: ≈ log₂ n</mark></code></pre>
+  <div class="flow"><span>A = n</span><i>+</i><span>B = n(n−1)/2</span><i>+</i><span>C = log n</span><i>→</i><span style="border-color:var(--ok)">O(n²)</span></div>
+  <p class="mini">O bloco B parece “meio n²” porque j só vai até i. Mas n(n−1)/2 = 0,5n² − 0,5n: a constante 0,5 cai e continua sendo <b>O(n²)</b>.</p>
+  <div class="say good"><b>Dica:</b> laço interno que depende do externo (j &lt; i, j de i até n) → soma de PA → ainda n².</div>
+</div>
+
+<div class="slide">
+  <span class="tag">CASOS</span>
+  <h2>Melhor, médio e pior caso</h2>
+  <p>Busca linear do valor procurado no vetor abaixo:</p>
+  <svg viewBox="0 0 374 88" role="img" aria-label="vetor 7, 3, 9, 4, 1, 8" style="max-width:420px;max-height:110px"><g><rect class="okbox" x="10" y="8" width="54" height="54" rx="10"/><text x="37" y="41" text-anchor="middle" style="font-size:19px">7</text></g><text class="small" x="37" y="80" text-anchor="middle">0</text><g><rect class="box" x="70" y="8" width="54" height="54" rx="10"/><text x="97" y="41" text-anchor="middle" style="font-size:19px">3</text></g><text class="small" x="97" y="80" text-anchor="middle">1</text><g><rect class="box" x="130" y="8" width="54" height="54" rx="10"/><text x="157" y="41" text-anchor="middle" style="font-size:19px">9</text></g><text class="small" x="157" y="80" text-anchor="middle">2</text><g><rect class="box" x="190" y="8" width="54" height="54" rx="10"/><text x="217" y="41" text-anchor="middle" style="font-size:19px">4</text></g><text class="small" x="217" y="80" text-anchor="middle">3</text><g><rect class="box" x="250" y="8" width="54" height="54" rx="10"/><text x="277" y="41" text-anchor="middle" style="font-size:19px">1</text></g><text class="small" x="277" y="80" text-anchor="middle">4</text><g><rect class="badbox" x="310" y="8" width="54" height="54" rx="10"/><text x="337" y="41" text-anchor="middle" style="font-size:19px">8</text></g><text class="small" x="337" y="80" text-anchor="middle">5</text></svg>
+  <table class="cmp mini"><tr><th>Caso</th><th>Quando acontece</th><th>Comparações</th></tr>
+  <tr><td class="hk">Melhor</td><td>procurar 7 (está na 1ª posição)</td><td>1 → O(1)</td></tr>
+  <tr><td>Médio</td><td>valor em posição “aleatória”</td><td>≈ n/2 → O(n)</td></tr>
+  <tr><td class="hl">Pior</td><td>procurar 8 (último) ou valor ausente</td><td>n → O(n)</td></tr></table>
+  <div class="say trap">
+    <div class="ex ng">“Big-O significa pior caso e Ω significa melhor caso.”</div>
+    <div class="ex ok">O, Ω e Θ são <b>limites</b> de uma função. Dá para dizer “o pior caso é Θ(n)” e “o melhor caso é Θ(1)”: são coisas independentes.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RECURSÃO E ESPAÇO</span>
+  <h2>Fibonacci ingênuo: recalcula tudo</h2>
+  <p><code>fib(n) = fib(n−1) + fib(n−2)</code>. Veja as chamadas para fib(4): f(2) é calculado <b>duas vezes</b> (em vermelho).</p>
+  <svg viewBox="0 0 600 270" role="img" aria-label="árvore de chamadas de fibonacci(4) com f(2) repetido" style="max-width:560px"><line x1="300" y1="30" x2="160" y2="100" style="stroke:var(--muted)" stroke-width="2"/><line x1="300" y1="30" x2="440" y2="100" style="stroke:var(--muted)" stroke-width="2"/><line x1="160" y1="100" x2="90" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="160" y1="100" x2="230" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="440" y1="100" x2="390" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="440" y1="100" x2="490" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="90" y1="170" x2="40" y2="240" style="stroke:var(--muted)" stroke-width="2"/><line x1="90" y1="170" x2="140" y2="240" style="stroke:var(--muted)" stroke-width="2"/><circle class="box" cx="300" cy="30" r="26"/><text x="300" y="35" text-anchor="middle" style="font-size:14px">f(4)</text><circle class="box" cx="160" cy="100" r="26"/><text x="160" y="105" text-anchor="middle" style="font-size:14px">f(3)</text><circle class="badbox" cx="440" cy="100" r="26"/><text x="440" y="105" text-anchor="middle" style="font-size:14px">f(2)</text><circle class="badbox" cx="90" cy="170" r="26"/><text x="90" y="175" text-anchor="middle" style="font-size:14px">f(2)</text><circle class="box" cx="230" cy="170" r="26"/><text x="230" y="175" text-anchor="middle" style="font-size:14px">f(1)</text><circle class="box" cx="390" cy="170" r="26"/><text x="390" y="175" text-anchor="middle" style="font-size:14px">f(1)</text><circle class="box" cx="490" cy="170" r="26"/><text x="490" y="175" text-anchor="middle" style="font-size:14px">f(0)</text><circle class="box" cx="40" cy="240" r="26"/><text x="40" y="245" text-anchor="middle" style="font-size:14px">f(1)</text><circle class="box" cx="140" cy="240" r="26"/><text x="140" y="245" text-anchor="middle" style="font-size:14px">f(0)</text></svg>
+  <div class="two mini">
+    <div class="say bad"><b>Ingênuo:</b> nº de chamadas cresce exponencialmente → O(2ⁿ) (cota superior).</div>
+    <div class="say good"><b>Com memorização</b> (guardar resultados) ou laço: O(n).</div>
+  </div>
+  <p class="mini"><b>Espaço também conta:</b> fatorial recursivo empilha n chamadas → O(n) de memória na pilha; o laço usa O(1).</p>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Cola de bolso do capítulo</h2>
+  <div class="magic">Pergunta mágica: “Se n dobrar, o trabalho faz o quê?”<small>Não muda → O(1) · soma 1 passo → O(log n) · dobra → O(n) · quadruplica → O(n²) · eleva ao quadrado → O(2ⁿ).</small></div>
+  <ul class="checklist">
+    <li>Big-O conta passos em função de n; constantes e termos menores caem.</li>
+    <li>O = teto, Ω = piso, Θ = os dois (justo).</li>
+    <li>Sequência soma (vence o maior); aninhamento multiplica; dividir ao meio dá log n.</li>
+    <li>Melhor/médio/pior caso são cenários; O/Ω/Θ são limites — não confunda.</li>
+    <li>Recursão gasta memória de pilha; memorização derruba Fibonacci de exponencial para O(n).</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Mostre que aprendeu</h2>
+  <details><summary>1) Qual a complexidade de f(n) = 7n log n + 20n + 3?</summary><p><span class="pill ok">O(n log n)</span> n log n domina n e a constante; o 7 cai.</p></details>
+  <details><summary>2) Dois laços aninhados de 0 a n, seguidos de um laço de 0 a n. Complexidade?</summary><p><span class="pill ok">O(n²)</span> n² + n: fica o termo dominante.</p></details>
+  <details><summary>3) (FGV-estilo) “Se um algoritmo é O(n), então ele também é O(n²).” Certo ou errado?</summary><p><span class="pill ok">Certo</span> O é cota superior; se cabe sob n, cabe sob n² (para n ≥ 1). Mas ele não seria Θ(n²).</p></details>
+  <details><summary>4) Um laço faz i = n e, enquanto i &gt; 1, executa i = i / 2. Complexidade?</summary><p><span class="pill ok">O(log n)</span> Cada volta corta i pela metade: cerca de log₂ n voltas.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 2 ===================================================== -->
+<section class="chapter" data-title="Listas, pilhas, filas e tabelas hash">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 2</span>
+  <h1>Listas, pilhas, filas e tabelas hash</h1>
+  <span class="emoji">🧱</span>
+  <div class="steps">
+    <div class="step"><b>1. Vetor × lista</b><span>Memória contígua × nós ligados por ponteiros.</span></div>
+    <div class="step"><b>2. Pilha e fila</b><span>LIFO e FIFO, passo a passo.</span></div>
+    <div class="step"><b>3. Tabela hash</b><span>Chave → índice, colisões e fator de carga.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🚂</span><div><b>Analogia do dia:</b> vetor é um <b>estacionamento com vagas numeradas</b> (vá direto à vaga 7). Lista encadeada é um <b>trem</b>: cada vagão só sabe quem vem depois. Pilha é a <b>pilha de pratos</b>, fila é a <b>fila do banco</b> e a tabela hash é o <b>armário de escaninhos</b> com o nome na porta.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">VETOR (ARRAY)</span>
+  <h2>Vetor: vagas lado a lado na memória</h2>
+  <svg viewBox="0 0 314 88" role="img" aria-label="vetor 12, 7, 3, 25, 9" style="max-width:420px;max-height:110px"><g><rect class="box" x="10" y="8" width="54" height="54" rx="10"/><text x="37" y="41" text-anchor="middle" style="font-size:19px">12</text></g><text class="small" x="37" y="80" text-anchor="middle">1000</text><g><rect class="box" x="70" y="8" width="54" height="54" rx="10"/><text x="97" y="41" text-anchor="middle" style="font-size:19px">7</text></g><text class="small" x="97" y="80" text-anchor="middle">1004</text><g><rect class="box" x="130" y="8" width="54" height="54" rx="10"/><text x="157" y="41" text-anchor="middle" style="font-size:19px">3</text></g><text class="small" x="157" y="80" text-anchor="middle">1008</text><g><rect class="keybox" x="190" y="8" width="54" height="54" rx="10"/><text x="217" y="41" text-anchor="middle" class="kt" style="font-size:19px">25</text></g><text class="small" x="217" y="80" text-anchor="middle">1012</text><g><rect class="box" x="250" y="8" width="54" height="54" rx="10"/><text x="277" y="41" text-anchor="middle" style="font-size:19px">9</text></g><text class="small" x="277" y="80" text-anchor="middle">1016</text></svg>
+  <p class="mini">Endereços (int de 4 bytes): posição i fica em <b>base + i × 4</b>. Um cálculo e pronto: <b>acesso v[i] em O(1)</b>.</p>
+  <p>Mas para <b>inserir no início</b> é preciso empurrar todo mundo uma casa para a direita:</p>
+  <svg viewBox="0 0 374 72" role="img" aria-label="inserir no início desloca todos" style="max-width:470px;max-height:110px"><g><rect class="keybox" x="10" y="8" width="54" height="54" rx="10"/><text x="37" y="41" text-anchor="middle" class="kt" style="font-size:19px">●</text></g><g><rect class="box" x="70" y="8" width="54" height="54" rx="10"/><text x="97" y="41" text-anchor="middle" style="font-size:19px">12</text></g><g><rect class="box" x="130" y="8" width="54" height="54" rx="10"/><text x="157" y="41" text-anchor="middle" style="font-size:19px">7</text></g><g><rect class="box" x="190" y="8" width="54" height="54" rx="10"/><text x="217" y="41" text-anchor="middle" style="font-size:19px">3</text></g><g><rect class="box" x="250" y="8" width="54" height="54" rx="10"/><text x="277" y="41" text-anchor="middle" style="font-size:19px">25</text></g><g><rect class="box" x="310" y="8" width="54" height="54" rx="10"/><text x="337" y="41" text-anchor="middle" style="font-size:19px">9</text></g></svg>
+  <div class="say law">Vetor: acesso por índice O(1); inserção/remoção no início ou no meio O(n) (deslocamento). Em vetor dinâmico (ArrayList), inserir no fim é O(1) amortizado.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">LISTA ENCADEADA</span>
+  <h2>Lista encadeada: nós e ponteiros</h2>
+  <svg viewBox="0 0 640 130" role="img" aria-label="lista encadeada 12, 7, 3" style="max-width:640px"><text x="10" y="66" style="fill:var(--acc)">head</text><line x1="56" y1="61" x2="86" y2="61" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><rect class="box" x="92" y="39" width="60" height="44" rx="8"/><text x="122" y="67" text-anchor="middle">12</text><rect class="box" x="152" y="39" width="34" height="44" rx="8"/><circle cx="169" cy="61" r="5" style="fill:var(--acc)"/><line x1="169" y1="61" x2="222" y2="61" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><rect class="box" x="228" y="39" width="60" height="44" rx="8"/><text x="258" y="67" text-anchor="middle">7</text><rect class="box" x="288" y="39" width="34" height="44" rx="8"/><circle cx="305" cy="61" r="5" style="fill:var(--acc)"/><line x1="305" y1="61" x2="358" y2="61" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><rect class="box" x="364" y="39" width="60" height="44" rx="8"/><text x="394" y="67" text-anchor="middle">3</text><rect class="box" x="424" y="39" width="34" height="44" rx="8"/><circle cx="441" cy="61" r="5" style="fill:var(--acc)"/><line x1="441" y1="61" x2="494" y2="61" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><text x="500" y="67" style="fill:var(--muted)">null</text><text class="small" x="122" y="108" text-anchor="middle">valor</text><text class="small" x="169" y="108" text-anchor="middle">próximo</text><text class="small" x="122" y="28" text-anchor="middle">nó</text></svg>
+  <p>Cada <b>nó</b> guarda um valor e o endereço do próximo. O último aponta para <b>null</b>. Os nós podem estar espalhados na memória.</p>
+  <div class="two mini">
+    <div class="say good"><b>Inserir no início:</b> novo.próx = head; head = novo → <b>O(1)</b>, ninguém é deslocado.</div>
+    <div class="say bad"><b>Achar o 3º elemento:</b> tem que andar head → 12 → 7 → 3 → <b>O(n)</b>. Não existe “pular” para o meio.</div>
+  </div>
+  <p class="mini"><b>Duplamente encadeada:</b> cada nó tem também o ponteiro para o <b>anterior</b>:</p>
+  <svg viewBox="0 0 640 110" role="img" aria-label="lista duplamente encadeada" style="max-width:640px"><text x="10" y="58" style="fill:var(--muted);font-size:13px">null</text><rect class="box" x="60" y="30" width="30" height="44" rx="8"/><rect class="box" x="90" y="30" width="56" height="44" rx="8"/><rect class="box" x="146" y="30" width="30" height="44" rx="8"/><text x="118" y="58" text-anchor="middle">A</text><rect class="box" x="250" y="30" width="30" height="44" rx="8"/><rect class="box" x="280" y="30" width="56" height="44" rx="8"/><rect class="box" x="336" y="30" width="30" height="44" rx="8"/><text x="308" y="58" text-anchor="middle">B</text><rect class="box" x="440" y="30" width="30" height="44" rx="8"/><rect class="box" x="470" y="30" width="56" height="44" rx="8"/><rect class="box" x="526" y="30" width="30" height="44" rx="8"/><text x="498" y="58" text-anchor="middle">C</text><text x="590" y="58" style="fill:var(--muted);font-size:13px">null</text><line x1="162" y1="44" x2="246" y2="44" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><line x1="352" y1="44" x2="436" y2="44" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><line x1="258" y1="62" x2="180" y2="62" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><line x1="448" y1="62" x2="370" y2="62" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><line x1="542" y1="52" x2="584" y2="52" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><line x1="74" y1="52" x2="46" y2="52" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><text class="small" x="75" y="95" text-anchor="middle">ant</text><text class="small" x="161" y="95" text-anchor="middle">próx</text></svg>
+</div>
+
+<div class="slide">
+  <span class="tag">PASSO A PASSO</span>
+  <h2>Inserir o 9 depois do 7 (a ordem importa!)</h2>
+  <div class="stepper"><div class="frame on"><p class="fcap"><b>Passo 1.</b> Temos 12 → 7 → 3 e um ponteiro <code>p</code> para o nó 7.</p><svg viewBox="0 0 640 200" role="img" aria-label="inserir 9 depois do 7, passo 0" style="max-width:640px"><text x="10" y="66" style="fill:var(--acc)">head</text><line x1="56" y1="61" x2="86" y2="61" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><rect class="box" x="92" y="39" width="60" height="44" rx="8"/><text x="122" y="67" text-anchor="middle">12</text><rect class="box" x="152" y="39" width="34" height="44" rx="8"/><circle cx="169" cy="61" r="5" style="fill:var(--acc)"/><line x1="169" y1="61" x2="222" y2="61" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><rect class="box" x="228" y="39" width="60" height="44" rx="8"/><text x="258" y="67" text-anchor="middle">7</text><rect class="box" x="288" y="39" width="34" height="44" rx="8"/><circle cx="305" cy="61" r="5" style="fill:var(--acc)"/><rect class="box" x="470" y="39" width="60" height="44" rx="8"/><text x="500" y="67" text-anchor="middle">3</text><rect class="box" x="530" y="39" width="34" height="44" rx="8"/><circle cx="547" cy="61" r="5" style="fill:var(--acc)"/><line x1="547" y1="61" x2="575" y2="61" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><text x="580" y="67" style="fill:var(--muted);font-size:13px">null</text><line x1="305" y1="61" x2="464" y2="61" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><text class="small" x="370" y="160" text-anchor="middle">queremos inserir 9 entre 7 e 3</text></svg></div><div class="frame"><p class="fcap"><b>Passo 2.</b> Crie o nó 9 e faça <code>novo.próx = p.próx</code> (o 9 passa a apontar para o 3). A lista ainda está inteira.</p><svg viewBox="0 0 640 200" role="img" aria-label="inserir 9 depois do 7, passo 1" style="max-width:640px"><text x="10" y="66" style="fill:var(--acc)">head</text><line x1="56" y1="61" x2="86" y2="61" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><rect class="box" x="92" y="39" width="60" height="44" rx="8"/><text x="122" y="67" text-anchor="middle">12</text><rect class="box" x="152" y="39" width="34" height="44" rx="8"/><circle cx="169" cy="61" r="5" style="fill:var(--acc)"/><line x1="169" y1="61" x2="222" y2="61" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><rect class="accbox" x="228" y="39" width="60" height="44" rx="8"/><text x="258" y="67" text-anchor="middle">7</text><rect class="accbox" x="288" y="39" width="34" height="44" rx="8"/><circle cx="305" cy="61" r="5" style="fill:var(--acc)"/><rect class="box" x="470" y="39" width="60" height="44" rx="8"/><text x="500" y="67" text-anchor="middle">3</text><rect class="box" x="530" y="39" width="34" height="44" rx="8"/><circle cx="547" cy="61" r="5" style="fill:var(--acc)"/><line x1="547" y1="61" x2="575" y2="61" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><text x="580" y="67" style="fill:var(--muted);font-size:13px">null</text><line x1="305" y1="61" x2="464" y2="61" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><rect class="keybox" x="330" y="130" width="60" height="44" rx="8"/><text x="360" y="158" text-anchor="middle" class="kt">9</text><rect class="keybox" x="390" y="130" width="34" height="44" rx="8"/><circle cx="407" cy="152" r="5" style="fill:var(--acc)"/><line x1="407" y1="145" x2="490" y2="87" style="stroke:var(--ok)" stroke-width="3" marker-end="url(#ahg)"/></svg></div><div class="frame"><p class="fcap"><b>Passo 3.</b> Agora <code>p.próx = novo</code>: o 7 aponta para o 9. A seta antiga (vermelha) some. Custo: <b>O(1)</b>.</p><svg viewBox="0 0 640 200" role="img" aria-label="inserir 9 depois do 7, passo 2" style="max-width:640px"><text x="10" y="66" style="fill:var(--acc)">head</text><line x1="56" y1="61" x2="86" y2="61" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><rect class="box" x="92" y="39" width="60" height="44" rx="8"/><text x="122" y="67" text-anchor="middle">12</text><rect class="box" x="152" y="39" width="34" height="44" rx="8"/><circle cx="169" cy="61" r="5" style="fill:var(--acc)"/><line x1="169" y1="61" x2="222" y2="61" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><rect class="accbox" x="228" y="39" width="60" height="44" rx="8"/><text x="258" y="67" text-anchor="middle">7</text><rect class="accbox" x="288" y="39" width="34" height="44" rx="8"/><circle cx="305" cy="61" r="5" style="fill:var(--acc)"/><rect class="box" x="470" y="39" width="60" height="44" rx="8"/><text x="500" y="67" text-anchor="middle">3</text><rect class="box" x="530" y="39" width="34" height="44" rx="8"/><circle cx="547" cy="61" r="5" style="fill:var(--acc)"/><line x1="547" y1="61" x2="575" y2="61" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><text x="580" y="67" style="fill:var(--muted);font-size:13px">null</text><line x1="305" y1="61" x2="464" y2="61" style="stroke:var(--bad)" stroke-width="3" stroke-dasharray="6 5" marker-end="url(#ahr)"/><rect class="keybox" x="330" y="130" width="60" height="44" rx="8"/><text x="360" y="158" text-anchor="middle" class="kt">9</text><rect class="keybox" x="390" y="130" width="34" height="44" rx="8"/><circle cx="407" cy="152" r="5" style="fill:var(--acc)"/><line x1="407" y1="145" x2="490" y2="87" style="stroke:var(--ok)" stroke-width="3" marker-end="url(#ahg)"/><line x1="290" y1="83" x2="340" y2="126" style="stroke:var(--ok)" stroke-width="3" marker-end="url(#ahg)"/></svg></div>
+  <div class="st-nav"><button class="au-btn st-prev" type="button">◀ Passo anterior</button><span class="st-n"></span><button class="au-btn primary st-next" type="button">Próximo passo ▶</button></div></div>
+  <div class="say trap">
+    <div class="ex ng">Fazer primeiro <code>p.próx = novo</code>: você perde o endereço do 3 e o resto da lista “some”.</div>
+    <div class="ex ok">Primeiro ligue o novo ao sucessor; depois ligue o antecessor ao novo.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">PILHA (STACK)</span>
+  <h2>Pilha = LIFO: o último a entrar é o primeiro a sair</h2>
+  <div class="stepper"><div class="frame on"><p class="fcap"><b>Passo 1.</b> push(3): o 3 entra no topo.</p><svg viewBox="0 0 300 250" role="img" aria-label="pilha com 3" style="max-width:300px"><path d="M52,40 L52,236 L208,236 L208,40" fill="none" style="stroke:var(--muted)" stroke-width="3"/><rect class="keybox" x="60" y="186" width="140" height="40" rx="8"/><text x="130" y="213" text-anchor="middle" class="kt">3</text><line x1="270" y1="206" x2="214" y2="206" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><text x="244" y="198" style="fill:var(--acc);font-size:14px" text-anchor="middle">topo</text></svg></div><div class="frame"><p class="fcap"><b>Passo 2.</b> push(7): o 7 fica em cima do 3.</p><svg viewBox="0 0 300 250" role="img" aria-label="pilha com 3, 7" style="max-width:300px"><path d="M52,40 L52,236 L208,236 L208,40" fill="none" style="stroke:var(--muted)" stroke-width="3"/><rect class="box" x="60" y="186" width="140" height="40" rx="8"/><text x="130" y="213" text-anchor="middle">3</text><rect class="keybox" x="60" y="142" width="140" height="40" rx="8"/><text x="130" y="169" text-anchor="middle" class="kt">7</text><line x1="270" y1="162" x2="214" y2="162" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><text x="244" y="154" style="fill:var(--acc);font-size:14px" text-anchor="middle">topo</text></svg></div><div class="frame"><p class="fcap"><b>Passo 3.</b> push(5): o 5 é o novo topo.</p><svg viewBox="0 0 300 250" role="img" aria-label="pilha com 3, 7, 5" style="max-width:300px"><path d="M52,40 L52,236 L208,236 L208,40" fill="none" style="stroke:var(--muted)" stroke-width="3"/><rect class="box" x="60" y="186" width="140" height="40" rx="8"/><text x="130" y="213" text-anchor="middle">3</text><rect class="box" x="60" y="142" width="140" height="40" rx="8"/><text x="130" y="169" text-anchor="middle">7</text><rect class="keybox" x="60" y="98" width="140" height="40" rx="8"/><text x="130" y="125" text-anchor="middle" class="kt">5</text><line x1="270" y1="118" x2="214" y2="118" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><text x="244" y="110" style="fill:var(--acc);font-size:14px" text-anchor="middle">topo</text></svg></div><div class="frame"><p class="fcap"><b>Passo 4.</b> pop() → devolve <b>5</b>: sai o ÚLTIMO que entrou (LIFO).</p><svg viewBox="0 0 300 250" role="img" aria-label="pilha com 3, 7" style="max-width:300px"><path d="M52,40 L52,236 L208,236 L208,40" fill="none" style="stroke:var(--muted)" stroke-width="3"/><rect class="box" x="60" y="186" width="140" height="40" rx="8"/><text x="130" y="213" text-anchor="middle">3</text><rect class="keybox" x="60" y="142" width="140" height="40" rx="8"/><text x="130" y="169" text-anchor="middle">7</text><line x1="270" y1="162" x2="214" y2="162" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><text x="244" y="154" style="fill:var(--acc);font-size:14px" text-anchor="middle">topo</text><rect class="badbox" x="222" y="40" width="70" height="36" rx="8"/><text x="257" y="64" text-anchor="middle">5</text><text class="small" x="257" y="32" text-anchor="middle">saiu</text></svg></div><div class="frame"><p class="fcap"><b>Passo 5.</b> push(9): o 9 vira o topo.</p><svg viewBox="0 0 300 250" role="img" aria-label="pilha com 3, 7, 9" style="max-width:300px"><path d="M52,40 L52,236 L208,236 L208,40" fill="none" style="stroke:var(--muted)" stroke-width="3"/><rect class="box" x="60" y="186" width="140" height="40" rx="8"/><text x="130" y="213" text-anchor="middle">3</text><rect class="box" x="60" y="142" width="140" height="40" rx="8"/><text x="130" y="169" text-anchor="middle">7</text><rect class="keybox" x="60" y="98" width="140" height="40" rx="8"/><text x="130" y="125" text-anchor="middle" class="kt">9</text><line x1="270" y1="118" x2="214" y2="118" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><text x="244" y="110" style="fill:var(--acc);font-size:14px" text-anchor="middle">topo</text></svg></div><div class="frame"><p class="fcap"><b>Passo 6.</b> peek()/top() → devolve <b>9</b> SEM remover. Pilha final (base → topo): 3, 7, 9.</p><svg viewBox="0 0 300 250" role="img" aria-label="pilha com 3, 7, 9" style="max-width:300px"><path d="M52,40 L52,236 L208,236 L208,40" fill="none" style="stroke:var(--muted)" stroke-width="3"/><rect class="box" x="60" y="186" width="140" height="40" rx="8"/><text x="130" y="213" text-anchor="middle">3</text><rect class="box" x="60" y="142" width="140" height="40" rx="8"/><text x="130" y="169" text-anchor="middle">7</text><rect class="keybox" x="60" y="98" width="140" height="40" rx="8"/><text x="130" y="125" text-anchor="middle" class="kt">9</text><line x1="270" y1="118" x2="214" y2="118" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><text x="244" y="110" style="fill:var(--acc);font-size:14px" text-anchor="middle">topo</text></svg></div>
+  <div class="st-nav"><button class="au-btn st-prev" type="button">◀ Passo anterior</button><span class="st-n"></span><button class="au-btn primary st-next" type="button">Próximo passo ▶</button></div></div>
+  <p class="mini">push, pop e peek: todos <b>O(1)</b>. Usos: desfazer (Ctrl+Z), pilha de chamadas de funções, parênteses balanceados, DFS, notação pós-fixa.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">PILHA EM AÇÃO</span>
+  <h2>Avaliando a expressão pós-fixa 5 3 + 2 *</h2>
+  <p>Regra: número → empilha. Operador → desempilha dois (o 1º que sai é o operando da <b>direita</b>), calcula e empilha o resultado.</p>
+  <table class="cmp trace"><tr><th>Lido</th><th>Ação</th><th>Pilha (base → topo)</th></tr>
+  <tr><td>5</td><td>push 5</td><td>[5]</td></tr>
+  <tr><td>3</td><td>push 3</td><td>[5, 3]</td></tr>
+  <tr><td>+</td><td>pop 3, pop 5 → 5 + 3 = 8 → push</td><td>[8]</td></tr>
+  <tr><td>2</td><td>push 2</td><td>[8, 2]</td></tr>
+  <tr><td>*</td><td>pop 2, pop 8 → 8 × 2 = 16 → push</td><td class="hk">[16] ✓</td></tr></table>
+  <p class="mini">Em notação infixa, isso é (5 + 3) × 2 = 16. <b>Parênteses balanceados</b> usam a mesma ideia: abre → empilha; fecha → o topo tem que ser o par certo. “( [ ] )” ✓; “( ]” ✗.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">FILA (QUEUE)</span>
+  <h2>Fila = FIFO: o primeiro a entrar é o primeiro a sair</h2>
+  <div class="stepper"><div class="frame on"><p class="fcap"><b>Passo 1.</b> enqueue(A): A entra no fim (e, sozinho, também é a frente).</p><svg viewBox="0 0 560 140" role="img" aria-label="fila com A" style="max-width:560px"><line x1="100" y1="42" x2="490" y2="42" style="stroke:var(--muted)" stroke-width="3"/><line x1="100" y1="108" x2="490" y2="108" style="stroke:var(--muted)" stroke-width="3"/><rect class="okbox" x="110" y="50" width="70" height="50" rx="8"/><text x="145" y="82" text-anchor="middle">A</text><text x="140" y="142" text-anchor="middle" style="fill:var(--ok);font-size:14px">▲ frente (sai)</text><text x="460" y="142" text-anchor="middle" style="fill:var(--orange);font-size:14px">fim (entra) ▲</text></svg></div><div class="frame"><p class="fcap"><b>Passo 2.</b> enqueue(B): B entra atrás de A.</p><svg viewBox="0 0 560 140" role="img" aria-label="fila com A, B" style="max-width:560px"><line x1="100" y1="42" x2="490" y2="42" style="stroke:var(--muted)" stroke-width="3"/><line x1="100" y1="108" x2="490" y2="108" style="stroke:var(--muted)" stroke-width="3"/><rect class="okbox" x="110" y="50" width="70" height="50" rx="8"/><text x="145" y="82" text-anchor="middle">A</text><rect class="keybox" x="186" y="50" width="70" height="50" rx="8"/><text x="221" y="82" text-anchor="middle" class="kt">B</text><text x="140" y="142" text-anchor="middle" style="fill:var(--ok);font-size:14px">▲ frente (sai)</text><text x="460" y="142" text-anchor="middle" style="fill:var(--orange);font-size:14px">fim (entra) ▲</text></svg></div><div class="frame"><p class="fcap"><b>Passo 3.</b> enqueue(C): C entra no fim.</p><svg viewBox="0 0 560 140" role="img" aria-label="fila com A, B, C" style="max-width:560px"><line x1="100" y1="42" x2="490" y2="42" style="stroke:var(--muted)" stroke-width="3"/><line x1="100" y1="108" x2="490" y2="108" style="stroke:var(--muted)" stroke-width="3"/><rect class="okbox" x="110" y="50" width="70" height="50" rx="8"/><text x="145" y="82" text-anchor="middle">A</text><rect class="box" x="186" y="50" width="70" height="50" rx="8"/><text x="221" y="82" text-anchor="middle">B</text><rect class="keybox" x="262" y="50" width="70" height="50" rx="8"/><text x="297" y="82" text-anchor="middle" class="kt">C</text><text x="140" y="142" text-anchor="middle" style="fill:var(--ok);font-size:14px">▲ frente (sai)</text><text x="460" y="142" text-anchor="middle" style="fill:var(--orange);font-size:14px">fim (entra) ▲</text></svg></div><div class="frame"><p class="fcap"><b>Passo 4.</b> dequeue() → devolve <b>A</b>: sai o PRIMEIRO que entrou (FIFO).</p><svg viewBox="0 0 560 140" role="img" aria-label="fila com B, C" style="max-width:560px"><line x1="100" y1="42" x2="490" y2="42" style="stroke:var(--muted)" stroke-width="3"/><line x1="100" y1="108" x2="490" y2="108" style="stroke:var(--muted)" stroke-width="3"/><rect class="okbox" x="110" y="50" width="70" height="50" rx="8"/><text x="145" y="82" text-anchor="middle">B</text><rect class="box" x="186" y="50" width="70" height="50" rx="8"/><text x="221" y="82" text-anchor="middle">C</text><text x="140" y="142" text-anchor="middle" style="fill:var(--ok);font-size:14px">▲ frente (sai)</text><text x="460" y="142" text-anchor="middle" style="fill:var(--orange);font-size:14px">fim (entra) ▲</text><rect class="badbox" x="10" y="50" width="70" height="50" rx="8"/><text x="45" y="82" text-anchor="middle">A</text><text class="small" x="45" y="36" text-anchor="middle">saiu</text></svg></div><div class="frame"><p class="fcap"><b>Passo 5.</b> enqueue(D): D entra no fim. Fila final (frente → fim): B, C, D.</p><svg viewBox="0 0 560 140" role="img" aria-label="fila com B, C, D" style="max-width:560px"><line x1="100" y1="42" x2="490" y2="42" style="stroke:var(--muted)" stroke-width="3"/><line x1="100" y1="108" x2="490" y2="108" style="stroke:var(--muted)" stroke-width="3"/><rect class="okbox" x="110" y="50" width="70" height="50" rx="8"/><text x="145" y="82" text-anchor="middle">B</text><rect class="box" x="186" y="50" width="70" height="50" rx="8"/><text x="221" y="82" text-anchor="middle">C</text><rect class="keybox" x="262" y="50" width="70" height="50" rx="8"/><text x="297" y="82" text-anchor="middle" class="kt">D</text><text x="140" y="142" text-anchor="middle" style="fill:var(--ok);font-size:14px">▲ frente (sai)</text><text x="460" y="142" text-anchor="middle" style="fill:var(--orange);font-size:14px">fim (entra) ▲</text></svg></div>
+  <div class="st-nav"><button class="au-btn st-prev" type="button">◀ Passo anterior</button><span class="st-n"></span><button class="au-btn primary st-next" type="button">Próximo passo ▶</button></div></div>
+  <p class="mini">enqueue (no fim) e dequeue (na frente): <b>O(1)</b> com lista encadeada ou vetor circular. Usos: fila de impressão, BFS, buffers, atendimento.</p>
+  <div class="say trap"><div class="ex ng">“Fila de prioridade é uma fila FIFO.”</div><div class="ex ok">Na fila de prioridade sai o de <b>maior prioridade</b>, não o mais antigo. Costuma ser implementada com <b>heap</b> (cap. 3).</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">TABELA HASH</span>
+  <h2>Tabela hash: a chave diz onde guardar</h2>
+  <svg viewBox="0 0 640 230" role="img" aria-label="chave passa pela função hash e vira índice" style="max-width:640px"><rect class="accbox" x="10" y="40" width="70" height="40" rx="10"/><text x="45" y="66" text-anchor="middle">10</text><line x1="82" y1="60" x2="176" y2="115" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><rect class="accbox" x="10" y="100" width="70" height="40" rx="10"/><text x="45" y="126" text-anchor="middle">22</text><line x1="82" y1="120" x2="176" y2="115" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><rect class="accbox" x="10" y="160" width="70" height="40" rx="10"/><text x="45" y="186" text-anchor="middle">31</text><line x1="82" y1="180" x2="176" y2="115" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><rect class="keybox" x="180" y="85" width="150" height="60" rx="14"/><text class="kt" x="255" y="113" text-anchor="middle">h(k) = k mod 7</text><text class="kt" x="255" y="133" text-anchor="middle" style="font-size:12px">função hash</text><rect class="box" x="400" y="8" width="48" height="27" rx="6"/><text x="424" y="27" text-anchor="middle" style="font-size:14px">0</text><rect class="okbox" x="400" y="39" width="48" height="27" rx="6"/><text x="424" y="58" text-anchor="middle" style="font-size:14px">1</text><rect class="box" x="400" y="70" width="48" height="27" rx="6"/><text x="424" y="89" text-anchor="middle" style="font-size:14px">2</text><rect class="okbox" x="400" y="101" width="48" height="27" rx="6"/><text x="424" y="120" text-anchor="middle" style="font-size:14px">3</text><rect class="box" x="400" y="132" width="48" height="27" rx="6"/><text x="424" y="151" text-anchor="middle" style="font-size:14px">4</text><rect class="box" x="400" y="163" width="48" height="27" rx="6"/><text x="424" y="182" text-anchor="middle" style="font-size:14px">5</text><rect class="box" x="400" y="194" width="48" height="27" rx="6"/><text x="424" y="213" text-anchor="middle" style="font-size:14px">6</text><line x1="332" y1="108" x2="394" y2="44" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><line x1="332" y1="118" x2="394" y2="107" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><rect class="box" x="480" y="39" width="50" height="27" rx="6"/><text x="505" y="58" text-anchor="middle" style="font-size:14px">22</text><rect class="box" x="480" y="101" width="50" height="27" rx="6"/><text x="505" y="120" text-anchor="middle" style="font-size:14px">10</text><rect class="badbox" x="560" y="101" width="50" height="27" rx="6"/><text x="585" y="120" text-anchor="middle" style="font-size:14px">31</text><line x1="449" y1="52" x2="476" y2="52" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><line x1="449" y1="114" x2="476" y2="114" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><line x1="531" y1="114" x2="556" y2="114" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><text class="small" x="585" y="150" text-anchor="middle">colisão!</text><text class="small" x="424" y="226" text-anchor="middle">baldes</text></svg>
+  <p class="mini">A <b>função hash</b> transforma a chave num índice: 10 mod 7 = 3, 22 mod 7 = 1. Para buscar, recalcula-se h(chave) e vai-se direto ao balde → <b>O(1) em média</b>. Mas 31 mod 7 = 3 também: <b>colisão</b>.</p>
+  <div class="say law">Tabela hash mapeia chaves a posições por uma função de dispersão; busca, inserção e remoção têm custo médio O(1) e pior caso O(n).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">COLISÕES</span>
+  <h2>Mesmo exemplo, dois tratamentos de colisão</h2>
+  <p class="mini">Inserir 10, 22, 31, 4, 15 com h(k) = k mod 7 → índices 3, 1, 3, 4, 1.</p>
+  <div class="tables">
+    <div class="tbox"><h4>Encadeamento (lista em cada balde)</h4>
+    <table class="mini"><tr><th>idx</th><th>conteúdo</th></tr>
+    <tr><td>1</td><td>22 → 15</td></tr><tr><td>3</td><td>10 → 31</td></tr><tr><td>4</td><td>4</td></tr><tr><td>0,2,5,6</td><td>vazios</td></tr></table>
+    <p class="cap">Colidiu? Entra na lista do mesmo balde.</p></div>
+    <div class="tbox"><h4>Sondagem linear (endereçamento aberto)</h4>
+    <table class="mini"><tr><th>idx</th><th>chave</th><th>como chegou</th></tr>
+    <tr><td>1</td><td>22</td><td>direto</td></tr><tr><td>2</td><td class="hk">15</td><td>1 ocupado → 2</td></tr>
+    <tr><td>3</td><td>10</td><td>direto</td></tr><tr><td>4</td><td class="hk">31</td><td>3 ocupado → 4</td></tr><tr><td>5</td><td class="hk">4</td><td>4 ocupado → 5</td></tr></table>
+    <p class="cap">Colidiu? Tenta a próxima posição livre.</p></div>
+  </div>
+  <p class="mini"><b>Fator de carga</b> α = n/m = 5/7 ≈ 0,71. α alto → mais colisões → a tabela é <b>redimensionada</b> (rehash). Pior caso: todas as chaves no mesmo balde → O(n).</p>
+</div>
+
+<div class="slide">
+  <span class="tag">TABELA DE COMPLEXIDADES</span>
+  <h2>Quem é rápido em quê</h2>
+  <div class="scroll"><table class="cmp mini cx"><tr><th>Operação</th><th>Vetor</th><th>Lista encadeada</th><th>Pilha / Fila</th><th>Hash (médio / pior)</th></tr>
+  <tr><td>Acesso ao i-ésimo</td><td class="nl">O(1)</td><td class="n2">O(n)</td><td>— (só topo/frente)</td><td>—</td></tr>
+  <tr><td>Busca por valor</td><td class="lin">O(n)*</td><td class="lin">O(n)</td><td>—</td><td class="nl">O(1) / O(n)</td></tr>
+  <tr><td>Inserir no início</td><td class="n2">O(n)</td><td class="nl">O(1)</td><td class="nl">push/enqueue O(1)</td><td class="nl">O(1) / O(n)</td></tr>
+  <tr><td>Inserir no fim</td><td class="nl">O(1) amort.</td><td class="nl">O(1) c/ ponteiro tail</td><td>—</td><td>—</td></tr>
+  <tr><td>Remover</td><td class="n2">O(n)</td><td class="nl">O(1) se tiver o nó**</td><td class="nl">pop/dequeue O(1)</td><td class="nl">O(1) / O(n)</td></tr></table></div>
+  <p class="mini">* Vetor <b>ordenado</b>: busca binária O(log n) (cap. 4). ** Em lista simples é preciso também o nó anterior; na duplamente encadeada basta o próprio nó.</p>
+  <div class="say trap"><div class="ex ng">“Tabela hash garante busca O(1).”</div><div class="ex ok">O(1) é o caso <b>médio</b>; o pior caso é O(n). (No Java 8+, o HashMap transforma baldes muito cheios em árvores, melhorando esse pior caso.)</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Cola de bolso do capítulo</h2>
+  <div class="magic">Pergunta mágica: “Preciso pular direto para uma posição ou mexer muito nas pontas?”<small>Índice → vetor · inserir/remover no meio sabendo o nó → lista · último que entrou → pilha · ordem de chegada → fila · por chave → hash.</small></div>
+  <ul class="checklist">
+    <li>Vetor: acesso O(1), inserir no início O(n).</li>
+    <li>Lista encadeada: acesso O(n), inserir no início O(1); ligar primeiro o novo ao sucessor.</li>
+    <li>Pilha = LIFO (push/pop/peek O(1)); fila = FIFO (enqueue/dequeue O(1)).</li>
+    <li>Hash: O(1) médio, O(n) pior; colisão por encadeamento ou endereçamento aberto.</li>
+    <li>Fator de carga α = n/m; alto demais → rehash.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Mostre que aprendeu</h2>
+  <details><summary>1) Fila vazia: enqueue(1), enqueue(2), dequeue(), enqueue(3), dequeue(). Quem está na frente?</summary><p><span class="pill ok">3</span> Sai 1, depois sai 2; sobra só o 3.</p></details>
+  <details><summary>2) Qual o resultado da pós-fixa 6 2 / 3 + ?</summary><p><span class="pill ok">6</span> 6 / 2 = 3; depois 3 + 3 = 6. (O primeiro que sai da pilha é o operando da direita.)</p></details>
+  <details><summary>3) (FGV-estilo) “Em uma lista encadeada simples, o acesso ao k-ésimo elemento é O(1), como no vetor.” Certo ou errado?</summary><p><span class="pill ng">Errado</span> É preciso percorrer os nós a partir do head: O(n).</p></details>
+  <details><summary>4) Qual estrutura o sistema usa para controlar chamadas de funções (e recursão)?</summary><p><span class="pill ok">Pilha</span> A última função chamada é a primeira a retornar (LIFO); recursão infinita gera stack overflow.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 3 ===================================================== -->
+<section class="chapter" data-title="Árvores e grafos">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 3</span>
+  <h1>Árvores e grafos</h1>
+  <span class="emoji">🌳</span>
+  <div class="steps">
+    <div class="step"><b>1. Árvore binária de busca</b><span>Inserir, buscar, percorrer e remover.</span></div>
+    <div class="step"><b>2. Balanceamento e heap</b><span>AVL, rubro-negra, fila de prioridade.</span></div>
+    <div class="step"><b>3. Grafos</b><span>Matriz × lista, BFS × DFS.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🗺️</span><div><b>Analogia do dia:</b> a árvore é o <b>organograma</b> do tribunal: um presidente no topo, cada chefe com seus subordinados, ninguém com dois chefes. O grafo é o <b>mapa de estradas</b> da Paraíba: cidades ligadas por estradas, com caminhos de ida e volta e até ciclos.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">VOCABULÁRIO</span>
+  <h2>As partes de uma árvore</h2>
+  <svg viewBox="0 0 600 270" role="img" aria-label="árvore com raiz R" style="max-width:560px"><line x1="280" y1="30" x2="160" y2="100" style="stroke:var(--muted)" stroke-width="2"/><line x1="280" y1="30" x2="400" y2="100" style="stroke:var(--muted)" stroke-width="2"/><line x1="160" y1="100" x2="100" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="160" y1="100" x2="220" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="400" y1="100" x2="400" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="220" y1="170" x2="220" y2="240" style="stroke:var(--muted)" stroke-width="2"/><circle class="keybox" cx="280" cy="30" r="22"/><text x="280" y="35" text-anchor="middle" class="kt" style="font-size:16px">R</text><circle class="accbox" cx="160" cy="100" r="22"/><text x="160" y="105" text-anchor="middle" style="font-size:16px">B</text><circle class="accbox" cx="400" cy="100" r="22"/><text x="400" y="105" text-anchor="middle" style="font-size:16px">C</text><circle class="okbox" cx="100" cy="170" r="22"/><text x="100" y="175" text-anchor="middle" style="font-size:16px">D</text><circle class="box" cx="220" cy="170" r="22"/><text x="220" y="175" text-anchor="middle" style="font-size:16px">E</text><circle class="okbox" cx="400" cy="170" r="22"/><text x="400" y="175" text-anchor="middle" style="font-size:16px">F</text><circle class="okbox" cx="220" cy="240" r="22"/><text x="220" y="245" text-anchor="middle" style="font-size:16px">G</text><text x="60" y="34" text-anchor="middle" class="small">nível 0</text><text x="60" y="104" text-anchor="middle" class="small">nível 1</text><text x="40" y="174" text-anchor="middle" class="small">nível 2</text><text x="140" y="244" text-anchor="middle" class="small">nível 3</text><text x="500" y="34" text-anchor="middle" class="small">raiz</text><text x="500" y="174" text-anchor="middle" class="small">folhas em verde</text></svg>
+  <table class="cmp mini"><tr><th>Termo</th><th>No desenho</th></tr>
+  <tr><td><b>Raiz</b> (sem pai) · <b>folha</b> (sem filhos)</td><td>R · D, F, G</td></tr>
+  <tr><td><b>Grau</b> de um nó = nº de filhos</td><td>B tem grau 2; C tem grau 1</td></tr>
+  <tr><td><b>Altura</b> da árvore = maior caminho raiz→folha (em arestas)</td><td>R→B→E→G = 3</td></tr></table>
+  <p class="mini">Árvore <b>binária</b>: cada nó tem no máximo 2 filhos (esquerdo e direito). Atenção: alguns livros contam altura em <b>nós</b> (aqui daria 4) — leia como a questão define.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">BST</span>
+  <h2>Árvore binária de busca: menores à esquerda, maiores à direita</h2>
+  <svg viewBox="0 0 560 205" role="img" aria-label="árvore binária de busca" style="max-width:560px"><line x1="280" y1="30" x2="160" y2="100" style="stroke:var(--muted)" stroke-width="2"/><line x1="280" y1="30" x2="400" y2="100" style="stroke:var(--ok)" stroke-width="4"/><line x1="160" y1="100" x2="100" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="160" y1="100" x2="220" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="400" y1="100" x2="340" y2="170" style="stroke:var(--ok)" stroke-width="4"/><line x1="400" y1="100" x2="460" y2="170" style="stroke:var(--muted)" stroke-width="2"/><circle class="box" cx="100" cy="170" r="22"/><text x="100" y="175" text-anchor="middle" style="font-size:16px">20</text><circle class="box" cx="160" cy="100" r="22"/><text x="160" y="105" text-anchor="middle" style="font-size:16px">30</text><circle class="box" cx="220" cy="170" r="22"/><text x="220" y="175" text-anchor="middle" style="font-size:16px">40</text><circle class="okbox" cx="280" cy="30" r="22"/><text x="280" y="35" text-anchor="middle" style="font-size:16px">50</text><circle class="keybox" cx="340" cy="170" r="22"/><text x="340" y="175" text-anchor="middle" class="kt" style="font-size:16px">60</text><circle class="okbox" cx="400" cy="100" r="22"/><text x="400" y="105" text-anchor="middle" style="font-size:16px">70</text><circle class="box" cx="460" cy="170" r="22"/><text x="460" y="175" text-anchor="middle" style="font-size:16px">80</text></svg>
+  <p><b>Buscar 60:</b> 60 &gt; 50 → direita · 60 &lt; 70 → esquerda · achou! <b>3 comparações</b>, não 7. A cada nível descartamos uma subárvore inteira — é a busca binária “em forma de árvore”.</p>
+  <div class="say law">Em uma árvore binária de busca, para todo nó, as chaves da subárvore esquerda são menores e as da subárvore direita são maiores que a chave do nó.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PASSO A PASSO</span>
+  <h2>Inserindo 50, 30, 70, 20, 40, 60, 80 e depois 65</h2>
+  <div class="stepper"><div class="frame on"><p class="fcap"><b>Passo 1.</b> Insere 50 numa árvore vazia: ele vira a <b>raiz</b>.</p><svg viewBox="0 0 560 205" role="img" aria-label="árvore" style="max-width:560px"><circle class="keybox" cx="280" cy="30" r="22"/><text x="280" y="35" text-anchor="middle" class="kt" style="font-size:16px">50</text></svg></div><div class="frame"><p class="fcap"><b>Passo 2.</b> 30 &lt; 50 → esquerda. 70 &gt; 50 → direita.</p><svg viewBox="0 0 560 205" role="img" aria-label="árvore" style="max-width:560px"><line x1="280" y1="30" x2="160" y2="100" style="stroke:var(--muted)" stroke-width="2"/><line x1="280" y1="30" x2="400" y2="100" style="stroke:var(--muted)" stroke-width="2"/><circle class="keybox" cx="160" cy="100" r="22"/><text x="160" y="105" text-anchor="middle" class="kt" style="font-size:16px">30</text><circle class="box" cx="280" cy="30" r="22"/><text x="280" y="35" text-anchor="middle" style="font-size:16px">50</text><circle class="keybox" cx="400" cy="100" r="22"/><text x="400" y="105" text-anchor="middle" class="kt" style="font-size:16px">70</text></svg></div><div class="frame"><p class="fcap"><b>Passo 3.</b> 20: 20&lt;50 → esq; 20&lt;30 → esq. 40: &lt;50, &gt;30. 60: &gt;50, &lt;70. 80: &gt;50, &gt;70.</p><svg viewBox="0 0 560 205" role="img" aria-label="árvore binária de busca" style="max-width:560px"><line x1="280" y1="30" x2="160" y2="100" style="stroke:var(--muted)" stroke-width="2"/><line x1="280" y1="30" x2="400" y2="100" style="stroke:var(--muted)" stroke-width="2"/><line x1="160" y1="100" x2="100" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="160" y1="100" x2="220" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="400" y1="100" x2="340" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="400" y1="100" x2="460" y2="170" style="stroke:var(--muted)" stroke-width="2"/><circle class="keybox" cx="100" cy="170" r="22"/><text x="100" y="175" text-anchor="middle" class="kt" style="font-size:16px">20</text><circle class="box" cx="160" cy="100" r="22"/><text x="160" y="105" text-anchor="middle" style="font-size:16px">30</text><circle class="keybox" cx="220" cy="170" r="22"/><text x="220" y="175" text-anchor="middle" class="kt" style="font-size:16px">40</text><circle class="box" cx="280" cy="30" r="22"/><text x="280" y="35" text-anchor="middle" style="font-size:16px">50</text><circle class="keybox" cx="340" cy="170" r="22"/><text x="340" y="175" text-anchor="middle" class="kt" style="font-size:16px">60</text><circle class="box" cx="400" cy="100" r="22"/><text x="400" y="105" text-anchor="middle" style="font-size:16px">70</text><circle class="keybox" cx="460" cy="170" r="22"/><text x="460" y="175" text-anchor="middle" class="kt" style="font-size:16px">80</text></svg></div><div class="frame"><p class="fcap"><b>Passo 4.</b> Inserir 65: 65&gt;50 → dir; 65&lt;70 → esq; 65&gt;60 → dir de 60. São <b>3 comparações</b> = altura do caminho.</p><svg viewBox="0 0 560 270" role="img" aria-label="árvore binária de busca" style="max-width:560px"><line x1="280" y1="30" x2="160" y2="100" style="stroke:var(--muted)" stroke-width="2"/><line x1="280" y1="30" x2="400" y2="100" style="stroke:var(--ok)" stroke-width="4"/><line x1="160" y1="100" x2="100" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="160" y1="100" x2="220" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="400" y1="100" x2="340" y2="170" style="stroke:var(--ok)" stroke-width="4"/><line x1="400" y1="100" x2="460" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="340" y1="170" x2="390" y2="240" style="stroke:var(--ok)" stroke-width="4"/><circle class="box" cx="100" cy="170" r="22"/><text x="100" y="175" text-anchor="middle" style="font-size:16px">20</text><circle class="box" cx="160" cy="100" r="22"/><text x="160" y="105" text-anchor="middle" style="font-size:16px">30</text><circle class="box" cx="220" cy="170" r="22"/><text x="220" y="175" text-anchor="middle" style="font-size:16px">40</text><circle class="okbox" cx="280" cy="30" r="22"/><text x="280" y="35" text-anchor="middle" style="font-size:16px">50</text><circle class="okbox" cx="340" cy="170" r="22"/><text x="340" y="175" text-anchor="middle" style="font-size:16px">60</text><circle class="keybox" cx="390" cy="240" r="22"/><text x="390" y="245" text-anchor="middle" class="kt" style="font-size:16px">65</text><circle class="okbox" cx="400" cy="100" r="22"/><text x="400" y="105" text-anchor="middle" style="font-size:16px">70</text><circle class="box" cx="460" cy="170" r="22"/><text x="460" y="175" text-anchor="middle" style="font-size:16px">80</text></svg></div>
+  <div class="st-nav"><button class="au-btn st-prev" type="button">◀ Passo anterior</button><span class="st-n"></span><button class="au-btn primary st-next" type="button">Próximo passo ▶</button></div></div>
+  <p class="mini">Inserir = buscar até cair num “buraco” (null) e pendurar o novo nó ali como folha.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">PERCURSOS</span>
+  <h2>Os 4 jeitos de visitar a árvore</h2>
+  <svg viewBox="0 0 560 205" role="img" aria-label="árvore binária de busca" style="max-width:560px"><line x1="280" y1="30" x2="160" y2="100" style="stroke:var(--muted)" stroke-width="2"/><line x1="280" y1="30" x2="400" y2="100" style="stroke:var(--muted)" stroke-width="2"/><line x1="160" y1="100" x2="100" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="160" y1="100" x2="220" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="400" y1="100" x2="340" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="400" y1="100" x2="460" y2="170" style="stroke:var(--muted)" stroke-width="2"/><circle class="box" cx="100" cy="170" r="22"/><text x="100" y="175" text-anchor="middle" style="font-size:16px">20</text><circle class="box" cx="160" cy="100" r="22"/><text x="160" y="105" text-anchor="middle" style="font-size:16px">30</text><circle class="box" cx="220" cy="170" r="22"/><text x="220" y="175" text-anchor="middle" style="font-size:16px">40</text><circle class="box" cx="280" cy="30" r="22"/><text x="280" y="35" text-anchor="middle" style="font-size:16px">50</text><circle class="box" cx="340" cy="170" r="22"/><text x="340" y="175" text-anchor="middle" style="font-size:16px">60</text><circle class="box" cx="400" cy="100" r="22"/><text x="400" y="105" text-anchor="middle" style="font-size:16px">70</text><circle class="box" cx="460" cy="170" r="22"/><text x="460" y="175" text-anchor="middle" style="font-size:16px">80</text></svg>
+  <table class="cmp mini"><tr><th>Percurso</th><th>Ordem</th><th>Resultado</th></tr>
+  <tr><td><b>Pré-ordem</b></td><td>raiz, esq., dir.</td><td>50, 30, 20, 40, 70, 60, 80</td></tr>
+  <tr><td class="hk"><b>Em ordem</b> (simétrica)</td><td>esq., raiz, dir.</td><td class="hk">20, 30, 40, 50, 60, 70, 80 ← ordenado!</td></tr>
+  <tr><td><b>Pós-ordem</b></td><td>esq., dir., raiz</td><td>20, 40, 30, 60, 80, 70, 50</td></tr>
+  <tr><td><b>Por nível</b> (largura)</td><td>nível a nível, com fila</td><td>50, 30, 70, 20, 40, 60, 80</td></tr></table>
+  <div class="say good"><b>Macete:</b> o nome diz onde fica a <b>raiz</b>: PRÉ = antes, EM = no meio, PÓS = depois. A esquerda vem sempre antes da direita.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">REMOÇÃO</span>
+  <h2>Remover tem 3 casos</h2>
+  <table class="cmp mini"><tr><th>Caso</th><th>O que fazer</th><th>Na árvore acima</th></tr>
+  <tr><td>Folha</td><td>só desliga do pai</td><td>remover 20</td></tr>
+  <tr><td>Um filho</td><td>o filho “sobe” e ocupa o lugar</td><td>(após remover 20, remover 30 → 40 sobe)</td></tr>
+  <tr><td>Dois filhos</td><td>troca pelo <b>sucessor em ordem</b> (menor da subárvore direita) ou pelo antecessor (maior da esquerda) e remove esse</td><td>remover 50 → 60 sobe</td></tr></table>
+  <svg viewBox="0 0 560 200" role="img" aria-label="árvore após remover 50" style="max-width:560px"><line x1="280" y1="30" x2="160" y2="100" style="stroke:var(--muted)" stroke-width="2"/><line x1="280" y1="30" x2="400" y2="100" style="stroke:var(--muted)" stroke-width="2"/><line x1="160" y1="100" x2="100" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="160" y1="100" x2="220" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="400" y1="100" x2="460" y2="170" style="stroke:var(--muted)" stroke-width="2"/><circle class="box" cx="100" cy="170" r="22"/><text x="100" y="175" text-anchor="middle" style="font-size:16px">20</text><circle class="box" cx="160" cy="100" r="22"/><text x="160" y="105" text-anchor="middle" style="font-size:16px">30</text><circle class="box" cx="220" cy="170" r="22"/><text x="220" y="175" text-anchor="middle" style="font-size:16px">40</text><circle class="keybox" cx="280" cy="30" r="22"/><text x="280" y="35" text-anchor="middle" class="kt" style="font-size:16px">60</text><circle class="box" cx="400" cy="100" r="22"/><text x="400" y="105" text-anchor="middle" style="font-size:16px">70</text><circle class="box" cx="460" cy="170" r="22"/><text x="460" y="175" text-anchor="middle" style="font-size:16px">80</text><text x="400" y="180" text-anchor="middle" class="small">(60 saiu daqui)</text></svg>
+  <p class="mini">Depois de remover 50: o 60 (menor da direita) assumiu a raiz e a regra “esq. &lt; nó &lt; dir.” continua valendo.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">BALANCEAMENTO</span>
+  <h2>Quando a árvore vira uma “lista”</h2>
+  <div class="two">
+    <div><svg viewBox="0 0 300 240" role="img" aria-label="árvore degenerada" style="max-width:260px"><line x1="40" y1="30" x2="110" y2="90" style="stroke:var(--muted)" stroke-width="2"/><line x1="110" y1="90" x2="180" y2="150" style="stroke:var(--muted)" stroke-width="2"/><line x1="180" y1="150" x2="250" y2="210" style="stroke:var(--muted)" stroke-width="2"/><circle class="badbox" cx="40" cy="30" r="22"/><text x="40" y="35" text-anchor="middle" style="font-size:16px">10</text><circle class="badbox" cx="110" cy="90" r="22"/><text x="110" y="95" text-anchor="middle" style="font-size:16px">20</text><circle class="badbox" cx="180" cy="150" r="22"/><text x="180" y="155" text-anchor="middle" style="font-size:16px">30</text><circle class="badbox" cx="250" cy="210" r="22"/><text x="250" y="215" text-anchor="middle" style="font-size:16px">40</text></svg>
+      <p class="mini">Inserir 10, 20, 30, 40 (já ordenados): cada um vai à direita do anterior. Altura n−1 → busca <b>O(n)</b>.</p></div>
+    <div><svg viewBox="0 0 300 200" role="img" aria-label="árvore balanceada" style="max-width:260px"><line x1="150" y1="30" x2="80" y2="100" style="stroke:var(--muted)" stroke-width="2"/><line x1="150" y1="30" x2="220" y2="100" style="stroke:var(--muted)" stroke-width="2"/><line x1="220" y1="100" x2="270" y2="170" style="stroke:var(--muted)" stroke-width="2"/><circle class="okbox" cx="80" cy="100" r="22"/><text x="80" y="105" text-anchor="middle" style="font-size:16px">10</text><circle class="okbox" cx="150" cy="30" r="22"/><text x="150" y="35" text-anchor="middle" style="font-size:16px">20</text><circle class="okbox" cx="220" cy="100" r="22"/><text x="220" y="105" text-anchor="middle" style="font-size:16px">30</text><circle class="okbox" cx="270" cy="170" r="22"/><text x="270" y="175" text-anchor="middle" style="font-size:16px">40</text></svg>
+      <p class="mini">Árvore <b>AVL</b>: fator de balanceamento (altura esq. − altura dir.) ∈ {−1, 0, 1}; se sair disso, faz <b>rotações</b>. Altura O(log n).</p></div>
+  </div>
+  <div class="say trap"><div class="ex ng">“Toda árvore binária de busca garante busca em O(log n).”</div><div class="ex ok">Só as <b>balanceadas</b> (AVL, rubro-negra) garantem. BST comum: O(log n) em média, <b>O(n) no pior caso</b>.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">HEAP</span>
+  <h2>Heap: o maior sempre no topo</h2>
+  <div class="two">
+    <div><svg viewBox="0 0 400 200" role="img" aria-label="max-heap" style="max-width:380px"><line x1="200" y1="30" x2="110" y2="100" style="stroke:var(--muted)" stroke-width="2"/><line x1="200" y1="30" x2="290" y2="100" style="stroke:var(--muted)" stroke-width="2"/><line x1="110" y1="100" x2="60" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="110" y1="100" x2="160" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="290" y1="100" x2="250" y2="170" style="stroke:var(--muted)" stroke-width="2"/><line x1="290" y1="100" x2="340" y2="170" style="stroke:var(--muted)" stroke-width="2"/><circle class="keybox" cx="200" cy="30" r="22"/><text x="200" y="35" text-anchor="middle" class="kt" style="font-size:16px">90</text><circle class="box" cx="110" cy="100" r="22"/><text x="110" y="105" text-anchor="middle" style="font-size:16px">70</text><circle class="box" cx="290" cy="100" r="22"/><text x="290" y="105" text-anchor="middle" style="font-size:16px">80</text><circle class="box" cx="60" cy="170" r="22"/><text x="60" y="175" text-anchor="middle" style="font-size:16px">20</text><circle class="box" cx="160" cy="170" r="22"/><text x="160" y="175" text-anchor="middle" style="font-size:16px">50</text><circle class="box" cx="250" cy="170" r="22"/><text x="250" y="175" text-anchor="middle" style="font-size:16px">60</text><circle class="box" cx="340" cy="170" r="22"/><text x="340" y="175" text-anchor="middle" style="font-size:16px">30</text></svg></div>
+    <div><svg viewBox="0 0 364 78" role="img" aria-label="vetor 90, 70, 80, 20, 50, 60, 30" style="max-width:400px;max-height:110px"><g><rect class="keybox" x="10" y="8" width="44" height="44" rx="10"/><text x="32" y="36" text-anchor="middle" class="kt" style="font-size:16px">90</text></g><text class="small" x="32" y="70" text-anchor="middle">0</text><g><rect class="box" x="60" y="8" width="44" height="44" rx="10"/><text x="82" y="36" text-anchor="middle" style="font-size:16px">70</text></g><text class="small" x="82" y="70" text-anchor="middle">1</text><g><rect class="box" x="110" y="8" width="44" height="44" rx="10"/><text x="132" y="36" text-anchor="middle" style="font-size:16px">80</text></g><text class="small" x="132" y="70" text-anchor="middle">2</text><g><rect class="box" x="160" y="8" width="44" height="44" rx="10"/><text x="182" y="36" text-anchor="middle" style="font-size:16px">20</text></g><text class="small" x="182" y="70" text-anchor="middle">3</text><g><rect class="box" x="210" y="8" width="44" height="44" rx="10"/><text x="232" y="36" text-anchor="middle" style="font-size:16px">50</text></g><text class="small" x="232" y="70" text-anchor="middle">4</text><g><rect class="box" x="260" y="8" width="44" height="44" rx="10"/><text x="282" y="36" text-anchor="middle" style="font-size:16px">60</text></g><text class="small" x="282" y="70" text-anchor="middle">5</text><g><rect class="box" x="310" y="8" width="44" height="44" rx="10"/><text x="332" y="36" text-anchor="middle" style="font-size:16px">30</text></g><text class="small" x="332" y="70" text-anchor="middle">6</text></svg>
+      <p class="mini">Árvore <b>completa</b> guardada num vetor: filhos de i ficam em <b>2i+1</b> e <b>2i+2</b>; pai em ⌊(i−1)/2⌋.</p></div>
+  </div>
+  <table class="cmp mini cx"><tr><th>Operação (max-heap)</th><th>Custo</th></tr>
+  <tr><td>Ver o maior (topo)</td><td>O(1)</td></tr><tr><td>Inserir / remover o topo (sobe/desce trocando)</td><td>O(log n)</td></tr><tr><td>Construir a partir de um vetor</td><td>O(n)</td></tr></table>
+  <p class="mini">Regra: pai ≥ filhos. Não confunda com BST: aqui 20 está à esquerda e 30 à direita sem ordem entre irmãos — o percurso em ordem <b>não</b> sai ordenado.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">GRAFOS</span>
+  <h2>Grafo: vértices e arestas, duas representações</h2>
+  <svg viewBox="0 0 520 185" role="img" aria-label="grafo A-B, A-C, B-D, C-D, D-E" style="max-width:500px"><line x1="60" y1="60" x2="200" y2="30" style="stroke:var(--muted)" stroke-width="2"/><line x1="60" y1="60" x2="200" y2="150" style="stroke:var(--muted)" stroke-width="2"/><line x1="200" y1="30" x2="340" y2="90" style="stroke:var(--muted)" stroke-width="2"/><line x1="200" y1="150" x2="340" y2="90" style="stroke:var(--muted)" stroke-width="2"/><line x1="340" y1="90" x2="470" y2="90" style="stroke:var(--muted)" stroke-width="2"/><circle class="box" cx="60" cy="60" r="22"/><text x="60" y="65" text-anchor="middle" style="font-size:16px">A</text><circle class="box" cx="200" cy="30" r="22"/><text x="200" y="35" text-anchor="middle" style="font-size:16px">B</text><circle class="box" cx="200" cy="150" r="22"/><text x="200" y="155" text-anchor="middle" style="font-size:16px">C</text><circle class="box" cx="340" cy="90" r="22"/><text x="340" y="95" text-anchor="middle" style="font-size:16px">D</text><circle class="box" cx="470" cy="90" r="22"/><text x="470" y="95" text-anchor="middle" style="font-size:16px">E</text></svg>
+  <div class="tables">
+    <div class="tbox"><h4>Matriz de adjacência</h4>
+    <table class="mini cx"><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr>
+    <tr><th>A</th><td>0</td><td class="hk">1</td><td class="hk">1</td><td>0</td><td>0</td></tr>
+    <tr><th>B</th><td class="hk">1</td><td>0</td><td>0</td><td class="hk">1</td><td>0</td></tr>
+    <tr><th>D</th><td>0</td><td class="hk">1</td><td class="hk">1</td><td>0</td><td class="hk">1</td></tr></table>
+    <p class="cap">(linhas C e E omitidas) Espaço <b>O(V²)</b>; “existe aresta?” em O(1).</p></div>
+    <div class="tbox"><h4>Lista de adjacência</h4>
+    <table class="mini"><tr><td>A → B, C</td></tr><tr><td>B → A, D</td></tr><tr><td>C → A, D</td></tr><tr><td>D → B, C, E</td></tr><tr><td>E → D</td></tr></table>
+    <p class="cap">Espaço <b>O(V + E)</b>: ideal para grafos esparsos.</p></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">BFS × DFS</span>
+  <h2>Busca em largura (fila), passo a passo</h2>
+  <div class="stepper"><div class="frame on"><p class="fcap"><b>Passo 1.</b> Começa em A: marca A e põe na fila.</p><svg viewBox="0 0 520 185" role="img" aria-label="grafo A-B, A-C, B-D, C-D, D-E" style="max-width:500px"><line x1="60" y1="60" x2="200" y2="30" style="stroke:var(--muted)" stroke-width="2"/><line x1="60" y1="60" x2="200" y2="150" style="stroke:var(--muted)" stroke-width="2"/><line x1="200" y1="30" x2="340" y2="90" style="stroke:var(--muted)" stroke-width="2"/><line x1="200" y1="150" x2="340" y2="90" style="stroke:var(--muted)" stroke-width="2"/><line x1="340" y1="90" x2="470" y2="90" style="stroke:var(--muted)" stroke-width="2"/><circle class="box" cx="60" cy="60" r="22"/><text x="60" y="65" text-anchor="middle" style="font-size:16px">A</text><circle class="box" cx="200" cy="30" r="22"/><text x="200" y="35" text-anchor="middle" style="font-size:16px">B</text><circle class="box" cx="200" cy="150" r="22"/><text x="200" y="155" text-anchor="middle" style="font-size:16px">C</text><circle class="box" cx="340" cy="90" r="22"/><text x="340" y="95" text-anchor="middle" style="font-size:16px">D</text><circle class="box" cx="470" cy="90" r="22"/><text x="470" y="95" text-anchor="middle" style="font-size:16px">E</text></svg><p class="mini" style="margin:0"><b>Fila:</b> [A] &nbsp;·&nbsp; <b>Visitados:</b> A</p></div><div class="frame"><p class="fcap"><b>Passo 2.</b> Tira A da fila; descobre B e C (vizinhos não marcados) e os enfileira.</p><svg viewBox="0 0 520 185" role="img" aria-label="grafo A-B, A-C, B-D, C-D, D-E" style="max-width:500px"><line x1="60" y1="60" x2="200" y2="30" style="stroke:var(--muted)" stroke-width="2"/><line x1="60" y1="60" x2="200" y2="150" style="stroke:var(--muted)" stroke-width="2"/><line x1="200" y1="30" x2="340" y2="90" style="stroke:var(--muted)" stroke-width="2"/><line x1="200" y1="150" x2="340" y2="90" style="stroke:var(--muted)" stroke-width="2"/><line x1="340" y1="90" x2="470" y2="90" style="stroke:var(--muted)" stroke-width="2"/><circle class="okbox" cx="60" cy="60" r="22"/><text x="60" y="65" text-anchor="middle" style="font-size:16px">A</text><circle class="keybox" cx="200" cy="30" r="22"/><text x="200" y="35" text-anchor="middle" class="kt" style="font-size:16px">B</text><circle class="keybox" cx="200" cy="150" r="22"/><text x="200" y="155" text-anchor="middle" class="kt" style="font-size:16px">C</text><circle class="box" cx="340" cy="90" r="22"/><text x="340" y="95" text-anchor="middle" style="font-size:16px">D</text><circle class="box" cx="470" cy="90" r="22"/><text x="470" y="95" text-anchor="middle" style="font-size:16px">E</text></svg><p class="mini" style="margin:0"><b>Fila:</b> [B, C] &nbsp;·&nbsp; <b>Visitados:</b> A</p></div><div class="frame"><p class="fcap"><b>Passo 3.</b> Tira B; descobre D.</p><svg viewBox="0 0 520 185" role="img" aria-label="grafo A-B, A-C, B-D, C-D, D-E" style="max-width:500px"><line x1="60" y1="60" x2="200" y2="30" style="stroke:var(--muted)" stroke-width="2"/><line x1="60" y1="60" x2="200" y2="150" style="stroke:var(--muted)" stroke-width="2"/><line x1="200" y1="30" x2="340" y2="90" style="stroke:var(--muted)" stroke-width="2"/><line x1="200" y1="150" x2="340" y2="90" style="stroke:var(--muted)" stroke-width="2"/><line x1="340" y1="90" x2="470" y2="90" style="stroke:var(--muted)" stroke-width="2"/><circle class="okbox" cx="60" cy="60" r="22"/><text x="60" y="65" text-anchor="middle" style="font-size:16px">A</text><circle class="okbox" cx="200" cy="30" r="22"/><text x="200" y="35" text-anchor="middle" style="font-size:16px">B</text><circle class="keybox" cx="200" cy="150" r="22"/><text x="200" y="155" text-anchor="middle" class="kt" style="font-size:16px">C</text><circle class="keybox" cx="340" cy="90" r="22"/><text x="340" y="95" text-anchor="middle" class="kt" style="font-size:16px">D</text><circle class="box" cx="470" cy="90" r="22"/><text x="470" y="95" text-anchor="middle" style="font-size:16px">E</text></svg><p class="mini" style="margin:0"><b>Fila:</b> [C, D] &nbsp;·&nbsp; <b>Visitados:</b> A, B</p></div><div class="frame"><p class="fcap"><b>Passo 4.</b> Tira C; o vizinho D já foi descoberto: nada a fazer.</p><svg viewBox="0 0 520 185" role="img" aria-label="grafo A-B, A-C, B-D, C-D, D-E" style="max-width:500px"><line x1="60" y1="60" x2="200" y2="30" style="stroke:var(--muted)" stroke-width="2"/><line x1="60" y1="60" x2="200" y2="150" style="stroke:var(--muted)" stroke-width="2"/><line x1="200" y1="30" x2="340" y2="90" style="stroke:var(--muted)" stroke-width="2"/><line x1="200" y1="150" x2="340" y2="90" style="stroke:var(--muted)" stroke-width="2"/><line x1="340" y1="90" x2="470" y2="90" style="stroke:var(--muted)" stroke-width="2"/><circle class="okbox" cx="60" cy="60" r="22"/><text x="60" y="65" text-anchor="middle" style="font-size:16px">A</text><circle class="okbox" cx="200" cy="30" r="22"/><text x="200" y="35" text-anchor="middle" style="font-size:16px">B</text><circle class="okbox" cx="200" cy="150" r="22"/><text x="200" y="155" text-anchor="middle" style="font-size:16px">C</text><circle class="keybox" cx="340" cy="90" r="22"/><text x="340" y="95" text-anchor="middle" class="kt" style="font-size:16px">D</text><circle class="box" cx="470" cy="90" r="22"/><text x="470" y="95" text-anchor="middle" style="font-size:16px">E</text></svg><p class="mini" style="margin:0"><b>Fila:</b> [D] &nbsp;·&nbsp; <b>Visitados:</b> A, B, C</p></div><div class="frame"><p class="fcap"><b>Passo 5.</b> Tira D; descobre E.</p><svg viewBox="0 0 520 185" role="img" aria-label="grafo A-B, A-C, B-D, C-D, D-E" style="max-width:500px"><line x1="60" y1="60" x2="200" y2="30" style="stroke:var(--muted)" stroke-width="2"/><line x1="60" y1="60" x2="200" y2="150" style="stroke:var(--muted)" stroke-width="2"/><line x1="200" y1="30" x2="340" y2="90" style="stroke:var(--muted)" stroke-width="2"/><line x1="200" y1="150" x2="340" y2="90" style="stroke:var(--muted)" stroke-width="2"/><line x1="340" y1="90" x2="470" y2="90" style="stroke:var(--muted)" stroke-width="2"/><circle class="okbox" cx="60" cy="60" r="22"/><text x="60" y="65" text-anchor="middle" style="font-size:16px">A</text><circle class="okbox" cx="200" cy="30" r="22"/><text x="200" y="35" text-anchor="middle" style="font-size:16px">B</text><circle class="okbox" cx="200" cy="150" r="22"/><text x="200" y="155" text-anchor="middle" style="font-size:16px">C</text><circle class="okbox" cx="340" cy="90" r="22"/><text x="340" y="95" text-anchor="middle" style="font-size:16px">D</text><circle class="keybox" cx="470" cy="90" r="22"/><text x="470" y="95" text-anchor="middle" class="kt" style="font-size:16px">E</text></svg><p class="mini" style="margin:0"><b>Fila:</b> [E] &nbsp;·&nbsp; <b>Visitados:</b> A, B, C, D</p></div><div class="frame"><p class="fcap"><b>Passo 6.</b> Tira E. Fila vazia → fim. Ordem BFS: <b>A, B, C, D, E</b> (por “camadas” de distância).</p><svg viewBox="0 0 520 185" role="img" aria-label="grafo A-B, A-C, B-D, C-D, D-E" style="max-width:500px"><line x1="60" y1="60" x2="200" y2="30" style="stroke:var(--muted)" stroke-width="2"/><line x1="60" y1="60" x2="200" y2="150" style="stroke:var(--muted)" stroke-width="2"/><line x1="200" y1="30" x2="340" y2="90" style="stroke:var(--muted)" stroke-width="2"/><line x1="200" y1="150" x2="340" y2="90" style="stroke:var(--muted)" stroke-width="2"/><line x1="340" y1="90" x2="470" y2="90" style="stroke:var(--muted)" stroke-width="2"/><circle class="okbox" cx="60" cy="60" r="22"/><text x="60" y="65" text-anchor="middle" style="font-size:16px">A</text><circle class="okbox" cx="200" cy="30" r="22"/><text x="200" y="35" text-anchor="middle" style="font-size:16px">B</text><circle class="okbox" cx="200" cy="150" r="22"/><text x="200" y="155" text-anchor="middle" style="font-size:16px">C</text><circle class="okbox" cx="340" cy="90" r="22"/><text x="340" y="95" text-anchor="middle" style="font-size:16px">D</text><circle class="okbox" cx="470" cy="90" r="22"/><text x="470" y="95" text-anchor="middle" style="font-size:16px">E</text></svg><p class="mini" style="margin:0"><b>Fila:</b> [(vazia)] &nbsp;·&nbsp; <b>Visitados:</b> A, B, C, D, E</p></div>
+  <div class="st-nav"><button class="au-btn st-prev" type="button">◀ Passo anterior</button><span class="st-n"></span><button class="au-btn primary st-next" type="button">Próximo passo ▶</button></div></div>
+  <table class="cmp mini"><tr><th></th><th>BFS (largura)</th><th>DFS (profundidade)</th></tr>
+  <tr><td>Estrutura</td><td><b>fila</b></td><td><b>pilha</b> ou recursão</td></tr>
+  <tr><td>Ordem a partir de A</td><td>A, B, C, D, E</td><td>A, B, D, C, E</td></tr>
+  <tr><td>Custo (lista de adj.)</td><td>O(V + E)</td><td>O(V + E)</td></tr>
+  <tr><td>Destaque</td><td>menor caminho em nº de arestas</td><td>ciclos, ordenação topológica</td></tr></table>
+  <p class="mini">Com pesos nas arestas, o menor caminho é com <b>Dijkstra</b>, que exige pesos <b>não negativos</b>.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Cola de bolso do capítulo</h2>
+  <div class="magic">Pergunta mágica: “Está balanceada?”<small>Sim (AVL, rubro-negra) → O(log n) garantido. Não sei / BST comum → O(log n) em média, O(n) no pior caso.</small></div>
+  <ul class="checklist">
+    <li>BST: esq. &lt; nó &lt; dir.; em ordem sai ordenado.</li>
+    <li>Remover nó com 2 filhos: sucessor em ordem (menor da direita) ou antecessor.</li>
+    <li>Heap: pai ≥ filhos (max), topo O(1), inserir/remover O(log n), filhos em 2i+1 e 2i+2.</li>
+    <li>Matriz O(V²) × lista O(V + E).</li>
+    <li>BFS = fila (camadas, menor nº de arestas); DFS = pilha/recursão; ambos O(V + E).</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Mostre que aprendeu</h2>
+  <details><summary>1) Em ordem de uma BST deu 4, 9, 12, 15, 21. O que isso garante?</summary><p><span class="pill ok">Ordem crescente</span> Em BST, o percurso em ordem sempre sai ordenado — inclusive serve para conferir se a árvore é BST.</p></details>
+  <details><summary>2) Pós-ordem da árvore 50/30/70/20/40/60/80?</summary><p><span class="pill ok">20, 40, 30, 60, 80, 70, 50</span> Filhos primeiro, raiz por último: a raiz (50) é sempre o último.</p></details>
+  <details><summary>3) (FGV-estilo) “A busca em profundidade utiliza, tipicamente, uma fila para armazenar os vértices a visitar.” Certo ou errado?</summary><p><span class="pill ng">Errado</span> DFS usa pilha (ou recursão). Fila é da BFS.</p></details>
+  <details><summary>4) Num max-heap em vetor (índice a partir de 0), onde estão os filhos do elemento da posição 2?</summary><p><span class="pill ok">5 e 6</span> 2·2+1 = 5 e 2·2+2 = 6.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 4 ===================================================== -->
+<section class="chapter" data-title="Busca e ordenação">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 4</span>
+  <h1>Busca e ordenação</h1>
+  <span class="emoji">🃏</span>
+  <div class="steps">
+    <div class="step"><b>1. Busca binária</b><span>Cortar ao meio, com rastreio.</span></div>
+    <div class="step"><b>2. Os “lentos” O(n²)</b><span>Bubble, selection e insertion.</span></div>
+    <div class="step"><b>3. Os “rápidos”</b><span>Merge, quick, heap e a grande tabela.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🃏</span><div><b>Analogia do dia:</b> você ordena cartas na mão pegando uma por uma e encaixando no lugar certo — isso é o <b>insertion sort</b>. E acha uma palavra no dicionário abrindo no meio e descartando metade — isso é a <b>busca binária</b>.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">BUSCA BINÁRIA</span>
+  <h2>Busca binária: olha o meio e descarta metade</h2>
+  <div class="stepper"><div class="frame on"><p class="fcap"><b>Passo 1.</b> Procurar <b>23</b>. lo = 0, hi = 9 → mid = (0+9)/2 = 4. v[4] = 16 &lt; 23 → o 23 só pode estar à direita: lo = 5.</p><svg viewBox="0 0 614 120" role="img" aria-label="vetor 2, 5, 8, 12, 16, 23, 38, 56, 72, 91" style="max-width:640px;max-height:110px"><g><rect class="box" x="10" y="40" width="54" height="54" rx="10"/><text x="37" y="73" text-anchor="middle" style="font-size:19px">2</text></g><text class="small" x="37" y="112" text-anchor="middle">0</text><text x="37" y="14" text-anchor="middle" style="fill:var(--acc);font-size:14px">lo</text><line x1="37" y1="19" x2="37" y2="36" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><g><rect class="box" x="70" y="40" width="54" height="54" rx="10"/><text x="97" y="73" text-anchor="middle" style="font-size:19px">5</text></g><text class="small" x="97" y="112" text-anchor="middle">1</text><g><rect class="box" x="130" y="40" width="54" height="54" rx="10"/><text x="157" y="73" text-anchor="middle" style="font-size:19px">8</text></g><text class="small" x="157" y="112" text-anchor="middle">2</text><g><rect class="box" x="190" y="40" width="54" height="54" rx="10"/><text x="217" y="73" text-anchor="middle" style="font-size:19px">12</text></g><text class="small" x="217" y="112" text-anchor="middle">3</text><g><rect class="keybox" x="250" y="40" width="54" height="54" rx="10"/><text x="277" y="73" text-anchor="middle" class="kt" style="font-size:19px">16</text></g><text class="small" x="277" y="112" text-anchor="middle">4</text><text x="277" y="14" text-anchor="middle" style="fill:var(--acc);font-size:14px">mid</text><line x1="277" y1="19" x2="277" y2="36" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><g><rect class="box" x="310" y="40" width="54" height="54" rx="10"/><text x="337" y="73" text-anchor="middle" style="font-size:19px">23</text></g><text class="small" x="337" y="112" text-anchor="middle">5</text><g><rect class="box" x="370" y="40" width="54" height="54" rx="10"/><text x="397" y="73" text-anchor="middle" style="font-size:19px">38</text></g><text class="small" x="397" y="112" text-anchor="middle">6</text><g><rect class="box" x="430" y="40" width="54" height="54" rx="10"/><text x="457" y="73" text-anchor="middle" style="font-size:19px">56</text></g><text class="small" x="457" y="112" text-anchor="middle">7</text><g><rect class="box" x="490" y="40" width="54" height="54" rx="10"/><text x="517" y="73" text-anchor="middle" style="font-size:19px">72</text></g><text class="small" x="517" y="112" text-anchor="middle">8</text><g><rect class="box" x="550" y="40" width="54" height="54" rx="10"/><text x="577" y="73" text-anchor="middle" style="font-size:19px">91</text></g><text class="small" x="577" y="112" text-anchor="middle">9</text><text x="577" y="14" text-anchor="middle" style="fill:var(--acc);font-size:14px">hi</text><line x1="577" y1="19" x2="577" y2="36" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/></svg></div><div class="frame"><p class="fcap"><b>Passo 2.</b> lo = 5, hi = 9 → mid = 7. v[7] = 56 &gt; 23 → descarta a direita: hi = 6.</p><svg viewBox="0 0 614 120" role="img" aria-label="vetor 2, 5, 8, 12, 16, 23, 38, 56, 72, 91" style="max-width:640px;max-height:110px"><g opacity=".3"><rect class="box" x="10" y="40" width="54" height="54" rx="10"/><text x="37" y="73" text-anchor="middle" style="font-size:19px">2</text></g><text class="small" x="37" y="112" text-anchor="middle">0</text><g opacity=".3"><rect class="box" x="70" y="40" width="54" height="54" rx="10"/><text x="97" y="73" text-anchor="middle" style="font-size:19px">5</text></g><text class="small" x="97" y="112" text-anchor="middle">1</text><g opacity=".3"><rect class="box" x="130" y="40" width="54" height="54" rx="10"/><text x="157" y="73" text-anchor="middle" style="font-size:19px">8</text></g><text class="small" x="157" y="112" text-anchor="middle">2</text><g opacity=".3"><rect class="box" x="190" y="40" width="54" height="54" rx="10"/><text x="217" y="73" text-anchor="middle" style="font-size:19px">12</text></g><text class="small" x="217" y="112" text-anchor="middle">3</text><g opacity=".3"><rect class="box" x="250" y="40" width="54" height="54" rx="10"/><text x="277" y="73" text-anchor="middle" style="font-size:19px">16</text></g><text class="small" x="277" y="112" text-anchor="middle">4</text><g><rect class="box" x="310" y="40" width="54" height="54" rx="10"/><text x="337" y="73" text-anchor="middle" style="font-size:19px">23</text></g><text class="small" x="337" y="112" text-anchor="middle">5</text><text x="337" y="14" text-anchor="middle" style="fill:var(--acc);font-size:14px">lo</text><line x1="337" y1="19" x2="337" y2="36" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><g><rect class="box" x="370" y="40" width="54" height="54" rx="10"/><text x="397" y="73" text-anchor="middle" style="font-size:19px">38</text></g><text class="small" x="397" y="112" text-anchor="middle">6</text><g><rect class="keybox" x="430" y="40" width="54" height="54" rx="10"/><text x="457" y="73" text-anchor="middle" class="kt" style="font-size:19px">56</text></g><text class="small" x="457" y="112" text-anchor="middle">7</text><text x="457" y="14" text-anchor="middle" style="fill:var(--acc);font-size:14px">mid</text><line x1="457" y1="19" x2="457" y2="36" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><g><rect class="box" x="490" y="40" width="54" height="54" rx="10"/><text x="517" y="73" text-anchor="middle" style="font-size:19px">72</text></g><text class="small" x="517" y="112" text-anchor="middle">8</text><g><rect class="box" x="550" y="40" width="54" height="54" rx="10"/><text x="577" y="73" text-anchor="middle" style="font-size:19px">91</text></g><text class="small" x="577" y="112" text-anchor="middle">9</text><text x="577" y="14" text-anchor="middle" style="fill:var(--acc);font-size:14px">hi</text><line x1="577" y1="19" x2="577" y2="36" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/></svg></div><div class="frame"><p class="fcap"><b>Passo 3.</b> lo = 5, hi = 6 → mid = 5. v[5] = 23 → <b>achou</b> em 3 comparações (a busca linear faria 6).</p><svg viewBox="0 0 614 120" role="img" aria-label="vetor 2, 5, 8, 12, 16, 23, 38, 56, 72, 91" style="max-width:640px;max-height:110px"><g opacity=".3"><rect class="box" x="10" y="40" width="54" height="54" rx="10"/><text x="37" y="73" text-anchor="middle" style="font-size:19px">2</text></g><text class="small" x="37" y="112" text-anchor="middle">0</text><g opacity=".3"><rect class="box" x="70" y="40" width="54" height="54" rx="10"/><text x="97" y="73" text-anchor="middle" style="font-size:19px">5</text></g><text class="small" x="97" y="112" text-anchor="middle">1</text><g opacity=".3"><rect class="box" x="130" y="40" width="54" height="54" rx="10"/><text x="157" y="73" text-anchor="middle" style="font-size:19px">8</text></g><text class="small" x="157" y="112" text-anchor="middle">2</text><g opacity=".3"><rect class="box" x="190" y="40" width="54" height="54" rx="10"/><text x="217" y="73" text-anchor="middle" style="font-size:19px">12</text></g><text class="small" x="217" y="112" text-anchor="middle">3</text><g opacity=".3"><rect class="box" x="250" y="40" width="54" height="54" rx="10"/><text x="277" y="73" text-anchor="middle" style="font-size:19px">16</text></g><text class="small" x="277" y="112" text-anchor="middle">4</text><g><rect class="okbox" x="310" y="40" width="54" height="54" rx="10"/><text x="337" y="73" text-anchor="middle" style="font-size:19px">23</text></g><text class="small" x="337" y="112" text-anchor="middle">5</text><text x="337" y="14" text-anchor="middle" style="fill:var(--acc);font-size:14px">lo/mid</text><line x1="337" y1="19" x2="337" y2="36" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><g><rect class="box" x="370" y="40" width="54" height="54" rx="10"/><text x="397" y="73" text-anchor="middle" style="font-size:19px">38</text></g><text class="small" x="397" y="112" text-anchor="middle">6</text><text x="397" y="14" text-anchor="middle" style="fill:var(--acc);font-size:14px">hi</text><line x1="397" y1="19" x2="397" y2="36" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><g opacity=".3"><rect class="box" x="430" y="40" width="54" height="54" rx="10"/><text x="457" y="73" text-anchor="middle" style="font-size:19px">56</text></g><text class="small" x="457" y="112" text-anchor="middle">7</text><g opacity=".3"><rect class="box" x="490" y="40" width="54" height="54" rx="10"/><text x="517" y="73" text-anchor="middle" style="font-size:19px">72</text></g><text class="small" x="517" y="112" text-anchor="middle">8</text><g opacity=".3"><rect class="box" x="550" y="40" width="54" height="54" rx="10"/><text x="577" y="73" text-anchor="middle" style="font-size:19px">91</text></g><text class="small" x="577" y="112" text-anchor="middle">9</text></svg></div>
+  <div class="st-nav"><button class="au-btn st-prev" type="button">◀ Passo anterior</button><span class="st-n"></span><button class="au-btn primary st-next" type="button">Próximo passo ▶</button></div></div>
+<pre class="mini"><code>while (lo &lt;= hi) {
+  int mid = lo + (hi - lo) / 2;      <mark>// evita estouro de (lo+hi)</mark>
+  if (v[mid] == x) return mid;
+  if (v[mid] &lt; x) lo = mid + 1; else hi = mid - 1;
+}
+return -1;                           // não achou</code></pre>
+</div>
+
+<div class="slide">
+  <span class="tag">QUANTAS COMPARAÇÕES?</span>
+  <h2>O poder do log: 1 milhão em 20 passos</h2>
+  <table class="cmp cx"><tr><th>n (vetor ordenado)</th><th>Busca linear (pior)</th><th>Busca binária (pior) = ⌊log₂ n⌋ + 1</th></tr>
+  <tr><td>8</td><td>8</td><td class="hk">4</td></tr>
+  <tr><td>1.024</td><td>1.024</td><td class="hk">11</td></tr>
+  <tr><td>1.000.000</td><td>1.000.000</td><td class="hk">20</td></tr></table>
+  <p class="mini"><b>Não achou?</b> Procurar 13 no vetor anterior: mid 4 (16 &gt; 13) → mid 1 (5 &lt; 13) → mid 2 (8 &lt; 13) → mid 3 (12 &lt; 13) → lo &gt; hi → para com 4 comparações.</p>
+  <div class="say trap">
+    <div class="ex ng">“A busca binária funciona em qualquer vetor e é O(log n) também em lista encadeada.”</div>
+    <div class="ex ok">Exige vetor <b>ordenado</b>. E precisa de acesso direto ao meio: numa lista encadeada, chegar ao meio custa O(n) e a vantagem some.</div>
+  </div>
+  <div class="say law">A busca binária em vetor ordenado tem complexidade O(log n) no pior caso e O(1) no melhor (elemento no meio).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">BUBBLE SORT</span>
+  <h2>Bubble sort: o maior sobe como bolha</h2>
+  <div class="stepper"><div class="frame on"><p class="fcap"><b>Início.</b> Ideia: comparar vizinhos e trocar se estiverem fora de ordem. O maior “borbulha” para o fim.</p><svg viewBox="0 0 314 88" role="img" aria-label="vetor 5, 1, 4, 2, 8" style="max-width:380px;max-height:110px"><g><rect class="box" x="10" y="8" width="54" height="54" rx="10"/><text x="37" y="41" text-anchor="middle" style="font-size:19px">5</text></g><text class="small" x="37" y="80" text-anchor="middle">0</text><g><rect class="box" x="70" y="8" width="54" height="54" rx="10"/><text x="97" y="41" text-anchor="middle" style="font-size:19px">1</text></g><text class="small" x="97" y="80" text-anchor="middle">1</text><g><rect class="box" x="130" y="8" width="54" height="54" rx="10"/><text x="157" y="41" text-anchor="middle" style="font-size:19px">4</text></g><text class="small" x="157" y="80" text-anchor="middle">2</text><g><rect class="box" x="190" y="8" width="54" height="54" rx="10"/><text x="217" y="41" text-anchor="middle" style="font-size:19px">2</text></g><text class="small" x="217" y="80" text-anchor="middle">3</text><g><rect class="box" x="250" y="8" width="54" height="54" rx="10"/><text x="277" y="41" text-anchor="middle" style="font-size:19px">8</text></g><text class="small" x="277" y="80" text-anchor="middle">4</text></svg></div><div class="frame"><p class="fcap"><b>Passada 1.</b> 5 &gt; 1 → troca.</p><svg viewBox="0 0 314 88" role="img" aria-label="vetor 1, 5, 4, 2, 8" style="max-width:380px;max-height:110px"><g><rect class="keybox" x="10" y="8" width="54" height="54" rx="10"/><text x="37" y="41" text-anchor="middle" class="kt" style="font-size:19px">1</text></g><text class="small" x="37" y="80" text-anchor="middle">0</text><g><rect class="keybox" x="70" y="8" width="54" height="54" rx="10"/><text x="97" y="41" text-anchor="middle" class="kt" style="font-size:19px">5</text></g><text class="small" x="97" y="80" text-anchor="middle">1</text><g><rect class="box" x="130" y="8" width="54" height="54" rx="10"/><text x="157" y="41" text-anchor="middle" style="font-size:19px">4</text></g><text class="small" x="157" y="80" text-anchor="middle">2</text><g><rect class="box" x="190" y="8" width="54" height="54" rx="10"/><text x="217" y="41" text-anchor="middle" style="font-size:19px">2</text></g><text class="small" x="217" y="80" text-anchor="middle">3</text><g><rect class="box" x="250" y="8" width="54" height="54" rx="10"/><text x="277" y="41" text-anchor="middle" style="font-size:19px">8</text></g><text class="small" x="277" y="80" text-anchor="middle">4</text></svg></div><div class="frame"><p class="fcap"><b>Passada 1.</b> 5 &gt; 4 → troca.</p><svg viewBox="0 0 314 88" role="img" aria-label="vetor 1, 4, 5, 2, 8" style="max-width:380px;max-height:110px"><g><rect class="box" x="10" y="8" width="54" height="54" rx="10"/><text x="37" y="41" text-anchor="middle" style="font-size:19px">1</text></g><text class="small" x="37" y="80" text-anchor="middle">0</text><g><rect class="keybox" x="70" y="8" width="54" height="54" rx="10"/><text x="97" y="41" text-anchor="middle" class="kt" style="font-size:19px">4</text></g><text class="small" x="97" y="80" text-anchor="middle">1</text><g><rect class="keybox" x="130" y="8" width="54" height="54" rx="10"/><text x="157" y="41" text-anchor="middle" class="kt" style="font-size:19px">5</text></g><text class="small" x="157" y="80" text-anchor="middle">2</text><g><rect class="box" x="190" y="8" width="54" height="54" rx="10"/><text x="217" y="41" text-anchor="middle" style="font-size:19px">2</text></g><text class="small" x="217" y="80" text-anchor="middle">3</text><g><rect class="box" x="250" y="8" width="54" height="54" rx="10"/><text x="277" y="41" text-anchor="middle" style="font-size:19px">8</text></g><text class="small" x="277" y="80" text-anchor="middle">4</text></svg></div><div class="frame"><p class="fcap"><b>Passada 1.</b> 5 &gt; 2 → troca.</p><svg viewBox="0 0 314 88" role="img" aria-label="vetor 1, 4, 2, 5, 8" style="max-width:380px;max-height:110px"><g><rect class="box" x="10" y="8" width="54" height="54" rx="10"/><text x="37" y="41" text-anchor="middle" style="font-size:19px">1</text></g><text class="small" x="37" y="80" text-anchor="middle">0</text><g><rect class="box" x="70" y="8" width="54" height="54" rx="10"/><text x="97" y="41" text-anchor="middle" style="font-size:19px">4</text></g><text class="small" x="97" y="80" text-anchor="middle">1</text><g><rect class="keybox" x="130" y="8" width="54" height="54" rx="10"/><text x="157" y="41" text-anchor="middle" class="kt" style="font-size:19px">2</text></g><text class="small" x="157" y="80" text-anchor="middle">2</text><g><rect class="keybox" x="190" y="8" width="54" height="54" rx="10"/><text x="217" y="41" text-anchor="middle" class="kt" style="font-size:19px">5</text></g><text class="small" x="217" y="80" text-anchor="middle">3</text><g><rect class="box" x="250" y="8" width="54" height="54" rx="10"/><text x="277" y="41" text-anchor="middle" style="font-size:19px">8</text></g><text class="small" x="277" y="80" text-anchor="middle">4</text></svg></div><div class="frame"><p class="fcap"><b>Passada 1.</b> 5 &lt; 8 → não troca. O 8 (maior) está na posição final.</p><svg viewBox="0 0 314 88" role="img" aria-label="vetor 1, 4, 2, 5, 8" style="max-width:380px;max-height:110px"><g><rect class="box" x="10" y="8" width="54" height="54" rx="10"/><text x="37" y="41" text-anchor="middle" style="font-size:19px">1</text></g><text class="small" x="37" y="80" text-anchor="middle">0</text><g><rect class="box" x="70" y="8" width="54" height="54" rx="10"/><text x="97" y="41" text-anchor="middle" style="font-size:19px">4</text></g><text class="small" x="97" y="80" text-anchor="middle">1</text><g><rect class="box" x="130" y="8" width="54" height="54" rx="10"/><text x="157" y="41" text-anchor="middle" style="font-size:19px">2</text></g><text class="small" x="157" y="80" text-anchor="middle">2</text><g><rect class="keybox" x="190" y="8" width="54" height="54" rx="10"/><text x="217" y="41" text-anchor="middle" class="kt" style="font-size:19px">5</text></g><text class="small" x="217" y="80" text-anchor="middle">3</text><g><rect class="okbox" x="250" y="8" width="54" height="54" rx="10"/><text x="277" y="41" text-anchor="middle" style="font-size:19px">8</text></g><text class="small" x="277" y="80" text-anchor="middle">4</text></svg></div><div class="frame"><p class="fcap"><b>Passada 2.</b> 1·4 ok; 4 &gt; 2 → troca; 4·5 ok. Agora o 5 também está no lugar.</p><svg viewBox="0 0 314 88" role="img" aria-label="vetor 1, 2, 4, 5, 8" style="max-width:380px;max-height:110px"><g><rect class="box" x="10" y="8" width="54" height="54" rx="10"/><text x="37" y="41" text-anchor="middle" style="font-size:19px">1</text></g><text class="small" x="37" y="80" text-anchor="middle">0</text><g><rect class="box" x="70" y="8" width="54" height="54" rx="10"/><text x="97" y="41" text-anchor="middle" style="font-size:19px">2</text></g><text class="small" x="97" y="80" text-anchor="middle">1</text><g><rect class="box" x="130" y="8" width="54" height="54" rx="10"/><text x="157" y="41" text-anchor="middle" style="font-size:19px">4</text></g><text class="small" x="157" y="80" text-anchor="middle">2</text><g><rect class="okbox" x="190" y="8" width="54" height="54" rx="10"/><text x="217" y="41" text-anchor="middle" style="font-size:19px">5</text></g><text class="small" x="217" y="80" text-anchor="middle">3</text><g><rect class="okbox" x="250" y="8" width="54" height="54" rx="10"/><text x="277" y="41" text-anchor="middle" style="font-size:19px">8</text></g><text class="small" x="277" y="80" text-anchor="middle">4</text></svg></div><div class="frame"><p class="fcap"><b>Passada 3.</b> Nenhuma troca → com a <b>flag</b> “trocou?”, o algoritmo para. Por isso o melhor caso (já ordenado) é O(n).</p><svg viewBox="0 0 314 88" role="img" aria-label="vetor 1, 2, 4, 5, 8" style="max-width:380px;max-height:110px"><g><rect class="okbox" x="10" y="8" width="54" height="54" rx="10"/><text x="37" y="41" text-anchor="middle" style="font-size:19px">1</text></g><text class="small" x="37" y="80" text-anchor="middle">0</text><g><rect class="okbox" x="70" y="8" width="54" height="54" rx="10"/><text x="97" y="41" text-anchor="middle" style="font-size:19px">2</text></g><text class="small" x="97" y="80" text-anchor="middle">1</text><g><rect class="okbox" x="130" y="8" width="54" height="54" rx="10"/><text x="157" y="41" text-anchor="middle" style="font-size:19px">4</text></g><text class="small" x="157" y="80" text-anchor="middle">2</text><g><rect class="okbox" x="190" y="8" width="54" height="54" rx="10"/><text x="217" y="41" text-anchor="middle" style="font-size:19px">5</text></g><text class="small" x="217" y="80" text-anchor="middle">3</text><g><rect class="okbox" x="250" y="8" width="54" height="54" rx="10"/><text x="277" y="41" text-anchor="middle" style="font-size:19px">8</text></g><text class="small" x="277" y="80" text-anchor="middle">4</text></svg></div>
+  <div class="st-nav"><button class="au-btn st-prev" type="button">◀ Passo anterior</button><span class="st-n"></span><button class="au-btn primary st-next" type="button">Próximo passo ▶</button></div></div>
+  <p class="mini">Pior e médio: <b>O(n²)</b> comparações. Melhor (com flag, vetor já ordenado): <b>O(n)</b>. Estável e in-place.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">SELECTION SORT</span>
+  <h2>Selection sort: escolhe o menor e põe no lugar</h2>
+  <table class="cmp trace"><tr><th>Passada</th><th>Menor do trecho restante</th><th>Vetor após a troca</th></tr>
+  <tr><td>início</td><td>—</td><td>[64, 25, 12, 22, 11]</td></tr>
+  <tr><td>1</td><td>11 ↔ 64</td><td>[<b>11</b>, 25, 12, 22, 64]</td></tr>
+  <tr><td>2</td><td>12 ↔ 25</td><td>[11, <b>12</b>, 25, 22, 64]</td></tr>
+  <tr><td>3</td><td>22 ↔ 25</td><td>[11, 12, <b>22</b>, 25, 64]</td></tr>
+  <tr><td>4</td><td>25 (já no lugar)</td><td class="hk">[11, 12, 22, 25, 64]</td></tr></table>
+  <p class="mini">Sempre varre o resto para achar o mínimo: <b>O(n²)</b> comparações em todos os casos, mas no máximo <b>n − 1 trocas</b>.</p>
+  <div class="say trap"><div class="ex ng">“Selection sort é estável.”</div><div class="ex ok">A versão usual com trocas <b>não</b> é: em [2ᵃ, 2ᵇ, 1], o 1 troca com 2ᵃ → [1, 2ᵇ, 2ᵃ] e os dois 2 invertem de ordem.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">INSERTION SORT</span>
+  <h2>Insertion sort: como arrumar cartas na mão</h2>
+  <table class="cmp trace"><tr><th>Chave</th><th>O que faz</th><th>Vetor</th></tr>
+  <tr><td>—</td><td>início ([5] já “ordenado”)</td><td>[5, 2, 4, 6, 1, 3]</td></tr>
+  <tr><td>2</td><td>2 &lt; 5: desloca 5, encaixa</td><td>[<mark>2</mark>, 5, 4, 6, 1, 3]</td></tr>
+  <tr><td>4</td><td>4 &lt; 5: desloca 5; 4 &gt; 2 para</td><td>[2, <mark>4</mark>, 5, 6, 1, 3]</td></tr>
+  <tr><td>6</td><td>6 &gt; 5: já está no lugar</td><td>[2, 4, 5, <mark>6</mark>, 1, 3]</td></tr>
+  <tr><td>1</td><td>menor que todos: desloca 4 elementos</td><td>[<mark>1</mark>, 2, 4, 5, 6, 3]</td></tr>
+  <tr><td>3</td><td>desloca 6, 5, 4; para no 2</td><td class="hk">[1, 2, <mark>3</mark>, 4, 5, 6]</td></tr></table>
+  <div class="two mini"><div class="say good"><b>Melhor caso</b> (já ordenado): cada chave compara 1 vez → <b>O(n)</b>. Ótimo para vetor <b>quase ordenado</b>.</div><div class="say bad"><b>Pior caso</b> (ordem inversa): cada chave desloca todas as anteriores → <b>O(n²)</b>.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">MERGE SORT</span>
+  <h2>Merge sort: divide ao meio, depois intercala</h2>
+  <svg viewBox="0 0 660 330" role="img" aria-label="merge sort dividindo e intercalando" style="max-height:300px"><rect class="accbox" x="212" y="8" width="236" height="34" rx="8"/><text x="330" y="31" text-anchor="middle" style="font-size:15px">38  27  43  3  9  82  10</text><rect class="accbox" x="110" y="62" width="140" height="34" rx="8"/><text x="180" y="85" text-anchor="middle" style="font-size:15px">38  27  43  3</text><rect class="accbox" x="426" y="62" width="108" height="34" rx="8"/><text x="480" y="85" text-anchor="middle" style="font-size:15px">9  82  10</text><rect class="accbox" x="67" y="116" width="76" height="34" rx="8"/><text x="105" y="139" text-anchor="middle" style="font-size:15px">38  27</text><rect class="accbox" x="217" y="116" width="76" height="34" rx="8"/><text x="255" y="139" text-anchor="middle" style="font-size:15px">43  3</text><rect class="accbox" x="367" y="116" width="76" height="34" rx="8"/><text x="405" y="139" text-anchor="middle" style="font-size:15px">9  82</text><rect class="accbox" x="533" y="116" width="44" height="34" rx="8"/><text x="555" y="139" text-anchor="middle" style="font-size:15px">10</text><rect class="okbox" x="67" y="170" width="76" height="34" rx="8"/><text x="105" y="193" text-anchor="middle" style="font-size:15px">27  38</text><rect class="okbox" x="217" y="170" width="76" height="34" rx="8"/><text x="255" y="193" text-anchor="middle" style="font-size:15px">3  43</text><rect class="okbox" x="367" y="170" width="76" height="34" rx="8"/><text x="405" y="193" text-anchor="middle" style="font-size:15px">9  82</text><rect class="okbox" x="533" y="170" width="44" height="34" rx="8"/><text x="555" y="193" text-anchor="middle" style="font-size:15px">10</text><rect class="okbox" x="110" y="224" width="140" height="34" rx="8"/><text x="180" y="247" text-anchor="middle" style="font-size:15px">3  27  38  43</text><rect class="okbox" x="426" y="224" width="108" height="34" rx="8"/><text x="480" y="247" text-anchor="middle" style="font-size:15px">9  10  82</text><rect class="okbox" x="212" y="278" width="236" height="34" rx="8"/><text x="330" y="301" text-anchor="middle" style="font-size:15px">3  9  10  27  38  43  82</text><line x1="330" y1="43" x2="180" y2="59" style="stroke:var(--muted)" stroke-width="2"/><line x1="330" y1="43" x2="480" y2="59" style="stroke:var(--muted)" stroke-width="2"/><line x1="180" y1="97" x2="105" y2="113" style="stroke:var(--muted)" stroke-width="2"/><line x1="180" y1="97" x2="255" y2="113" style="stroke:var(--muted)" stroke-width="2"/><line x1="480" y1="97" x2="405" y2="113" style="stroke:var(--muted)" stroke-width="2"/><line x1="480" y1="97" x2="555" y2="113" style="stroke:var(--muted)" stroke-width="2"/><line x1="105" y1="151" x2="105" y2="167" style="stroke:var(--muted)" stroke-width="2"/><line x1="255" y1="151" x2="255" y2="167" style="stroke:var(--muted)" stroke-width="2"/><line x1="405" y1="151" x2="405" y2="167" style="stroke:var(--muted)" stroke-width="2"/><line x1="555" y1="151" x2="555" y2="167" style="stroke:var(--muted)" stroke-width="2"/><line x1="105" y1="205" x2="180" y2="221" style="stroke:var(--muted)" stroke-width="2"/><line x1="255" y1="205" x2="180" y2="221" style="stroke:var(--muted)" stroke-width="2"/><line x1="405" y1="205" x2="480" y2="221" style="stroke:var(--muted)" stroke-width="2"/><line x1="555" y1="205" x2="480" y2="221" style="stroke:var(--muted)" stroke-width="2"/><line x1="180" y1="259" x2="330" y2="275" style="stroke:var(--muted)" stroke-width="2"/><line x1="480" y1="259" x2="330" y2="275" style="stroke:var(--muted)" stroke-width="2"/><text x="650" y="90" text-anchor="end" style="fill:var(--acc);font-size:14px">DIVIDIR</text><text x="650" y="250" text-anchor="end" style="fill:var(--ok);font-size:14px">INTERCALAR</text></svg>
+  <p class="mini">São ≈ log₂ n níveis de divisão e cada nível de intercalação mexe nos n elementos → <b>O(n log n) sempre</b> (melhor, médio e pior). Custo: vetor auxiliar → <b>O(n) de memória extra</b>. É <b>estável</b>.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">QUICK SORT</span>
+  <h2>Quick sort: particionar em volta do pivô (Lomuto)</h2>
+  <div class="stepper"><div class="frame on"><p class="fcap"><b>Início.</b> Pivô = último elemento (<b>4</b>). <code>i</code> marca o fim da zona “≤ pivô”, que começa vazia (i = −1). <code>j</code> percorre o vetor.</p><svg viewBox="0 0 494 120" role="img" aria-label="vetor 7, 2, 1, 6, 8, 5, 3, 4" style="max-width:520px;max-height:110px"><g><rect class="box" x="10" y="40" width="54" height="54" rx="10"/><text x="37" y="73" text-anchor="middle" style="font-size:19px">7</text></g><text class="small" x="37" y="112" text-anchor="middle">0</text><text x="37" y="14" text-anchor="middle" style="fill:var(--acc);font-size:14px">j</text><line x1="37" y1="19" x2="37" y2="36" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><g><rect class="box" x="70" y="40" width="54" height="54" rx="10"/><text x="97" y="73" text-anchor="middle" style="font-size:19px">2</text></g><text class="small" x="97" y="112" text-anchor="middle">1</text><g><rect class="box" x="130" y="40" width="54" height="54" rx="10"/><text x="157" y="73" text-anchor="middle" style="font-size:19px">1</text></g><text class="small" x="157" y="112" text-anchor="middle">2</text><g><rect class="box" x="190" y="40" width="54" height="54" rx="10"/><text x="217" y="73" text-anchor="middle" style="font-size:19px">6</text></g><text class="small" x="217" y="112" text-anchor="middle">3</text><g><rect class="box" x="250" y="40" width="54" height="54" rx="10"/><text x="277" y="73" text-anchor="middle" style="font-size:19px">8</text></g><text class="small" x="277" y="112" text-anchor="middle">4</text><g><rect class="box" x="310" y="40" width="54" height="54" rx="10"/><text x="337" y="73" text-anchor="middle" style="font-size:19px">5</text></g><text class="small" x="337" y="112" text-anchor="middle">5</text><g><rect class="box" x="370" y="40" width="54" height="54" rx="10"/><text x="397" y="73" text-anchor="middle" style="font-size:19px">3</text></g><text class="small" x="397" y="112" text-anchor="middle">6</text><g><rect class="keybox" x="430" y="40" width="54" height="54" rx="10"/><text x="457" y="73" text-anchor="middle" class="kt" style="font-size:19px">4</text></g><text class="small" x="457" y="112" text-anchor="middle">7</text></svg></div><div class="frame"><p class="fcap"><b>j=0:</b> 7 &gt; 4, nada. <b>j=1:</b> 2 ≤ 4 → i = 0 e troca v[0]↔v[1].</p><svg viewBox="0 0 494 120" role="img" aria-label="vetor 2, 7, 1, 6, 8, 5, 3, 4" style="max-width:520px;max-height:110px"><g><rect class="okbox" x="10" y="40" width="54" height="54" rx="10"/><text x="37" y="73" text-anchor="middle" style="font-size:19px">2</text></g><text class="small" x="37" y="112" text-anchor="middle">0</text><text x="37" y="14" text-anchor="middle" style="fill:var(--acc);font-size:14px">i</text><line x1="37" y1="19" x2="37" y2="36" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><g><rect class="box" x="70" y="40" width="54" height="54" rx="10"/><text x="97" y="73" text-anchor="middle" style="font-size:19px">7</text></g><text class="small" x="97" y="112" text-anchor="middle">1</text><text x="97" y="14" text-anchor="middle" style="fill:var(--acc);font-size:14px">j</text><line x1="97" y1="19" x2="97" y2="36" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><g><rect class="box" x="130" y="40" width="54" height="54" rx="10"/><text x="157" y="73" text-anchor="middle" style="font-size:19px">1</text></g><text class="small" x="157" y="112" text-anchor="middle">2</text><g><rect class="box" x="190" y="40" width="54" height="54" rx="10"/><text x="217" y="73" text-anchor="middle" style="font-size:19px">6</text></g><text class="small" x="217" y="112" text-anchor="middle">3</text><g><rect class="box" x="250" y="40" width="54" height="54" rx="10"/><text x="277" y="73" text-anchor="middle" style="font-size:19px">8</text></g><text class="small" x="277" y="112" text-anchor="middle">4</text><g><rect class="box" x="310" y="40" width="54" height="54" rx="10"/><text x="337" y="73" text-anchor="middle" style="font-size:19px">5</text></g><text class="small" x="337" y="112" text-anchor="middle">5</text><g><rect class="box" x="370" y="40" width="54" height="54" rx="10"/><text x="397" y="73" text-anchor="middle" style="font-size:19px">3</text></g><text class="small" x="397" y="112" text-anchor="middle">6</text><g><rect class="keybox" x="430" y="40" width="54" height="54" rx="10"/><text x="457" y="73" text-anchor="middle" class="kt" style="font-size:19px">4</text></g><text class="small" x="457" y="112" text-anchor="middle">7</text></svg></div><div class="frame"><p class="fcap"><b>j=2:</b> 1 ≤ 4 → i = 1 e troca v[1]↔v[2].</p><svg viewBox="0 0 494 120" role="img" aria-label="vetor 2, 1, 7, 6, 8, 5, 3, 4" style="max-width:520px;max-height:110px"><g><rect class="okbox" x="10" y="40" width="54" height="54" rx="10"/><text x="37" y="73" text-anchor="middle" style="font-size:19px">2</text></g><text class="small" x="37" y="112" text-anchor="middle">0</text><g><rect class="okbox" x="70" y="40" width="54" height="54" rx="10"/><text x="97" y="73" text-anchor="middle" style="font-size:19px">1</text></g><text class="small" x="97" y="112" text-anchor="middle">1</text><text x="97" y="14" text-anchor="middle" style="fill:var(--acc);font-size:14px">i</text><line x1="97" y1="19" x2="97" y2="36" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><g><rect class="box" x="130" y="40" width="54" height="54" rx="10"/><text x="157" y="73" text-anchor="middle" style="font-size:19px">7</text></g><text class="small" x="157" y="112" text-anchor="middle">2</text><text x="157" y="14" text-anchor="middle" style="fill:var(--acc);font-size:14px">j</text><line x1="157" y1="19" x2="157" y2="36" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><g><rect class="box" x="190" y="40" width="54" height="54" rx="10"/><text x="217" y="73" text-anchor="middle" style="font-size:19px">6</text></g><text class="small" x="217" y="112" text-anchor="middle">3</text><g><rect class="box" x="250" y="40" width="54" height="54" rx="10"/><text x="277" y="73" text-anchor="middle" style="font-size:19px">8</text></g><text class="small" x="277" y="112" text-anchor="middle">4</text><g><rect class="box" x="310" y="40" width="54" height="54" rx="10"/><text x="337" y="73" text-anchor="middle" style="font-size:19px">5</text></g><text class="small" x="337" y="112" text-anchor="middle">5</text><g><rect class="box" x="370" y="40" width="54" height="54" rx="10"/><text x="397" y="73" text-anchor="middle" style="font-size:19px">3</text></g><text class="small" x="397" y="112" text-anchor="middle">6</text><g><rect class="keybox" x="430" y="40" width="54" height="54" rx="10"/><text x="457" y="73" text-anchor="middle" class="kt" style="font-size:19px">4</text></g><text class="small" x="457" y="112" text-anchor="middle">7</text></svg></div><div class="frame"><p class="fcap"><b>j=3,4,5:</b> 6, 8, 5 &gt; 4, nada. <b>j=6:</b> 3 ≤ 4 → i = 2 e troca v[2]↔v[6].</p><svg viewBox="0 0 494 120" role="img" aria-label="vetor 2, 1, 3, 6, 8, 5, 7, 4" style="max-width:520px;max-height:110px"><g><rect class="okbox" x="10" y="40" width="54" height="54" rx="10"/><text x="37" y="73" text-anchor="middle" style="font-size:19px">2</text></g><text class="small" x="37" y="112" text-anchor="middle">0</text><g><rect class="okbox" x="70" y="40" width="54" height="54" rx="10"/><text x="97" y="73" text-anchor="middle" style="font-size:19px">1</text></g><text class="small" x="97" y="112" text-anchor="middle">1</text><g><rect class="okbox" x="130" y="40" width="54" height="54" rx="10"/><text x="157" y="73" text-anchor="middle" style="font-size:19px">3</text></g><text class="small" x="157" y="112" text-anchor="middle">2</text><text x="157" y="14" text-anchor="middle" style="fill:var(--acc);font-size:14px">i</text><line x1="157" y1="19" x2="157" y2="36" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><g><rect class="box" x="190" y="40" width="54" height="54" rx="10"/><text x="217" y="73" text-anchor="middle" style="font-size:19px">6</text></g><text class="small" x="217" y="112" text-anchor="middle">3</text><g><rect class="box" x="250" y="40" width="54" height="54" rx="10"/><text x="277" y="73" text-anchor="middle" style="font-size:19px">8</text></g><text class="small" x="277" y="112" text-anchor="middle">4</text><g><rect class="box" x="310" y="40" width="54" height="54" rx="10"/><text x="337" y="73" text-anchor="middle" style="font-size:19px">5</text></g><text class="small" x="337" y="112" text-anchor="middle">5</text><g><rect class="box" x="370" y="40" width="54" height="54" rx="10"/><text x="397" y="73" text-anchor="middle" style="font-size:19px">7</text></g><text class="small" x="397" y="112" text-anchor="middle">6</text><text x="397" y="14" text-anchor="middle" style="fill:var(--acc);font-size:14px">j</text><line x1="397" y1="19" x2="397" y2="36" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><g><rect class="keybox" x="430" y="40" width="54" height="54" rx="10"/><text x="457" y="73" text-anchor="middle" class="kt" style="font-size:19px">4</text></g><text class="small" x="457" y="112" text-anchor="middle">7</text></svg></div><div class="frame"><p class="fcap"><b>Fim.</b> Troca v[i+1] com o pivô: 4 vai para a posição 3, <b>definitiva</b>. Recursão em [2, 1, 3] e em [8, 5, 7, 6].</p><svg viewBox="0 0 494 120" role="img" aria-label="vetor 2, 1, 3, 4, 8, 5, 7, 6" style="max-width:520px;max-height:110px"><g><rect class="okbox" x="10" y="40" width="54" height="54" rx="10"/><text x="37" y="73" text-anchor="middle" style="font-size:19px">2</text></g><text class="small" x="37" y="112" text-anchor="middle">0</text><g><rect class="okbox" x="70" y="40" width="54" height="54" rx="10"/><text x="97" y="73" text-anchor="middle" style="font-size:19px">1</text></g><text class="small" x="97" y="112" text-anchor="middle">1</text><g><rect class="okbox" x="130" y="40" width="54" height="54" rx="10"/><text x="157" y="73" text-anchor="middle" style="font-size:19px">3</text></g><text class="small" x="157" y="112" text-anchor="middle">2</text><g><rect class="keybox" x="190" y="40" width="54" height="54" rx="10"/><text x="217" y="73" text-anchor="middle" class="kt" style="font-size:19px">4</text></g><text class="small" x="217" y="112" text-anchor="middle">3</text><text x="217" y="14" text-anchor="middle" style="fill:var(--acc);font-size:14px">pivô</text><line x1="217" y1="19" x2="217" y2="36" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/><g><rect class="accbox" x="250" y="40" width="54" height="54" rx="10"/><text x="277" y="73" text-anchor="middle" style="font-size:19px">8</text></g><text class="small" x="277" y="112" text-anchor="middle">4</text><g><rect class="accbox" x="310" y="40" width="54" height="54" rx="10"/><text x="337" y="73" text-anchor="middle" style="font-size:19px">5</text></g><text class="small" x="337" y="112" text-anchor="middle">5</text><g><rect class="accbox" x="370" y="40" width="54" height="54" rx="10"/><text x="397" y="73" text-anchor="middle" style="font-size:19px">7</text></g><text class="small" x="397" y="112" text-anchor="middle">6</text><g><rect class="accbox" x="430" y="40" width="54" height="54" rx="10"/><text x="457" y="73" text-anchor="middle" style="font-size:19px">6</text></g><text class="small" x="457" y="112" text-anchor="middle">7</text></svg></div>
+  <div class="st-nav"><button class="au-btn st-prev" type="button">◀ Passo anterior</button><span class="st-n"></span><button class="au-btn primary st-next" type="button">Próximo passo ▶</button></div></div>
+  <p class="mini">Pivô divide bem (meio) → <b>O(n log n)</b> no melhor e no médio. Pivô sempre o menor ou o maior (ex.: vetor <b>já ordenado</b> com pivô no último) → partições n−1 e 0 → <b>O(n²)</b>. Não é estável; in-place (pilha de recursão O(log n) em média).</p>
+</div>
+
+<div class="slide">
+  <span class="tag">TABELA DE COMPLEXIDADES</span>
+  <h2>A grande tabela (confira linha a linha)</h2>
+  <div class="scroll"><table class="cmp mini cx"><tr><th>Algoritmo</th><th>Melhor</th><th>Médio</th><th>Pior</th><th>Memória extra</th><th>Estável?</th></tr>
+  <tr><td>Bubble (com flag)</td><td class="lin">n</td><td class="n2">n²</td><td class="n2">n²</td><td>O(1)</td><td>sim</td></tr>
+  <tr><td>Selection</td><td class="n2">n²</td><td class="n2">n²</td><td class="n2">n²</td><td>O(1)</td><td>não</td></tr>
+  <tr><td>Insertion</td><td class="lin">n</td><td class="n2">n²</td><td class="n2">n²</td><td>O(1)</td><td>sim</td></tr>
+  <tr><td>Merge</td><td class="nl">n log n</td><td class="nl">n log n</td><td class="nl">n log n</td><td>O(n)</td><td>sim</td></tr>
+  <tr><td>Quick</td><td class="nl">n log n</td><td class="nl">n log n</td><td class="n2">n²</td><td>O(log n) pilha</td><td>não</td></tr>
+  <tr><td>Heap</td><td class="nl">n log n</td><td class="nl">n log n</td><td class="nl">n log n</td><td>O(1)</td><td>não</td></tr>
+  <tr><td>Counting (inteiros 0..k)</td><td class="lin">n + k</td><td class="lin">n + k</td><td class="lin">n + k</td><td>O(n + k)</td><td>sim</td></tr>
+  <tr><td>Busca linear</td><td class="nl">1</td><td class="lin">n</td><td class="lin">n</td><td>O(1)</td><td>—</td></tr>
+  <tr><td>Busca binária</td><td class="nl">1</td><td class="nl">log n</td><td class="nl">log n</td><td>O(1) iterativa</td><td>—</td></tr></table></div>
+  <p class="mini">Limite teórico: nenhuma ordenação <b>baseada em comparações</b> pode ter pior caso melhor que <b>Ω(n log n)</b>. Counting/radix escapam porque não comparam (usam os valores como índice).</p>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHAS</span>
+  <h2>Como a FGV tenta te derrubar</h2>
+  <div class="say trap">
+    <div class="ex ng">“O quicksort é sempre O(n log n), por isso é o mais usado.”</div>
+    <div class="ex ok">É O(n log n) no caso <b>médio</b>; no pior, O(n²). É usado porque costuma ser rápido na prática.</div>
+  </div>
+  <div class="say trap">
+    <div class="ex ng">“Merge sort ordena in-place, sem memória adicional.”</div>
+    <div class="ex ok">A versão clássica em vetor precisa de <b>O(n)</b> de memória auxiliar para intercalar.</div>
+  </div>
+  <div class="say trap">
+    <div class="ex ng">“Insertion sort é sempre pior que merge sort.”</div>
+    <div class="ex ok">Em vetor <b>quase ordenado</b> (ou pequeno), o insertion chega a O(n) e vence. Algoritmos híbridos usam insertion em pedaços pequenos.</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Cola de bolso do capítulo</h2>
+  <div class="magic">Pergunta mágica: “Qual é o PIOR caso e ele é estável?”<small>n log n sempre: merge (estável) e heap (não). n² no pior: quick, bubble, selection, insertion. n no melhor: insertion e bubble com flag.</small></div>
+  <ul class="checklist">
+    <li>Busca binária: vetor ordenado + acesso por índice; O(log n); pior ⌊log₂ n⌋ + 1 comparações.</li>
+    <li>Bubble: maior vai para o fim a cada passada; flag → melhor caso O(n).</li>
+    <li>Selection: O(n²) sempre, poucas trocas, não estável.</li>
+    <li>Insertion: ótimo para quase ordenado; estável.</li>
+    <li>Merge: O(n log n) sempre, O(n) extra. Quick: pivô ruim → O(n²).</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Mostre que aprendeu</h2>
+  <details><summary>1) Vetor ordenado com 64 elementos: máximo de comparações na busca binária?</summary><p><span class="pill ok">7</span> ⌊log₂ 64⌋ + 1 = 6 + 1 = 7.</p></details>
+  <details><summary>2) Qual algoritmo faz no máximo n − 1 trocas, mas sempre O(n²) comparações?</summary><p><span class="pill ok">Selection sort</span> Uma troca por passada, mas varre todo o resto para achar o mínimo.</p></details>
+  <details><summary>3) (FGV-estilo) “O heapsort tem pior caso O(n log n) e é estável.” Certo ou errado?</summary><p><span class="pill ng">Errado</span> Pior caso O(n log n) está certo, mas o heapsort <b>não</b> é estável.</p></details>
+  <details><summary>4) Após a 1ª partição de Lomuto em [7, 2, 1, 6, 8, 5, 3, 4], onde fica o pivô 4?</summary><p><span class="pill ok">Índice 3</span> Resultado [2, 1, 3, 4, 8, 5, 7, 6]: 3 menores à esquerda, 4 maiores à direita.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 5 ===================================================== -->
+<section class="chapter" data-title="POO e SOLID">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 5</span>
+  <h1>POO e SOLID</h1>
+  <span class="emoji">🧩</span>
+  <div class="steps">
+    <div class="step"><b>1. Os 4 pilares</b><span>Encapsulamento, herança, polimorfismo, abstração.</span></div>
+    <div class="step"><b>2. Abstrata × interface</b><span>E por que preferir composição.</span></div>
+    <div class="step"><b>3. SOLID</b><span>Os 5 princípios com exemplos e violações.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🎂</span><div><b>Analogia do dia:</b> a <b>classe</b> é a forma de bolo; cada <b>objeto</b> é um bolo assado nela. Todos têm o mesmo formato (atributos e métodos), mas cada um tem seu sabor (valores próprios).</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">CLASSE E OBJETO</span>
+  <h2>Uma classe, vários objetos</h2>
+  <svg viewBox="0 0 640 200" role="img" aria-label="classe Processo e dois objetos" style="max-width:620px">
+    <rect class="accbox" x="20" y="30" width="210" height="114" rx="8"/><text x="125" y="52" text-anchor="middle">Processo</text><line x1="20" y1="60" x2="230" y2="60" style="stroke:var(--line)" stroke-width="2"/><text class="small" x="30" y="78">- numero: String</text><text class="small" x="30" y="98">- valorCausa: double</text><text class="small" x="30" y="118">+ getNumero(): String</text><text class="small" x="30" y="138">+ arquivar(): void</text>
+    <rect class="okbox" x="380" y="10" width="240" height="74" rx="8"/><text x="500" y="32" text-anchor="middle">p1 : Processo</text><line x1="380" y1="40" x2="620" y2="40" style="stroke:var(--line)" stroke-width="2"/><text class="small" x="390" y="58">numero = "0801-11"</text><text class="small" x="390" y="78">valorCausa = 5000.0</text>
+    <rect class="okbox" x="380" y="110" width="240" height="74" rx="8"/><text x="500" y="132" text-anchor="middle">p2 : Processo</text><line x1="380" y1="140" x2="620" y2="140" style="stroke:var(--line)" stroke-width="2"/><text class="small" x="390" y="158">numero = "0802-22"</text><text class="small" x="390" y="178">valorCausa = 120.0</text>
+    <line x1="232" y1="80" x2="374" y2="45" style="stroke:var(--acc)" stroke-width="2.5" stroke-dasharray="6 5" marker-end="url(#ah)"/><line x1="232" y1="100" x2="374" y2="145" style="stroke:var(--acc)" stroke-width="2.5" stroke-dasharray="6 5" marker-end="url(#ah)"/>
+    <text class="small" x="300" y="120" text-anchor="middle">new</text>
+  </svg>
+<pre><code>Processo p1 = <mark>new</mark> Processo("0801-11", 5000.0);  // construtor cria o objeto</code></pre>
+  <div class="say law">Classe é o molde que define atributos (estado) e métodos (comportamento); objeto é uma instância da classe, criada em tempo de execução, com estado próprio.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ENCAPSULAMENTO</span>
+  <h2>Encapsulamento: o estado fica guardado</h2>
+<pre><code>public class Conta {
+  <mark>private</mark> double saldo;                    // ninguém mexe direto
+  public void sacar(double v) {
+    if (v &lt;= 0 || v &gt; saldo) throw new IllegalArgumentException();
+    saldo -= v;                               // regra protegida
+  }
+  public double getSaldo() { return saldo; }
+}</code></pre>
+  <table class="cmp mini cx"><tr><th>Modificador (Java)</th><th>Mesma classe</th><th>Mesmo pacote</th><th>Subclasse (outro pacote)</th><th>Qualquer um</th></tr>
+  <tr><td>private</td><td class="hk">✓</td><td class="hl">✗</td><td class="hl">✗</td><td class="hl">✗</td></tr>
+  <tr><td>(padrão, sem palavra)</td><td class="hk">✓</td><td class="hk">✓</td><td class="hl">✗</td><td class="hl">✗</td></tr>
+  <tr><td>protected</td><td class="hk">✓</td><td class="hk">✓</td><td class="hk">✓</td><td class="hl">✗</td></tr>
+  <tr><td>public</td><td class="hk">✓</td><td class="hk">✓</td><td class="hk">✓</td><td class="hk">✓</td></tr></table>
+</div>
+
+<div class="slide">
+  <span class="tag">HERANÇA E POLIMORFISMO</span>
+  <h2>Herança (“é um”) e sobrescrita</h2>
+  <svg viewBox="0 0 640 190" role="img" aria-label="Animal com subclasses Cachorro e Gato" style="max-width:560px">
+    <rect class="accbox" x="230" y="10" width="180" height="70" rx="8"/><text class="small" x="320" y="26" text-anchor="middle">«abstract»</text><text x="320" y="46" text-anchor="middle">Animal</text><line x1="230" y1="54" x2="410" y2="54" style="stroke:var(--line)" stroke-width="2"/><text class="small" x="240" y="72">+ falar(): String</text>
+    <rect class="box" x="70" y="120" width="180" height="54" rx="8"/><text x="160" y="142" text-anchor="middle">Cachorro</text><line x1="70" y1="150" x2="250" y2="150" style="stroke:var(--line)" stroke-width="2"/><text class="small" x="80" y="168">+ falar(): "Au"</text>
+    <rect class="box" x="390" y="120" width="180" height="54" rx="8"/><text x="480" y="142" text-anchor="middle">Gato</text><line x1="390" y1="150" x2="570" y2="150" style="stroke:var(--line)" stroke-width="2"/><text class="small" x="400" y="168">+ falar(): "Miau"</text>
+    <line x1="160" y1="120" x2="290" y2="100" style="stroke:var(--blue)" stroke-width="2.5"/><path d="M281,100 L290,86 L299,100 z" style="fill:var(--card);stroke:var(--blue)" stroke-width="2.5"/><line x1="480" y1="120" x2="350" y2="100" style="stroke:var(--blue)" stroke-width="2.5"/><path d="M341,100 L350,86 L359,100 z" style="fill:var(--card);stroke:var(--blue)" stroke-width="2.5"/>
+  </svg>
+<pre><code>Animal a = new Cachorro();
+a.falar();   <mark>// "Au": decide pelo objeto real, em tempo de execução</mark></code></pre>
+  <p class="mini">Java: uma classe <b>estende só uma</b> classe (herança simples), mas pode <b>implementar várias interfaces</b>.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">COMPARAÇÃO</span>
+  <h2>Sobrescrita × sobrecarga</h2>
+  <div class="tables">
+    <div class="tbox"><h4>Sobrescrita (override)</h4>
+<pre class="mini"><code>class Gato extends Animal {
+  <mark>@Override</mark>
+  String falar() { return "Miau"; }
+}</code></pre>
+    <p class="cap">Mesma assinatura, na <b>subclasse</b>. Resolvida em <b>tempo de execução</b> (ligação dinâmica).</p></div>
+    <div class="tbox"><h4>Sobrecarga (overload)</h4>
+<pre class="mini"><code>int somar(int a, int b)
+double somar(double a, double b)
+int somar(int a, int b, int c)</code></pre>
+    <p class="cap">Mesmo nome, <b>parâmetros diferentes</b>. Resolvida em <b>tempo de compilação</b>.</p></div>
+  </div>
+  <div class="say trap"><div class="ex ng">“Métodos que diferem apenas no tipo de retorno caracterizam sobrecarga.”</div><div class="ex ok">Em Java isso <b>não compila</b>: a sobrecarga exige lista de parâmetros diferente (quantidade, tipo ou ordem).</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">ABSTRAÇÃO</span>
+  <h2>Classe abstrata × interface (e composição)</h2>
+  <table class="cmp mini"><tr><th></th><th>Classe abstrata</th><th>Interface</th></tr>
+  <tr><td>Instanciar com new?</td><td class="hl">não</td><td class="hl">não</td></tr>
+  <tr><td>Atributos de instância (estado)</td><td class="hk">sim</td><td>não (só constantes)</td></tr>
+  <tr><td>Construtor</td><td class="hk">sim</td><td>não</td></tr>
+  <tr><td>Métodos com corpo</td><td>sim</td><td>default e static (Java 8+)</td></tr>
+  <tr><td>Quantas uma classe pode usar</td><td>1 (extends)</td><td>várias (implements)</td></tr></table>
+  <div class="two mini">
+    <div class="say good"><b>Composição (“tem um”):</b> Carro <b>tem um</b> Motor. Troca-se o motor sem mexer na hierarquia → menos acoplamento.</div>
+    <div class="say bad"><b>Herança forçada:</b> Pilha extends ArrayList “herda” métodos que quebram o LIFO (ex.: inserir no meio).</div>
+  </div>
+  <p class="mini">Meta de projeto: <b>alta coesão</b> (cada classe faz uma coisa bem) e <b>baixo acoplamento</b> (pouca dependência entre classes).</p>
+</div>
+
+<div class="slide">
+  <span class="tag">SOLID</span>
+  <h2>SOLID: cinco princípios, uma meta</h2>
+  <div class="cards5">
+    <div><b>S</b>Single Responsibility: um único motivo para mudar.</div>
+    <div><b>O</b>Open/Closed: aberto para extensão, fechado para modificação.</div>
+    <div><b>L</b>Liskov Substitution: subtipo substitui o tipo base sem quebrar.</div>
+    <div><b>I</b>Interface Segregation: interfaces pequenas e específicas.</div>
+    <div><b>D</b>Dependency Inversion: dependa de abstrações.</div>
+  </div>
+  <p>Reunidos e popularizados por <b>Robert C. Martin</b> (“Uncle Bob”). Objetivo: código fácil de mudar, testar e reaproveitar.</p>
+  <div class="say good"><b>Macete:</b> cada letra responde a um “cheiro”: classe faz tudo (S) · if/else por tipo crescendo (O) · subclasse que lança “não suportado” (L) · interface gorda (I) · <code>new</code> de classe concreta no meio da regra de negócio (D).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">S e O</span>
+  <h2>SRP e OCP na prática</h2>
+  <div class="two">
+    <div><h3 style="margin-top:0">SRP</h3>
+    <div class="ex ng">RelatorioService calcula, formata em PDF <b>e</b> envia e-mail.</div>
+    <div class="ex ok">CalculadoraRelatorio · GeradorPdf · EnviadorEmail — cada uma com um motivo para mudar.</div></div>
+    <div><h3 style="margin-top:0">OCP</h3>
+<pre class="mini"><code><mark class="ng">if (tipo == "VIP") ... else if (tipo == "SERVIDOR") ...</mark>
+
+interface Desconto { double aplicar(double v); }
+class DescontoVip implements Desconto { ... }
+<mark class="ok">// novo tipo = nova classe, sem editar as antigas</mark></code></pre></div>
+  </div>
+  <div class="say law">SRP: uma classe deve ter um, e apenas um, motivo para mudar. OCP: entidades de software devem estar abertas para extensão, mas fechadas para modificação.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">L</span>
+  <h2>Liskov: o Quadrado que quebrou o Retângulo</h2>
+  <svg viewBox="0 0 640 170" role="img" aria-label="Quadrado herda de Retangulo e quebra a expectativa" style="max-width:600px">
+    <rect class="accbox" x="30" y="10" width="220" height="74" rx="8"/><text x="140" y="32" text-anchor="middle">Retangulo</text><line x1="30" y1="40" x2="250" y2="40" style="stroke:var(--line)" stroke-width="2"/><text class="small" x="40" y="58">+ setLargura(w)</text><text class="small" x="40" y="78">+ setAltura(h)</text>
+    <rect class="badbox" x="30" y="104" width="220" height="54" rx="8"/><text x="140" y="126" text-anchor="middle">Quadrado</text><line x1="30" y1="134" x2="250" y2="134" style="stroke:var(--line)" stroke-width="2"/><text class="small" x="40" y="152">setLargura muda a altura também</text>
+    <line x1="140" y1="104" x2="140" y2="96" style="stroke:var(--blue)" stroke-width="2.5"/><path d="M131,96 L140,82 L149,96 z" style="fill:var(--card);stroke:var(--blue)" stroke-width="2.5"/>
+    <rect class="box" x="300" y="20" width="320" height="120" rx="12"/>
+    <text x="316" y="48" style="font-size:14px">void teste(Retangulo r) {</text>
+    <text x="330" y="72" style="font-size:14px">r.setLargura(5); r.setAltura(4);</text>
+    <text x="330" y="96" style="font-size:14px">assert r.area() == 20;</text>
+    <text x="316" y="120" style="font-size:14px;fill:var(--bad)">} // com Quadrado: área 16 ✗</text>
+  </svg>
+  <p>Matematicamente, quadrado “é um” retângulo. Mas em <b>comportamento</b>, não: quem usa Retângulo espera alterar largura e altura de forma independente.</p>
+  <div class="say law">Princípio da Substituição de Liskov: objetos de uma superclasse devem poder ser substituídos por objetos de suas subclasses sem alterar a correção do programa.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">I e D</span>
+  <h2>ISP e DIP: interfaces magras e setas invertidas</h2>
+  <p class="mini"><b>ISP:</b> em vez de <code>Multifuncional { imprimir(); escanear(); enviarFax(); }</code>, crie <code>Imprimivel</code>, <code>Escaneavel</code>… A impressora simples implementa só o que usa.</p>
+  <svg viewBox="0 0 640 170" role="img" aria-label="DIP: serviço depende de interface; implementação também" style="max-width:600px">
+    <rect class="okbox" x="20" y="50" width="170" height="54" rx="8"/><text x="105" y="72" text-anchor="middle">PedidoService</text><line x1="20" y1="80" x2="190" y2="80" style="stroke:var(--line)" stroke-width="2"/><text class="small" x="30" y="98">(alto nível)</text>
+    <rect class="keybox" x="240" y="40" width="180" height="70" rx="8"/><text class="small" x="330" y="56" text-anchor="middle">«interface»</text><text x="330" y="76" text-anchor="middle">PedidoRepository</text><line x1="240" y1="84" x2="420" y2="84" style="stroke:var(--line)" stroke-width="2"/><text class="small" x="250" y="102">salvar(p)</text>
+    <rect class="box" x="470" y="50" width="160" height="54" rx="8"/><text x="550" y="72" text-anchor="middle">PedidoRepoJpa</text><line x1="470" y1="80" x2="630" y2="80" style="stroke:var(--line)" stroke-width="2"/><text class="small" x="480" y="98">(baixo nível)</text>
+    <line x1="192" y1="85" x2="234" y2="85" style="stroke:var(--acc)" stroke-width="2.5" marker-end="url(#ah)"/>
+    <line x1="468" y1="85" x2="436" y2="85" style="stroke:var(--blue)" stroke-width="2.5" stroke-dasharray="7 5"/><path d="M436,76 L422,85 L436,94 z" style="fill:var(--card);stroke:var(--blue)" stroke-width="2.5"/>
+    <text class="small" x="213" y="130" text-anchor="middle">usa</text><text class="small" x="448" y="130" text-anchor="middle">implementa</text>
+  </svg>
+  <div class="say trap"><div class="ex ng">“DIP e injeção de dependência são a mesma coisa, e exigem um framework.”</div><div class="ex ok">DIP é o <b>princípio</b> (depender de abstrações). Injeção de dependência é uma <b>técnica</b> para aplicá-lo — dá para fazer à mão, passando a dependência no construtor.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Cola de bolso do capítulo</h2>
+  <div class="magic">Pergunta mágica: “Se eu precisar mudar isso amanhã, quantas classes vou ter que abrir?”<small>Muitas → provavelmente algum princípio SOLID foi violado.</small></div>
+  <ul class="checklist">
+    <li>Encapsulamento (private + métodos), herança (“é um”), polimorfismo, abstração.</li>
+    <li>Sobrescrita = subclasse, execução; sobrecarga = parâmetros diferentes, compilação.</li>
+    <li>Java: 1 superclasse, várias interfaces; interface tem default/static desde o Java 8.</li>
+    <li>Prefira composição a herança; alta coesão, baixo acoplamento.</li>
+    <li>S um motivo · O estender sem editar · L substituir sem quebrar · I interfaces magras · D depender de abstrações.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Mostre que aprendeu</h2>
+  <details><summary>1) Para adicionar uma nova forma de pagamento, é preciso editar um switch gigante em PagamentoService. Qual princípio sofre?</summary><p><span class="pill ok">OCP</span> O código deveria ser estendido (nova classe implementando uma interface), não modificado.</p></details>
+  <details><summary>2) A subclasse PatoDeBorracha sobrescreve voar() lançando UnsupportedOperationException. Qual princípio é violado?</summary><p><span class="pill ok">LSP</span> Quem usa Pato espera que voar() funcione; a subclasse não pode substituir a base.</p></details>
+  <details><summary>3) (FGV-estilo) “Em Java, uma classe pode estender duas classes abstratas.” Certo ou errado?</summary><p><span class="pill ng">Errado</span> Herança de classes é simples (um extends). Várias, só interfaces.</p></details>
+  <details><summary>4) Mesmo nome de método, mesma classe, parâmetros (int) e (String): é sobrecarga ou sobrescrita?</summary><p><span class="pill ok">Sobrecarga</span> Diferem os parâmetros; o compilador escolhe pela chamada.</p></details>
+</div>
+
+</section>
+
+<script>
+(function(){
+  function upd(st){var fr=st.querySelectorAll('.frame'),i=0;for(var k=0;k<fr.length;k++)if(fr[k].classList.contains('on'))i=k;
+    st.querySelector('.st-n').textContent='passo '+(i+1)+' de '+fr.length;
+    st.querySelector('.st-prev').disabled=i===0;st.querySelector('.st-next').disabled=i===fr.length-1;}
+  document.querySelectorAll('.stepper').forEach(upd);
+  document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.st-prev,.st-next');if(!b)return;
+    var st=b.closest('.stepper'),fr=st.querySelectorAll('.frame'),i=0;for(var k=0;k<fr.length;k++)if(fr[k].classList.contains('on'))i=k;
+    var j=b.classList.contains('st-next')?Math.min(fr.length-1,i+1):Math.max(0,i-1);
+    fr[i].classList.remove('on');fr[j].classList.add('on');upd(st);b.blur();});
+})();
+</script>
+<script src="aula.js"></script></body></html>

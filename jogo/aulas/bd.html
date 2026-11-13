@@ -1,0 +1,1101 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Banco de Dados — aulas visuais</title><link rel="stylesheet" href="aula.css">
+<style>
+.mini{font-size:15px}
+.mini table,.io table{font-size:14px}
+.io th,.io td{padding:4px 7px}
+.io{display:grid;grid-template-columns:1fr 34px 1fr;gap:8px;align-items:start;margin:10px 0}
+.io > .arr{font-size:28px;color:var(--acc);text-align:center;font-weight:900;align-self:center}
+.io3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:10px 0}
+.io3 table{font-size:14px}
+.io3 th,.io3 td{padding:4px 7px}
+.tbox h4 .pill{font-size:12px}
+.in{font-size:12px;font-weight:800;letter-spacing:.05em;color:var(--muted);text-transform:uppercase}
+.out{font-size:12px;font-weight:800;letter-spacing:.05em;color:var(--ok);text-transform:uppercase}
+pre{background:var(--cell);border:2px solid var(--line);border-radius:12px;padding:8px 12px;margin:8px 0;overflow-x:auto;font:14.5px/1.45 ui-monospace,Consolas,monospace;white-space:pre}
+pre code{background:none;padding:0;font-size:1em}
+pre b{color:var(--acc)}
+pre i{color:var(--muted);font-style:normal}
+td.dim{opacity:.4;text-decoration:line-through}
+td.nul{color:var(--muted);font-style:italic}
+@media (max-width:700px){.io{grid-template-columns:1fr}.io > .arr{transform:rotate(90deg)}.io3{grid-template-columns:1fr}}
+</style></head>
+<body data-subject="bd" data-title="Banco de Dados">
+
+<!-- ===================================================== CAPÍTULO 1 ===================================================== -->
+<section class="chapter" data-title="Modelo e álgebra relacional">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 1</span>
+  <h1>Modelo e álgebra relacional</h1>
+  <span class="emoji">🗂️</span>
+  <div class="steps">
+    <div class="step"><b>1. Vocabulário</b><span>Relação, tupla, atributo, domínio, grau, cardinalidade.</span></div>
+    <div class="step"><b>2. Chaves</b><span>Superchave, candidata, primária, estrangeira e integridade.</span></div>
+    <div class="step"><b>3. Álgebra</b><span>σ, π, ∪, ∩, −, ×, ⋈, ÷: a “matemática” por trás do SQL.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🗄️</span><div><b>Analogia do dia:</b> um banco relacional é um <b>arquivo de fichas</b>. Cada gaveta é uma tabela, cada ficha é uma linha, e cada campo impresso na ficha é uma coluna. A álgebra relacional é o conjunto de <b>gestos</b> que você faz com as fichas: separar, recortar, juntar.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">MODELAGEM</span>
+  <h2>Do mundo real até o banco: 3 níveis</h2>
+  <svg viewBox="0 0 640 170" role="img" aria-label="modelo conceitual, lógico e físico em sequência">
+    <defs><marker id="c1a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="accbox" x="10" y="20" width="180" height="70" rx="14"/><text x="100" y="50" text-anchor="middle">Conceitual</text><text x="100" y="72" text-anchor="middle" class="small">DER: entidades e relacion.</text>
+    <rect class="accbox" x="230" y="20" width="180" height="70" rx="14"/><text x="320" y="50" text-anchor="middle">Lógico</text><text x="320" y="72" text-anchor="middle" class="small">tabelas, colunas, chaves</text>
+    <rect class="accbox" x="450" y="20" width="180" height="70" rx="14"/><text x="540" y="50" text-anchor="middle">Físico</text><text x="540" y="72" text-anchor="middle" class="small">tipos, índices, no SGBD</text>
+    <line x1="192" y1="55" x2="226" y2="55" stroke="#6d4aff" stroke-width="3" marker-end="url(#c1a)"/>
+    <line x1="412" y1="55" x2="446" y2="55" stroke="#6d4aff" stroke-width="3" marker-end="url(#c1a)"/>
+    <text x="100" y="125" text-anchor="middle" class="small">independe de SGBD</text>
+    <text x="320" y="125" text-anchor="middle" class="small">depende do modelo (relacional)</text>
+    <text x="540" y="125" text-anchor="middle" class="small">depende do SGBD (Oracle, PostgreSQL…)</text>
+    <text x="320" y="158" text-anchor="middle" class="small">quanto mais à direita, mais detalhe técnico</text>
+  </svg>
+  <p class="mini">No DER: <b>entidade</b> (Processo, Vara), <b>atributo</b> (número, data) e <b>relacionamento</b> com <b>cardinalidade</b> 1:1, 1:N ou N:M. Ao passar para o lógico, o 1:N vira uma <b>chave estrangeira</b> no lado N, e o N:M vira uma <b>tabela associativa</b> com as duas chaves.</p>
+  <div class="say law">Modelo conceitual descreve o negócio sem depender de tecnologia; o lógico o traduz para um modelo de dados (ex.: relacional); o físico define a implementação num SGBD específico.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">VOCABULÁRIO</span>
+  <h2>Os nomes “de prova” de uma tabela</h2>
+  <div class="scroll"><table class="mini" style="max-width:560px">
+    <tr><th class="k">matricula</th><th>nome</th><th>cargo</th></tr>
+    <tr><td>101</td><td>Ana</td><td>Analista</td></tr>
+    <tr><td class="hk">102</td><td class="hk">Bruno</td><td class="hk">Técnico</td></tr>
+    <tr><td>103</td><td>Carla</td><td>Analista</td></tr>
+  </table></div>
+  <table class="cmp mini">
+    <tr><th>Na prova</th><th>No dia a dia</th><th>No exemplo</th></tr>
+    <tr><td><b>Relação</b></td><td>tabela</td><td>servidor</td></tr>
+    <tr><td><b>Tupla</b></td><td>linha</td><td>a linha verde (102, Bruno, Técnico)</td></tr>
+    <tr><td><b>Atributo</b></td><td>coluna</td><td>nome</td></tr>
+    <tr><td><b>Domínio</b></td><td>valores permitidos</td><td>cargo ∈ {Analista, Técnico}</td></tr>
+    <tr><td><b>Grau</b></td><td>nº de colunas</td><td>3</td></tr>
+    <tr><td><b>Cardinalidade</b></td><td>nº de linhas</td><td>3</td></tr>
+  </table>
+  <div class="say law">Na teoria, a relação é um <b>conjunto</b> de tuplas: não há ordem entre linhas nem tuplas repetidas, e cada valor é atômico.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">CHAVES</span>
+  <h2>Superchave, candidata, primária</h2>
+  <p class="mini">Tabela <code>servidor(matricula, cpf, nome)</code>. Matrícula e CPF são únicos; nome pode repetir.</p>
+  <svg viewBox="0 0 640 200" role="img" aria-label="conjuntos aninhados: superchaves contêm candidatas que contêm a primária">
+    <rect x="10" y="10" width="620" height="180" rx="22" fill="none" stroke="#e8871a" stroke-width="3"/>
+    <text x="30" y="36" style="fill:#e8871a">Superchaves: identificam a linha (podem ter “sobra”)</text>
+    <text x="30" y="58" class="small">{matricula, nome} · {cpf, nome} · {matricula, cpf} · {matricula} · {cpf}</text>
+    <rect x="40" y="72" width="560" height="108" rx="18" fill="none" stroke="#2f6fdf" stroke-width="3"/>
+    <text x="60" y="96" style="fill:#2f6fdf">Candidatas: superchaves MÍNIMAS (sem sobra)</text>
+    <rect class="keybox" x="70" y="112" width="210" height="52" rx="12"/><text class="kt" x="175" y="136" text-anchor="middle">{matricula}</text><text class="kt" x="175" y="155" text-anchor="middle" style="font-size:12px">escolhida → PRIMÁRIA</text>
+    <rect class="okbox" x="340" y="112" width="210" height="52" rx="12"/><text x="445" y="136" text-anchor="middle">{cpf}</text><text x="445" y="155" text-anchor="middle" class="small">sobrou → ALTERNATIVA</text>
+  </svg>
+  <div class="say law"><b>Superchave</b>: conjunto de atributos que identifica unicamente cada tupla. <b>Chave candidata</b>: superchave mínima (tirou um atributo, deixa de identificar). <b>Primária</b>: a candidata escolhida; as demais são <b>alternativas</b>.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">INTEGRIDADE</span>
+  <h2>Chave estrangeira: a “ponte” entre tabelas</h2>
+  <div class="tables">
+    <div class="tbox"><h4>vara</h4>
+      <table class="mini"><tr><th class="k">id_vara</th><th>nome</th></tr>
+      <tr><td>1</td><td>1ª Cível</td></tr><tr><td>2</td><td>2ª Criminal</td></tr></table></div>
+    <div class="tbox"><h4>processo</h4>
+      <table class="mini"><tr><th class="k">numero</th><th>id_vara (FK)</th></tr>
+      <tr><td>A-10</td><td class="hk">1</td></tr><tr><td>A-11</td><td class="hk">2</td></tr><tr><td>A-12</td><td class="hl">7</td></tr></table>
+      <p class="cap">A vara 7 não existe: violação de <b>integridade referencial</b>.</p></div>
+  </div>
+  <table class="cmp mini">
+    <tr><th>Regra</th><th>O que exige</th></tr>
+    <tr><td><b>Integridade de entidade</b></td><td>a chave primária não pode ser nula (nem repetida)</td></tr>
+    <tr><td><b>Integridade referencial</b></td><td>a FK aponta para uma PK existente ou é nula (se permitido)</td></tr>
+    <tr><td><b>Integridade de domínio</b></td><td>o valor pertence ao domínio do atributo (tipo, CHECK)</td></tr>
+  </table>
+  <p class="mini">Se apagarem a vara 1? A FK decide: <code>RESTRICT</code>/<code>NO ACTION</code> (barra), <code>CASCADE</code> (apaga os processos junto) ou <code>SET NULL</code>.</p>
+</div>
+
+<div class="slide">
+  <span class="tag">ÁLGEBRA · SELEÇÃO σ</span>
+  <h2>σ: a peneira que escolhe <u>linhas</u></h2>
+  <div class="analogy"><span class="emoji">🧺</span><div>A peneira <b>horizontal</b>: passa só a ficha que cumpre a condição. As colunas continuam todas.</div></div>
+  <pre><code><b>σ</b> <sub>classe = 'Cível'</sub> (processo)        <i>-- em SQL: SELECT * FROM processo WHERE classe = 'Cível'</i></code></pre>
+  <div class="io">
+    <div class="tbox"><span class="in">entrada: processo</span>
+      <table><tr><th>numero</th><th>classe</th><th>valor</th></tr>
+      <tr><td>A-10</td><td class="hk">Cível</td><td>500</td></tr>
+      <tr><td class="dim">A-11</td><td class="dim">Penal</td><td class="dim">0</td></tr>
+      <tr><td>A-12</td><td class="hk">Cível</td><td>900</td></tr>
+      <tr><td class="dim">A-13</td><td class="dim">Trabalho</td><td class="dim">300</td></tr></table></div>
+    <div class="arr">→</div>
+    <div class="tbox"><span class="out">resultado</span>
+      <table><tr><th>numero</th><th>classe</th><th>valor</th></tr>
+      <tr><td>A-10</td><td>Cível</td><td>500</td></tr>
+      <tr><td>A-12</td><td>Cível</td><td>900</td></tr></table>
+      <p class="cap">Grau igual (3); cardinalidade menor ou igual.</p></div>
+  </div>
+  <div class="say law">A seleção σ<sub>condição</sub>(R) retorna as tuplas de R que satisfazem o predicado; é uma operação <b>unária</b> que mantém todos os atributos.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ÁLGEBRA · PROJEÇÃO π</span>
+  <h2>π: a tesoura que escolhe <u>colunas</u></h2>
+  <pre><code><b>π</b> <sub>classe</sub> (processo)        <i>-- em SQL: SELECT DISTINCT classe FROM processo</i></code></pre>
+  <div class="io">
+    <div class="tbox"><span class="in">entrada: processo</span>
+      <table><tr><th>numero</th><th class="k">classe</th><th>valor</th></tr>
+      <tr><td class="dim">A-10</td><td>Cível</td><td class="dim">500</td></tr>
+      <tr><td class="dim">A-11</td><td>Penal</td><td class="dim">0</td></tr>
+      <tr><td class="dim">A-12</td><td class="hl">Cível</td><td class="dim">900</td></tr>
+      <tr><td class="dim">A-13</td><td>Trabalho</td><td class="dim">300</td></tr></table></div>
+    <div class="arr">→</div>
+    <div class="tbox"><span class="out">resultado</span>
+      <table><tr><th>classe</th></tr><tr><td>Cível</td></tr><tr><td>Penal</td></tr><tr><td>Trabalho</td></tr></table>
+      <p class="cap">O “Cível” repetido sumiu: relação é conjunto.</p></div>
+  </div>
+  <div class="say trap"><span class="pill ng">✗</span> “A operação de seleção da álgebra corresponde à lista de colunas do SELECT.”<br>
+  <span class="pill ok">✓</span> σ (seleção) ↔ <b>WHERE</b> (linhas). π (projeção) ↔ <b>lista do SELECT</b> (colunas). E o SQL só elimina duplicatas com <code>DISTINCT</code>; a π pura elimina sempre.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ÁLGEBRA · CONJUNTOS</span>
+  <h2>União, interseção e diferença</h2>
+  <p class="mini">Só valem entre relações <b>compatíveis</b>: mesmo grau e domínios correspondentes. Exemplo com dois grupos de servidores:</p>
+  <div class="io3">
+    <div class="tbox"><span class="in">R: plantão</span><table><tr><th>nome</th></tr><tr><td>Ana</td></tr><tr><td>Bruno</td></tr><tr><td>Carla</td></tr></table></div>
+    <div class="tbox"><span class="in">S: comissão</span><table><tr><th>nome</th></tr><tr><td>Bruno</td></tr><tr><td>Dora</td></tr></table></div>
+    <div class="tbox"><span class="out">resultados</span><table>
+      <tr><th>R ∪ S</th><td>Ana, Bruno, Carla, Dora</td></tr>
+      <tr><th>R ∩ S</th><td class="hk">Bruno</td></tr>
+      <tr><th>R − S</th><td>Ana, Carla</td></tr>
+      <tr><th>S − R</th><td>Dora</td></tr></table></div>
+  </div>
+  <svg viewBox="0 0 640 120" role="img" aria-label="diagrama de Venn de R e S com Bruno na interseção">
+    <circle cx="270" cy="60" r="55" fill="#6d4aff" fill-opacity=".15" stroke="#6d4aff" stroke-width="2"/>
+    <circle cx="370" cy="60" r="55" fill="#2ea043" fill-opacity=".15" stroke="#2ea043" stroke-width="2"/>
+    <text x="235" y="55" text-anchor="middle" class="small">Ana</text><text x="235" y="75" text-anchor="middle" class="small">Carla</text>
+    <text x="320" y="65" text-anchor="middle">Bruno</text><text x="400" y="65" text-anchor="middle" class="small">Dora</text>
+    <text x="180" y="20" class="small">R</text><text x="450" y="20" class="small">S</text>
+  </svg>
+  <div class="say law">A diferença <b>não é comutativa</b>: R − S ≠ S − R. A interseção é derivável: R ∩ S = R − (R − S).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ÁLGEBRA · × E ⋈</span>
+  <h2>Produto cartesiano e junção</h2>
+  <p class="mini"><b>×</b> casa <u>cada</u> linha de R com <u>cada</u> linha de S: 2 processos × 2 varas = 4 linhas (grau = soma dos graus). A <b>junção</b> é o produto + a seleção que deixa só os pares que “combinam”: <code>R ⋈<sub>cond</sub> S = σ<sub>cond</sub>(R × S)</code>.</p>
+  <div class="io">
+    <div class="tbox"><span class="in">processo × vara (4 linhas)</span>
+      <table><tr><th>num</th><th>p.vara</th><th>v.id</th><th>v.nome</th></tr>
+      <tr><td>A-10</td><td>1</td><td>1</td><td class="hk">1ª Cível</td></tr>
+      <tr><td class="dim">A-10</td><td class="dim">1</td><td class="dim">2</td><td class="dim">2ª Crim.</td></tr>
+      <tr><td class="dim">A-11</td><td class="dim">2</td><td class="dim">1</td><td class="dim">1ª Cível</td></tr>
+      <tr><td>A-11</td><td>2</td><td>2</td><td class="hk">2ª Crim.</td></tr></table></div>
+    <div class="arr">→</div>
+    <div class="tbox"><span class="out">processo ⋈ <sub>p.vara = v.id</sub> vara</span>
+      <table><tr><th>num</th><th>p.vara</th><th>v.id</th><th>v.nome</th></tr>
+      <tr><td>A-10</td><td>1</td><td>1</td><td>1ª Cível</td></tr>
+      <tr><td>A-11</td><td>2</td><td>2</td><td>2ª Crim.</td></tr></table>
+      <p class="cap">Na <b>junção natural</b> (*), a igualdade é feita nas colunas de mesmo nome e a coluna repetida aparece uma vez só.</p></div>
+  </div>
+  <div class="say law">|R × S| = |R| · |S|. Junção theta usa qualquer comparação; equijunção usa só “=”.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>Quais operações são “fundamentais”?</h2>
+  <div class="two">
+    <div class="card" style="margin:0"><b>Fundamentais</b> (não se obtêm das outras):<br><span class="pill ok">σ</span> <span class="pill ok">π</span> <span class="pill ok">∪</span> <span class="pill ok">−</span> <span class="pill ok">×</span> <span class="pill ok">ρ renomear</span></div>
+    <div class="card" style="margin:0"><b>Derivadas</b> (atalhos):<br><span class="pill ng">∩</span> <span class="pill ng">⋈ junção</span> <span class="pill ng">÷ divisão</span></div>
+  </div>
+  <p class="mini"><b>Divisão ÷</b> responde perguntas com “<b>todos</b>”: “quais servidores fizeram <u>todos</u> os cursos obrigatórios?”</p>
+  <div class="io3">
+    <div class="tbox"><span class="in">fez(servidor, curso)</span><table><tr><th>serv</th><th>curso</th></tr><tr><td>Ana</td><td>LGPD</td></tr><tr><td>Ana</td><td>SQL</td></tr><tr><td>Bruno</td><td>SQL</td></tr></table></div>
+    <div class="tbox"><span class="in">obrig(curso)</span><table><tr><th>curso</th></tr><tr><td>LGPD</td></tr><tr><td>SQL</td></tr></table></div>
+    <div class="tbox"><span class="out">fez ÷ obrig</span><table><tr><th>serv</th></tr><tr><td class="hk">Ana</td></tr></table><p class="cap">Bruno não fez LGPD.</p></div>
+  </div>
+  <div class="say trap"><span class="pill ng">✗</span> “A junção é operação primitiva.” <span class="pill ok">✓</span> A junção é derivada: σ aplicada sobre o produto cartesiano.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Capítulo 1 numa colinha</h2>
+  <div class="magic">σ corta linhas, π corta colunas, ⋈ = σ(×).<small>Relação = conjunto de tuplas. Candidata = superchave mínima. FK aponta para PK existente ou é nula.</small></div>
+  <ul class="checklist">
+    <li>Grau = nº de atributos; cardinalidade = nº de tuplas.</li>
+    <li>Superchave ⊇ candidata; a primária é uma candidata escolhida; as outras são alternativas.</li>
+    <li>Integridade de entidade (PK não nula) × referencial (FK válida).</li>
+    <li>∪, ∩, − exigem compatibilidade de união; − não é comutativa.</li>
+    <li>|R × S| = |R|·|S|; divisão = “para todos”.</li>
+    <li>1:N vira FK no lado N; N:M vira tabela associativa.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Pense antes de abrir</h2>
+  <details><summary>1) R tem 4 tuplas e grau 3; S tem 5 tuplas e grau 2. R × S tem quantas tuplas e qual grau?</summary>
+    <p><span class="pill ok">20 tuplas, grau 5</span> Cardinalidades se multiplicam (4·5); graus se somam (3+2).</p></details>
+  <details><summary>2) Em servidor(matricula, cpf, nome), {matricula, nome} é chave candidata?</summary>
+    <p><span class="pill ng">Não</span> É superchave, mas não é mínima: tirando “nome”, matrícula sozinha ainda identifica. Candidatas: {matricula} e {cpf}.</p></details>
+  <details><summary>3) Qual operação da álgebra corresponde à cláusula WHERE do SQL?</summary>
+    <p><span class="pill ok">Seleção (σ)</span> WHERE filtra linhas. A lista de colunas após SELECT corresponde à projeção (π).</p></details>
+  <details><summary>4) “Clientes que compraram todos os produtos da promoção” pede qual operação?</summary>
+    <p><span class="pill ok">Divisão (÷)</span> A palavra “todos” é o sinal clássico. A divisão é derivada (pode ser escrita com π, × e −).</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 2 ===================================================== -->
+<section class="chapter" data-title="Normalização 1FN a 3FN">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 2</span>
+  <h1>Normalização 1FN a 3FN, sem sofrimento</h1>
+  <span class="emoji">🧹</span>
+  <div class="magic">“A chave, toda a chave e nada além da chave.”
+  <small>1FN = <b>a chave</b> (tem chave e valores atômicos) · 2FN = <b>toda a chave</b> · 3FN = <b>nada além da chave</b>.</small></div>
+  <div class="steps">
+    <div class="step"><b>1FN</b><span>Cada casinha tem <b>um</b> valor só.</span></div>
+    <div class="step"><b>2FN</b><span>Cada coluna precisa de <b>todas</b> as peças da chave.</span></div>
+    <div class="step"><b>3FN</b><span>Coluna comum <b>não manda</b> em outra coluna comum.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🧸</span><div><b>Analogia do dia:</b> arrumar o quarto. Cada brinquedo vai para <b>a caixa dele</b>. Se o carrinho está na caixa de livros, um dia você procura e não acha, ou guarda dois carrinhos iguais sem perceber.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">POR QUÊ?</span>
+  <h2>O problema: repetição gera anomalias</h2>
+  <div class="scroll"><table class="mini" style="max-width:600px"><tr><th class="k">numero</th><th>id_vara</th><th>nome_vara</th><th class="ng">juiz_da_vara</th></tr>
+  <tr><td>A-10</td><td>1</td><td>1ª Cível</td><td class="hl">Dr. Carlos</td></tr>
+  <tr><td>A-11</td><td>1</td><td>1ª Cível</td><td class="hl">Dr. Carlos</td></tr>
+  <tr><td>A-12</td><td>2</td><td>2ª Criminal</td><td>Dra. Dora</td></tr></table></div>
+  <table class="cmp mini">
+    <tr><th>Anomalia</th><th>O que acontece aqui</th></tr>
+    <tr><td><b>de atualização</b></td><td>o juiz da 1ª Cível mudou: preciso editar <b>várias</b> linhas; se esquecer uma, o banco fica contraditório.</td></tr>
+    <tr><td><b>de inserção</b></td><td>criaram a 3ª Vara, ainda sem processos: não dá para cadastrá-la sem inventar um processo.</td></tr>
+    <tr><td><b>de exclusão</b></td><td>apaguei o A-12 (único da 2ª Criminal): perdi também quem é a juíza da vara.</td></tr>
+  </table>
+  <div class="say law">Normalização é o processo de decompor relações, com base em dependências funcionais e chaves, para reduzir redundância e eliminar anomalias de inserção, atualização e exclusão.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">BASE DE TUDO</span>
+  <h2>Dependência funcional: “quem manda em quem”</h2>
+  <div class="magic">Pergunta mágica: “Se eu sei X, eu sei Y com certeza?”<small>Se duas linhas com o mesmo X <b>nunca</b> podem ter Y diferente, então X → Y (X determina Y).</small></div>
+  <div class="ex ok"><code>cpf → nome</code>: mesmo CPF, sempre o mesmo nome.</div>
+  <div class="ex ok"><code>id_vara → nome_vara</code></div>
+  <div class="ex ng"><code>nome → cpf</code>: existem duas “Ana Souza” com CPFs diferentes.</div>
+  <div class="say good"><b>Guarde o vocabulário:</b> as colunas que fazem parte de <b>alguma chave candidata</b> são <b>atributos primos</b> (a “chave”, em amarelo). As outras são <b>não primos</b>, que aqui chamamos de “colunas comuns”. A chave pode ter <b>uma peça</b> (<code>id_aluno</code>) ou ser <b>composta</b> (<code>id_pedido</code> + <code>id_produto</code>).</div>
+  <div class="say law">X → Y é uma dependência funcional quando, para quaisquer duas tuplas com o mesmo valor de X, o valor de Y também é o mesmo. X é o <b>determinante</b>.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">1FN</span>
+  <h2>1FN: uma casinha, um valor</h2>
+  <p>Nada de lista dentro de uma célula, nada de “grupo repetido”, e a tabela precisa ter chave.</p>
+  <div class="tables">
+    <div class="tbox"><h4><span class="pill ng">✗ quebra a 1FN</span></h4>
+      <table class="mini"><tr><th class="k">id_aluno</th><th>nome</th><th>telefones</th></tr>
+      <tr><td>1</td><td>Ana</td><td class="hl">9999-1111, 8888-2222</td></tr></table>
+      <p class="cap">Dois telefones apertados numa casinha só (atributo <b>multivalorado</b>).</p></div>
+    <div class="tbox"><h4><span class="pill ok">✓ arrumado</span></h4>
+      <table class="mini"><tr><th class="k">id_aluno</th><th class="k">telefone</th></tr>
+      <tr><td>1</td><td class="hk">9999-1111</td></tr><tr><td>1</td><td class="hk">8888-2222</td></tr></table>
+      <p class="cap">Uma linha por telefone, em tabela própria; <code>nome</code> fica em <code>aluno(id_aluno, nome)</code>.</p></div>
+  </div>
+  <div class="say trap"><span class="pill ng">✗</span> “Criar as colunas tel1, tel2, tel3 resolve a 1FN.”<br><span class="pill ok">✓</span> Isso é um <b>grupo repetitivo</b> disfarçado: limita a 3 telefones e deixa casinhas vazias. A solução é a tabela separada.</div>
+  <div class="say law">Uma relação está na 1FN quando todos os seus atributos são atômicos (monovalorados), sem atributos multivalorados, compostos ou grupos repetitivos.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">2FN · O PROBLEMA</span>
+  <h2>2FN: “toda a chave”</h2>
+  <p class="kid">Pizzaria: cada item do pedido é identificado por <u>duas peças</u>: qual pedido + qual produto.</p>
+  <div class="scroll"><table class="mini" style="max-width:520px"><tr><th class="k">id_pedido</th><th class="k">id_produto</th><th>quantidade</th><th class="ng">nome_produto</th></tr>
+  <tr><td>1</td><td>10</td><td>2</td><td class="hl">Calabresa</td></tr>
+  <tr><td>1</td><td>11</td><td>1</td><td>Marguerita</td></tr>
+  <tr><td>2</td><td>10</td><td>3</td><td class="hl">Calabresa</td></tr></table></div>
+  <svg viewBox="0 0 640 230" role="img" aria-label="quantidade depende das duas peças da chave; nome_produto depende só do id_produto">
+    <defs>
+      <marker id="n2g" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2ea043"/></marker>
+      <marker id="n2r" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e5484d"/></marker>
+    </defs>
+    <text x="20" y="20" class="small">🔑 chave composta (2 peças)</text>
+    <rect class="keybox" x="20" y="30" width="150" height="50" rx="12"/><text class="kt" x="95" y="61" text-anchor="middle">id_pedido</text>
+    <rect class="keybox" x="20" y="160" width="150" height="50" rx="12"/><text class="kt" x="95" y="191" text-anchor="middle">id_produto</text>
+    <rect class="box" x="450" y="66" width="170" height="50" rx="12"/><text x="535" y="97" text-anchor="middle">quantidade</text>
+    <rect class="badbox" x="450" y="160" width="170" height="50" rx="12"/><text x="535" y="191" text-anchor="middle">nome_produto</text>
+    <line x1="172" y1="58" x2="446" y2="86" stroke="#2ea043" stroke-width="3" marker-end="url(#n2g)"/>
+    <line x1="172" y1="180" x2="446" y2="100" stroke="#2ea043" stroke-width="3" marker-end="url(#n2g)"/>
+    <line x1="172" y1="186" x2="446" y2="186" stroke="#e5484d" stroke-width="3" marker-end="url(#n2r)"/>
+    <text x="260" y="54" class="small" style="fill:#2ea043">precisa dos dois ✓</text>
+    <text x="230" y="222" class="small" style="fill:#e5484d">só precisa do id_produto ✗ (dependência parcial)</text>
+  </svg>
+  <div class="say bad"><b>quantidade</b>: “quanto desse produto nesse pedido” → precisa das duas peças ✓. <b>nome_produto</b>: “Calabresa” é Calabresa em qualquer pedido → depende <u>só do produto</u>. Mora na casa errada ✗.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">2FN · A SOLUÇÃO</span>
+  <h2>Manda a coluna para a casa certa</h2>
+  <div class="tables">
+    <div class="tbox"><h4>pedido_item</h4>
+      <table class="mini"><tr><th class="k">id_pedido</th><th class="k">id_produto</th><th>quantidade</th></tr>
+      <tr><td>1</td><td>10</td><td>2</td></tr><tr><td>1</td><td>11</td><td>1</td></tr><tr><td>2</td><td>10</td><td>3</td></tr></table>
+      <p class="cap"><code>id_produto</code> continua aqui, agora como FK.</p></div>
+    <div class="tbox"><h4>produto</h4>
+      <table class="mini"><tr><th class="k">id_produto</th><th>nome_produto</th></tr>
+      <tr><td>10</td><td class="hk">Calabresa</td></tr><tr><td>11</td><td class="hk">Marguerita</td></tr></table>
+      <p class="cap">Agora o nome aparece <b>uma vez só</b>.</p></div>
+  </div>
+  <div class="flow"><span>acha a DF parcial<br><code>id_produto → nome_produto</code></span><i>→</i><span>cria tabela com o<br>determinante como PK</span><i>→</i><span>tira o atributo<br>da tabela original</span></div>
+  <div class="say good"><b>Guarde isto:</b> se a chave é de <b>uma peça só</b> e a tabela já está na 1FN, a 2FN está garantida automaticamente. A 2FN só dá problema com chave <b>composta</b>.</div>
+  <div class="say law">A 2FN exige a 1FN e que todo atributo não primo dependa <b>totalmente</b> de cada chave candidata, sem <b>dependência parcial</b> de parte dela.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">3FN · O PROBLEMA</span>
+  <h2>3FN: “nada além da chave”</h2>
+  <p class="kid">Escola: cada aluno tem um RG simples (<code>id_aluno</code>), uma turma, e a turma tem um professor.</p>
+  <div class="scroll"><table class="mini" style="max-width:520px"><tr><th class="k">id_aluno</th><th>nome</th><th>id_turma</th><th class="ng">professor_da_turma</th></tr>
+  <tr><td>1</td><td>Ana</td><td>7A</td><td class="hl">Carlos</td></tr>
+  <tr><td>2</td><td>Bia</td><td>7A</td><td class="hl">Carlos</td></tr>
+  <tr><td>3</td><td>Caio</td><td>7B</td><td>Dora</td></tr></table></div>
+  <svg viewBox="0 0 640 190" role="img" aria-label="id_aluno determina id_turma que determina professor: dependência transitiva">
+    <defs>
+      <marker id="n3g" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2ea043"/></marker>
+      <marker id="n3r" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e5484d"/></marker>
+    </defs>
+    <rect class="keybox" x="10" y="50" width="150" height="50" rx="12"/><text class="kt" x="85" y="81" text-anchor="middle">🔑 id_aluno</text>
+    <rect class="box" x="245" y="50" width="150" height="50" rx="12"/><text x="320" y="81" text-anchor="middle">id_turma</text>
+    <rect class="badbox" x="480" y="50" width="150" height="50" rx="12"/><text x="555" y="74" text-anchor="middle" style="font-size:13px">professor_</text><text x="555" y="91" text-anchor="middle" style="font-size:13px">da_turma</text>
+    <line x1="162" y1="75" x2="241" y2="75" stroke="#2ea043" stroke-width="3" marker-end="url(#n3g)"/>
+    <line x1="397" y1="75" x2="476" y2="75" stroke="#e5484d" stroke-width="3" marker-end="url(#n3r)"/>
+    <path d="M85 102 C 85 175, 555 175, 555 104" fill="none" stroke="#e5484d" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#n3r)"/>
+    <text x="320" y="160" text-anchor="middle" class="small" style="fill:#e5484d">o aluno só “chega” no professor passando pela turma (caminho indireto)</text>
+    <text x="202" y="40" text-anchor="middle" class="small" style="fill:#2ea043">ok</text>
+    <text x="437" y="40" text-anchor="middle" class="small" style="fill:#e5484d">a turma manda no professor</text>
+  </svg>
+  <div class="say bad"><b>professor_da_turma</b> depende da <i>turma</i>, não do <i>aluno</i>. Uma coluna comum (<code>id_turma</code>) manda em outra coluna comum: um <b>chefe escondido</b>. Trocou o professor da 7A? Edita várias linhas.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">3FN · A SOLUÇÃO</span>
+  <h2>Dá uma casa própria para o chefe</h2>
+  <div class="tables">
+    <div class="tbox"><h4>aluno</h4>
+      <table class="mini"><tr><th class="k">id_aluno</th><th>nome</th><th>id_turma</th></tr>
+      <tr><td>1</td><td>Ana</td><td>7A</td></tr><tr><td>2</td><td>Bia</td><td>7A</td></tr><tr><td>3</td><td>Caio</td><td>7B</td></tr></table></div>
+    <div class="tbox"><h4>turma</h4>
+      <table class="mini"><tr><th class="k">id_turma</th><th>professor</th></tr>
+      <tr><td>7A</td><td class="hk">Carlos</td></tr><tr><td>7B</td><td class="hk">Dora</td></tr></table>
+      <p class="cap">Trocou o professor? Muda <b>uma</b> linha.</p></div>
+  </div>
+  <div class="say law">A 3FN exige a 2FN e a ausência de <b>dependência transitiva</b> de atributo não primo em relação à chave. Forma geral: para toda DF não trivial X → A, ou X é <b>superchave</b>, ou A é atributo <b>primo</b>.</div>
+  <div class="say good"><b>Bônus (BCNF / FNBC):</b> é a “3FN mais rígida”: exige que <b>todo determinante</b> seja superchave, sem a exceção do “A é primo”. Toda relação em BCNF está na 3FN; o contrário nem sempre. O edital cita até a 3FN.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">A DIFERENÇA QUE CAI</span>
+  <h2>2FN × 3FN em 10 segundos</h2>
+  <div class="scroll"><table class="cmp mini">
+    <tr><th></th><th>2FN</th><th>3FN</th></tr>
+    <tr><td><b>Pergunta mágica</b></td><td>“Essa coluna precisa de <b>TODAS</b> as peças da chave?”</td><td>“Essa coluna depende de <b>outra coluna comum</b>?”</td></tr>
+    <tr><td><b>O erro</b></td><td>depende de <b>parte</b> da chave (parcial)</td><td>depende de coluna <b>não-chave</b> (transitiva)</td></tr>
+    <tr><td><b>Desenho</b></td><td>chave quebrada; a coluna agarra um pedaço</td><td>corrente: chave → A → B</td></tr>
+    <tr><td><b>Quando importa?</b></td><td>só com <b>chave composta</b></td><td>sempre</td></tr>
+    <tr><td><b>Frase</b></td><td>“toda a chave”</td><td>“nada além da chave”</td></tr>
+  </table></div>
+  <div class="say trap"><span class="pill ng">✗</span> “Tabela em 1FN com chave primária simples pode violar a 2FN.”<br>
+  <span class="pill ok">✓</span> Não pode: sem chave composta não existe “parte da chave”. <i>Cuidado</i>: se a tabela tiver <b>outra chave candidata composta</b>, a análise vale para ela também.<br>
+  <span class="pill ng">✗</span> “Normalizar sempre melhora o desempenho.” <span class="pill ok">✓</span> Mais tabelas = mais junções; às vezes se <b>desnormaliza</b> de propósito (ex.: relatórios/BI).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">EXEMPLO RESOLVIDO</span>
+  <h2>Da bagunça à 3FN, passo a passo</h2>
+  <pre><code>inscricao(<mark>id_aluno, id_curso</mark>, nome_aluno, nome_curso, id_prof, nome_prof, nota)</code></pre>
+  <ol class="mini">
+    <li><b>Chave:</b> (id_aluno, id_curso), composta → vale testar a 2FN.</li>
+    <li><b>DFs:</b> id_aluno → nome_aluno · id_curso → nome_curso, id_prof · id_prof → nome_prof · (id_aluno, id_curso) → nota.</li>
+    <li><b>2FN:</b> nome_aluno e nome_curso/id_prof dependem de <u>parte</u> da chave → separa.</li>
+    <li><b>3FN:</b> na tabela de curso, id_curso → id_prof → nome_prof (transitiva) → separa.</li>
+  </ol>
+  <svg viewBox="0 0 640 120" role="img" aria-label="resultado: quatro tabelas ligadas por chaves estrangeiras">
+    <defs><marker id="n4" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="okbox" x="5" y="10" width="150" height="46" rx="10"/><text x="80" y="30" text-anchor="middle" style="font-size:13px">aluno</text><text x="80" y="48" text-anchor="middle" class="small">id_aluno, nome_aluno</text>
+    <rect class="okbox" x="165" y="64" width="190" height="46" rx="10"/><text x="260" y="84" text-anchor="middle" style="font-size:13px">inscricao</text><text x="260" y="102" text-anchor="middle" class="small">id_aluno, id_curso, nota</text>
+    <rect class="okbox" x="365" y="10" width="140" height="46" rx="10"/><text x="435" y="30" text-anchor="middle" style="font-size:13px">curso</text><text x="435" y="48" text-anchor="middle" class="small">id_curso, nome, id_prof</text>
+    <rect class="okbox" x="515" y="64" width="120" height="46" rx="10"/><text x="575" y="84" text-anchor="middle" style="font-size:13px">professor</text><text x="575" y="102" text-anchor="middle" class="small">id_prof, nome</text>
+    <line x1="200" y1="64" x2="130" y2="58" stroke="#6d4aff" stroke-width="2" marker-end="url(#n4)"/>
+    <line x1="320" y1="64" x2="395" y2="58" stroke="#6d4aff" stroke-width="2" marker-end="url(#n4)"/>
+    <line x1="490" y1="56" x2="540" y2="64" stroke="#6d4aff" stroke-width="2" marker-end="url(#n4)"/>
+  </svg>
+  <div class="say good">Na prova discursiva: <b>atende/não atende + definição + DF concreta do esquema</b>. Ex.: “Viola a 2FN, pois nome_curso depende apenas de id_curso, parte da chave (id_aluno, id_curso).”</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Capítulo 2 numa colinha</h2>
+  <div class="magic">“A chave, toda a chave e nada além da chave.”<small>1FN: atômico · 2FN: sem dependência parcial · 3FN: sem dependência transitiva.</small></div>
+  <ul class="checklist">
+    <li>Normalizar = decompor para tirar redundância e anomalias (inserção, atualização, exclusão).</li>
+    <li>X → Y: mesmo X, sempre o mesmo Y.</li>
+    <li>1FN: nada de lista na célula nem tel1/tel2/tel3.</li>
+    <li>2FN só pode falhar com chave composta.</li>
+    <li>3FN: coluna comum não determina coluna comum.</li>
+    <li>BCNF: todo determinante é superchave (mais rígida que a 3FN).</li>
+    <li>Desnormalizar pode ser escolha consciente de desempenho.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Qual forma normal quebra?</h2>
+  <details><summary>1) <code>matricula(id_aluno, id_curso, nota, nome_curso)</code> · chave: (id_aluno, id_curso)</summary>
+    <p><span class="pill ng">Quebra a 2FN</span> <code>nome_curso</code> depende só de <code>id_curso</code> (parte da chave). Solução: <code>curso(id_curso, nome_curso)</code>.</p></details>
+  <details><summary>2) <code>funcionario(id, nome, cod_depto, nome_depto)</code> · chave: id</summary>
+    <p><span class="pill ng">Quebra a 3FN</span> Chave simples (2FN ok), mas id → cod_depto → nome_depto. Solução: <code>depto(cod_depto, nome_depto)</code>.</p></details>
+  <details><summary>3) <code>servidor(matricula, nome, emails)</code> com “a@x, b@x” na mesma célula</summary>
+    <p><span class="pill ng">Quebra a 1FN</span> Atributo multivalorado. Solução: <code>servidor_email(matricula, email)</code>.</p></details>
+  <details><summary>4) Afirmação: “Toda tabela na 3FN está na BCNF.”</summary>
+    <p><span class="pill ng">Errado</span> É o inverso: toda tabela na BCNF está na 3FN. A 3FN tolera DF X → A com A primo e X não superchave; a BCNF não.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 3 ===================================================== -->
+<section class="chapter" data-title="SQL: DDL, DML, DCL, TCL, subconsultas, GROUP BY e HAVING">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 3</span>
+  <h1>SQL: DDL, DML, DCL, TCL, subconsultas, GROUP BY e HAVING</h1>
+  <span class="emoji">🧾</span>
+  <div class="steps">
+    <div class="step"><b>1. Famílias</b><span>Quem cria, quem mexe nos dados, quem dá permissão, quem confirma.</span></div>
+    <div class="step"><b>2. Consultas</b><span>SELECT, JOIN, GROUP BY, HAVING e a ordem lógica.</span></div>
+    <div class="step"><b>3. Subconsultas</b><span>IN, EXISTS, escalar, correlacionada e a armadilha do NULL.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🍔</span><div><b>Analogia do dia:</b> SQL é pedir no balcão. Você diz <b>o que</b> quer (“um X-tudo sem cebola”), não <b>como</b> a cozinha deve preparar. Por isso o SQL é uma linguagem <b>declarativa</b>: o otimizador do banco decide o caminho.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">AS FAMÍLIAS</span>
+  <h2>DDL, DML, DCL, TCL: quem faz o quê</h2>
+  <table class="cmp mini">
+    <tr><th>Sigla</th><th>Para quê</th><th>Comandos</th></tr>
+    <tr><td><b>DDL</b> definição</td><td>a <b>estrutura</b> (tabelas, índices, views)</td><td>CREATE, ALTER, DROP, TRUNCATE</td></tr>
+    <tr><td><b>DML</b> manipulação</td><td>os <b>dados</b> (linhas)</td><td>SELECT, INSERT, UPDATE, DELETE, MERGE</td></tr>
+    <tr><td><b>DCL</b> controle</td><td><b>permissões</b></td><td>GRANT, REVOKE</td></tr>
+    <tr><td><b>TCL</b> transação</td><td>confirmar ou desfazer</td><td>COMMIT, ROLLBACK, SAVEPOINT</td></tr>
+  </table>
+  <div class="say trap"><span class="pill ng">✗</span> “TRUNCATE é DML, pois apaga linhas.” <span class="pill ok">✓</span> Na classificação usual, TRUNCATE é <b>DDL</b>: esvazia a tabela inteira, sem WHERE e sem disparar triggers de linha.<br>
+  Alguns autores separam o SELECT numa <b>DQL</b> (consulta). Se a questão usar 4 famílias, SELECT está na DML.<br>
+  No <b>Oracle</b> e no <b>MySQL</b>, um comando DDL faz <b>COMMIT implícito</b>; no <b>PostgreSQL</b> e no <b>SQL Server</b>, DDL pode ser desfeito dentro de uma transação.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">DDL</span>
+  <h2>Criando a estrutura com restrições</h2>
+<pre><code><b>CREATE TABLE</b> processo (
+  numero  VARCHAR(25) <mark>PRIMARY KEY</mark>,
+  id_vara INT <mark>REFERENCES</mark> vara(id_vara) <b>ON DELETE RESTRICT</b>,
+  classe  VARCHAR(30) <b>NOT NULL</b>,
+  valor   NUMERIC(12,2) <b>CHECK</b> (valor &gt;= 0),
+  cpf_autor CHAR(11) <b>UNIQUE</b>
+);
+<b>ALTER TABLE</b> processo <b>ADD COLUMN</b> ano INT;</code></pre>
+  <table class="cmp mini">
+    <tr><th></th><th>DELETE</th><th>TRUNCATE</th><th>DROP</th></tr>
+    <tr><td><b>Família</b></td><td>DML</td><td>DDL</td><td>DDL</td></tr>
+    <tr><td><b>O que some</b></td><td>linhas escolhidas (WHERE)</td><td>todas as linhas</td><td>a tabela inteira (estrutura + dados)</td></tr>
+    <tr><td><b>Estrutura fica?</b></td><td class="hk">sim</td><td class="hk">sim</td><td class="hl">não</td></tr>
+  </table>
+  <div class="say law">PRIMARY KEY = UNIQUE + NOT NULL. UNIQUE, em regra, aceita NULL (o tratamento de vários NULLs varia por SGBD: confira a documentação do produto).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">DML</span>
+  <h2>UPDATE: antes e depois</h2>
+  <pre><code><b>UPDATE</b> processo <b>SET</b> status = 'arquivado' <b>WHERE</b> ano &lt; 2015;</code></pre>
+  <div class="io">
+    <div class="tbox"><span class="in">antes</span>
+      <table><tr><th>numero</th><th>ano</th><th>status</th></tr>
+      <tr><td>A-10</td><td class="hl">2012</td><td>ativo</td></tr>
+      <tr><td>A-11</td><td>2020</td><td>ativo</td></tr>
+      <tr><td>A-12</td><td class="hl">2014</td><td>ativo</td></tr></table></div>
+    <div class="arr">→</div>
+    <div class="tbox"><span class="out">depois</span>
+      <table><tr><th>numero</th><th>ano</th><th>status</th></tr>
+      <tr><td>A-10</td><td>2012</td><td class="hk">arquivado</td></tr>
+      <tr><td>A-11</td><td>2020</td><td>ativo</td></tr>
+      <tr><td>A-12</td><td>2014</td><td class="hk">arquivado</td></tr></table></div>
+  </div>
+  <pre><code><b>INSERT INTO</b> processo (numero, ano, status) <b>VALUES</b> ('A-13', 2024, 'ativo');
+<b>DELETE FROM</b> processo <b>WHERE</b> status = 'arquivado';</code></pre>
+  <div class="say trap"><span class="pill ng">✗</span> <code>UPDATE processo SET status='arquivado';</code> “altera só a primeira linha”. <span class="pill ok">✓</span> Sem WHERE, UPDATE e DELETE atingem <b>todas</b> as linhas.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">SELECT</span>
+  <h2>Filtrar, escolher colunas, ordenar</h2>
+  <pre><code><b>SELECT</b> numero, valor <b>FROM</b> processo
+<b>WHERE</b> valor <mark>IS NOT NULL</mark> <b>AND</b> valor &gt; 250 <b>ORDER BY</b> valor <b>DESC</b>;</code></pre>
+  <div class="io">
+    <div class="tbox"><span class="in">entrada: processo</span>
+      <table><tr><th>numero</th><th>vara</th><th>valor</th></tr>
+      <tr><td>A-10</td><td>1</td><td class="hk">500</td></tr>
+      <tr><td>A-11</td><td>1</td><td class="hk">300</td></tr>
+      <tr><td>A-12</td><td>2</td><td class="hk">900</td></tr>
+      <tr><td class="dim">A-13</td><td class="dim">2</td><td class="nul">NULL</td></tr>
+      <tr><td class="dim">A-14</td><td class="dim">3</td><td class="dim">200</td></tr></table></div>
+    <div class="arr">→</div>
+    <div class="tbox"><span class="out">resultado</span>
+      <table><tr><th>numero</th><th>valor</th></tr>
+      <tr><td>A-12</td><td>900</td></tr><tr><td>A-10</td><td>500</td></tr><tr><td>A-11</td><td>300</td></tr></table></div>
+  </div>
+  <div class="say trap"><span class="pill ng">✗</span> <code>WHERE valor = NULL</code> <span class="pill ok">✓</span> <code>WHERE valor IS NULL</code>. Qualquer comparação com NULL dá <b>UNKNOWN</b> (nem V nem F), e o WHERE só deixa passar o que é <b>verdadeiro</b>. (Aqui, <code>valor &gt; 250</code> sozinho já descartaria o NULL.)</div>
+</div>
+
+<div class="slide">
+  <span class="tag">GROUP BY</span>
+  <h2>GROUP BY: empilhar e resumir</h2>
+  <div class="analogy"><span class="emoji">🧺</span><div>Separe as fichas em <b>montinhos</b> (um por vara) e escreva <b>um resumo por montinho</b>. Saem tantas linhas quantos montinhos.</div></div>
+  <pre><code><b>SELECT</b> vara, <b>COUNT</b>(*) qtd, <b>COUNT</b>(valor) com_valor, <b>SUM</b>(valor) total
+<b>FROM</b> processo <b>GROUP BY</b> vara;</code></pre>
+  <div class="io">
+    <div class="tbox"><span class="in">entrada: processo</span>
+      <table><tr><th>numero</th><th class="k">vara</th><th>valor</th></tr>
+      <tr><td>A-10</td><td>1</td><td>500</td></tr><tr><td>A-11</td><td>1</td><td>300</td></tr>
+      <tr><td>A-12</td><td>2</td><td>900</td></tr><tr><td>A-13</td><td>2</td><td class="nul">NULL</td></tr>
+      <tr><td>A-14</td><td>3</td><td>200</td></tr></table></div>
+    <div class="arr">→</div>
+    <div class="tbox"><span class="out">resultado (3 grupos)</span>
+      <table><tr><th>vara</th><th>qtd</th><th>com_valor</th><th>total</th></tr>
+      <tr><td>1</td><td>2</td><td>2</td><td>800</td></tr>
+      <tr><td>2</td><td class="hk">2</td><td class="hl">1</td><td>900</td></tr>
+      <tr><td>3</td><td>1</td><td>1</td><td>200</td></tr></table></div>
+  </div>
+  <div class="say law"><code>COUNT(*)</code> conta linhas; <code>COUNT(coluna)</code>, SUM, AVG, MIN e MAX <b>ignoram NULL</b>. Toda coluna do SELECT que não está numa função de agregação deve estar no GROUP BY.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">WHERE × HAVING</span>
+  <h2>Filtro antes × filtro depois do agrupamento</h2>
+  <div class="flow"><span>1 FROM/JOIN</span><i>→</i><span>2 WHERE</span><i>→</i><span>3 GROUP BY</span><i>→</i><span>4 HAVING</span><i>→</i><span>5 SELECT</span><i>→</i><span>6 ORDER BY</span></div>
+  <div class="two">
+    <div><pre><code>... <b>WHERE</b> valor &gt; 400
+<b>GROUP BY</b> vara;</code></pre>
+      <table class="mini"><tr><th>vara</th><th>COUNT(*)</th></tr><tr><td>1</td><td>1</td></tr><tr><td>2</td><td>1</td></tr></table>
+      <p class="cap">Filtra <b>linhas</b> (sobram A-10 e A-12), depois agrupa.</p></div>
+    <div><pre><code>... <b>GROUP BY</b> vara
+<b>HAVING SUM</b>(valor) &gt; 700;</code></pre>
+      <table class="mini"><tr><th>vara</th><th>SUM</th></tr><tr><td>1</td><td>800</td></tr><tr><td>2</td><td>900</td></tr></table>
+      <p class="cap">Agrupa tudo, depois descarta <b>grupos</b> (a vara 3, com 200, sai).</p></div>
+  </div>
+  <div class="say trap"><span class="pill ng">✗</span> <code>WHERE COUNT(*) &gt; 1</code> <span class="pill ok">✓</span> <code>HAVING COUNT(*) &gt; 1</code>. Agregação não pode ir no WHERE, porque o WHERE roda <b>antes</b> de os grupos existirem. Pela mesma ordem, o apelido criado no SELECT, em regra, não pode ser usado no WHERE (mas pode no ORDER BY).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">JOIN</span>
+  <h2>INNER × LEFT JOIN</h2>
+  <div class="io3">
+    <div class="tbox"><span class="in">processo</span><table><tr><th>num</th><th>id_vara</th></tr><tr><td>A-10</td><td>1</td></tr><tr><td>A-12</td><td>2</td></tr><tr><td>A-15</td><td class="nul">NULL</td></tr></table></div>
+    <div class="tbox"><span class="in">vara</span><table><tr><th>id_vara</th><th>nome</th></tr><tr><td>1</td><td>1ª Cível</td></tr><tr><td>2</td><td>2ª Crim.</td></tr><tr><td>4</td><td>Juizado</td></tr></table></div>
+    <div class="tbox"><span class="out">INNER JOIN</span><table><tr><th>num</th><th>nome</th></tr><tr><td>A-10</td><td>1ª Cível</td></tr><tr><td>A-12</td><td>2ª Crim.</td></tr></table><p class="cap">Só quem tem par dos dois lados.</p></div>
+  </div>
+  <pre><code><b>SELECT</b> p.num, v.nome <b>FROM</b> processo p <mark>LEFT JOIN</mark> vara v <b>ON</b> v.id_vara = p.id_vara;</code></pre>
+  <div class="two">
+    <div class="tbox"><span class="out">LEFT JOIN (processo à esquerda)</span><table class="mini"><tr><th>num</th><th>nome</th></tr><tr><td>A-10</td><td>1ª Cível</td></tr><tr><td>A-12</td><td>2ª Crim.</td></tr><tr><td class="hk">A-15</td><td class="nul">NULL</td></tr></table></div>
+    <div class="say law" style="margin:0">LEFT JOIN mantém <b>todas</b> as linhas da tabela da esquerda e preenche com NULL quando não há par. RIGHT faz o espelho; FULL mantém os dois lados (aí o Juizado também apareceria, com num NULL).</div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">SUBCONSULTAS</span>
+  <h2>Uma consulta dentro da outra</h2>
+  <pre><code><b>SELECT</b> numero, valor <b>FROM</b> processo
+<b>WHERE</b> valor &gt; (<mark><b>SELECT AVG</b>(valor) <b>FROM</b> processo</mark>);   <i>-- subconsulta escalar</i></code></pre>
+  <div class="io">
+    <div class="tbox"><span class="in">entrada · AVG = (500+300+900+200)/4 = 475</span>
+      <table><tr><th>numero</th><th>valor</th></tr><tr><td>A-10</td><td class="hk">500</td></tr><tr><td>A-11</td><td>300</td></tr><tr><td>A-12</td><td class="hk">900</td></tr><tr><td>A-13</td><td class="nul">NULL</td></tr><tr><td>A-14</td><td>200</td></tr></table>
+      <p class="cap">AVG ignora o NULL: divide por 4, não por 5.</p></div>
+    <div class="arr">→</div>
+    <div class="tbox"><span class="out">resultado</span><table><tr><th>numero</th><th>valor</th></tr><tr><td>A-10</td><td>500</td></tr><tr><td>A-12</td><td>900</td></tr></table></div>
+  </div>
+  <table class="cmp mini">
+    <tr><th>Tipo</th><th>Exemplo</th></tr>
+    <tr><td><b>IN</b> (lista)</td><td><code>WHERE id_vara IN (SELECT id_vara FROM vara WHERE comarca='JP')</code></td></tr>
+    <tr><td><b>EXISTS</b> (existe ao menos 1?)</td><td><code>SELECT nome FROM vara v WHERE EXISTS (SELECT 1 FROM processo p WHERE p.id_vara = v.id_vara)</code></td></tr>
+    <tr><td><b>correlacionada</b></td><td>usa coluna da consulta de fora (o <code>v.id_vara</code> acima): reavaliada, em tese, para cada linha externa</td></tr>
+  </table>
+  <div class="say trap"><span class="pill ng">✗</span> <code>WHERE x NOT IN (1, 2, NULL)</code> “traz quem não é 1 nem 2”. <span class="pill ok">✓</span> Não traz <b>nada</b>: x &lt;&gt; NULL é UNKNOWN. Prefira <code>NOT EXISTS</code> quando a subconsulta puder ter NULL.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">DCL + TCL</span>
+  <h2>Permissões e transações</h2>
+  <pre><code><b>GRANT SELECT, INSERT ON</b> processo <b>TO</b> analista;     <b>REVOKE INSERT ON</b> processo <b>FROM</b> analista;</code></pre>
+  <svg viewBox="0 0 640 150" role="img" aria-label="linha do tempo de transação com savepoint e rollback parcial">
+    <defs><marker id="t1" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <line x1="10" y1="60" x2="626" y2="60" stroke="#6d4aff" stroke-width="3" marker-end="url(#t1)"/>
+    <rect class="box" x="10" y="38" width="70" height="44" rx="10"/><text x="45" y="65" text-anchor="middle" style="font-size:13px">BEGIN</text>
+    <rect class="okbox" x="100" y="38" width="90" height="44" rx="10"/><text x="145" y="65" text-anchor="middle" style="font-size:13px">INSERT A</text>
+    <rect class="keybox" x="210" y="38" width="100" height="44" rx="10"/><text class="kt" x="260" y="65" text-anchor="middle" style="font-size:13px">SAVEPOINT s1</text>
+    <rect class="badbox" x="330" y="38" width="90" height="44" rx="10"/><text x="375" y="65" text-anchor="middle" style="font-size:13px">INSERT B</text>
+    <rect class="accbox" x="440" y="38" width="110" height="44" rx="10"/><text x="495" y="58" text-anchor="middle" style="font-size:12px">ROLLBACK</text><text x="495" y="74" text-anchor="middle" style="font-size:12px">TO s1</text>
+    <rect class="okbox" x="560" y="38" width="66" height="44" rx="10"/><text x="593" y="65" text-anchor="middle" style="font-size:12px">COMMIT</text>
+    <path d="M495 84 C 495 125, 375 125, 375 86" fill="none" stroke="#e5484d" stroke-width="2" stroke-dasharray="5 5"/>
+    <text x="320" y="138" text-anchor="middle" class="small">resultado gravado: só o A (o B foi desfeito até o savepoint)</text>
+  </svg>
+  <div class="say law">Transação obedece ao <b>ACID</b>: Atomicidade (tudo ou nada), Consistência (regras respeitadas), Isolamento (uma não atrapalha a outra) e Durabilidade (confirmou, não se perde).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Capítulo 3 numa colinha</h2>
+  <div class="magic">FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY<small>WHERE filtra linhas; HAVING filtra grupos. NULL só com IS NULL.</small></div>
+  <ul class="checklist">
+    <li>DDL: CREATE/ALTER/DROP/TRUNCATE · DML: SELECT/INSERT/UPDATE/DELETE · DCL: GRANT/REVOKE · TCL: COMMIT/ROLLBACK/SAVEPOINT.</li>
+    <li>DELETE sem WHERE apaga tudo, mas mantém a tabela; DROP leva a estrutura.</li>
+    <li>COUNT(*) conta linhas; COUNT(col) e AVG ignoram NULL.</li>
+    <li>LEFT JOIN preserva a esquerda e completa com NULL.</li>
+    <li>NOT IN com NULL na lista → nenhuma linha.</li>
+    <li>ROLLBACK TO savepoint desfaz só a parte depois dele.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Pense antes de abrir</h2>
+  <details><summary>1) Tabela com 5 linhas, uma com valor NULL. <code>SELECT COUNT(*), COUNT(valor)</code> retorna?</summary>
+    <p><span class="pill ok">5 e 4</span> COUNT(*) conta linhas; COUNT(valor) ignora o NULL.</p></details>
+  <details><summary>2) Para listar varas com mais de 10 processos, a condição <code>COUNT(*) &gt; 10</code> vai em qual cláusula?</summary>
+    <p><span class="pill ok">HAVING</span> Agregação filtra grupos e é avaliada depois do GROUP BY. No WHERE dá erro.</p></details>
+  <details><summary>3) GRANT, COMMIT e TRUNCATE pertencem, respectivamente, a…</summary>
+    <p><span class="pill ok">DCL, TCL e DDL</span> Pegadinha comum: TRUNCATE não é DML.</p></details>
+  <details><summary>4) <code>SELECT nome FROM t WHERE id NOT IN (SELECT id_ref FROM r)</code>, e r tem um id_ref NULL. O que acontece?</summary>
+    <p><span class="pill ng">Retorna 0 linhas</span> Comparar com NULL dá UNKNOWN, então nenhuma linha passa. Use NOT EXISTS ou filtre <code>id_ref IS NOT NULL</code>.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 4 ===================================================== -->
+<section class="chapter" data-title="Views, triggers, procedures e tuning (índices, planos)">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 4</span>
+  <h1>Views, triggers, procedures e tuning</h1>
+  <span class="emoji">⚙️</span>
+  <div class="steps">
+    <div class="step"><b>1. Objetos</b><span>View, view materializada, trigger, procedure e function.</span></div>
+    <div class="step"><b>2. Por dentro</b><span>Otimizador, estatísticas e plano de execução.</span></div>
+    <div class="step"><b>3. Tuning</b><span>Índices, quando eles falham, particionamento.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">📖</span><div><b>Analogia do dia:</b> achar “LGPD” num livro de 800 páginas. Sem índice remissivo, você folheia tudo (<b>full scan</b>). Com índice, vai direto à página (<b>index seek</b>). Tuning é decidir quais índices o livro merece e conferir se o leitor (o otimizador) está usando.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">VIEW</span>
+  <h2>View: uma “janela” para uma consulta</h2>
+  <pre><code><b>CREATE VIEW</b> v_processo_publico <b>AS</b>
+<b>SELECT</b> numero, classe <b>FROM</b> processo <b>WHERE</b> sigiloso = false;</code></pre>
+  <div class="io">
+    <div class="tbox"><span class="in">tabela: processo</span>
+      <table><tr><th>numero</th><th>classe</th><th>cpf_parte</th><th>sigiloso</th></tr>
+      <tr><td>A-10</td><td>Cível</td><td class="dim">111…</td><td>false</td></tr>
+      <tr><td class="dim">A-11</td><td class="dim">Família</td><td class="dim">222…</td><td class="hl">true</td></tr>
+      <tr><td>A-12</td><td>Penal</td><td class="dim">333…</td><td>false</td></tr></table></div>
+    <div class="arr">→</div>
+    <div class="tbox"><span class="out">SELECT * FROM v_processo_publico</span>
+      <table><tr><th>numero</th><th>classe</th></tr><tr><td>A-10</td><td>Cível</td></tr><tr><td>A-12</td><td>Penal</td></tr></table>
+      <p class="cap">O CPF e o processo sigiloso nem aparecem.</p></div>
+  </div>
+  <p class="mini">Usos: <b>segurança</b> (dar GRANT na view, não na tabela), <b>simplificar</b> junções complexas e manter uma interface estável se a tabela mudar.</p>
+  <div class="say law">View é uma tabela <b>virtual</b>: o SGBD guarda apenas a definição (a consulta), e os dados são lidos das tabelas-base a cada uso.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">VIEW MATERIALIZADA</span>
+  <h2>View comum × materializada</h2>
+  <table class="cmp mini">
+    <tr><th></th><th>View comum</th><th>View materializada</th></tr>
+    <tr><td><b>Guarda dados?</b></td><td class="hl">não, só a consulta</td><td class="hk">sim, uma “foto” do resultado</td></tr>
+    <tr><td><b>Sempre atual?</b></td><td>sim</td><td>só após atualização (ex.: <code>REFRESH MATERIALIZED VIEW</code> no PostgreSQL)</td></tr>
+    <tr><td><b>Leitura</b></td><td>custa o mesmo que a consulta</td><td>rápida (dados prontos, podem ter índice)</td></tr>
+    <tr><td><b>Bom para</b></td><td>segurança, simplificação</td><td>relatórios e painéis pesados (BI)</td></tr>
+  </table>
+  <p class="mini"><b>Atualizar através da view?</b> Em geral só funciona em view “simples”: uma tabela-base, sem agregação, DISTINCT, GROUP BY ou UNION. <code>WITH CHECK OPTION</code> impede inserir/alterar linhas que “fugiriam” do filtro da view. Em views complexas, um trigger <b>INSTEAD OF</b> pode tratar a escrita.</p>
+  <div class="say trap"><span class="pill ng">✗</span> “A view armazena fisicamente os dados, o que acelera as consultas.”<br><span class="pill ok">✓</span> Isso descreve a view <b>materializada</b>. A view comum não acelera nada por si: ela é reescrita na consulta.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">TRIGGER</span>
+  <h2>Trigger: o “alarme” que dispara sozinho</h2>
+  <svg viewBox="0 0 640 110" role="img" aria-label="evento UPDATE dispara trigger que grava na tabela de auditoria">
+    <defs><marker id="g4" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="box" x="5" y="25" width="170" height="56" rx="12"/><text x="90" y="49" text-anchor="middle">Evento</text><text x="90" y="69" text-anchor="middle" class="small">UPDATE em processo</text>
+    <rect class="keybox" x="235" y="25" width="170" height="56" rx="12"/><text class="kt" x="320" y="49" text-anchor="middle">Trigger</text><text class="kt" x="320" y="69" text-anchor="middle" style="font-size:12px">AFTER · FOR EACH ROW</text>
+    <rect class="okbox" x="465" y="25" width="170" height="56" rx="12"/><text x="550" y="49" text-anchor="middle">Ação</text><text x="550" y="69" text-anchor="middle" class="small">INSERT na auditoria</text>
+    <line x1="177" y1="53" x2="231" y2="53" stroke="#6d4aff" stroke-width="3" marker-end="url(#g4)"/>
+    <line x1="407" y1="53" x2="461" y2="53" stroke="#6d4aff" stroke-width="3" marker-end="url(#g4)"/>
+  </svg>
+<pre><code><i>-- PostgreSQL: a lógica fica numa função que RETURNS trigger</i>
+<b>CREATE TRIGGER</b> trg_audita <b>AFTER UPDATE ON</b> processo
+<b>FOR EACH ROW EXECUTE FUNCTION</b> audita();   <i>-- grava (OLD.status, NEW.status)</i></code></pre>
+  <div class="io">
+    <div class="tbox"><span class="in">comando</span><table><tr><td><code>UPDATE processo SET status='baixado' WHERE numero='A-10'</code></td></tr></table></div>
+    <div class="arr">→</div>
+    <div class="tbox"><span class="out">auditoria (gravada pelo trigger)</span><table><tr><th>numero</th><th>OLD.status</th><th>NEW.status</th></tr><tr><td>A-10</td><td>ativo</td><td class="hk">baixado</td></tr></table></div>
+  </div>
+  <div class="say law">Trigger é um procedimento associado a uma tabela (ou view), executado <b>automaticamente</b> em INSERT, UPDATE ou DELETE; pode ser <b>BEFORE</b>, <b>AFTER</b> ou <b>INSTEAD OF</b>, por <b>linha</b> ou por <b>comando</b>. OLD = valor antigo; NEW = valor novo.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PROCEDURE × FUNCTION</span>
+  <h2>Código que mora dentro do banco</h2>
+<pre><code><b>CREATE PROCEDURE</b> arquivar_antigos(p_ano INT) <b>LANGUAGE</b> sql <b>AS</b> $$
+  <b>UPDATE</b> processo <b>SET</b> status = 'arquivado' <b>WHERE</b> ano &lt; p_ano;
+$$;
+<mark><b>CALL</b> arquivar_antigos(2015);</mark>                 <i>-- procedure: chamada como comando</i>
+<b>SELECT</b> numero, <mark>dias_parado(ultima_mov)</mark> <b>FROM</b> processo; <i>-- function: dentro do SELECT</i></code></pre>
+  <table class="cmp mini">
+    <tr><th></th><th>Stored procedure</th><th>Function</th></tr>
+    <tr><td><b>Retorno</b></td><td>não obrigatório (pode ter parâmetros de saída)</td><td>retorna um valor (ou tabela)</td></tr>
+    <tr><td><b>Como chama</b></td><td>CALL / EXEC</td><td>dentro de expressões e do SELECT</td></tr>
+    <tr><td><b>Uso típico</b></td><td>rotinas de negócio, cargas em lote</td><td>cálculos reaproveitáveis</td></tr>
+  </table>
+  <div class="say trap"><span class="pill ng">✗</span> “Procedure pode ser usada diretamente na lista do SELECT.” <span class="pill ok">✓</span> Quem entra no SELECT é a <b>function</b>. Vantagens das duas: menos ida e volta na rede, regra centralizada e permissão de execução sem acesso direto às tabelas.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">POR DENTRO</span>
+  <h2>O caminho de uma consulta no SGBD</h2>
+  <svg viewBox="0 0 640 170" role="img" aria-label="consulta passa por parser, otimizador que consulta estatísticas, gera plano e executor">
+    <defs><marker id="p4" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+    <rect class="box" x="5" y="20" width="110" height="50" rx="12"/><text x="60" y="50" text-anchor="middle">SQL</text>
+    <rect class="box" x="140" y="20" width="110" height="50" rx="12"/><text x="195" y="42" text-anchor="middle">Parser</text><text x="195" y="60" text-anchor="middle" class="small">sintaxe</text>
+    <rect class="keybox" x="275" y="20" width="130" height="50" rx="12"/><text class="kt" x="340" y="42" text-anchor="middle">Otimizador</text><text class="kt" x="340" y="60" text-anchor="middle" style="font-size:12px">menor custo</text>
+    <rect class="accbox" x="430" y="20" width="90" height="50" rx="12"/><text x="475" y="50" text-anchor="middle">Plano</text>
+    <rect class="okbox" x="545" y="20" width="90" height="50" rx="12"/><text x="590" y="50" text-anchor="middle">Executor</text>
+    <line x1="117" y1="45" x2="136" y2="45" stroke="#6d4aff" stroke-width="3" marker-end="url(#p4)"/>
+    <line x1="252" y1="45" x2="271" y2="45" stroke="#6d4aff" stroke-width="3" marker-end="url(#p4)"/>
+    <line x1="407" y1="45" x2="426" y2="45" stroke="#6d4aff" stroke-width="3" marker-end="url(#p4)"/>
+    <line x1="522" y1="45" x2="541" y2="45" stroke="#6d4aff" stroke-width="3" marker-end="url(#p4)"/>
+    <rect class="box" x="275" y="110" width="130" height="46" rx="12"/><text x="340" y="132" text-anchor="middle">Estatísticas</text><text x="340" y="149" text-anchor="middle" class="small">nº linhas, distribuição</text>
+    <line x1="340" y1="108" x2="340" y2="74" stroke="#e8871a" stroke-width="3" marker-end="url(#p4)"/>
+  </svg>
+  <p class="mini">O otimizador <b>baseado em custo</b> estima quantas linhas cada passo vai devolver e escolhe entre caminhos: ler a tabela toda ou usar um índice, e qual algoritmo de junção (<b>nested loop</b>, <b>hash join</b>, <b>merge join</b>). Se as <b>estatísticas</b> estão velhas, a estimativa erra e o plano fica ruim.</p>
+  <div class="say law">Atualizar estatísticas: <code>ANALYZE</code> (PostgreSQL), <code>UPDATE STATISTICS</code> (SQL Server), pacote <code>DBMS_STATS</code> (Oracle), <code>ANALYZE TABLE</code> (MySQL).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">ÍNDICE</span>
+  <h2>Índice B-tree: a árvore que pula páginas</h2>
+  <svg viewBox="0 0 640 175" role="img" aria-label="árvore B com raiz, nós internos e folhas apontando para linhas">
+    <defs><marker id="b4" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2ea043"/></marker></defs>
+    <rect class="keybox" x="260" y="5" width="120" height="38" rx="10"/><text class="kt" x="320" y="30" text-anchor="middle">raiz: 500</text>
+    <rect class="box" x="100" y="70" width="140" height="38" rx="10"/><text x="170" y="95" text-anchor="middle">&lt; 500: 250</text>
+    <rect class="okbox" x="400" y="70" width="140" height="38" rx="10"/><text x="470" y="95" text-anchor="middle">≥ 500: 750</text>
+    <rect class="box" x="20" y="135" width="110" height="34" rx="8"/><text x="75" y="157" text-anchor="middle" class="small">folhas 1–249</text>
+    <rect class="box" x="150" y="135" width="110" height="34" rx="8"/><text x="205" y="157" text-anchor="middle" class="small">250–499</text>
+    <rect class="okbox" x="380" y="135" width="110" height="34" rx="8"/><text x="435" y="157" text-anchor="middle" style="font-size:13px">500–749 ✓</text>
+    <rect class="box" x="510" y="135" width="110" height="34" rx="8"/><text x="565" y="157" text-anchor="middle" class="small">750+</text>
+    <line x1="300" y1="43" x2="190" y2="68" stroke="#999" stroke-width="2"/>
+    <line x1="340" y1="43" x2="450" y2="68" stroke="#2ea043" stroke-width="3" marker-end="url(#b4)"/>
+    <line x1="150" y1="108" x2="90" y2="133" stroke="#999" stroke-width="2"/><line x1="190" y1="108" x2="205" y2="133" stroke="#999" stroke-width="2"/>
+    <line x1="450" y1="108" x2="435" y2="133" stroke="#2ea043" stroke-width="3" marker-end="url(#b4)"/><line x1="500" y1="108" x2="560" y2="133" stroke="#999" stroke-width="2"/>
+    <text x="560" y="30" class="small">buscar 612: 3 saltos</text>
+  </svg>
+  <p class="mini">B-tree é o tipo padrão: serve para <b>=</b>, <b>&lt; &gt; BETWEEN</b>, <b>ORDER BY</b> e <code>LIKE 'abc%'</code>. Outros: <b>hash</b> (só igualdade), <b>bitmap</b> (Oracle, colunas com poucos valores distintos, perfil analítico).</p>
+  <p class="mini"><b>Clusterizado</b> (SQL Server): ordena fisicamente a própria tabela, por isso só existe <b>um</b> por tabela; os demais são não clusterizados.</p>
+  <div class="say law">Índice acelera leitura seletiva, mas tem custo: ocupa espaço e <b>deixa INSERT, UPDATE e DELETE mais lentos</b>, pois cada índice também precisa ser atualizado.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PEGADINHA</span>
+  <h2>Quando o índice existe mas não é usado</h2>
+  <p class="mini">Índices em <code>processo(nome_parte)</code>, <code>processo(data_dist)</code> e um composto em <code>(vara, ano)</code>:</p>
+  <table class="cmp mini">
+    <tr><th>Consulta</th><th>Usa índice?</th><th>Por quê</th></tr>
+    <tr><td><code>WHERE nome_parte LIKE 'Silva%'</code></td><td><span class="pill ok">em regra sim</span></td><td>prefixo conhecido</td></tr>
+    <tr><td><code>WHERE nome_parte LIKE <mark>'%Silva'</mark></code></td><td><span class="pill ng">não</span></td><td>curinga no início: B-tree não sabe por onde começar</td></tr>
+    <tr><td><code>WHERE <mark>UPPER(nome_parte)</mark> = 'ANA'</code></td><td><span class="pill ng">não</span></td><td>função na coluna (exceto com índice de expressão/função)</td></tr>
+    <tr><td><code>WHERE <mark>EXTRACT(YEAR FROM data_dist)</mark> = 2024</code></td><td><span class="pill ng">não</span></td><td>reescreva: <code>data_dist &gt;= '2024-01-01' AND data_dist &lt; '2025-01-01'</code></td></tr>
+    <tr><td><code>WHERE vara = 3 AND ano = 2024</code></td><td><span class="pill ok">sim</span></td><td>usa as colunas da esquerda do composto</td></tr>
+    <tr><td><code>WHERE ano = 2024</code> (só a 2ª coluna)</td><td><span class="pill ng">em regra não</span></td><td>regra do <b>prefixo à esquerda</b> (alguns SGBDs têm <i>skip scan</i>)</td></tr>
+  </table>
+  <div class="say trap"><span class="pill ng">✗</span> “Criar índice em todas as colunas sempre melhora o desempenho.” <span class="pill ok">✓</span> Escritas pioram, e o otimizador pode preferir o full scan quando o filtro é pouco seletivo (ex.: coluna sexo, com 2 valores).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PLANO DE EXECUÇÃO</span>
+  <h2>Lendo um EXPLAIN (PostgreSQL)</h2>
+<pre><code><b>EXPLAIN SELECT</b> * <b>FROM</b> processo <b>WHERE</b> numero = 'A-10';
+<span style="color:var(--bad)">Seq Scan on processo  (cost=0.00..1834.00 rows=1 width=64)</span>
+  Filter: (numero = 'A-10'::text)
+
+<b>CREATE INDEX</b> idx_proc_num <b>ON</b> processo(numero);
+<span style="color:var(--ok)">Index Scan using idx_proc_num on processo  (cost=0.29..8.31 rows=1 width=64)</span>
+  Index Cond: (numero = 'A-10'::text)</code></pre>
+  <p class="cap">Números ilustrativos. O “cost” é uma unidade relativa do otimizador, não milissegundos.</p>
+  <table class="cmp mini">
+    <tr><th>Comando</th><th>O que faz</th></tr>
+    <tr><td><code>EXPLAIN</code></td><td>mostra o plano <b>estimado</b>, sem executar</td></tr>
+    <tr><td><code>EXPLAIN ANALYZE</code></td><td><b>executa de verdade</b> e mostra tempo e linhas reais (cuidado com UPDATE/DELETE!)</td></tr>
+  </table>
+  <div class="say good"><b>Sinal de alerta:</b> “rows” estimado muito diferente do real → estatísticas desatualizadas. Rode ANALYZE. Outros nomes: Oracle <code>EXPLAIN PLAN</code>; SQL Server “plano de execução” (gráfico); MySQL <code>EXPLAIN</code>.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">PARTICIONAMENTO</span>
+  <h2>Partição: dividir a tabela gigante em gavetas</h2>
+  <svg viewBox="0 0 640 150" role="img" aria-label="tabela processo particionada por ano; consulta de 2024 lê só uma partição">
+    <rect class="box" x="10" y="10" width="620" height="130" rx="16"/><text x="30" y="34">processo (particionada por RANGE de ano)</text>
+    <rect class="box" x="30" y="50" width="130" height="70" rx="12"/><text x="95" y="82" text-anchor="middle">p2022</text><text x="95" y="104" text-anchor="middle" class="small">ignorada</text>
+    <rect class="box" x="180" y="50" width="130" height="70" rx="12"/><text x="245" y="82" text-anchor="middle">p2023</text><text x="245" y="104" text-anchor="middle" class="small">ignorada</text>
+    <rect class="okbox" x="330" y="50" width="130" height="70" rx="12"/><text x="395" y="82" text-anchor="middle">p2024</text><text x="395" y="104" text-anchor="middle" class="small" style="fill:#2ea043">lida ✓</text>
+    <rect class="box" x="480" y="50" width="130" height="70" rx="12"/><text x="545" y="82" text-anchor="middle">p2025</text><text x="545" y="104" text-anchor="middle" class="small">ignorada</text>
+  </svg>
+  <p class="mini"><code>WHERE ano = 2024</code> → o otimizador lê só a gaveta certa: <b>partition pruning</b> (eliminação de partições). Tipos: <b>RANGE</b> (faixas: datas), <b>LIST</b> (valores: comarca), <b>HASH</b> (espalhar por igual).</p>
+  <div class="say law">Particionamento divide <b>uma</b> tabela lógica em partes físicas no <b>mesmo</b> banco, de forma transparente para o SQL. Não confundir com <b>sharding</b>, que distribui os dados entre <b>servidores</b> diferentes.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Capítulo 4 numa colinha</h2>
+  <div class="magic">View guarda a pergunta; materializada guarda a resposta.<small>Índice acelera leitura e cobra nas escritas. EXPLAIN estima; EXPLAIN ANALYZE executa.</small></div>
+  <ul class="checklist">
+    <li>Trigger: automático, BEFORE/AFTER/INSTEAD OF, por linha ou comando, OLD/NEW.</li>
+    <li>Function entra no SELECT; procedure é chamada com CALL/EXEC.</li>
+    <li>Otimizador por custo depende de estatísticas atualizadas.</li>
+    <li>Índice morre com função na coluna, <code>LIKE '%x'</code> e coluna fora do prefixo do composto.</li>
+    <li>Um só índice clusterizado por tabela (SQL Server).</li>
+    <li>Particionamento + pruning: lê só a partição útil; sharding = outros servidores.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Pense antes de abrir</h2>
+  <details><summary>1) Um relatório mensal pesado roda toda hora sobre dados que mudam 1 vez por dia. Qual objeto ajuda mais?</summary>
+    <p><span class="pill ok">View materializada</span> Guarda o resultado pronto, atualizado (refresh) uma vez por dia. A view comum recalcularia tudo a cada leitura.</p></details>
+  <details><summary>2) Há índice em <code>cpf</code>, mas a consulta usa <code>WHERE SUBSTR(cpf,1,3) = '123'</code> e faz full scan. Por quê?</summary>
+    <p><span class="pill ng">Função na coluna</span> O índice guarda o cpf inteiro, não o SUBSTR. Solução: <code>cpf LIKE '123%'</code> ou um índice de expressão.</p></details>
+  <details><summary>3) Qual comando do PostgreSQL mostra tempos reais, executando a consulta?</summary>
+    <p><span class="pill ok">EXPLAIN ANALYZE</span> O EXPLAIN puro só estima. Num DELETE, o ANALYZE apaga de verdade (use dentro de transação com ROLLBACK).</p></details>
+  <details><summary>4) Gravar automaticamente o valor antigo sempre que o status de um processo mudar exige…</summary>
+    <p><span class="pill ok">Trigger AFTER UPDATE por linha</span> Usando OLD.status (antes) e NEW.status (depois). Procedure não dispara sozinha.</p></details>
+</div>
+
+</section>
+
+<!-- ===================================================== CAPÍTULO 5 ===================================================== -->
+<section class="chapter" data-title="NoSQL e bancos vetoriais">
+
+<div class="slide">
+  <span class="tag">CAPÍTULO 5</span>
+  <h1>NoSQL e bancos vetoriais</h1>
+  <span class="emoji">🧭</span>
+  <div class="steps">
+    <div class="step"><b>1. Por que NoSQL</b><span>Escala horizontal, esquema flexível, CAP e BASE.</span></div>
+    <div class="step"><b>2. Os 4 tipos</b><span>Chave-valor, documento, colunar (wide-column) e grafo.</span></div>
+    <div class="step"><b>3. Vetores</b><span>Embeddings, similaridade, kNN × ANN, pgvector e RAG.</span></div>
+  </div>
+  <div class="analogy"><span class="emoji">🏠</span><div><b>Analogia do dia:</b> o relacional é um <b>armário de gavetas etiquetadas</b>, perfeito para quase tudo. NoSQL são <b>móveis especializados</b>: um cabideiro (chave-valor), pastas sanfonadas (documento), estantes enormes (colunar), um mural com barbantes (grafo). E o banco vetorial é um <b>mapa</b> onde coisas parecidas ficam perto.</div></div>
+</div>
+
+<div class="slide">
+  <span class="tag">POR QUE NoSQL</span>
+  <h2>Quando o relacional aperta</h2>
+  <svg viewBox="0 0 640 130" role="img" aria-label="escala vertical aumenta um servidor; escala horizontal adiciona servidores">
+    <rect class="box" x="40" y="70" width="60" height="50" rx="8"/><rect class="accbox" x="140" y="20" width="60" height="100" rx="8"/>
+    <text x="120" y="50" text-anchor="middle" style="font-size:20px">→</text>
+    <text x="120" y="14" text-anchor="middle" class="small">vertical: máquina maior</text>
+    <rect class="box" x="360" y="70" width="50" height="50" rx="8"/><text x="430" y="100" text-anchor="middle" style="font-size:20px">→</text>
+    <rect class="okbox" x="460" y="70" width="50" height="50" rx="8"/><rect class="okbox" x="520" y="70" width="50" height="50" rx="8"/><rect class="okbox" x="580" y="70" width="50" height="50" rx="8"/>
+    <text x="495" y="50" text-anchor="middle" class="small">horizontal: mais máquinas (típico do NoSQL)</text>
+  </svg>
+  <table class="cmp mini">
+    <tr><th></th><th>ACID (relacional clássico)</th><th>BASE (muitos NoSQL)</th></tr>
+    <tr><td><b>Ideia</b></td><td>consistência forte a cada transação</td><td><b>B</b>asically <b>A</b>vailable, <b>S</b>oft state, <b>E</b>ventual consistency</td></tr>
+    <tr><td><b>Leitura logo após escrita</b></td><td>vê o dado novo</td><td>pode ver o dado antigo por um tempo</td></tr>
+  </table>
+  <div class="say law"><b>Teorema CAP</b>: num sistema distribuído, diante de uma <b>partição de rede</b>, é preciso escolher entre <b>Consistência</b> e <b>Disponibilidade</b>. Tolerância a partição não é opcional quando a rede pode falhar.</div>
+  <div class="say trap"><span class="pill ng">✗</span> NoSQL = “sem SQL”. <span class="pill ok">✓</span> Lê-se “<b>Not only SQL</b>”. Vários têm linguagem parecida (CQL do Cassandra) e alguns oferecem transações (MongoDB tem transações multidocumento).</div>
+</div>
+
+<div class="slide">
+  <span class="tag">OS 4 TIPOS</span>
+  <h2>Mapa dos modelos NoSQL</h2>
+  <table class="cmp mini">
+    <tr><th>Tipo</th><th>Como guarda</th><th>Exemplos</th><th>Bom para</th></tr>
+    <tr><td><b>Chave-valor</b></td><td>chave → valor opaco</td><td>Redis, DynamoDB</td><td>cache, sessão, contadores</td></tr>
+    <tr><td><b>Documento</b></td><td>JSON/BSON aninhado, por coleção</td><td>MongoDB, Couchbase</td><td>cadastros de estrutura variável, APIs</td></tr>
+    <tr><td><b>Colunar (wide-column)</b></td><td>linhas agrupadas por chave de partição, famílias de colunas</td><td>Cassandra, HBase</td><td>escrita massiva, séries temporais, logs</td></tr>
+    <tr><td><b>Grafo</b></td><td>nós + arestas, ambos com propriedades</td><td>Neo4j</td><td>relações: redes, fraudes, recomendações</td></tr>
+  </table>
+  <div class="say trap"><span class="pill ng">✗</span> “Banco colunar” sempre quer dizer Cassandra. <span class="pill ok">✓</span> Há dois sentidos: <b>wide-column</b> (Cassandra, HBase: NoSQL distribuído) e <b>armazenamento orientado a colunas</b> para análise/BI (data warehouse), que grava cada coluna junta para somar milhões de valores rápido e comprimir bem. Leia o contexto da questão.</div>
+  <div class="say law">Bancos NoSQL priorizam escalabilidade horizontal e flexibilidade de esquema, em geral modelando os dados <b>a partir das consultas</b> (query-driven), e não a partir da normalização.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">CHAVE-VALOR</span>
+  <h2>Chave-valor: o cabideiro numerado</h2>
+  <div class="analogy"><span class="emoji">🧥</span><div>Você entrega o casaco e recebe a <b>ficha 42</b>. Para pegar de volta, só a ficha serve: o atendente não procura “o casaco azul”.</div></div>
+  <div class="io">
+    <div class="tbox"><span class="in">comandos (Redis)</span>
+<pre style="margin:4px 0"><code><b>SET</b> sessao:42 "ana" <b>EX</b> 1800
+<b>INCR</b> acessos:hoje
+<b>GET</b> sessao:42</code></pre></div>
+    <div class="arr">→</div>
+    <div class="tbox"><span class="out">estado / resposta</span>
+      <table><tr><th>chave</th><th>valor</th></tr><tr><td>sessao:42</td><td class="hk">"ana" (expira em 30 min)</td></tr><tr><td>acessos:hoje</td><td>1</td></tr></table>
+      <p class="cap">GET devolve "ana".</p></div>
+  </div>
+  <div class="say trap"><span class="pill ng">✗</span> “Chave-valor é ideal para buscar todos os usuários com mais de 30 anos.” <span class="pill ok">✓</span> O acesso natural é <b>pela chave</b>. Buscar pelo conteúdo do valor não é o ponto forte. O Redis guarda tudo em <b>memória</b> (com persistência opcional), por isso brilha como <b>cache</b>.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">DOCUMENTO</span>
+  <h2>Documento: a pasta com tudo dentro</h2>
+  <div class="two">
+<pre><code>{ "_id": "A-10",
+  "classe": "Cível",
+  "valor": 500,
+  "partes": [
+    { "nome": "Ana",  "polo": "ativo" },
+    { "nome": "Beto", "polo": "passivo" }
+  ] }</code></pre>
+    <div><p class="mini">No relacional seriam 2 tabelas (processo + parte) e um JOIN. No documento, as partes ficam <b>embutidas</b> (embedding): uma leitura traz tudo.</p>
+    <p class="mini">Documentos da mesma <b>coleção</b> podem ter campos diferentes (esquema flexível). O MongoDB grava em <b>BSON</b> (JSON binário) e todo documento tem <code>_id</code>.</p></div>
+  </div>
+  <pre><code>db.processos.<b>find</b>( { valor: { <mark>$gt</mark>: 400 } }, { classe: 1, _id: 0 } )   <i>-- ≈ SELECT classe WHERE valor &gt; 400</i></code></pre>
+  <div class="io">
+    <div class="tbox"><span class="in">coleção processos</span><table><tr><th>_id</th><th>classe</th><th>valor</th></tr><tr><td>A-10</td><td>Cível</td><td class="hk">500</td></tr><tr><td>A-11</td><td>Penal</td><td>100</td></tr><tr><td>A-12</td><td>Cível</td><td class="hk">900</td></tr></table></div>
+    <div class="arr">→</div>
+    <div class="tbox"><span class="out">resultado</span><pre style="margin:0"><code>{ "classe": "Cível" }
+{ "classe": "Cível" }</code></pre></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag">DOCUMENTO · AGREGAÇÃO</span>
+  <h2>Pipeline de agregação = GROUP BY do MongoDB</h2>
+<pre><code>db.processos.<b>aggregate</b>([
+  { <mark>$match</mark>: { classe: "Cível" } },                          <i>// ≈ WHERE</i>
+  { <mark>$group</mark>: { _id: "$vara", total: { <b>$sum</b>: "$valor" } } },  <i>// ≈ GROUP BY + SUM</i>
+  { <mark>$sort</mark>:  { total: -1 } }                                 <i>// ≈ ORDER BY DESC</i>
+])</code></pre>
+  <div class="io">
+    <div class="tbox"><span class="in">coleção processos</span><table><tr><th>vara</th><th>classe</th><th>valor</th></tr><tr><td>1</td><td>Cível</td><td>500</td></tr><tr><td>1</td><td>Cível</td><td>300</td></tr><tr><td class="dim">2</td><td class="dim">Penal</td><td class="dim">700</td></tr><tr><td>2</td><td>Cível</td><td>900</td></tr></table></div>
+    <div class="arr">→</div>
+    <div class="tbox"><span class="out">resultado</span><table><tr><th>_id</th><th>total</th></tr><tr><td>2</td><td>900</td></tr><tr><td>1</td><td>800</td></tr></table><p class="cap">O Penal saiu no $match.</p></div>
+  </div>
+  <div class="say law">No MongoDB, a agregação é um <b>pipeline de estágios</b>: a saída de um estágio é a entrada do próximo ($match, $group, $sort, $project, $lookup…). O <code>$lookup</code> faz algo parecido com um LEFT JOIN entre coleções.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">WIDE-COLUMN E GRAFO</span>
+  <h2>Cassandra e Neo4j em um slide</h2>
+  <div class="two">
+    <div>
+<pre><code><i>-- Cassandra (CQL)</i>
+<b>CREATE TABLE</b> mov_por_vara (
+  vara int, data timestamp, numero text,
+  <b>PRIMARY KEY</b> ((<mark>vara</mark>), data)
+);</code></pre>
+      <p class="mini"><code>vara</code> = <b>chave de partição</b> (decide o servidor); <code>data</code> = coluna de <b>clustering</b> (ordena dentro da partição). Modela-se uma tabela <b>por consulta</b>; JOIN não existe.</p>
+    </div>
+    <div>
+      <svg viewBox="0 0 300 170" role="img" aria-label="grafo: juiz julga processo, processo tem parte">
+        <defs><marker id="gr5" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d4aff"/></marker></defs>
+        <circle cx="50" cy="45" r="34" class="keybox"/><text class="kt" x="50" y="50" text-anchor="middle" style="font-size:13px">Juiz</text>
+        <circle cx="160" cy="125" r="34" class="accbox"/><text x="160" y="130" text-anchor="middle" style="font-size:13px">Processo</text>
+        <circle cx="260" cy="45" r="34" class="okbox"/><text x="260" y="50" text-anchor="middle" style="font-size:13px">Parte</text>
+        <line x1="76" y1="66" x2="132" y2="104" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#gr5)"/>
+        <line x1="186" y1="104" x2="236" y2="68" stroke="#6d4aff" stroke-width="2.5" marker-end="url(#gr5)"/>
+        <text x="72" y="104" class="small">JULGA</text><text x="222" y="104" class="small">TEM_PARTE</text>
+      </svg>
+<pre><code><b>MATCH</b> (j:Juiz)-[:JULGA]-&gt;(p:Processo)
+<b>WHERE</b> j.nome = 'Carlos' <b>RETURN</b> p.numero</code></pre>
+    </div>
+  </div>
+  <div class="say law">Em grafo, <b>relacionamento é dado de primeira classe</b> (aresta com tipo e propriedades). Percorrer “amigo do amigo do amigo” é natural; no relacional, viraria vários JOINs. Linguagem do Neo4j: <b>Cypher</b>.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">BANCO VETORIAL</span>
+  <h2>Embedding: transformar texto em coordenadas</h2>
+  <div class="analogy"><span class="emoji">🗺️</span><div>Um modelo de IA lê cada texto e devolve uma <b>lista de números</b> (o vetor, com centenas de dimensões). Textos de <b>significado parecido</b> caem <b>perto</b> no mapa, mesmo com palavras diferentes.</div></div>
+  <svg viewBox="0 0 640 200" role="img" aria-label="mapa 2D com textos de família agrupados perto da consulta e textos penais longe">
+    <rect class="box" x="10" y="10" width="620" height="180" rx="14"/>
+    <circle cx="140" cy="70" r="9" fill="#2ea043"/><text x="155" y="66" class="small">“pensão alimentícia atrasada”</text>
+    <circle cx="120" cy="115" r="9" fill="#2ea043"/><text x="135" y="132" class="small">“pai não paga alimentos”</text>
+    <circle cx="200" cy="100" r="11" fill="#ffd84d" stroke="#3a2e00" stroke-width="2"/><text x="216" y="104">consulta: “dívida de alimentos”</text>
+    <circle cx="500" cy="60" r="9" fill="#e5484d"/><text x="430" y="45" class="small">“furto qualificado”</text>
+    <circle cx="540" cy="150" r="9" fill="#e5484d"/><text x="430" y="178" class="small">“roubo com arma”</text>
+    <circle cx="200" cy="100" r="70" fill="none" stroke="#2ea043" stroke-width="2" stroke-dasharray="6 5"/>
+  </svg>
+  <p class="cap">Desenho em 2D só para visualizar; embeddings reais têm centenas ou milhares de dimensões.</p>
+  <div class="say law">Banco vetorial armazena vetores (embeddings) e responde a <b>busca por similaridade</b>: dado um vetor de consulta, devolve os k vetores mais próximos (top-k), em vez de igualdade exata de valores.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">SIMILARIDADE</span>
+  <h2>Medir “perto” e buscar rápido</h2>
+  <table class="cmp mini">
+    <tr><th>Medida</th><th>Ideia</th><th>Operador no pgvector</th></tr>
+    <tr><td><b>Cosseno</b></td><td>ângulo entre os vetores (ignora o tamanho)</td><td><code>&lt;=&gt;</code> (distância de cosseno)</td></tr>
+    <tr><td><b>Euclidiana (L2)</b></td><td>régua: distância em linha reta</td><td><code>&lt;-&gt;</code></td></tr>
+    <tr><td><b>Produto interno</b></td><td>alinhamento + tamanho</td><td><code>&lt;#&gt;</code> (produto interno negativo)</td></tr>
+  </table>
+  <div class="two">
+    <div class="card" style="margin:0"><b>kNN exato</b><br><span class="mini">compara a consulta com <b>todos</b> os vetores. Resultado perfeito, mas lento com milhões.</span></div>
+    <div class="card" style="margin:0"><b>ANN aproximado</b><br><span class="mini">índices como <b>HNSW</b> (grafo em camadas) e <b>IVF</b> (agrupa em células) olham só uma parte. Muito mais rápido, pode perder algum vizinho.</span></div>
+  </div>
+  <div class="say trap"><span class="pill ng">✗</span> “O índice HNSW garante sempre os vizinhos exatos.” <span class="pill ok">✓</span> HNSW é <b>aproximado</b>: troca um pouco de <b>recall</b> (revocação) por velocidade, ajustável por parâmetros.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">NA PRÁTICA</span>
+  <h2>pgvector e RAG: busca vetorial com SQL</h2>
+<pre><code><b>SELECT</b> id, texto, embedding <mark>&lt;=&gt;</mark> :vetor_consulta <b>AS</b> dist
+<b>FROM</b> jurisprudencia <b>ORDER BY</b> dist <b>LIMIT</b> 2;</code></pre>
+  <div class="io">
+    <div class="tbox"><span class="in">jurisprudencia (embedding oculto)</span><table><tr><th>id</th><th>texto</th></tr><tr><td>1</td><td>Alimentos em atraso: prisão civil…</td></tr><tr><td>2</td><td>Furto qualificado por rompimento…</td></tr><tr><td>3</td><td>Revisão do valor da pensão…</td></tr></table></div>
+    <div class="arr">→</div>
+    <div class="tbox"><span class="out">top-2 para “dívida de alimentos”</span><table><tr><th>id</th><th>dist</th></tr><tr><td class="hk">1</td><td>0,12</td></tr><tr><td class="hk">3</td><td>0,21</td></tr></table><p class="cap">Distâncias ilustrativas; menor = mais parecido.</p></div>
+  </div>
+  <div class="flow"><span>pergunta</span><i>→</i><span>embedding</span><i>→</i><span>busca top-k no banco vetorial</span><i>→</i><span>trechos + pergunta no prompt</span><i>→</i><span>LLM responde</span></div>
+  <div class="say law">Esse fluxo é o <b>RAG</b> (Retrieval-Augmented Generation). Opções: extensão <b>pgvector</b> no PostgreSQL, ou bancos dedicados (Milvus, Qdrant, Weaviate, Pinecone, Chroma). Busca <b>híbrida</b> = vetorial + palavra-chave (ex.: BM25) + filtro por metadados.</div>
+</div>
+
+<div class="slide">
+  <span class="tag">RESUMO</span>
+  <h2>Capítulo 5 numa colinha</h2>
+  <div class="magic">Chave-valor = cabideiro · Documento = pasta · Wide-column = estante particionada · Grafo = mural com barbante · Vetorial = mapa de significados<small>CAP: na partição, escolha C ou A. BASE = consistência eventual.</small></div>
+  <ul class="checklist">
+    <li>NoSQL = Not only SQL; escala horizontal e esquema flexível.</li>
+    <li>MongoDB: BSON, coleções, <code>find</code>, pipeline <code>$match → $group</code>.</li>
+    <li>Cassandra: chave de partição + clustering; modelagem por consulta.</li>
+    <li>Neo4j: nós, arestas com propriedades, Cypher.</li>
+    <li>Similaridade: cosseno, L2, produto interno; HNSW/IVF são ANN (aproximados).</li>
+    <li>RAG: recupera trechos parecidos e entrega ao LLM.</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <span class="tag">TESTE RÁPIDO</span>
+  <h2>Pense antes de abrir</h2>
+  <details><summary>1) Guardar sessões de usuários com expiração automática e leitura em microssegundos pede qual modelo?</summary>
+    <p><span class="pill ok">Chave-valor (ex.: Redis)</span> Acesso direto pela chave, em memória, com TTL (<code>EX</code>).</p></details>
+  <details><summary>2) Detectar conluio em rede de advogados, partes e empresas (relações em vários níveis) pede…</summary>
+    <p><span class="pill ok">Banco de grafos</span> Percorrer arestas em profundidade é o ponto forte; no relacional seriam muitos JOINs.</p></details>
+  <details><summary>3) Segundo o CAP, ocorrendo partição de rede, o sistema deve escolher entre…</summary>
+    <p><span class="pill ok">Consistência e disponibilidade</span> A tolerância a partição é obrigatória quando a rede pode falhar.</p></details>
+  <details><summary>4) Busca semântica em milhões de ementas, com resposta em milissegundos, aceitando pequena perda de recall: qual índice?</summary>
+    <p><span class="pill ok">ANN, como HNSW</span> kNN exato é preciso, mas varre tudo. HNSW troca um pouco de recall por velocidade.</p></details>
+</div>
+
+</section>
+
+<script src="aula.js"></script></body></html>
