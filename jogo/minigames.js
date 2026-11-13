@@ -35,9 +35,12 @@
     document.head.appendChild(s);
   }
   function mkBtn(text, parent, cb, bg) {
-    var b = h('div', 'display:inline-block;padding:8px 18px;background:' + (bg || C.blue) + ';color:#fff;border:4px solid ' + C.bd +
-      ';border-radius:8px;cursor:pointer;font-weight:bold;user-select:none;margin-top:10px;', text, parent);
-    b.addEventListener('click', function (e) { e.stopPropagation(); cb(); });
+    var b = h('button', 'display:inline-block;padding:12px 22px;background:' + (bg || C.blue) + ';color:#fff;border:4px solid ' + C.bd +
+      ';border-radius:10px;cursor:pointer;font:bold 18px ' + FONT + ';user-select:none;margin-top:10px;touch-action:manipulation;box-shadow:0 3px 0 #151726;', text, parent);
+    b.type = 'button';
+    var act = function (e) { if (e) { e.preventDefault(); e.stopPropagation(); } cb(); };
+    b.addEventListener('pointerdown', act);
+    b.addEventListener('click', act);
     return b;
   }
   function head(ctx, title, rightText) {
@@ -143,16 +146,23 @@
   /* ---------- overlay / contexto ---------- */
   function createCtx(onDone) {
     ensureStyle();
-    var screen = document.getElementById('screen') || document.body;
-    var root = h('div', 'position:absolute;left:0;top:0;width:100%;height:100%;z-index:99999;background:rgba(24,32,64,.9);' +
-      'display:flex;align-items:center;justify-content:center;font-family:' + FONT + ';color:' + C.ink + ';');
+    var root = h('div', 'position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;z-index:999999;background:rgba(15,22,45,.96);' +
+      'display:flex;align-items:center;justify-content:center;padding:12px;box-sizing:border-box;font-family:' + FONT + ';color:' + C.ink + ';');
     root.setAttribute('data-mini', '1');
-    var box = h('div', 'position:relative;width:880px;max-width:96%;max-height:96%;overflow-y:auto;-webkit-overflow-scrolling:touch;box-sizing:border-box;' +
-      'background:' + C.bg + ';border:5px solid ' + C.bd + ';border-radius:10px;padding:12px 14px;font-size:16px;font-weight:bold;' +
-      'animation:mini-in .25s;', null, root);
-    screen.appendChild(root);
+    var topExit = h('button', 'position:fixed;top:12px;right:14px;z-index:10000000;background:#e5484d;color:#fff;border:3px solid #fff;border-radius:10px;padding:8px 16px;font:bold 16px ' + FONT + ';cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.6);touch-action:manipulation;', '✕ Sair', root);
+    topExit.type = 'button';
+    var box = h('div', 'position:relative;width:760px;max-width:100%;max-height:92vh;max-height:92dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;box-sizing:border-box;' +
+      'background:' + C.bg + ';border:5px solid ' + C.bd + ';border-radius:12px;padding:14px 16px;font-size:17px;font-weight:bold;' +
+      'animation:mini-in .25s;box-shadow:0 10px 40px rgba(0,0,0,.6);', null, root);
+    document.body.appendChild(root);
 
     var ctx = { root: root, box: box, closed: false, timers: [], onKey: null, score: 0, mistakes: 0, finished: false };
+    var handleExit = function (e) {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      ctx.close({ win: false, score: ctx.score, mistakes: ctx.mistakes, cancelled: true });
+    };
+    topExit.addEventListener('pointerdown', handleExit);
+    topExit.addEventListener('click', handleExit);
     ctx.later = function (fn, ms) {
       var t = setTimeout(function () { if (!ctx.closed) fn(); }, ms); ctx.timers.push(t); return t;
     };
@@ -639,10 +649,17 @@
       });
       if (ok) { ctx.score = 100 + Math.round(left / 100); sfx('correct'); }
       else { ctx.mistakes = 1; sfx(sel < 0 ? 'error' : 'wrong'); fx('shake', box, 5, 300); }
-      h('div', 'font-size:22px;color:' + (ok ? C.green : C.red) + ';', ok ? 'CERTO!' : (sel < 0 ? 'TEMPO ESGOTADO!' : 'ERRADO!'), fb);
-      h('div', 'font-weight:normal;', 'Explicação: ' + (data.explain || ''), fb);
+      h('div', 'font-size:24px;color:' + (ok ? C.green : C.red) + ';margin:8px 0 4px;', ok ? 'CERTO!' : (sel < 0 ? 'TEMPO ESGOTADO!' : 'ERRADO!'), fb);
+      h('div', 'font-weight:normal;font-size:16px;line-height:1.4;margin-bottom:8px;', 'Explicação: ' + (data.explain || ''), fb);
+      var btnRow = h('div', 'display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px;', null, fb);
       var go = function () { ctx.close({ win: !!ok, score: ctx.score, mistakes: ctx.mistakes }); };
-      mkBtn('Continuar', fb, go);
+      mkBtn('Continuar ▶', btnRow, go, ok ? C.green : C.blue);
+      var exitBtn = h('button', 'display:inline-block;padding:12px 18px;background:#fff;color:' + C.red + ';border:3px solid ' + C.red + ';border-radius:10px;cursor:pointer;font:bold 16px ' + FONT + ';touch-action:manipulation;', '✕ Sair do Quiz', btnRow);
+      exitBtn.type = 'button';
+      exitBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        ctx.close({ win: !!ok, score: ctx.score, mistakes: ctx.mistakes, cancelled: true });
+      });
       try { fb.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {}
       ctx.onKey = function (e) { if (e.key === 'Enter' || e.key === ' ' || e.key === 'z' || e.key === 'Z') go(); };
     }

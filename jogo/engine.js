@@ -316,7 +316,7 @@ function updateTownies(dt){
     if(mode!=='world')return;
     if(dist<=2&&!n.seen){n.seen=true;n.emote=n.quiz&&n.cool<=0?'!':'?';n.emoteT=1.2}
     if(dist>4)n.seen=false;
-    if(n.quiz&&n.cool<=0&&window.MINI&&dist<=4){
+    if(n.quiz&&n.cool<=0&&!n.retry&&window.MINI&&dist<=4){
       if(manh===1){startStreetQuiz(n);return}
       n.wait-=dt;if(n.wait>0)return;n.wait=.25;
       const opts=Object.keys(DIRS).map(d=>({d,x:n.x+DIRS[d][0],y:n.y+DIRS[d][1]})).filter(o=>townWalk(o.x,o.y,n)).sort((a,b)=>(Math.abs(a.x-P.x)+Math.abs(a.y-P.y))-(Math.abs(b.x-P.x)+Math.abs(b.y-P.y)));
@@ -337,8 +337,16 @@ function startStreetQuiz(n){
   P.dir=OPP[n.dir];n.emote=null;
   keys={};
   say(n.name,[n.lines[0]],()=>runMini('quick',undefined,r=>{
-    if(r&&r.win){n.cool=80;n.retry=false;addCoins(10);sfx('coin');fx('floatText',P.px-camX()+8,P.py-camY()-6,'+10 🪙','#ffd84a')}
-    else{n.cool=6;n.retry=true;say(n.name,[r&&r.cancelled?'Sem pressa! Fala comigo de novo quando quiser.':'Quase! Fala comigo de novo pra tentar outra pergunta.'])}
+    if(r&&r.win){
+      n.cool=90;n.retry=false;addCoins(10);sfx('coin');
+      fx('floatText',P.px-camX()+8,P.py-camY()-6,'+10 🪙','#ffd84a');
+    }else if(r&&r.cancelled){
+      n.cool=60;n.retry=false;n.wait=3;
+      fx('floatText',P.px-camX()+8,P.py-camY()-6,'Até depois!','#ffd84a');
+    }else{
+      n.cool=30;n.retry=false;
+      say(n.name,['Quase! Fala comigo de novo pra tentar outra pergunta.']);
+    }
   }));
 }
 function runMini(type,data,cb){
@@ -993,6 +1001,12 @@ addEventListener('keydown',e=>{
 addEventListener('keyup',e=>{if(MAP[e.key])keys[MAP[e.key]]=false});
 addEventListener('blur',()=>keys={});
 document.addEventListener('click',()=>{if(mode==='title')startGame();else if(mode==='dialog')advanceDialog();else if(mode==='battle'&&battleKeyOverride)battleKeyOverride('Enter')});
+box.addEventListener('pointerdown',e=>{
+  if(mode==='dialog'){e.preventDefault();e.stopPropagation();advanceDialog()}
+});
+box.addEventListener('click',e=>{
+  if(mode==='dialog'){e.stopPropagation();advanceDialog()}
+});
 cv.addEventListener('click',e=>{
   if(mode!=='world'||scene!=='world')return;
   const r=cv.getBoundingClientRect();
