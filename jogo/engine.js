@@ -243,6 +243,9 @@ const CORNERS=mirantes.map((m,i)=>({id:['c_nw','c_ne','c_sw','c_se'][i],name:MNA
 const SIGNS=CELLS.map(c=>({x:c.ox+8,y:c.oy+7}));
 SIGNS.forEach(s=>PROPS.push({type:'sign',x:s.x,y:s.y}));
 buildings.filter(b=>b.kind==='library').forEach(b=>PROPS.push({type:'libsign',x:b.doorX+1,y:b.y+4,b}));
+// Placa do Edital (texto completo) ao lado do spawn; o Escrivão do Edital fica do outro lado
+const EDSIGN={x:SPAWN.x+1,y:SPAWN.y-1};
+PROPS.push({type:'editalsign',x:EDSIGN.x,y:EDSIGN.y});
 CORNERS.forEach(c=>PROPS.push({type:'chest',id:c.id,x:c.cx,y:c.cy},{type:'bench',x:c.bx,y:c.by}));
 const TRACKS=['north','east','south','h4','h3','west','h1','h2','h5','h6'];
 function zoneAt(x,y){
@@ -256,7 +259,7 @@ function zoneAt(x,y){
 let curZoneId='',lastTrack=null,zoneName='';
 function playWorld(){const z=zoneAt(P.x,P.y);curZoneId=z.id;zoneName=z.name;lastTrack=z.track;music(z.track)}
 function syncZone(){const z=zoneAt(P.x,P.y);if(z.id!==curZoneId){const first=!curZoneId;curZoneId=z.id;zoneName=z.name;if(!first)fx('popup','📍 '+z.name,'','🗺');updateHud()}if(z.track!==lastTrack){lastTrack=z.track;music(z.track)}}
-const TOWN_HOMES=[[SPAWN.x+2,SPAWN.y],[HUBCELL.ox+2,HUBCELL.oy+6],[gPt.ox+7,gPt.oy+6],[HUBCELL.ox+10,HUBCELL.oy+6],[CELLS[2].ox+7,CELLS[2].oy+6],[CELLS[7].ox+7,CELLS[7].oy+6],[CELLS.find(c=>c.r===3&&c.c===3).ox+7,GEN_OY+6]];
+const TOWN_HOMES=[[SPAWN.x+2,SPAWN.y],[HUBCELL.ox+2,HUBCELL.oy+6],[gPt.ox+7,gPt.oy+6],[HUBCELL.ox+10,HUBCELL.oy+6],[CELLS[2].ox+7,CELLS[2].oy+6],[CELLS[7].ox+7,CELLS[7].oy+6],[CELLS.find(c=>c.r===3&&c.c===3).ox+7,GEN_OY+6],[SPAWN.x-1,SPAWN.y-1]];
 const special=new Set(PADS.map(p=>k(p.x,p.y)));special.add(k(REV.x,REV.y));special.add(k(SPAWN.x,SPAWN.y));
 TOWN_HOMES.forEach(([x,y])=>special.add(k(x,y)));
 PROPS.forEach(p=>{special.add(k(p.x,p.y));solid.add(k(p.x,p.y))});
@@ -319,7 +322,8 @@ const TOWNIES=[
  {name:'Moça do Café',c:'#ff9f43',home:TOWN_HOMES[3],lines:['O Café do Foco dá buff pra luta. Bora?','Moeda é pra gastar, estude e ganhe mais!']},
  {name:'Quiz Man',c:'#22c55e',home:TOWN_HOMES[4],quiz:true,lines:['Pergunta relâmpago!']},
  {name:'Dona Quizela',c:'#e8453c',home:TOWN_HOMES[5],quiz:true,lines:['Tá preparado? Pergunta relâmpago!']},
- {name:'Prof. Rápido',c:'#3b82f6',home:TOWN_HOMES[6],quiz:true,lines:['Respondeu certo = moeda!']}
+ {name:'Prof. Rápido',c:'#3b82f6',home:TOWN_HOMES[6],quiz:true,lines:['Respondeu certo = moeda!']},
+ {name:'Escrivão do Edital',c:'#1f3a7a',home:TOWN_HOMES[7],still:true,edital:true,lines:['O edital está comigo.']}
 ].map((n,i)=>({...n,x:n.home[0],y:n.home[1],px:n.home[0]*T,py:n.home[1]*T,dir:'down',moving:false,t:0,wait:1+i*.7,cool:0,emote:null,emoteT:0,chase:false}));
 const townOcc=(x,y,self)=>TOWNIES.some(n=>n!==self&&((n.x===x&&n.y===y)||(n.moving&&n.tx===x&&n.ty===y)));
 function townWalk(x,y,self){
@@ -350,6 +354,7 @@ function updateTownies(dt){
       if(opts[0]){n.dir=opts[0].d;n.moving=true;n.t=0;n.tx=opts[0].x;n.ty=opts[0].y}
       return;
     }
+    if(n.still)return;
     n.wait-=dt;
     if(n.wait<=0){
       n.wait=1+Math.random()*2.5;
@@ -682,6 +687,98 @@ function openSign(sg){
   render();
 }
 
+// ---------- Edital do TJPB: placa (texto completo) + Escrivão (recita) ----------
+// Conteúdo literal em edital.js (window.EDITAL). Aqui só a interface.
+const EDITAL_SECS=()=>(window.EDITAL&&window.EDITAL.secoes)||[];
+function editalChunks(txt,max,num){
+  // quebra o texto em falas curtas SEM alterar nenhuma palavra (juntando com espaço volta ao original)
+  // num=true: texto de itens numerados (Português/Raciocínio) -> não separa "6.5." de "Redação Oficial"
+  const w=String(txt).split(/\s+/).filter(Boolean),out=[],len=a=>a.join(' ').length;
+  const lab=x=>/^\d+(\.\d+)*[.;]?$/.test(x||''),up=x=>/^[A-ZÀ-Ú]/.test(x||'');
+  const brk=(a,i)=>{
+    const x=a[i];
+    if(num&&lab(x))return false;
+    if(num&&lab(a[i+1])&&up(a[i+2]))return true;
+    return /[.;:]$/.test(x)&&!/^(n|nº|art|arts|res)\.$/i.test(x);
+  };
+  let cur=[];
+  for(const x of w){
+    cur.push(x);
+    if(len(cur)>max){
+      let cut=-1;
+      for(let i=cur.length-2;i>0;i--)if(brk(cur,i)&&len(cur.slice(0,i+1))>max*.45){cut=i;break}
+      if(cut<0)cut=Math.max(0,cur.length-2);
+      out.push(cur.slice(0,cut+1).join(' '));cur=cur.slice(cut+1);
+    }
+  }
+  if(cur.length)out.push(cur.join(' '));
+  return out;
+}
+function editalLines(secs){
+  const lines=[];
+  secs.forEach(sc=>{
+    const ch=editalChunks(sc.x,150,sc.id==='pt'||sc.id==='rl');
+    ch.forEach((c,i)=>lines.push((i===0?sc.ic+' '+sc.t.toUpperCase()+'\n\n':'')+c+'\n\n— '+(i+1)+'/'+ch.length));
+  });
+  return lines;
+}
+function openEditalNpc(startSel){
+  const secs=EDITAL_SECS(),NM='Escrivão do Edital';
+  if(!secs.length){say(NM,['O edital sumiu da minha mesa... (edital.js não carregou)']);return}
+  const shortSub=t=>String(t).replace('Módulo II · Cargo 5 · Desenvolvimento de Sistemas','Específicos · Dev').replace('Módulo II · Conhecimentos Específicos','Específicos · Comum');
+  const items=secs.map(sc=>({name:sc.ic+'  '+sc.t,sub:shortSub(sc.sub),secs:[sc]}));
+  items.push({name:'📜  Recitar TUDO, do começo ao fim',sub:'todas as matérias em sequência',secs:secs});
+  items.push({name:'✖  Sair'});
+  let sel=startSel||0;
+  const intro=!save.edIntro;
+  function menu(){
+    function render(){
+      let h='<div class="mbox" style="min-width:0;width:min(92vw,560px)"><h2>📜 Escrivão do Edital</h2><div class="hint" style="margin:0 0 8px">TJPB 2026 · TI – Desenvolvimento de Sistemas. Qual matéria eu recito?</div>';
+      items.forEach((it,i)=>h+='<div class="row'+(i===sel?' sel':'')+'" data-i="'+i+'"><span>'+esc(it.name)+'</span>'+(it.sub?'<span style="opacity:.55;font-size:12px;text-align:right">'+esc(it.sub)+'</span>':'')+'</div>');
+      h+='<div class="hint">↑↓ escolher · Enter ouvir · Esc sair</div></div>';
+      modal.innerHTML=h;modal.querySelectorAll('.row').forEach(el=>el.onclick=()=>{sel=+el.dataset.i;go()});
+      const cur=modal.querySelector('.row.sel');if(cur&&cur.scrollIntoView)cur.scrollIntoView({block:'nearest'});
+    }
+    function go(){
+      const it=items[sel];
+      if(!it.secs){closeModal();return}
+      closeModal();sfx('confirm');
+      const at=sel;
+      say(NM,editalLines(it.secs),()=>openEditalNpc(at));
+    }
+    openModal('',key=>{
+      if(key==='Escape'){closeModal();return}
+      if(key==='ArrowUp'||key==='w'){sel=(sel+items.length-1)%items.length;sfx('select');render()}
+      else if(key==='ArrowDown'||key==='s'){sel=(sel+1)%items.length;sfx('select');render()}
+      else if(key==='Enter'||key===' '||key==='z')go();
+    });
+    render();
+  }
+  if(intro){
+    save.edIntro=true;persist();
+    say(NM,['Bom dia, futuro Analista! Eu guardo o edital do TJPB de cor, palavra por palavra.','É o Anexo I do Edital 01/2026, cargo Desenvolvimento de Sistemas. Escolha a matéria e eu recito o conteúdo literal.','Assim você nunca mais precisa abrir o PDF.'],menu);
+  }else menu();
+}
+function openEditalSign(){
+  const secs=EDITAL_SECS();
+  let h='<div class="mbox" style="min-width:0;width:min(94vw,760px);max-height:90vh"><h2>📜 Edital TJPB 2026 · Desenvolvimento de Sistemas</h2>';
+  h+='<div class="hint" style="margin:0 0 8px">'+esc((window.EDITAL&&window.EDITAL.fonte)||'')+' · texto literal do conteúdo programático · ↑↓ rolar · Esc fechar</div>';
+  h+='<div style="display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px">'+secs.map((sc,i)=>'<a data-go="'+i+'" style="cursor:pointer;background:#e8eefc;border:2px solid #384060;border-radius:8px;padding:2px 8px;font-size:13px">'+sc.ic+' '+esc(sc.t)+'</a>').join('')+'</div>';
+  secs.forEach((sc,i)=>{h+='<h3 id="ed_'+i+'" style="margin:14px 0 2px;font-size:18px;border-bottom:3px solid '+(i<3?'#d4a017':'#384060')+'">'+sc.ic+' '+esc(sc.t)+'</h3><div class="hint" style="margin:0 0 4px">'+esc(sc.sub)+'</div><p style="margin:0;font-size:15px;line-height:1.5;text-align:left">'+esc(sc.x)+'</p>'});
+  h+='<div class="row" style="justify-content:center;margin-top:14px;background:#ffe27a" data-close="1"><span>✖ Fechar</span></div></div>';
+  openModal('',key=>{
+    const box=modal.querySelector('.mbox');if(!box)return;
+    if(key==='Escape'){closeModal();return}
+    if(key==='ArrowDown'||key==='s')box.scrollTop+=70
+    else if(key==='ArrowUp'||key==='w')box.scrollTop-=70;
+    else if(key==='PageDown'||key===' ')box.scrollTop+=box.clientHeight*.85;
+    else if(key==='PageUp')box.scrollTop-=box.clientHeight*.85;
+  });
+  modal.innerHTML=h;
+  modal.querySelectorAll('[data-go]').forEach(a=>a.onclick=()=>{const t=modal.querySelector('#ed_'+a.dataset.go),b=modal.querySelector('.mbox');if(t&&b)b.scrollTop=t.offsetTop-b.offsetTop-8});
+  modal.querySelector('[data-close]').onclick=closeModal;
+}
+
 // ---------- bibliotecas: estudo de verdade ----------
 const studyOf=id=>(window.STUDY||{})[id];
 function studyDone(id){return save.study&&save.study[id]||{}}
@@ -770,6 +867,7 @@ function interact(){
   if(scene==='world'){
     const n=TOWNIES.find(n=>n.x===fx_&&n.y===fy);
     if(n){n.dir=OPP[P.dir];
+      if(n.edital){openEditalNpc();return}
       if(n.quiz&&(n.cool<=0||n.retry)&&window.MINI)return startStreetQuiz(n);
       say(n.name,n.quiz?['Você já acertou a minha! Daqui a pouco tenho outra pra você.']:[n.lines[Math.floor(Math.random()*n.lines.length)]]);return}
     if(fx_===SECRET.x&&fy===SECRET.y){
@@ -781,6 +879,7 @@ function interact(){
     if(pr){
       if(pr.type==='sign'){sfx('confirm');openSign(pr);return}
       if(pr.type==='libsign'){showLibSign(pr.b);return}
+      if(pr.type==='editalsign'){sfx('confirm');openEditalSign();return}
       if(pr.type==='chest'){
         if(save.chests[pr.id]){say('',['O baú já está vazio.']);return}
         save.chests[pr.id]=true;persist();addCoins(25);sfx('win');fx('confetti',1200);say('',['Você achou um baú escondido! +25 moedas 🪙']);return}
@@ -1041,8 +1140,8 @@ cv.addEventListener('click',e=>{
   const r=cv.getBoundingClientRect();
   const tx=Math.floor(((e.clientX-r.left)*VW/r.width+camX())/T);
   const ty=Math.floor(((e.clientY-r.top)*VH/r.height+camY())/T);
-  const pr=PROPS.find(p=>p.type==='libsign'&&p.x===tx&&p.y===ty);
-  if(pr){e.stopPropagation();showLibSign(pr.b)}
+  const pr=PROPS.find(p=>(p.type==='libsign'||p.type==='editalsign')&&p.x===tx&&p.y===ty);
+  if(pr){e.stopPropagation();if(pr.type==='editalsign'){sfx('confirm');openEditalSign()}else showLibSign(pr.b)}
 });
 // ---------- controles móveis ----------
 if('ontouchstart' in window||navigator.maxTouchPoints>0)document.body.classList.add('is-touch');
@@ -1265,11 +1364,13 @@ function drawNpcSprite(n,ox,oy){
   drawBlock(n.px-ox,n.py-oy,n.c,n.dir,{walk:n.moving,hair:'#222'});
   if(n.emoteT>0&&n.emote){const X=n.px-ox+5,Y=n.py-oy-12;R(X-1,Y-1,8,9,'#fff');R(X,Y,6,7,'#fff');ctx.fillStyle=n.emote==='!'?'#e8453c':'#4a8fe8';ctx.fillRect(X+2,Y+1,2,3);ctx.fillRect(X+2,Y+5,2,1)}
   if(n.quiz&&n.cool<=0){R(n.px-ox+6,n.py-oy-6+Math.round(Math.sin(tNow*5)),4,4,'#ffd84a')}
+  if(n.edital){const by=Math.round(Math.sin(tNow*3));R(n.px-ox+4,n.py-oy-8+by,8,6,'#f4ecd0');R(n.px-ox+4,n.py-oy-8+by,8,1,'#1f3a7a');R(n.px-ox+5,n.py-oy-5+by,6,1,'#8a6a2a')}
 }
 function drawProp(p,ox,oy){
   const X=p.x*T-ox,Y=p.y*T-oy;
   if(p.type==='deco'){const th=thOf(p.d);if(th&&th.prop)th.prop(ctx,p.kind,X,Y,tNow);else{R(X+3,Y+6,10,8,'#3f9a4d');R(X+5,Y+4,6,4,'#58c46b')}return}
   if(p.type==='sign'){R(X+3,Y+14,10,2,'#0003');R(X+7,Y+7,2,8,'#7a4a24');R(X+1,Y+2,14,7,'#d9a45a');R(X+1,Y+2,14,1,'#f2c27a');R(X+1,Y+8,14,1,'#a8753a');R(X+3,Y+5,8,1,'#5a3416');R(X+10,Y+3,1,5,'#5a3416');R(X+9,Y+4,1,3,'#5a3416')}
+  else if(p.type==='editalsign'){R(X+3,Y+14,10,2,'#0003');R(X+3,Y+8,2,7,'#5a3416');R(X+11,Y+8,2,7,'#5a3416');R(X,Y,16,10,'#1f3a7a');R(X+1,Y+1,14,8,'#f4ecd0');R(X+3,Y+2,10,1,'#1f3a7a');R(X+3,Y+4,10,1,'#8a6a2a');R(X+3,Y+6,7,1,'#8a6a2a');if(Math.sin(tNow*3)>0.6)R(X+13,Y-1,2,2,'#ffd84a')}
   else if(p.type==='libsign'){R(X+3,Y+14,10,2,'#0003');R(X+7,Y+7,2,8,'#7a4a24');R(X+1,Y+2,14,7,'#ece4ff');R(X+1,Y+2,14,1,p.b.color);R(X+1,Y+8,14,1,'#7a4a24');R(X+3,Y+4,10,1,'#384060');R(X+3,Y+6,7,1,'#5a3416')}
   else if(p.type==='bench'){R(X+1,Y+14,14,2,'#0003');R(X+1,Y+6,14,3,'#a46a36');R(X+1,Y+3,14,2,'#8a5226');R(X+2,Y+9,2,5,'#5a3416');R(X+12,Y+9,2,5,'#5a3416')}
   else if(p.type==='chest'){const op=save.chests[p.id];R(X+1,Y+14,14,2,'#0003');R(X+1,Y+6,14,9,'#8a5226');R(X+1,Y+(op?3:6),14,op?3:2,'#a46a36');R(X+7,Y+8,2,3,'#ffd84a');if(!op&&Math.sin(tNow*4+p.x)>0.5)R(X+12,Y+3,2,2,'#fff')}

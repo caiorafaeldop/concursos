@@ -1,4 +1,4 @@
-const CACHE = 'tjpb-quest-v9';
+const CACHE = 'tjpb-quest-v10';
 const ASSETS = [
   './',
   './index.html',
@@ -8,7 +8,8 @@ const ASSETS = [
   './icon.svg',
   './icon-192.png',
   './icon-512.png',
-  './engine.js?v=7',
+  './edital.js?v=1',
+  './engine.js?v=8',
   './themes.js',
   './audio.js',
   './fx.js',
