@@ -119,7 +119,7 @@ document.body.appendChild(fontesFrame);
 let aulaCtx=null,fontesPrevMode='world';
 function openAula(tid,ci,si,back){
   aulaCtx={tid,ci,back:back||null};mode='aula';keys={};sfx('confirm');
-  aulaFrame.src='aulas/'+tid+'.html?v=8#c='+ci+(si?'&s='+si:'')+'&embed=1';aulaFrame.style.display='block';
+  aulaFrame.src='aulas/'+tid+'.html?v=9#c='+ci+(si?'&s='+si:'')+'&embed=1';aulaFrame.style.display='block';
   aulaFrame.onload=()=>{try{aulaFrame.contentWindow.focus()}catch(e){}};
 }
 function closeAula(){aulaFrame.style.display='none';aulaFrame.src='about:blank';mode=worldMode();window.focus();updateHud()}

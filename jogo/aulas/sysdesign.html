@@ -147,7 +147,45 @@ svg .badl{stroke:var(--bad)}
   </div>
 </div>
 
-<div class="slide">
+  <div class="slide">
+    <span class="tag">ABSTRAÇÃO E COMPONENTES</span>
+    <h2>Como se pensa um sistema de grande escala</h2>
+    <p><b>Abstração</b> é esconder os detalhes e expor só o <b>contrato</b> (API, evento). Um sistema grande se decompõe em componentes com <b>uma responsabilidade</b> cada: alta <b>coesão</b> dentro, baixo <b>acoplamento</b> entre eles.</p>
+    <svg viewBox="0 0 400 300" aria-label="Componentes de um sistema de grande escala">
+      <defs><marker id="sa" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#5b6475"/></marker></defs>
+      <rect x="140" y="8" width="120" height="36" rx="10" class="box"/><text x="170" y="32">Cliente</text>
+      <line x1="200" y1="44" x2="200" y2="66" stroke="#5b6475" stroke-width="2.5" marker-end="url(#sa)"/>
+      <rect x="110" y="68" width="180" height="36" rx="10" class="accbox"/><text x="150" y="92">Gateway / LB</text>
+      <line x1="170" y1="104" x2="110" y2="126" stroke="#5b6475" stroke-width="2.5" marker-end="url(#sa)"/>
+      <line x1="230" y1="104" x2="290" y2="126" stroke="#5b6475" stroke-width="2.5" marker-end="url(#sa)"/>
+      <rect x="40" y="128" width="140" height="36" rx="10" class="okbox"/><text x="66" y="152">Serviço A</text>
+      <rect x="220" y="128" width="140" height="36" rx="10" class="okbox"/><text x="246" y="152">Serviço B</text>
+      <line x1="110" y1="164" x2="70" y2="196" stroke="#5b6475" stroke-width="2.5" marker-end="url(#sa)"/>
+      <line x1="290" y1="164" x2="200" y2="196" stroke="#5b6475" stroke-width="2.5" marker-end="url(#sa)"/>
+      <line x1="290" y1="164" x2="330" y2="196" stroke="#5b6475" stroke-width="2.5" marker-end="url(#sa)"/>
+      <rect x="20" y="198" width="100" height="36" rx="10" class="keybox"/><text x="46" y="222" class="kt">Cache</text>
+      <rect x="150" y="198" width="100" height="36" rx="10" class="keybox"/><text x="176" y="222" class="kt">Banco</text>
+      <rect x="280" y="198" width="100" height="36" rx="10" class="keybox"/><text x="312" y="222" class="kt">Fila</text>
+      <text x="200" y="266" class="small" text-anchor="middle">Cada caixa = 1 responsabilidade + 1 contrato</text>
+    </svg>
+    <div class="say law"><b>Stateless</b> (sem estado guardado no servidor) escala horizontalmente com facilidade; o estado vai para banco, cache ou fila. Cada componente deve ter seus <b>próprios dados</b> e conversar pelo contrato.</div>
+    <div class="say trap">Dois serviços lendo o <b>mesmo banco</b> quebram a abstração: viram um acoplamento escondido.</div>
+  </div>
+
+  <div class="slide">
+    <span class="tag">MODELAGEM DE COMPONENTES</span>
+    <h2>Do requisito ao desenho de alto nível</h2>
+    <div class="steps">
+      <div class="step"><b>1. Requisitos</b><span>Funcionais (o que faz) e <b>não funcionais</b>: latência, disponibilidade, consistência, volume.</span></div>
+      <div class="step"><b>2. Estimar a carga</b><span>Requisições por segundo, volume de dados, proporção leitura/escrita.</span></div>
+      <div class="step"><b>3. Componentes</b><span>Desenhe as caixas e os contratos entre elas, em alto nível.</span></div>
+      <div class="step"><b>4. Gargalos</b><span>Procure pontos únicos de falha e aplique cache, réplica ou fila.</span></div>
+    </div>
+    <div class="say law">O modelo <b>C4</b> descreve em níveis de zoom: <b>Contexto</b> → <b>Contêineres</b> → <b>Componentes</b> → <b>Código</b>. Cada nível abstrai o seguinte.</div>
+    <div class="say trap">Microsserviços não são sempre melhores. Um <b>monólito modular</b> bem dividido costuma ser mais simples e serve até certo tamanho. A divisão deve seguir as fronteiras do <b>domínio</b>.</div>
+  </div>
+
+  <div class="slide">
   <span class="tag">RESUMO</span>
   <h2>Para levar para a prova</h2>
   <div class="magic">Pergunta mágica: “Se o cabo entre dois servidores cair agora, eu prefiro parar ou responder com dado velho?”<small>Parar = <b>CP</b> · Responder = <b>AP</b> · No tempo normal, replicar síncrono troca <b>L</b> por <b>C</b> (PACELC).</small></div>

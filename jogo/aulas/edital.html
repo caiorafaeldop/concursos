@@ -40,7 +40,7 @@
 </style></head>
 <body data-subject="edital" data-title="Edital TJPB" data-finish="close">
 <script src="../edital.js?v=2"></script>
-<script src="../edital-links.js?v=1"></script>
+<script src="../edital-links.js?v=2"></script>
 <script>
 (function(){
   'use strict';
@@ -68,6 +68,7 @@
   var LK=window.EDITAL_LINKS||{},EMB=window.parent!==window;
   function linksHtml(k,from){
     var L=LK[k];
+    if(k.indexOf('prova:')===0)return '';
     if(!L||!L.length)return '<div class="lk"><span class="no">Sem aula ainda</span></div>';
     var o='<div class="lk">';
     L.forEach(function(l){o+='<a href="'+esc(l[0])+'.html#c='+l[1]+'&s='+l[2]+'" data-t="'+esc(l[0])+'" data-c="'+l[1]+'" data-s="'+l[2]+'" data-f="'+from+'">📖 '+esc(l[3]||('slide '+(l[2]+1)))+'</a>'});

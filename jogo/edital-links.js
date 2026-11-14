@@ -1,5 +1,4 @@
-// Itens do edital -> slides JÁ EXISTENTES das aulas: [aula, capítulo, slide, título]. Só links, sem material novo.
-// Chave "secao:indice" na mesma ordem de aulas/edital.html (split por item). Item sem chave = ainda sem aula.
+// Itens do edital -> slides das aulas: [aula, capítulo, slide, título]. Item sem chave = ainda sem aula.
 window.EDITAL_LINKS={
 "pt:0": [
 [
@@ -83,11 +82,23 @@ window.EDITAL_LINKS={
 [
 "portugues",
 3,
+13,
+"Orações independentes × orações dependentes"
+],
+[
+"portugues",
+3,
 6,
 "Mas, porém, portanto… e o “e”"
 ]
 ],
 "pt:9": [
+[
+"portugues",
+3,
+13,
+"Orações independentes × orações dependentes"
+],
 [
 "portugues",
 3,
@@ -2765,6 +2776,90 @@ window.EDITAL_LINKS={
 4,
 6,
 "Como citar acessibilidade em 3 linhas de pro"
+]
+],
+"rl:3": [
+[
+"matematica",
+0,
+8,
+"Porcentagem é fração com denominador 100"
+],
+[
+"matematica",
+0,
+9,
+"Aumentos e descontos sucessivos se multiplic"
+]
+],
+"rl:4": [
+[
+"matematica",
+0,
+10,
+"Juros simples: rendem sempre sobre o capital"
+],
+[
+"matematica",
+0,
+11,
+"Juros compostos: juros sobre juros"
+]
+],
+"pt:6": [
+[
+"portugues",
+3,
+12,
+"Frase, oração e período"
+],
+[
+"portugues",
+3,
+13,
+"Orações independentes × orações dependentes"
+]
+],
+"pt:7": [
+[
+"portugues",
+3,
+14,
+"As seis classes variáveis"
+],
+[
+"portugues",
+3,
+15,
+"As classes invariáveis e a pegadinha da funç"
+]
+],
+"comum:26": [
+[
+"govti",
+3,
+8,
+"Automação: a tecnologia executa o processo"
+],
+[
+"govti",
+3,
+9,
+"O que vale automatizar, e o que pode dar err"
+]
+],
+"c5_2:0": [
+[
+"sysdesign",
+0,
+8,
+"Como se pensa um sistema de grande escala"
+],
+[
+"sysdesign",
+0,
+9,
+"Do requisito ao desenho de alto nível"
 ]
 ]
 };
