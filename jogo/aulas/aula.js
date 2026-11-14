@@ -113,8 +113,9 @@
   body.appendChild(top); body.appendChild(prog); body.appendChild(stage); body.appendChild(bottom);
   slides.forEach(function (s, i) { var d = el('b'); d.title = 'Slide ' + (i + 1); d.onclick = function () { go(i); }; dots.appendChild(d); });
 
+  var closeEnd = body.getAttribute('data-finish') === 'close'; // páginas sem treino (ex.: Edital) só fecham no fim
   function finish() {
-    if (embed) post({ type: 'aula-done', ch: ci });
+    if (embed) post({ type: closeEnd ? 'aula-close' : 'aula-done', ch: ci });
     else if (ci + 1 < chapters.length) { location.hash = 'c=' + (ci + 1); location.reload(); }
     else { location.hash = ''; location.reload(); }
   }
@@ -132,7 +133,7 @@
     prev.disabled = cur === 0; prev.style.visibility = cur === 0 ? 'hidden' : 'visible';
     var last = cur === slides.length - 1;
     next.className = last ? 'au-btn go au-next' : 'au-btn primary au-next';
-    next.textContent = last ? (embed ? '✏️ Ir p/ treino' : (ci + 1 < chapters.length ? 'Próximo cap. →' : 'Voltar ao índice')) : 'Próximo →';
+    next.textContent = last ? (embed ? (closeEnd ? '✔ Fechar' : '✏️ Ir p/ treino') : (ci + 1 < chapters.length ? 'Próximo cap. →' : 'Voltar ao índice')) : 'Próximo →';
   }
   prev.onclick = function (e) { if (e) e.stopPropagation(); go(cur - 1); };
   next.onclick = function (e) { if (e) e.stopPropagation(); if (cur === slides.length - 1) finish(); else go(cur + 1); };

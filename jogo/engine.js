@@ -685,33 +685,9 @@ function openSign(sg){
   render();
 }
 
-// ---------- Edital do TJPB: placa com o conteúdo programático ----------
-// Conteúdo literal em edital.js (window.EDITAL). Aqui só a interface.
-const EDITAL_SECS=()=>(window.EDITAL&&window.EDITAL.secoes)||[];
-function openEditalSign(){
-  const secs=EDITAL_SECS(),qs=secs.filter(sc=>sc.q);
-  const qtag=sc=>sc.q?'<b style="background:'+(sc.qo?'#d4a017':'#384060')+';color:#fff;border-radius:6px;padding:0 6px;margin-left:6px;font-size:13px;white-space:nowrap">'+(sc.qo?'':'≈')+sc.q+' q</b>':'';
-  let h='<div class="mbox" style="min-width:0;width:min(94vw,760px);max-height:90vh"><h2>📜 Edital TJPB 2026 · Desenvolvimento de Sistemas</h2>';
-  h+='<div class="hint" style="margin:0 0 8px">'+esc((window.EDITAL&&window.EDITAL.fonte)||'')+' · texto literal do conteúdo programático · ↑↓ rolar · Esc fechar</div>';
-  // quadro de questões
-  h+='<div style="border:3px solid #384060;border-radius:8px;padding:6px 8px;margin:0 0 10px;background:#fffbe6"><div style="font-weight:800;margin-bottom:4px">🎯 Quantas questões de cada tema (60 objetivas)</div>';
-  qs.forEach(sc=>{h+='<div class="row" data-go="'+secs.indexOf(sc)+'" style="padding:2px 4px"><span>'+sc.ic+' '+esc(sc.t)+'</span><b>'+(sc.qo?'':'≈ ')+sc.q+'</b></div>'});
-  h+='<div class="hint" style="margin:6px 0 0"><b style="color:#a37800">Dourado = número oficial do edital</b> (Português 10, Raciocínio 10, Específicos 40 no total). <b>≈ = estimativa</b>: o edital não divide as 40 entre os temas, então os números ≈ somam 40 mas são cálculo, não regra. Discursiva: 1 estudo de caso (40 pts).</div></div>';
-  h+='<div style="display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px">'+secs.map((sc,i)=>'<a data-go="'+i+'" style="cursor:pointer;background:#e8eefc;border:2px solid #384060;border-radius:8px;padding:2px 8px;font-size:13px">'+sc.ic+' '+esc(sc.t)+qtag(sc)+'</a>').join('')+'</div>';
-  secs.forEach((sc,i)=>{h+='<h3 id="ed_'+i+'" style="margin:14px 0 2px;font-size:18px;border-bottom:3px solid '+(sc.qo?'#d4a017':'#384060')+'">'+sc.ic+' '+esc(sc.t)+qtag(sc)+'</h3><div class="hint" style="margin:0 0 4px">'+esc(sc.sub)+'</div><p style="margin:0;font-size:15px;line-height:1.5;text-align:left">'+esc(sc.x)+'</p>'});
-  h+='<div class="row" style="justify-content:center;margin-top:14px;background:#ffe27a" data-close="1"><span>✖ Fechar</span></div></div>';
-  openModal('',key=>{
-    const box=modal.querySelector('.mbox');if(!box)return;
-    if(key==='Escape'){closeModal();return}
-    if(key==='ArrowDown'||key==='s')box.scrollTop+=70;
-    else if(key==='ArrowUp'||key==='w')box.scrollTop-=70;
-    else if(key==='PageDown'||key===' ')box.scrollTop+=box.clientHeight*.85;
-    else if(key==='PageUp')box.scrollTop-=box.clientHeight*.85;
-  });
-  modal.innerHTML=h;
-  modal.querySelectorAll('[data-go]').forEach(a=>a.onclick=()=>{const t=modal.querySelector('#ed_'+a.dataset.go),b=modal.querySelector('.mbox');if(t&&b)b.scrollTop=t.offsetTop-b.offsetTop-8});
-  modal.querySelector('[data-close]').onclick=closeModal;
-}
+// ---------- Edital do TJPB: placa que abre a tela do edital (aulas/edital.html, mesmo visual da biblioteca) ----------
+// Conteúdo literal em edital.js; a página monta slides por matéria, com nº de questões e checklist.
+function openEditalSign(){openAula('edital',0)}
 
 // ---------- bibliotecas: estudo de verdade ----------
 const studyOf=id=>(window.STUDY||{})[id];
