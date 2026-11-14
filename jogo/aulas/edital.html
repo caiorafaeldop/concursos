@@ -26,6 +26,12 @@
 .it.on .tx{opacity:.8}
 .it .tx b{color:var(--acc)}
 .prog{display:inline-block;margin-left:6px;font-size:13px;font-weight:800;color:var(--ok);background:var(--ok-bg);border-radius:999px;padding:1px 9px;vertical-align:middle}
+.it .tx{min-width:0;flex:1}
+.items{grid-template-columns:minmax(0,1fr)}
+.lk{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.lk a{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13.5px;font-weight:700;line-height:1;color:var(--acc);background:var(--acc-bg);border:2px solid var(--acc);border-radius:999px;padding:7px 11px;text-decoration:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.lk a:active{transform:scale(.96)}
+.lk .no{font-size:13px;color:var(--muted);font-style:italic}
 .tapnote{font-size:14px;color:var(--muted);margin:2px 0 6px}
 @media (max-width:680px),(max-width:900px) and (orientation:portrait){
   .it{font-size:17px;padding:11px 12px}
@@ -34,6 +40,7 @@
 </style></head>
 <body data-subject="edital" data-title="Edital TJPB" data-finish="close">
 <script src="../edital.js?v=2"></script>
+<script src="../edital-links.js?v=1"></script>
 <script>
 (function(){
   'use strict';
@@ -47,7 +54,8 @@
   function split(sc){
     var t=sc.x,M='\u0001';
     if(sc.id==='pt'||sc.id==='rl')return t.replace(/\s+(?=\d+(?:\.\d+)*\.?\s+[A-ZÀ-Ú])/g,M).split(M);
-    return t.replace(/\.\s+(?=[A-ZÀ-Ú])/g,'.'+M).split(M);
+    // não quebra depois de abreviações ("BASE vs. ACID", "n. 522")
+    return t.replace(/(\S*)\.(\s+)(?=[A-ZÀ-Ú])/g,function(m,w,sp){return /^(vs|n|nº|art|arts|res)$/i.test(w)?m:w+'.'+M}).split(M);
   }
   window.__editalSplit=split;
   function itemHtml(txt){
@@ -56,6 +64,14 @@
     var i=txt.indexOf(': ');
     if(i>2&&i<=70)return '<b>'+esc(txt.slice(0,i+1))+'</b> '+esc(txt.slice(i+2));
     return esc(txt);
+  }
+  var LK=window.EDITAL_LINKS||{},EMB=window.parent!==window;
+  function linksHtml(k,from){
+    var L=LK[k];
+    if(!L||!L.length)return '<div class="lk"><span class="no">Sem aula ainda</span></div>';
+    var o='<div class="lk">';
+    L.forEach(function(l){o+='<a href="'+esc(l[0])+'.html#c='+l[1]+'&s='+l[2]+'" data-t="'+esc(l[0])+'" data-c="'+l[1]+'" data-s="'+l[2]+'" data-f="'+from+'">📖 '+esc(l[3]||('slide '+(l[2]+1)))+'</a>'});
+    return o+'</div>';
   }
   var total=0;S.forEach(function(sc){sc.items=split(sc);total+=sc.items.length});
   function done(sc){var n=0;for(var i=0;i<sc.items.length;i++)if(ok[sc.id+':'+i])n++;return n}
@@ -78,7 +94,7 @@
     if(sc.q)h+='<div class="magic">'+(sc.qo?'🎯 '+sc.q+' questões':'≈ '+sc.q+' questões')+'<small>'+(sc.qo?'Número oficial do edital.':'Estimativa: o edital só fixa 40 questões para todos os Específicos juntos.')+'</small></div>';
     h+='<p class="tapnote">Texto literal do edital. Toque num item para marcar ✓</p><div class="items">';
     sc.items.forEach(function(t,i){
-      h+='<div class="it'+(/^\d+\.\d+/.test(t)?' sub':'')+(ok[sc.id+':'+i]?' on':'')+'" data-k="'+sc.id+':'+i+'"><span class="ck">'+(ok[sc.id+':'+i]?'✓':'')+'</span><span class="tx">'+itemHtml(t)+'</span></div>';
+      h+='<div class="it'+(/^\d+\.\d+/.test(t)?' sub':'')+(ok[sc.id+':'+i]?' on':'')+'" data-k="'+sc.id+':'+i+'"><span class="ck">'+(ok[sc.id+':'+i]?'✓':'')+'</span><span class="tx">'+itemHtml(t)+linksHtml(sc.id+':'+i,si+1)+'</span></div>';
     });
     h+='</div></div>';
   });
@@ -90,6 +106,13 @@
     S.forEach(function(sc){var e=document.querySelector('[data-p="'+sc.id+'"]');if(e){var d=done(sc);e.textContent=d?('✓ '+d+'/'+sc.items.length):'';e.style.display=d?'':'none'}});
   }
   document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('.lk a');
+    if(a){
+      e.preventDefault();e.stopPropagation();
+      if(EMB)window.parent.postMessage({source:'aula',type:'aula-open',tid:a.getAttribute('data-t'),ci:+a.getAttribute('data-c'),si:+a.getAttribute('data-s'),from:+a.getAttribute('data-f')},'*');
+      else location.href=a.getAttribute('href');
+      return}
+    if(e.target.closest&&e.target.closest('.lk'))return;
     var t=e.target.closest&&e.target.closest('.it');
     if(t){var k=t.getAttribute('data-k');if(ok[k]){delete ok[k];t.classList.remove('on');t.firstChild.textContent=''}else{ok[k]=1;t.classList.add('on');t.firstChild.textContent='✓'}save();refresh();return}
     var b=e.target.closest&&e.target.closest('.bar');
@@ -98,5 +121,5 @@
   refresh();
 })();
 </script>
-<script src="aula.js?v=8"></script>
+<script src="aula.js?v=9"></script>
 </body></html>

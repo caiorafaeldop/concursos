@@ -117,9 +117,9 @@ const fontesFrame=document.createElement('iframe');fontesFrame.id='fontes';fonte
 fontesFrame.style.cssText='position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;border:0;display:none;z-index:1000001;background:#fffaf0';
 document.body.appendChild(fontesFrame);
 let aulaCtx=null,fontesPrevMode='world';
-function openAula(tid,ci){
-  aulaCtx={tid,ci};mode='aula';keys={};sfx('confirm');
-  aulaFrame.src='aulas/'+tid+'.html?v=7#c='+ci+'&embed=1';aulaFrame.style.display='block';
+function openAula(tid,ci,si,back){
+  aulaCtx={tid,ci,back:back||null};mode='aula';keys={};sfx('confirm');
+  aulaFrame.src='aulas/'+tid+'.html?v=8#c='+ci+(si?'&s='+si:'')+'&embed=1';aulaFrame.style.display='block';
   aulaFrame.onload=()=>{try{aulaFrame.contentWindow.focus()}catch(e){}};
 }
 function closeAula(){aulaFrame.style.display='none';aulaFrame.src='about:blank';mode=worldMode();window.focus();updateHud()}
@@ -143,6 +143,10 @@ window.addEventListener('message',e=>{
   if(d.source==='fontes'&&d.type==='fontes-close'){closeFontes();return}
   if(d.source!=='aula'||!aulaCtx)return;
   const c=aulaCtx;
+  if(d.type==='aula-open'){ // atalho do Edital -> slide específico de uma aula (volta ao Edital ao fechar)
+    if(c.tid==='edital'&&/^[a-z0-9_]+$/.test(d.tid||'')){openAula(d.tid,d.ci|0,d.si|0,{si:d.from|0})}
+    return}
+  if(c.back&&(d.type==='aula-close'||d.type==='aula-done')){const b=c.back;closeAula();aulaCtx=null;openAula('edital',0,b.si);return}
   if(d.type==='aula-close'){closeAula();aulaCtx=null}
   else if(d.type==='aula-done'){closeAula();aulaCtx=null;openChapter(c.tid,c.ci,true)}
   else if(d.type==='aula-fontes'){openFontes(d.hash||'')}

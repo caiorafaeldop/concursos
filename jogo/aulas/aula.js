@@ -199,6 +199,6 @@
     sx = null; sy = null;
   });
 
-  go(0);
+  go(Math.max(0, Math.min(slides.length - 1, parseInt(hash.s, 10) || 0))); // #s= abre direto num slide
   window.focus();
 })();

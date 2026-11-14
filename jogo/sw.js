@@ -1,4 +1,4 @@
-const CACHE = 'tjpb-quest-v12';
+const CACHE = 'tjpb-quest-v13';
 const ASSETS = [
   './',
   './index.html',
@@ -9,7 +9,8 @@ const ASSETS = [
   './icon-192.png',
   './icon-512.png',
   './edital.js?v=2',
-  './engine.js?v=10',
+  './edital-links.js?v=1',
+  './engine.js?v=11',
   './themes.js',
   './audio.js',
   './fx.js',
@@ -37,7 +38,7 @@ const ASSETS = [
   './materias/discursiva.js',
   './materias/matematica.js',
   './aulas/aula.css?v=7',
-  './aulas/aula.js?v=8'
+  './aulas/aula.js?v=9'
 ];
 
 self.addEventListener('install', e => {
